@@ -5,34 +5,33 @@
    position:relative; // for positioning the item-controls
    width:100%;
 
-   &:hover {
-      .product-margin .single-product-controls a.remove-product{
-         display: inline;
-      }
-   }
-
 
    div.product-margin {
-      position: absolute;
-      display:block;
-      padding-right: 10px;
-      left: -50px;
-      width: 50px;
-      height: 40px;
-      top: 27px;
+      float:left;
       text-align:right;
       line-height: 1;
       font-size:14px;
-      span.single-product-controls{
-         a.remove-product {
-            color: @gray-light;
-            display:none;
-            vertical-align: 4px;
-            padding-right: 5px;
-            padding-left: 5px;
+      margin-top: 4px;
+      a {
+         color: @gray-light;
+         padding: 3px 5px;
+      }
+      span.feature-product-controls {
+         a.feature-product {
+            i.icon-star {display:none;}
+            i.icon-star-empty {display:inline; color: @gray-light;}
             &:hover {
-               color: red;
+               i.icon-star {display:inline; color: @linkColor;}
+               i.icon-star-empty {display:none;}
             }
+         }
+         a.unfeature-product {
+            i.icon-star {display:inline; color: @linkColor;}
+         }
+      }
+      span.delete-product-controls{
+         a:hover {
+            color: red;
          }
          .tooltip-inner {
             background: red;
@@ -50,9 +49,7 @@
 
    .biblio{
       float:left;
-      width: 420px;
-      width: 520px;
-      width: @contentWidth - @sidebarWidth - 380px;
+      width: @contentWidth - (@sidebarWidth + @awardsWidth + 100px);
       h5 {
          margin-top: 0;
          a {
@@ -118,7 +115,7 @@
       // file because reasons.
 
 
-      width: 330px;
+      width: @awardsWidth;
       margin-left: 20px;
       float:left;
       ul.awards-list {

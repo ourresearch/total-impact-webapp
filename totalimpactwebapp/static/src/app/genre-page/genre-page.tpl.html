@@ -4,8 +4,6 @@
    </div>
    <div class="wrapper" ng-show="!isRendering()">
 
-      <pre>products length: {{ profileService.productsLen() }}</pre>
-      <span ng-click="sayWhatAgain()">say what again</span>
       <div class="header">
          <h2>
             <span class="count">
@@ -52,14 +50,30 @@
 
 
                <!-- users must be logged in -->
-               <div class="product-margin" ng-show="security.isLogsgedIn(url_slug)">
-                     <span class="single-product-controls">
-                        <a class="remove-product"
-                           tooltip="Delete this product"
-                           ng-click="removeProduct(product)">
-                           <i class="icon-trash icon"></i>
-                        </a>
-                     </span>
+               <div class="product-margin" ng-show="security.isLoggedIn(url_slug)">
+                  <span class="delete-product-controls"> <!--needed to style tooltip -->
+                     <a class="remove-product"
+                        tooltip="Delete this product"
+                        ng-click="removeProduct(product)">
+                        <i class="icon-trash icon"></i>
+                     </a>
+                  </span>
+                  <span class="feature-product-controls">
+                     <a class="feature-product"
+                        ng-click="pinboardService.pin('product', {tiid: product.tiid})"
+                        ng-if="!pinboardService.idIsPinned({tiid:product.tiid})"
+                        tooltip="Feature this product on your profile front page">
+                        <i class="icon-star-empty"></i>
+                        <i class="icon-star"></i>
+                     </a>
+                     <a class="unfeature-product"
+                        ng-click="pinboardService.unPin({tiid: product.tiid})"
+                        ng-if="pinboardService.idIsPinned({tiid:product.tiid})"
+                        tooltip="This product is featured on your profile front page; click to unfeature.">
+                        <i class="icon-star"></i>
+                     </a>
+                  </span>
+
                </div>
                <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
             </li>

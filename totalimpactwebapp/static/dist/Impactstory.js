@@ -672,12 +672,10 @@ angular.module("genrePage", [
     Timer,
     security,
     ProfileService,
+    PinboardService,
     Page) {
 
-    $scope.sayWhatAgain = function(){
-      console.log("said what again")
-      ProfileService.get($routeParams.url_slug)
-    }
+    $scope.pinboardService = PinboardService
 
 
     Timer.start("genreViewRender")
@@ -3565,6 +3563,13 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  // this is exactly the same as ProfileWithoutProducts right now....
+  .factory("ProfilePinboard", function($resource){
+    return $resource(
+      "/profile/:id/pinboard"
+    )
+  })
+
 
 
   .factory('UserProduct', function ($resource) {
@@ -4312,22 +4317,62 @@ angular.module("services.page")
 angular.module('services.pinboardService', [
   'resources.users'
 ])
-  .factory("PinboardService", function($q, $timeout, Update, Page, Users){
+  .factory("PinboardService", function(ProfilePinboard, security){
     var pins = []
 
     function pin(type, id){
+      console.log("pin this here thing:", type, id)
       var myPin = {
         type: type,
         id: id,
         timestamp: moment.utc().toISOString()
       }
       pins.push(myPin)
+
+      // every time we change the pins arr, we save.
+
+//      ProfilePinboard.save(
+//        {id: "HeatherPiwowar"},
+//        {pins: pins},
+//        function(resp){
+//          console.log("success pushing pins", resp)
+//        },
+//        function(resp){
+//          console.log("failure pushing pins", resp)
+//        }
+//
+//      )
+    }
+
+    function unPin(id){
+      console.log("unpin this ID: ", id)
+      var indexToRemove = -1
+      for (var i=0; i<pins.length; i++){
+        if (_.isEqual(pins[i].id, id)) {
+          indexToRemove = i
+        }
+      }
+      if (indexToRemove > -1){
+        pins.splice(indexToRemove, 1)
+        return true
+      }
+      else {
+        return false
+      }
+    }
+
+    function idIsPinned(pinId){
+      return !!_.find(pins, function(myPin){
+        return _.isEqual(myPin.id, pinId)
+      })
     }
 
 
     return {
       pins: pins,
-      pin: pin
+      pin: pin,
+      unPin: unPin,
+      idIsPinned: idIsPinned
     }
 
 
@@ -4437,6 +4482,10 @@ angular.module('services.profileService', [
       }
     }
 
+    function productByTiid(tiid){
+      return _.findWhere(data.products, {tiid: tiid})
+    }
+
 
     return {
       data: data,
@@ -4444,7 +4493,8 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       productsByGenre: productsByGenre,
-      genreLookup: genreLookup
+      genreLookup: genreLookup,
+      productByTiid: productByTiid
     }
 
 
@@ -5004,8 +5054,6 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "   </div>\n" +
     "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
     "\n" +
-    "      <pre>products length: {{ profileService.productsLen() }}</pre>\n" +
-    "      <span ng-click=\"sayWhatAgain()\">say what again</span>\n" +
     "      <div class=\"header\">\n" +
     "         <h2>\n" +
     "            <span class=\"count\">\n" +
@@ -5052,14 +5100,30 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "\n" +
     "\n" +
     "               <!-- users must be logged in -->\n" +
-    "               <div class=\"product-margin\" ng-show=\"security.isLogsgedIn(url_slug)\">\n" +
-    "                     <span class=\"single-product-controls\">\n" +
-    "                        <a class=\"remove-product\"\n" +
-    "                           tooltip=\"Delete this product\"\n" +
-    "                           ng-click=\"removeProduct(product)\">\n" +
-    "                           <i class=\"icon-trash icon\"></i>\n" +
-    "                        </a>\n" +
-    "                     </span>\n" +
+    "               <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                  <span class=\"delete-product-controls\"> <!--needed to style tooltip -->\n" +
+    "                     <a class=\"remove-product\"\n" +
+    "                        tooltip=\"Delete this product\"\n" +
+    "                        ng-click=\"removeProduct(product)\">\n" +
+    "                        <i class=\"icon-trash icon\"></i>\n" +
+    "                     </a>\n" +
+    "                  </span>\n" +
+    "                  <span class=\"feature-product-controls\">\n" +
+    "                     <a class=\"feature-product\"\n" +
+    "                        ng-click=\"pinboardService.pin('product', {tiid: product.tiid})\"\n" +
+    "                        ng-if=\"!pinboardService.idIsPinned({tiid:product.tiid})\"\n" +
+    "                        tooltip=\"Feature this product on your profile front page\">\n" +
+    "                        <i class=\"icon-star-empty\"></i>\n" +
+    "                        <i class=\"icon-star\"></i>\n" +
+    "                     </a>\n" +
+    "                     <a class=\"unfeature-product\"\n" +
+    "                        ng-click=\"pinboardService.unPin({tiid: product.tiid})\"\n" +
+    "                        ng-if=\"pinboardService.idIsPinned({tiid:product.tiid})\"\n" +
+    "                        tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
+    "                        <i class=\"icon-star\"></i>\n" +
+    "                     </a>\n" +
+    "                  </span>\n" +
+    "\n" +
     "               </div>\n" +
     "               <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "            </li>\n" +
@@ -6662,13 +6726,21 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "<div id=\"pinboard\">\n" +
     "   <ul class=\"col-1\" ui-sortable ng-model=\"pinboardService.pins\">\n" +
-    "      <li ng-repeat=\"pin in pinboardService.pins\">({{ $index }}) type: {{ pin.type }}, id: {{ pin.id }}</li>\n" +
+    "      <li class=\"pin\" ng-repeat=\"pin in pinboardService.pins\">\n" +
+    "         <div class=\"pin-header\">\n" +
+    "            <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pin.id)\">\n" +
+    "               <i class=\"icon-remove\"></i>\n" +
+    "            </a>\n" +
+    "         </div>\n" +
+    "         <div class=\"pin-body product-pin\" ng-if=\"pin.type=='product'\">\n" +
+    "            <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pin.id.tiid).markup)\"></div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      </li>\n" +
     "   </ul>\n" +
     "\n" +
-    "   <div ng-click=\"pinboardService.pin('test', 123)\">add a pin</div>\n" +
-    "\n" +
-    "   <h2>pinboard service:</h2>\n" +
-    "   <pre>{{ pinboardService.pins | json }}</pre>\n" +
     "</div>\n" +
     "\n" +
     "\n" +

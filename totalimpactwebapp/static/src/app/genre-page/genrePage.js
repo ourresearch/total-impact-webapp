@@ -56,12 +56,10 @@ angular.module("genrePage", [
     Timer,
     security,
     ProfileService,
+    PinboardService,
     Page) {
 
-    $scope.sayWhatAgain = function(){
-      console.log("said what again")
-      ProfileService.get($routeParams.url_slug)
-    }
+    $scope.pinboardService = PinboardService
 
 
     Timer.start("genreViewRender")

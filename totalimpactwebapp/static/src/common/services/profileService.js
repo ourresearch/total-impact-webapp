@@ -67,6 +67,10 @@ angular.module('services.profileService', [
       }
     }
 
+    function productByTiid(tiid){
+      return _.findWhere(data.products, {tiid: tiid})
+    }
+
 
     return {
       data: data,
@@ -74,7 +78,8 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       productsByGenre: productsByGenre,
-      genreLookup: genreLookup
+      genreLookup: genreLookup,
+      productByTiid: productByTiid
     }
 
 

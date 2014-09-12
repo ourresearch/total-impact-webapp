@@ -7335,116 +7335,102 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   font-weight: 900;
   font-size: 14px;
 }
-div.genres div.sidebar {
-  float: left;
-  width: 200px;
-  height: 500px;
-  margin-top: 50px;
-}
-div.genres ul.genre-list {
+#pinboard li.pin {
+  width: 400px;
+  border: 1px solid #eee;
+  background: #fff;
   clear: both;
-  margin-top: 20px;
-}
-div.genres ul.genre-list li.genre {
-  border: 2px solid #eee;
-  margin-bottom: 50px;
+  margin: 20px 0;
   position: relative;
+  cursor: move;
 }
-div.genres ul.genre-list li.genre div.genre-header {
+#pinboard li.pin:before,
+#pinboard li.pin:after {
+  content: " ";
+  display: table;
+}
+#pinboard li.pin:after {
+  clear: both;
+}
+#pinboard li.pin:before,
+#pinboard li.pin:after {
+  content: " ";
+  display: table;
+}
+#pinboard li.pin:after {
+  clear: both;
+}
+#pinboard li.pin div.pin-header {
+  text-align: right;
+  font-size: 12px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: .8;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 5px;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 5px;
+  -moz-border-radius-topleft: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 0;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
   background: #eee;
 }
-div.genres ul.genre-list li.genre div.genre-header h3 {
-  margin: 0;
+#pinboard li.pin div.pin-header:hover {
+  opacity: 1;
+}
+#pinboard li.pin div.pin-header a {
+  padding: 1px 5px;
+  color: #777;
+}
+#pinboard li.pin div.pin-header a:hover {
+  color: #ff4000;
+}
+#pinboard li.pin div.pin-body {
   padding: 10px;
-}
-div.genres ul.genre-list li.genre div.genre-header h3 a {
-  color: #555;
-}
-div.genres ul.genre-list li.genre div.genre-header h3 a:hover {
-  color: #000;
-}
-div.genres ul.genre-list li.genre div.genre-header h3 span.num-products-with-new-metrics {
-  margin-left: 5px;
-  color: #4daf4a;
-  font-size: 50%;
-  font-weight: normal;
-}
-div.genres ul.genre-list li.genre div.genre-body {
   clear: both;
-  padding: 30px 10px 30px 0;
 }
-div.genres ul.genre-list li.genre div.genre-body:before,
-div.genres ul.genre-list li.genre div.genre-body:after {
+#pinboard li.pin div.pin-body:before,
+#pinboard li.pin div.pin-body:after {
   content: " ";
   display: table;
 }
-div.genres ul.genre-list li.genre div.genre-body:after {
+#pinboard li.pin div.pin-body:after {
   clear: both;
 }
-div.genres ul.genre-list li.genre div.genre-body:before,
-div.genres ul.genre-list li.genre div.genre-body:after {
+#pinboard li.pin div.pin-body:before,
+#pinboard li.pin div.pin-body:after {
   content: " ";
   display: table;
 }
-div.genres ul.genre-list li.genre div.genre-body:after {
+#pinboard li.pin div.pin-body:after {
   clear: both;
 }
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best {
-  width: 70%;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card {
-  float: left;
-  margin-left: 40px;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card img.icon {
-  margin-top: -10px;
-  margin-right: 5px;
-  width: 30px;
-  opacity: .9;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.value {
-  font-size: 30px;
-  font-weight: bold;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.key {
-  display: inline-block;
-  line-height: 1;
-  font-size: 15px;
-  margin-left: 4px;
-  color: #555;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-accumulation span.key span.provider {
-  display: block;
+#pinboard li.pin div.pin-body.product-pin .biblio {
   font-size: 12px;
+  margin-bottom: 10px;
 }
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-accumulation span.key span.interaction {
-  font-weight: bold;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this {
-  color: #d9534f;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key {
-  color: #d9534f;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.genre-name {
-  display: block;
-  margin-bottom: 3px;
-  font-size: 12px;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-best li.genre-card span.card-products-with-more-than-this span.key span.threshold {
-  font-weight: bold;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-second-best {
-  float: right;
-  width: 25%;
-}
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card {
-  line-height: 1;
-  margin-bottom: 8px;
+#pinboard li.pin div.pin-body.product-pin .biblio h5.title {
   font-size: 16px;
+  margin: 0;
 }
-div.genres ul.genre-list li.genre div.genre-body ul.genre-cards-second-best li.genre-card img {
-  width: 16px;
+#pinboard li.pin div.pin-body.product-pin .biblio h5.title a {
+  color: #555;
+}
+#pinboard li.pin div.pin-body.product-pin .biblio h5.title a:hover {
+  color: #333;
+}
+#pinboard li.pin div.pin-body.product-pin .awards .ti-badge {
+  font-size: 11px;
+  margin: 7px 2px 0;
 }
 div.profile-subpage .profile-subpage-header {
   background: #555;
@@ -7539,42 +7525,48 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   position: relative;
   width: 100%;
 }
-.product:hover .product-margin .single-product-controls a.remove-product {
-  display: inline;
-}
 .product div.product-margin {
-  position: absolute;
-  display: block;
-  padding-right: 10px;
-  left: -50px;
-  width: 50px;
-  height: 40px;
-  top: 27px;
+  float: left;
   text-align: right;
   line-height: 1;
   font-size: 14px;
+  margin-top: 4px;
 }
-.product div.product-margin span.single-product-controls a.remove-product {
+.product div.product-margin a {
   color: #999999;
-  display: none;
-  vertical-align: 4px;
-  padding-right: 5px;
-  padding-left: 5px;
+  padding: 3px 5px;
 }
-.product div.product-margin span.single-product-controls a.remove-product:hover {
+.product div.product-margin span.feature-product-controls a.feature-product i.icon-star {
+  display: none;
+}
+.product div.product-margin span.feature-product-controls a.feature-product i.icon-star-empty {
+  display: inline;
+  color: #999999;
+}
+.product div.product-margin span.feature-product-controls a.feature-product:hover i.icon-star {
+  display: inline;
+  color: #ff4000;
+}
+.product div.product-margin span.feature-product-controls a.feature-product:hover i.icon-star-empty {
+  display: none;
+}
+.product div.product-margin span.feature-product-controls a.unfeature-product i.icon-star {
+  display: inline;
+  color: #ff4000;
+}
+.product div.product-margin span.delete-product-controls a:hover {
   color: red;
 }
-.product div.product-margin span.single-product-controls .tooltip-inner {
+.product div.product-margin span.delete-product-controls .tooltip-inner {
   background: red;
   width: 100px;
 }
-.product div.product-margin span.single-product-controls .tooltip-arrow {
+.product div.product-margin span.delete-product-controls .tooltip-arrow {
   border-top-color: red;
 }
 .product .biblio {
   float: left;
-  width: 420px;
-  width: 520px;
+  width: 470px;
 }
 .product .biblio h5 {
   margin-top: 0;

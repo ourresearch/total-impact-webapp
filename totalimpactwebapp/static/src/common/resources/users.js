@@ -34,6 +34,13 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  // this is exactly the same as ProfileWithoutProducts right now....
+  .factory("ProfilePinboard", function($resource){
+    return $resource(
+      "/profile/:id/pinboard"
+    )
+  })
+
 
 
   .factory('UserProduct', function ($resource) {

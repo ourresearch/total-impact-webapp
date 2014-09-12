@@ -326,111 +326,57 @@ div.view-controls {
    }
 }
 
+#pinboard {
+   li.pin {
+      width: 400px;
+      border: 1px solid #eee;
+      background: #fff;
+      .clearfix();
+      margin: 20px 0;
+      position: relative;
+      cursor: move;
+      div.pin-header {
+         text-align: right;
+         font-size: 12px;
+         position: absolute;
+         top:0;
+         right: 0;
+         opacity: .8;
+         .border-radius(0, 0, 5px, 0);
+         background: #eee;
+         &:hover {
+            opacity: 1;
+         }
 
-
-div.genres {
-   div.sidebar {
-      float: left;
-      width: 200px;
-      height: 500px;
-      margin-top: 50px;
-   }
-   ul.genre-list {
-      clear:both;
-      margin-top: 20px;
-      li.genre {
-         border: 2px solid #eee;
-         margin-bottom: 50px;
-         position: relative;
-         div.genre-header {
-            background: #eee;
-            h3 {
-               margin: 0;
-               padding: 10px;
-               a {
-                  color: #555;
-                  &:hover {color: #000;}
-               }
-               span.num-products-with-new-metrics {
-                  margin-left: 5px;
-                  color: @publicColor;
-                  font-size: 50%;
-                  font-weight: normal;
-               }
+         a {
+            padding: 1px 5px;
+            color: #777;
+            &:hover {
+               color: @linkColor;
             }
          }
-         div.genre-body{
-            .clearfix();
-            padding: 30px 10px 30px 0;
-            ul.genre-cards-best {
-               width:70%;
-               li.genre-card {
-                  img.icon {
-                     margin-top: -10px;
-                     margin-right: 5px;
-                     width: 30px;
-                     opacity: .9;
-                  }
-                  float:left;
-                  margin-left: 40px;
-                  span.value {
-                     font-size: 30px;
-                     font-weight: bold;
-                  }
-                  span.key {
-                     display:inline-block;
-                     line-height: 1;
-                     font-size: 15px;
-                     margin-left: 4px;
-                     color: #555;
-                  }
-                  span.card-accumulation {
-                     span.key {
-                        span.provider {
-                           display:block;
-                           font-size: 12px;
-                        }
-                        span.interaction {
-                           font-weight: bold;
-                        }
-                     }
-                  }
-
-                  span.card-products-with-more-than-this {
-                     color: #d9534f;
-                     span.key {
-                        color: #d9534f;
-                        span.genre-name {
-                           display:block;
-                           margin-bottom: 3px;
-                           font-size: 12px;
-                        }
-                        span.threshold {
-                           font-weight: bold;
-                        }
-
-                     }
-                  }
-               }
-            }
-
-            ul.genre-cards-second-best {
-               float:right;
-               width: 25%;
-               li.genre-card {
-                  line-height: 1;
-                  margin-bottom: 8px;
-                  img {
-                     width: 16px;
-                  }
+      }
+      div.pin-body {
+         padding: 10px;
+         .clearfix();
+         &.product-pin {
+            .biblio {
+               h5.title {
                   font-size: 16px;
-
+                  margin: 0;
+                  a {color: #555;}
+                  a:hover {color: #333;}
+               }
+               font-size: 12px;
+               margin-bottom: 10px;
+            }
+            .awards {
+               .ti-badge {
+                  font-size: 11px;
+                  margin: 7px 2px 0;
                }
             }
-
          }
       }
    }
 }
-
-

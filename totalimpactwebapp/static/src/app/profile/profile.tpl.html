@@ -82,13 +82,21 @@
 
 <div id="pinboard">
    <ul class="col-1" ui-sortable ng-model="pinboardService.pins">
-      <li ng-repeat="pin in pinboardService.pins">({{ $index }}) type: {{ pin.type }}, id: {{ pin.id }}</li>
+      <li class="pin" ng-repeat="pin in pinboardService.pins">
+         <div class="pin-header">
+            <a class="delete-pin" ng-click="pinboardService.unPin(pin.id)">
+               <i class="icon-remove"></i>
+            </a>
+         </div>
+         <div class="pin-body product-pin" ng-if="pin.type=='product'">
+            <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pin.id.tiid).markup)"></div>
+         </div>
+
+
+
+      </li>
    </ul>
 
-   <div ng-click="pinboardService.pin('test', 123)">add a pin</div>
-
-   <h2>pinboard service:</h2>
-   <pre>{{ pinboardService.pins | json }}</pre>
 </div>
 
 
