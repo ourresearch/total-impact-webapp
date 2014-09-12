@@ -7339,7 +7339,6 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   width: 415px;
   float: left;
   min-height: 300px;
-  margin-left: 20px;
   -webkit-border-top-right-radius: 5px;
   -webkit-border-bottom-right-radius: 5px;
   -webkit-border-bottom-left-radius: 5px;
@@ -7355,13 +7354,13 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  padding: 0 10px;
+  padding: 0;
 }
 #pinboard ul.pinboard-col.empty-true {
   border: 1px dashed #ddd;
 }
 #pinboard ul.pinboard-col.col-1 {
-  padding-right: 20px;
+  margin-right: 30px;
 }
 #pinboard li.pin {
   width: 100%;
