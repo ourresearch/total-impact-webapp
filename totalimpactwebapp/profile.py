@@ -29,7 +29,6 @@ import hashlib
 import redis
 import csv
 import StringIO
-import arrow
 
 
 logger = logging.getLogger("tiwebapp.profile")

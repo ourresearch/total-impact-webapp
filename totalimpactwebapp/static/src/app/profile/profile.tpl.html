@@ -80,89 +80,11 @@
       </div>
 </div>
 
+<div id="pinboard">
+   <ul class="col-1" ui-sortable ng-model="foo">
+      <li ng-repeat="pin in foo">val: {{ pin.val }}</li>
+   </ul>
 
-<div class="genres">
-      <ul class="genre-list">
-         <li ng-repeat="genre in profile.genres | orderBy:'name'" class="genre genre-{{ genre.plural_name }}">
-            <div class="genre-header">
-               <h3 class="genre-name">
-                  <a href="/{{ profile.about.url_slug }}/products/{{ genre.name }}"
-                     tooltip="view all {{ genre.num_products }} {{ genre.plural_name }}">
-                     <span class="total-products">
-                        {{ genre.num_products }}
-                     </span>
-                     <span class="name">
-                        {{ genre.plural_name }}
-                     </span>
-                  </a>
-                  <span class="num-products-with-new-metrics" ng-show="genre.num_products_with_new_metrics">
-                     ({{ genre.num_products_with_new_metrics }} have new impacts this week)
-                  </span>
-               </h3>
-            </div>
-            <div class="genre-body">
-               <ul class="genre-cards-best">
-                  <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3)">
-                     <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >
-                     <span class="card-accumulation" ng-show="card.card_type=='GenreAccumulationCard'">
-                        <span class="value">{{ nFormat(card.current_value) }}</span>
-                        <span class="key">
-                           <span class="provider">{{ card.provider }}</span>
-                           <span class="interaction">{{ card.interaction }}</span>
-                        </span>
-                     </span>
-
-                     <span class="card-products-with-more-than-this" ng-show="card.card_type=='GenreProductsWithMoreThanCard'">
-                        <span class="value">{{ card.number_products_this_good }}</span>
-                        <span class="key">
-                           <span class="genre-name">
-                              {{ genre.plural_name }} with
-                           </span>
-                           <span class="threshold">
-                              <span class="threshold-value">
-                                 {{ nFormat(card.metric_threshold_value) }}+
-                              </span>
-                              <span class="provider">{{ card.provider }}</span>
-                              <span class="interaction">{{ card.interaction }}</span>
-                           </span>
-                        </span>
-                     </span>
-
-                  </li>
-               </ul>
-
-               <ul class="genre-cards-second-best">
-                  <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 3, 6)">
-
-                     <!-- all this is copy/pasted from above -->
-                     <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >
-                     <span class="card-accumulation" ng-show="card.card_type=='GenreAccumulationCard'">
-                        <span class="value">{{ nFormat(card.current_value) }}</span>
-                        <span class="key">
-                           <span class="provider">{{ card.provider }}</span>
-                           <span class="interaction">{{ card.interaction }}</span>
-                        </span>
-                     </span>
-
-                     <span class="card-accumulation" ng-show="card.card_type=='GenreProductsWithMoreThanCard'">
-                        <span class="value">{{ card.number_products_this_good }}</span>
-                        <span class="key">
-                           <span class="explanation">
-                              {{ genre.plural_name }} with
-                              <span class="threshold-value">
-                                 {{ nFormat(card.metric_threshold_value) }}+
-                              </span>
-                           </span>
-                           <span class="provider">{{ card.provider }}</span>
-                           <span class="interaction">{{ card.interaction }}</span>
-                        </span>
-                     </span>
-
-                  </li>
-               </ul>
-            </div>
-         </li>
-      </ul>
 </div>
 
 

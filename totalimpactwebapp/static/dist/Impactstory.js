@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-08
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-11
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -462,7 +462,9 @@ angular.module('app', [
   'productPage',
   'genrePage',
   'services.profileService',
+  'services.profileAboutService',
   'profileSidebar',
+  'ui.sortable',
   'settings',
   'xeditable'
 ]);
@@ -530,10 +532,14 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
+                                                     ProfileService,
+                                                     ProfileAboutService,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
   $rootScope.security = security
+  $scope.profileService = ProfileService
+  $scope.profileAboutService = ProfileAboutService
 
   security.requestCurrentUser().then(function(currentUser){
 
@@ -667,6 +673,11 @@ angular.module("genrePage", [
     security,
     ProfileService,
     Page) {
+
+    $scope.sayWhatAgain = function(){
+      console.log("said what again")
+      ProfileService.get($routeParams.url_slug)
+    }
 
 
     Timer.start("genreViewRender")
@@ -1479,11 +1490,11 @@ angular.module('profileSidebar', [
   .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
 
     $scope.page = Page
-    ProfileService.getCached().then(
-      function(resp){
-        $scope.profile = resp
-      }
-    )
+//    ProfileService.getCached().then(
+//      function(resp){
+//        $scope.profile = resp
+//      }
+//    )
 
 
 
@@ -1677,15 +1688,22 @@ angular.module("profile", [
     Update,
     Loading,
     ProfileService,
+    ProfileAboutService,
     Tour,
     Timer,
     security,
     Page) {
 
 
+
+    $scope.foo = [{val: 1}, {val: 2}, {val: 3}]
+
+
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
     Page.setName('overview')
+    ProfileAboutService.get($routeParams.url_slug)
+
     var url_slug = $routeParams.url_slug;
 
     $timeout(function(){
@@ -1753,6 +1771,8 @@ angular.module("profile", [
       }
       return num;
     }
+
+
 
 
     ProfileService.get(url_slug).then(
@@ -3537,6 +3557,13 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  // this is exactly the same as ProfileWithoutProducts right now....
+  .factory("ProfileAbout", function($resource){
+    return $resource(
+      "/profile/:id/about"
+    )
+  })
+
 
 
   .factory('UserProduct', function ($resource) {
@@ -4281,97 +4308,117 @@ angular.module("services.page")
 
 
 
+angular.module('services.profileAboutService', [
+  'resources.users'
+])
+  .factory("ProfileAboutService", function($q, $timeout, Update, Page, ProfileAbout){
+
+    var loading = true
+    var data = {}
+
+
+    function get(url_slug){
+      console.log("calling ProfileAboutService.get()")
+
+      loading = true
+      return ProfileAbout.get(
+        {id: url_slug},
+        function(resp){
+          console.log("ProfileAbout got a response", resp)
+          _.each(data, function(v, k){delete data[k]})
+          angular.extend(data, resp)
+          loading = false
+        },
+
+        function(resp){
+          console.log("ProfileService got a failure response", resp)
+          loading = false
+        }
+      ).$promise
+    }
+
+
+    return {
+      get: get,
+      data: data
+    }
+
+  })
 angular.module('services.profileService', [
   'resources.users'
 ])
   .factory("ProfileService", function($q, $timeout, Update, Page, Users){
 
-    var profileObj
     var loading = true
+    var data = {}
+
 
     function get(url_slug){
+      console.log("calling ProfileService.get()")
+      loading = true
+      return Users.get(
+        {id: url_slug, embedded: Page.isEmbedded()},
+        function(resp){
+          console.log("ProfileService got a response", resp)
+          profileObj = resp  // cache for future use
+          _.each(data, function(v, k){delete data[k]})
+          angular.extend(data, resp)
+          loading = false
 
-      if (profileObj){
-        return $q.when(profileObj)
-      }
 
-      // we're gonna refresh our profile data
-      else {
-        loading = true
-        return Users.get(
-          {id: url_slug, embedded: Page.isEmbedded()},
-          function(resp){
-            console.log("ProfileService got a response", resp)
-            profileObj = resp  // cache for future use
-            loading = false
+          // got the new stuff. but does the server say it's
+          // actually still updating there? if so, show
+          // updating modal
+          Update.showUpdateModal(url_slug, resp.is_refreshing).then(
+            function(msg){
+              console.log("updater (resolved):", msg)
+              get(url_slug)
+            },
+            function(msg){
+              // great, everything's all up-to-date.
+            }
+          )
+        },
 
-            // got the new stuff. but does the server say it's
-            // actually still updating there? if so, show
-            // updating modal
-            Update.showUpdateModal(url_slug, resp.is_refreshing).then(
-              function(msg){
-                console.log("updater (resolved):", msg)
-                get(url_slug)
-              },
-              function(msg){
-                // great, everything's all up-to-date.
-              }
-            )
-          },
-
-          function(resp){
-            console.log("ProfileService got a failure response", resp)
-            profileObj = null
-            loading = false
-          }
-        ).$promise
-      }
+        function(resp){
+          console.log("ProfileService got a failure response", resp)
+          loading = false
+        }
+      ).$promise
     }
 
-
-    function getCached(){
-      return $timeout(function(){
-        if (loading){
-          return getCached()
-        }
-        else {
-          return profileObj
-        }
-      })
-    }
 
     function isLoading(){
       return loading
     }
 
     function genreLookup(url_representation){
-      if (typeof profileObj.genres == "undefined"){
+      if (typeof data.genres == "undefined"){
         return undefined
       }
       else {
-        var res = _.findWhere(profileObj.genres, {url_representation: url_representation})
+        var res = _.findWhere(data.genres, {url_representation: url_representation})
         return res
       }
     }
 
     function productsByGenre(url_representation){
-      if (typeof profileObj.products == "undefined"){
+      if (typeof data.products == "undefined"){
         return undefined
       }
       else {
         var genreCanonicalName = genreLookup(url_representation).name
-        var res = _.where(profileObj.products, {genre: genreCanonicalName})
+        var res = _.where(data.products, {genre: genreCanonicalName})
         return res
       }
     }
 
 
     return {
-      profile: profileObj,
+      data: data,
       loading: loading,
       isLoading: isLoading,
       get: get,
-      getCached: getCached,
       productsByGenre: productsByGenre,
       genreLookup: genreLookup
     }
@@ -4932,6 +4979,9 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "      <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "   </div>\n" +
     "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
+    "\n" +
+    "      <pre>products length: {{ profileService.productsLen() }}</pre>\n" +
+    "      <span ng-click=\"sayWhatAgain()\">say what again</span>\n" +
     "      <div class=\"header\">\n" +
     "         <h2>\n" +
     "            <span class=\"count\">\n" +
@@ -6366,18 +6416,19 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
 angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-sidebar/profile-sidebar.tpl.html",
     "<div class=\"profile-sidebar\"\n" +
-    "     ng-show=\"profile.about.given_name\"\n" +
+    "     ng-show=\"profileAboutService.data.given_name\"\n" +
     "     ng-controller=\"profileSidebarCtrl\">\n" +
     "\n" +
     "   <h1>\n" +
-    "      <a href=\"/{{ profile.about.url_slug }}\">\n" +
-    "         <span class=\"given-name\">{{ profile.about.given_name }}</span>\n" +
-    "         <span class=\"surname\">{{ profile.about.surname }}</span>\n" +
+    "      <a href=\"/{{ profileAboutService.data.url_slug }}\">\n" +
+    "         <span class=\"given-name\">{{ profileAboutService.data.given_name }}</span>\n" +
+    "         <span class=\"surname\">{{ profileAboutService.data.surname }}</span>\n" +
     "      </a>\n" +
     "   </h1>\n" +
     "\n" +
+    "\n" +
     "   <div class=\"nav\">\n" +
-    "      <a href=\"/{{ profile.about.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
+    "      <a href=\"/{{ profileAboutService.data.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
     "         <i class=\"icon-user left\"></i>\n" +
     "         <span class=\"text\">\n" +
     "            Overview\n" +
@@ -6386,8 +6437,8 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "      </a>\n" +
     "      <div class=\"nav-group genres\">\n" +
     "         <ul>\n" +
-    "            <li ng-repeat=\"genre in profile.genres | orderBy: 'name'\">\n" +
-    "               <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.url_representation }}\"\n" +
+    "            <li ng-repeat=\"genre in profileService.data.genres | orderBy: 'name'\">\n" +
+    "               <a href=\"/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}\"\n" +
     "                  ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
     "                  <i class=\"{{ genre.icon }} left\"></i>\n" +
     "                  <span class=\"text\">\n" +
@@ -6585,89 +6636,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "</div>\n" +
     "\n" +
+    "<div id=\"pinboard\">\n" +
+    "   <ul class=\"col-1\" ui-sortable ng-model=\"foo\">\n" +
+    "      <li ng-repeat=\"pin in foo\">val: {{ pin.val }}</li>\n" +
+    "   </ul>\n" +
     "\n" +
-    "<div class=\"genres\">\n" +
-    "      <ul class=\"genre-list\">\n" +
-    "         <li ng-repeat=\"genre in profile.genres | orderBy:'name'\" class=\"genre genre-{{ genre.plural_name }}\">\n" +
-    "            <div class=\"genre-header\">\n" +
-    "               <h3 class=\"genre-name\">\n" +
-    "                  <a href=\"/{{ profile.about.url_slug }}/products/{{ genre.name }}\"\n" +
-    "                     tooltip=\"view all {{ genre.num_products }} {{ genre.plural_name }}\">\n" +
-    "                     <span class=\"total-products\">\n" +
-    "                        {{ genre.num_products }}\n" +
-    "                     </span>\n" +
-    "                     <span class=\"name\">\n" +
-    "                        {{ genre.plural_name }}\n" +
-    "                     </span>\n" +
-    "                  </a>\n" +
-    "                  <span class=\"num-products-with-new-metrics\" ng-show=\"genre.num_products_with_new_metrics\">\n" +
-    "                     ({{ genre.num_products_with_new_metrics }} have new impacts this week)\n" +
-    "                  </span>\n" +
-    "               </h3>\n" +
-    "            </div>\n" +
-    "            <div class=\"genre-body\">\n" +
-    "               <ul class=\"genre-cards-best\">\n" +
-    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3)\">\n" +
-    "                     <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >\n" +
-    "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreAccumulationCard'\">\n" +
-    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
-    "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
-    "                        </span>\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                     <span class=\"card-products-with-more-than-this\" ng-show=\"card.card_type=='GenreProductsWithMoreThanCard'\">\n" +
-    "                        <span class=\"value\">{{ card.number_products_this_good }}</span>\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"genre-name\">\n" +
-    "                              {{ genre.plural_name }} with\n" +
-    "                           </span>\n" +
-    "                           <span class=\"threshold\">\n" +
-    "                              <span class=\"threshold-value\">\n" +
-    "                                 {{ nFormat(card.metric_threshold_value) }}+\n" +
-    "                              </span>\n" +
-    "                              <span class=\"provider\">{{ card.provider }}</span>\n" +
-    "                              <span class=\"interaction\">{{ card.interaction }}</span>\n" +
-    "                           </span>\n" +
-    "                        </span>\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                  </li>\n" +
-    "               </ul>\n" +
-    "\n" +
-    "               <ul class=\"genre-cards-second-best\">\n" +
-    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 3, 6)\">\n" +
-    "\n" +
-    "                     <!-- all this is copy/pasted from above -->\n" +
-    "                     <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >\n" +
-    "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreAccumulationCard'\">\n" +
-    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
-    "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
-    "                        </span>\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                     <span class=\"card-accumulation\" ng-show=\"card.card_type=='GenreProductsWithMoreThanCard'\">\n" +
-    "                        <span class=\"value\">{{ card.number_products_this_good }}</span>\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"explanation\">\n" +
-    "                              {{ genre.plural_name }} with\n" +
-    "                              <span class=\"threshold-value\">\n" +
-    "                                 {{ nFormat(card.metric_threshold_value) }}+\n" +
-    "                              </span>\n" +
-    "                           </span>\n" +
-    "                           <span class=\"provider\">{{ card.provider }}</span>\n" +
-    "                           <span class=\"interaction\">{{ card.interaction }}</span>\n" +
-    "                        </span>\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                  </li>\n" +
-    "               </ul>\n" +
-    "            </div>\n" +
-    "         </li>\n" +
-    "      </ul>\n" +
     "</div>\n" +
     "\n" +
     "\n" +
@@ -6823,7 +6796,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "         href=\"/{{ currentUser.url_slug }}\"\n" +
     "         tooltip-placement=\"left\"\n" +
     "         tooltip=\"View your profile\">\n" +
-    "         <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "         <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ currentUser.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "      </a>\n" +
     "   </li>\n" +
     "   <li ng-show=\"currentUser\" class=\"controls nav-item\">\n" +

@@ -58,6 +58,11 @@ angular.module("genrePage", [
     ProfileService,
     Page) {
 
+    $scope.sayWhatAgain = function(){
+      console.log("said what again")
+      ProfileService.get($routeParams.url_slug)
+    }
+
 
     Timer.start("genreViewRender")
     Timer.start("genreViewRender.load")

@@ -110,15 +110,22 @@ angular.module("profile", [
     Update,
     Loading,
     ProfileService,
+    ProfileAboutService,
     Tour,
     Timer,
     security,
     Page) {
 
 
+
+    $scope.foo = [{val: 1}, {val: 2}, {val: 3}]
+
+
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
     Page.setName('overview')
+    ProfileAboutService.get($routeParams.url_slug)
+
     var url_slug = $routeParams.url_slug;
 
     $timeout(function(){
@@ -186,6 +193,8 @@ angular.module("profile", [
       }
       return num;
     }
+
+
 
 
     ProfileService.get(url_slug).then(

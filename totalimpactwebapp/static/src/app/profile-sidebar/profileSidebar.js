@@ -6,11 +6,11 @@ angular.module('profileSidebar', [
   .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
 
     $scope.page = Page
-    ProfileService.getCached().then(
-      function(resp){
-        $scope.profile = resp
-      }
-    )
+//    ProfileService.getCached().then(
+//      function(resp){
+//        $scope.profile = resp
+//      }
+//    )
 
 
 

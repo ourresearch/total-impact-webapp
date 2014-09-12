@@ -3,6 +3,9 @@
       <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
    </div>
    <div class="wrapper" ng-show="!isRendering()">
+
+      <pre>products length: {{ profileService.productsLen() }}</pre>
+      <span ng-click="sayWhatAgain()">say what again</span>
       <div class="header">
          <h2>
             <span class="count">

@@ -27,6 +27,13 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  // this is exactly the same as ProfileWithoutProducts right now....
+  .factory("ProfileAbout", function($resource){
+    return $resource(
+      "/profile/:id/about"
+    )
+  })
+
 
 
   .factory('UserProduct', function ($resource) {

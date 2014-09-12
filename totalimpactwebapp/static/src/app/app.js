@@ -28,7 +28,9 @@ angular.module('app', [
   'productPage',
   'genrePage',
   'services.profileService',
+  'services.profileAboutService',
   'profileSidebar',
+  'ui.sortable',
   'settings',
   'xeditable'
 ]);
@@ -96,10 +98,14 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
+                                                     ProfileService,
+                                                     ProfileAboutService,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
   $rootScope.security = security
+  $scope.profileService = ProfileService
+  $scope.profileAboutService = ProfileAboutService
 
   security.requestCurrentUser().then(function(currentUser){
 

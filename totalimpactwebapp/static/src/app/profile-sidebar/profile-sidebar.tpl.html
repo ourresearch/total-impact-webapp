@@ -1,16 +1,17 @@
 <div class="profile-sidebar"
-     ng-show="profile.about.given_name"
+     ng-show="profileAboutService.data.given_name"
      ng-controller="profileSidebarCtrl">
 
    <h1>
-      <a href="/{{ profile.about.url_slug }}">
-         <span class="given-name">{{ profile.about.given_name }}</span>
-         <span class="surname">{{ profile.about.surname }}</span>
+      <a href="/{{ profileAboutService.data.url_slug }}">
+         <span class="given-name">{{ profileAboutService.data.given_name }}</span>
+         <span class="surname">{{ profileAboutService.data.surname }}</span>
       </a>
    </h1>
 
+
    <div class="nav">
-      <a href="/{{ profile.about.url_slug }}" ng-class="{active: page.isNamed('overview')}">
+      <a href="/{{ profileAboutService.data.url_slug }}" ng-class="{active: page.isNamed('overview')}">
          <i class="icon-user left"></i>
          <span class="text">
             Overview
@@ -19,8 +20,8 @@
       </a>
       <div class="nav-group genres">
          <ul>
-            <li ng-repeat="genre in profile.genres | orderBy: 'name'">
-               <a href="/{{ profile.about.url_slug }}/products/{{ genre.url_representation }}"
+            <li ng-repeat="genre in profileService.data.genres | orderBy: 'name'">
+               <a href="/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}"
                   ng-class="{active: page.isNamed(genre.url_representation)}">
                   <i class="{{ genre.icon }} left"></i>
                   <span class="text">

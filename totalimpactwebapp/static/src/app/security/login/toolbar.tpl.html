@@ -4,7 +4,7 @@
          href="/{{ currentUser.url_slug }}"
          tooltip-placement="left"
          tooltip="View your profile">
-         <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+         <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ currentUser.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
       </a>
    </li>
    <li ng-show="currentUser" class="controls nav-item">
