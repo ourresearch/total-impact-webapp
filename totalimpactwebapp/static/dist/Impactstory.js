@@ -682,6 +682,8 @@ angular.module("genrePage", [
     Timer.start("genreViewRender.load")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
+    $scope.genre_name = $routeParams.genre_name
+
     var rendering = true
 
     $scope.isRendering = function(){
@@ -738,28 +740,7 @@ angular.module("genrePage", [
     }
 
 
-    $scope.removeProduct = function(product){
-//      alert("Sorry! Product deletion is temporarily disabled. It'll be back soon.")
-      console.log("removing product: ", product)
-      $scope.products.splice($scope.products.indexOf(product),1)
-      UserMessage.set(
-        "profile.removeProduct.success",
-        false,
-        {title: product.display_title}
-      )
 
-      // do the deletion in the background, without a progress spinner...
-      Product.delete(
-        {user_id: $routeParams.url_slug, tiid: product._tiid},
-        function(){
-          console.log("finished deleting", product.display_title)
-          TiMixpanel.track("delete product", {
-            tiid: product._tiid,
-            title: product.display_title
-          })
-        }
-      )
-    }
 
 })
 
@@ -4435,16 +4416,23 @@ angular.module('services.profileAboutService', [
 angular.module('services.profileService', [
   'resources.users'
 ])
-  .factory("ProfileService", function($q, $timeout, Update, Page, Users){
+  .factory("ProfileService", function($q,
+                                      $timeout,
+                                      Update,
+                                      Page,
+                                      UserMessage,
+                                      TiMixpanel,
+                                      Product,
+                                      Users){
 
     var loading = true
     var data = {}
 
 
-    function get(url_slug){
+    function get(url_slug, getFromServer){
       console.log("calling ProfileService.get()")
 
-      if (data && !loading){
+      if (data && !getFromServer && !loading){
         return $q.when(data)
       }
 
@@ -4478,6 +4466,32 @@ angular.module('services.profileService', [
           loading = false
         }
       ).$promise
+    }
+
+    function removeProduct(product){
+      console.log("removing product in profileService", product)
+      data.products.splice(data.products.indexOf(product),1)
+
+
+      UserMessage.set(
+        "profile.removeProduct.success",
+        false,
+        {title: product.display_title}
+      )
+
+      // do the deletion in the background, without a progress spinner...
+      Product.delete(
+        {user_id: data.about.url_slug, tiid: product.tiid},
+        function(){
+          console.log("finished deleting", product.display_title)
+          get(data.about.url_slug, true) // go back to the server to get new data
+
+          TiMixpanel.track("delete product", {
+            tiid: product.tiid,
+            title: product.display_title
+          })
+        }
+      )
     }
 
 
@@ -4518,7 +4532,8 @@ angular.module('services.profileService', [
       get: get,
       productsByGenre: productsByGenre,
       genreLookup: genreLookup,
-      productByTiid: productByTiid
+      productByTiid: productByTiid,
+      removeProduct: removeProduct
     }
 
 
@@ -5081,7 +5096,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "      <div class=\"header\">\n" +
     "         <h2>\n" +
     "            <span class=\"count\">\n" +
-    "               {{ filteredProducts.length }}\n" +
+    "               {{ profileService.productsByGenre(genre_name).length }}\n" +
     "            </span>\n" +
     "            <span class=\"text\">\n" +
     "               {{ genre.plural_name }}\n" +
@@ -5091,6 +5106,18 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "            <div class=\"genre-summary-top\">\n" +
     "               <ul class=\"genre-cards-best\">\n" +
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3)\">\n" +
+    "                     <!--\n" +
+    "                     <span class=\"card-actions\">\n" +
+    "                        <a class=\"feature-this\">\n" +
+    "                           <i class=\"icon-star-empty\"></i>\n" +
+    "                           <i class=\"icon-star\"></i>\n" +
+    "                        </a>\n" +
+    "                        <a class=\"unfeature-this\">\n" +
+    "                           <i class=\"icon-star-empty\"></i>\n" +
+    "                           <i class=\"icon-star\"></i>\n" +
+    "                        </a>\n" +
+    "                     </span>\n" +
+    "                     -->\n" +
     "                     <span class=\"img-and-value\">\n" +
     "                        <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >\n" +
     "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
@@ -5118,7 +5145,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "         <ul class=\"products-list\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
     "                ng-class=\"{first: $first}\"\n" +
-    "                ng-repeat=\"product in filteredProducts = (products | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']) | filter: productFilter\"\n" +
+    "                ng-repeat=\"product in profileService.productsByGenre(genre_name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
     "                id=\"{{ product.tiid }}\"\n" +
     "                on-repeat-finished>\n" +
     "\n" +
@@ -5128,7 +5155,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  <span class=\"delete-product-controls\"> <!--needed to style tooltip -->\n" +
     "                     <a class=\"remove-product\"\n" +
     "                        tooltip=\"Delete this product\"\n" +
-    "                        ng-click=\"removeProduct(product)\">\n" +
+    "                        ng-click=\"profileService.removeProduct(product)\">\n" +
     "                        <i class=\"icon-trash icon\"></i>\n" +
     "                     </a>\n" +
     "                  </span>\n" +

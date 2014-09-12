@@ -1,16 +1,23 @@
 angular.module('services.profileService', [
   'resources.users'
 ])
-  .factory("ProfileService", function($q, $timeout, Update, Page, Users){
+  .factory("ProfileService", function($q,
+                                      $timeout,
+                                      Update,
+                                      Page,
+                                      UserMessage,
+                                      TiMixpanel,
+                                      Product,
+                                      Users){
 
     var loading = true
     var data = {}
 
 
-    function get(url_slug){
+    function get(url_slug, getFromServer){
       console.log("calling ProfileService.get()")
 
-      if (data && !loading){
+      if (data && !getFromServer && !loading){
         return $q.when(data)
       }
 
@@ -44,6 +51,32 @@ angular.module('services.profileService', [
           loading = false
         }
       ).$promise
+    }
+
+    function removeProduct(product){
+      console.log("removing product in profileService", product)
+      data.products.splice(data.products.indexOf(product),1)
+
+
+      UserMessage.set(
+        "profile.removeProduct.success",
+        false,
+        {title: product.display_title}
+      )
+
+      // do the deletion in the background, without a progress spinner...
+      Product.delete(
+        {user_id: data.about.url_slug, tiid: product.tiid},
+        function(){
+          console.log("finished deleting", product.display_title)
+          get(data.about.url_slug, true) // go back to the server to get new data
+
+          TiMixpanel.track("delete product", {
+            tiid: product.tiid,
+            title: product.display_title
+          })
+        }
+      )
     }
 
 
@@ -84,7 +117,8 @@ angular.module('services.profileService', [
       get: get,
       productsByGenre: productsByGenre,
       genreLookup: genreLookup,
-      productByTiid: productByTiid
+      productByTiid: productByTiid,
+      removeProduct: removeProduct
     }
 
 
