@@ -66,6 +66,8 @@ angular.module("genrePage", [
     Timer.start("genreViewRender.load")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
+    $scope.genre_name = $routeParams.genre_name
+
     var rendering = true
 
     $scope.isRendering = function(){
@@ -122,28 +124,7 @@ angular.module("genrePage", [
     }
 
 
-    $scope.removeProduct = function(product){
-//      alert("Sorry! Product deletion is temporarily disabled. It'll be back soon.")
-      console.log("removing product: ", product)
-      $scope.products.splice($scope.products.indexOf(product),1)
-      UserMessage.set(
-        "profile.removeProduct.success",
-        false,
-        {title: product.display_title}
-      )
 
-      // do the deletion in the background, without a progress spinner...
-      Product.delete(
-        {user_id: $routeParams.url_slug, tiid: product._tiid},
-        function(){
-          console.log("finished deleting", product.display_title)
-          TiMixpanel.track("delete product", {
-            tiid: product._tiid,
-            title: product.display_title
-          })
-        }
-      )
-    }
 
 })
 

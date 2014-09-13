@@ -7,7 +7,7 @@
       <div class="header">
          <h2>
             <span class="count">
-               {{ filteredProducts.length }}
+               {{ profileService.productsByGenre(genre_name).length }}
             </span>
             <span class="text">
                {{ genre.plural_name }}
@@ -17,6 +17,18 @@
             <div class="genre-summary-top">
                <ul class="genre-cards-best">
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3)">
+                     <!--
+                     <span class="card-actions">
+                        <a class="feature-this">
+                           <i class="icon-star-empty"></i>
+                           <i class="icon-star"></i>
+                        </a>
+                        <a class="unfeature-this">
+                           <i class="icon-star-empty"></i>
+                           <i class="icon-star"></i>
+                        </a>
+                     </span>
+                     -->
                      <span class="img-and-value">
                         <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >
                         <span class="value">{{ nFormat(card.current_value) }}</span>
@@ -44,7 +56,7 @@
          <ul class="products-list">
             <li class="product genre-{{ product.genre }}"
                 ng-class="{first: $first}"
-                ng-repeat="product in filteredProducts = (products | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']) | filter: productFilter"
+                ng-repeat="product in profileService.productsByGenre(genre_name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']"
                 id="{{ product.tiid }}"
                 on-repeat-finished>
 
@@ -54,7 +66,7 @@
                   <span class="delete-product-controls"> <!--needed to style tooltip -->
                      <a class="remove-product"
                         tooltip="Delete this product"
-                        ng-click="removeProduct(product)">
+                        ng-click="profileService.removeProduct(product)">
                         <i class="icon-trash icon"></i>
                      </a>
                   </span>
