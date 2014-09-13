@@ -34,6 +34,22 @@
             </li>
          </ul>
       </div>
+      <div class="nav-group accounts">
+         <ul>
+            <li ng-repeat="account in profileService.data.account_products | orderBy: 'followers'">
+               <a href="/{{ profileAboutService.data.url_slug }}/accounts/{{ account.display_name.toLowerCase() }}"
+                  ng-class="{active: page.isNamed(genre.url_representation)}">
+                  <img ng-src="/static/img/favicons/{{ account.display_name.toLowerCase() }}.ico">
+                  <span class="text">
+                     {{ account.display_name }}
+                  </span>
+                  <span class="count value">
+                     ({{ account.followers }})
+                  </span>
+               </a>
+            </li>
+         </ul>
+      </div>
    </div>
    
    <div class="footer">

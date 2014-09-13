@@ -538,10 +538,24 @@ div.profile-sidebar {
       }
       div.nav-group {
          border-top: 1px solid #eee;
-//         border-bottom: 1px solid #eee;
+         margin-top: 10px;
          li {
             margin: 0;
             padding: 0;
+         }
+         &.genre {
+
+         }
+         &.accounts {
+            a {
+               img {
+                  height: 16px;
+                  .grayscale(1);
+               }
+               &:hover {
+                  img {.ungrayscale();}
+               }
+            }
          }
       }
    }
@@ -593,6 +607,9 @@ div.profile-sidebar {
                display: block;
                padding: 5px;
                text-align: center;
+               &:hover {
+                  opacity: 1;
+               }
             }
          }
 
@@ -610,10 +627,9 @@ div.profile-sidebar {
          img {
             width: 150px;
             opacity: .7;
-            -webkit-filter: grayscale(100%);
+            .grayscale(.5);
             &:hover {
-               -webkit-filter: grayscale(0%);
-               opacity: 1;
+               .ungrayscale();
             }
          }
       }
