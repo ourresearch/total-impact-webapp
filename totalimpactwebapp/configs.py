@@ -555,7 +555,38 @@ providers = [
     },
 
 
-
+    # *************************************************************************
+    #                             GitHub account
+    # *************************************************************************
+    {
+        "descr": "A social, online repository for open-source software.",
+        "metrics": {
+            "followers": {
+                "description": "The number of people who follow this account",
+                "display_name": "followers",
+                "icon": "https://github.com/fluidicon.png",
+                "provider_name": "GitHub",
+                "provider_url": "http://github.com",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            },
+            "longest_streak_days": {
+                "description": "The longest commit streak (consecutive days with code commits) this year",
+                "display_name": "days in longest commit streak",
+                "icon": "https://github.com/fluidicon.png",
+                "provider_name": "GitHub",
+                "provider_url": "http://github.com",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            }
+        },
+        "name": "github_account",
+        "provides_aliases": True,
+        "provides_metrics": True,
+        "url": "http://github.com"
+    },
 
 
     # *************************************************************************
@@ -789,7 +820,18 @@ providers = [
                 "audience": "public",
                 "engagement_type": "discussed",
                 "milestones": fives_then_orders_of_magnitude()
-            }
+            },
+            "news": {
+                "description": "Number of times the product has been tweeted",
+                "display_name": "tweets",
+                "display_provider": "Twitter",
+                "icon": "https://twitter.com/favicon.ico",
+                "provider_name": "Altmetric.com",
+                "provider_url": "http://twitter.com",
+                "audience": "public",
+                "engagement_type": "discussed",
+                "milestones": fives_then_orders_of_magnitude()
+            }            
         },
         "name": "altmetric_com",
         "provides_aliases": True,
