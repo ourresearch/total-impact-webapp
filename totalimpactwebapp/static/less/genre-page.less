@@ -35,10 +35,20 @@ div.genre-page {
             }
 
             ul.genre-cards-best {
-               li {
+               li.genre-card {
                   float:right;
                   margin: 10px 20px 0 40px;
                   line-height: 1;
+
+                  span.feature-controls {
+                     a.feature-this {
+                        color: #999;
+                        i.icon-star {display:none;}
+                        &:hover {
+                           color: @linkColor;
+                        }
+                     }
+                  }
                   img.icon {
                      height: 20px;
                   }

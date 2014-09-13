@@ -109,6 +109,11 @@ angular.module('services.profileService', [
       return _.findWhere(data.products, {tiid: tiid})
     }
 
+    function getGenreCard(idObj){
+
+    }
+
+
 
     return {
       data: data,

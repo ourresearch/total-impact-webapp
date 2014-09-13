@@ -4304,8 +4304,8 @@ angular.module('services.pinboardService', [
   .factory("PinboardService", function(ProfilePinboard, security){
     var cols = [[], []]
 
-    function pin(type, id){
-      console.log("pin this here thing:", type, id)
+    function pin(col, obj){
+      console.log("pin this here thing:", col, obj)
       var myPin = {
         type: type,
         id: id,
@@ -4453,7 +4453,7 @@ angular.module('services.profileService', [
           Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
-              get(url_slug)
+              get(url_slug, true)
             },
             function(msg){
               // great, everything's all up-to-date.
@@ -4523,6 +4523,11 @@ angular.module('services.profileService', [
     function productByTiid(tiid){
       return _.findWhere(data.products, {tiid: tiid})
     }
+
+    function getGenreCard(idObj){
+
+    }
+
 
 
     return {
@@ -5106,18 +5111,17 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "            <div class=\"genre-summary-top\">\n" +
     "               <ul class=\"genre-cards-best\">\n" +
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3)\">\n" +
-    "                     <!--\n" +
-    "                     <span class=\"card-actions\">\n" +
-    "                        <a class=\"feature-this\">\n" +
+    "                     <span class=\"feature-controls\">\n" +
+    "                        <a ng-click=\"pinboardService.pin('genreCard', {genre: genre.name, provider: card.provider, interaction: card.interaction})\"\n" +
+    "                           ng-if=\"!pinboardService.idIsPinned({genre: genre.name, provider: card.provider, interaction: card.interaction})\"\n" +
+    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                           class=\"feature-this\">\n" +
     "                           <i class=\"icon-star-empty\"></i>\n" +
-    "                           <i class=\"icon-star\"></i>\n" +
     "                        </a>\n" +
     "                        <a class=\"unfeature-this\">\n" +
-    "                           <i class=\"icon-star-empty\"></i>\n" +
     "                           <i class=\"icon-star\"></i>\n" +
     "                        </a>\n" +
     "                     </span>\n" +
-    "                     -->\n" +
     "                     <span class=\"img-and-value\">\n" +
     "                        <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >\n" +
     "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
@@ -6732,7 +6736,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  <li ng-repeat=\"linkedAccount in filteredLinkedAccounts = (profile.about.linked_accounts | filter: {profile_url: '!!'})\">\n" +
     "                     <a href=\"{{ linkedAccount.profile_url }}\" target=\"_blank\">\n" +
     "                        <img ng-src=\"/static/img/favicons/{{ linkedAccount.service }}.ico\">\n" +
+    "                        <!--\n" +
     "                        <span class=\"service\">{{ linkedAccount.display_service }}</span>\n" +
+    "                        -->\n" +
     "                     </a>\n" +
     "                  </li>\n" +
     "               </ul>\n" +

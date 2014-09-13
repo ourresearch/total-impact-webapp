@@ -4,8 +4,8 @@ angular.module('services.pinboardService', [
   .factory("PinboardService", function(ProfilePinboard, security){
     var cols = [[], []]
 
-    function pin(type, id){
-      console.log("pin this here thing:", type, id)
+    function pin(col, obj){
+      console.log("pin this here thing:", col, obj)
       var myPin = {
         type: type,
         id: id,

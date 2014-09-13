@@ -37,7 +37,9 @@
                   <li ng-repeat="linkedAccount in filteredLinkedAccounts = (profile.about.linked_accounts | filter: {profile_url: '!!'})">
                      <a href="{{ linkedAccount.profile_url }}" target="_blank">
                         <img ng-src="/static/img/favicons/{{ linkedAccount.service }}.ico">
+                        <!--
                         <span class="service">{{ linkedAccount.display_service }}</span>
+                        -->
                      </a>
                   </li>
                </ul>
