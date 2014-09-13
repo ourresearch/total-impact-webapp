@@ -488,6 +488,55 @@ div.no-page {
    margin: 0 auto;
 }
 
+#header {
+   ul.account-nav {
+
+      bottom: 0px;
+      right: 0;
+      width: 100%;
+      position:absolute;
+      margin: 0;
+      padding: 10px;
+      border-top: 1px solid #ddd;
+      img.gravatar {
+         height: 32px;
+         .border-radius(16px, 16px, 16px, 16px);
+      }
+      li {
+         display:inline-block;
+         a {
+            color: #777;
+            padding: 5px 7px;
+            i {
+               font-size: 24px;
+               vertical-align: -5px;
+            }
+            &:hover {
+               color: @linkColor;
+            }
+         }
+      }
+
+      top: 0;
+      right: 0;
+      width: 50px;
+      text-align: right;
+      position: fixed;
+      padding: 10px 10px 0 0;
+      li {
+         a{
+            opacity: .7;
+            display: block;
+            padding: 5px;
+            text-align: center;
+            &:hover {
+               opacity: 1;
+            }
+         }
+      }
+   }
+}
+
 
 div.profile-sidebar {
    h1 {
@@ -561,61 +610,7 @@ div.profile-sidebar {
    }
 
    div.footer {
-      ul.account-nav {
-//         .border-radius(0, 0, 0, 22px);
-//         border-left: 1px solid #ddd;
-//         background: #eee;
 
-         bottom: 0px;
-         right: 0;
-         width: 100%;
-         position:absolute;
-         margin: 0;
-         padding: 10px;
-         border-top: 1px solid #ddd;
-         img.gravatar {
-            height: 32px;
-            .border-radius(16px, 16px, 16px, 16px);
-         }
-         li {
-            display:inline-block;
-            a {
-               color: #777;
-               padding: 5px 7px;
-               i {
-                  font-size: 24px;
-                  vertical-align: -5px;
-               }
-               &:hover {
-                  color: @linkColor;
-               }
-            }
-         }
-
-
-
-
-         top: 0;
-         right: 0;
-         width: 50px;
-         text-align: right;
-         position: fixed;
-         padding: 10px 10px 0 0;
-         li {
-            a{
-               opacity: .7;
-               display: block;
-               padding: 5px;
-               text-align: center;
-               &:hover {
-                  opacity: 1;
-               }
-            }
-         }
-
-
-
-      }
       a.logo {
          position: absolute;
          bottom: 20px;

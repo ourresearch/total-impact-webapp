@@ -6363,6 +6363,61 @@ div.no-page p span.slug {
   width: 1100px;
   margin: 0 auto;
 }
+#header ul.account-nav {
+  bottom: 0px;
+  width: 100%;
+  position: absolute;
+  margin: 0;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  top: 0;
+  right: 0;
+  width: 50px;
+  text-align: right;
+  position: fixed;
+  padding: 10px 10px 0 0;
+}
+#header ul.account-nav img.gravatar {
+  height: 32px;
+  -webkit-border-top-right-radius: 16px;
+  -webkit-border-bottom-right-radius: 16px;
+  -webkit-border-bottom-left-radius: 16px;
+  -webkit-border-top-left-radius: 16px;
+  -moz-border-radius-topright: 16px;
+  -moz-border-radius-bottomright: 16px;
+  -moz-border-radius-bottomleft: 16px;
+  -moz-border-radius-topleft: 16px;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  border-bottom-left-radius: 16px;
+  border-top-left-radius: 16px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+#header ul.account-nav li {
+  display: inline-block;
+}
+#header ul.account-nav li a {
+  color: #777;
+  padding: 5px 7px;
+}
+#header ul.account-nav li a i {
+  font-size: 24px;
+  vertical-align: -5px;
+}
+#header ul.account-nav li a:hover {
+  color: #ff4000;
+}
+#header ul.account-nav li a {
+  opacity: .7;
+  display: block;
+  padding: 5px;
+  text-align: center;
+}
+#header ul.account-nav li a:hover {
+  opacity: 1;
+}
 div.profile-sidebar h1 a {
   color: #333;
 }
@@ -6433,61 +6488,6 @@ div.profile-sidebar div.nav div.nav-group.accounts a:hover img {
   opacity: 1;
   filter: none;
   -webkit-filter: none;
-}
-div.profile-sidebar div.footer ul.account-nav {
-  bottom: 0px;
-  width: 100%;
-  position: absolute;
-  margin: 0;
-  padding: 10px;
-  border-top: 1px solid #ddd;
-  top: 0;
-  right: 0;
-  width: 50px;
-  text-align: right;
-  position: fixed;
-  padding: 10px 10px 0 0;
-}
-div.profile-sidebar div.footer ul.account-nav img.gravatar {
-  height: 32px;
-  -webkit-border-top-right-radius: 16px;
-  -webkit-border-bottom-right-radius: 16px;
-  -webkit-border-bottom-left-radius: 16px;
-  -webkit-border-top-left-radius: 16px;
-  -moz-border-radius-topright: 16px;
-  -moz-border-radius-bottomright: 16px;
-  -moz-border-radius-bottomleft: 16px;
-  -moz-border-radius-topleft: 16px;
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
-  border-bottom-left-radius: 16px;
-  border-top-left-radius: 16px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-}
-div.profile-sidebar div.footer ul.account-nav li {
-  display: inline-block;
-}
-div.profile-sidebar div.footer ul.account-nav li a {
-  color: #777;
-  padding: 5px 7px;
-}
-div.profile-sidebar div.footer ul.account-nav li a i {
-  font-size: 24px;
-  vertical-align: -5px;
-}
-div.profile-sidebar div.footer ul.account-nav li a:hover {
-  color: #ff4000;
-}
-div.profile-sidebar div.footer ul.account-nav li a {
-  opacity: .7;
-  display: block;
-  padding: 5px;
-  text-align: center;
-}
-div.profile-sidebar div.footer ul.account-nav li a:hover {
-  opacity: 1;
 }
 div.profile-sidebar div.footer a.logo {
   position: absolute;

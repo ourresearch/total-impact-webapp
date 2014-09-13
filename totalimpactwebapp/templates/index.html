@@ -71,53 +71,21 @@
 {% raw %}
 <body class="{{ page.getBodyClasses() }}" jq-popover jq-tooltip>
 
+   <div id="header">
+      <login-toolbar></login-toolbar>
+   </div>
+
    <div id="wrapper">
-      <div ng-include="'user-message.tpl.html'" id="user-message"></div>
-
-      <!--
-      <div id="page-header">
-         <div class="main-header header" ng-show="page.showHeader()">
-            <div class="wrapper">
-               <a class="brand" href="/">
-                  <img src="/static/img/impactstory-logo-sideways.png" alt="Impactstory" />
-               </a>
-               <div class="breadcrumbs">
-                  <span class="breadcrumb-level level-0" ng-if="breadcrumbs.hasLevel(0)">
-                     <span class="sep">
-                        <i class="icon-chevron-right"></i>
-                     </span>
-                     <a href="{{ breadcrumbs.get(0, 'url') }}">
-                        {{ breadcrumbs.get(0, 'text') }}
-                     </a>
-                  </span>
-                  <span class="breadcrumb-level level-1" ng-if="breadcrumbs.hasLevel(1)">
-                     <span class="sep">
-                        <i class="icon-chevron-right"></i>
-                     </span>
-                     <a href="{{ breadcrumbs.get(1, 'url') }}">
-                        {{ breadcrumbs.get(1, 'text') }}
-                     </a>
-                  </span>
-
-
-               </div>
-               <login-toolbar></login-toolbar>
-            </div>
-         </div>
-      </div>
-      -->
-
          <div id="sidebar">
             <div ng-include="'profile-sidebar/profile-sidebar.tpl.html'"></div>
          </div>
          <div id="not-sidebar">
+            <div ng-include="'user-message.tpl.html'" id="user-message"></div>
             <div id="main-view-container">
                <div ng-view class="main-view"></div>
             </div>
             <div ng-include="'footer.tpl.html'" id="page-footer"></div>
          </div>
-
-
    </div>
 
 

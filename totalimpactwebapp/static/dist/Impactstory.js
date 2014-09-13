@@ -6613,7 +6613,6 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "   </div>\n" +
     "   \n" +
     "   <div class=\"footer\">\n" +
-    "      <login-toolbar></login-toolbar>\n" +
     "      <a href=\"/\" class=\"logo\">\n" +
     "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
     "      </a>\n" +
