@@ -2,6 +2,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp import profile_award
 from totalimpactwebapp import util
 from totalimpactwebapp import configs
+from totalimpactwebapp.account import account_factory
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
 from totalimpactwebapp.genre import make_genres_list
@@ -201,12 +202,13 @@ class Profile(db.Model):
     @cached_property
     def account_products(self):
         #temporary till we figure out a better way to do this
-        products_to_return = []
+        accounts_to_return = []
         for product in self.products_not_removed:
-            if product.is_account_product:
-                products_to_return.append(product)
+            account = account_factory(product)
+            if account:
+                accounts_to_return.append(account)
 
-        return products_to_return
+        return accounts_to_return
 
 
     @cached_property
