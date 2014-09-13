@@ -84,7 +84,7 @@ linked_accounts = {
     "mendeley": u"http://mendeley.com/{id}",
     "researchgate": u"http://researchgate.com/{id}",
     "academia_edu": u"http://academia.edu/{id}",
-    "linkedin": u"http://linkedin.com/{id}"
+    "linkedin": u"{id}"
 }
 
 

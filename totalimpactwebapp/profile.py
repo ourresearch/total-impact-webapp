@@ -160,8 +160,7 @@ class Profile(db.Model):
                 service = k.replace("_id", "")
                 if v and (service in configs.linked_accounts):
                     profile_url = configs.linked_accounts[service].format(
-                        id=v
-                    )
+                        id=v)
                 else:
                     profile_url = None
 
