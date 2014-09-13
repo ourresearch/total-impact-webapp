@@ -28,9 +28,15 @@ class Account(object):
         return self.__class__.__name__.replace("Account", "")
 
     @cached_property
-    def followers(self):
+    def provider_name(self):
         provider_name = self.display_name.lower()
-        follower_metric = self.product.get_metric_by_name(provider_name, "followers")
+        if provider_name != "twitter":
+            provider_name += "_account"
+        return provider_name
+
+    @cached_property
+    def followers(self):
+        follower_metric = self.product.get_metric_by_name(self.provider_name, "followers")
         if follower_metric:
             return follower_metric.current_value
         else:
