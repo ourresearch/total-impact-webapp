@@ -37,14 +37,14 @@
       <div class="nav-group accounts">
          <ul>
             <li ng-repeat="account in profileService.data.account_products | orderBy: 'followers'">
-               <a href="/{{ profileAboutService.data.url_slug }}/accounts/{{ account.display_name.toLowerCase() }}"
-                  ng-class="{active: page.isNamed(genre.url_representation)}">
+               <a href="/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}"
+                  ng-class="{active: page.isNamed(account.index_name)}">
                   <img ng-src="/static/img/favicons/{{ account.display_name.toLowerCase() }}.ico">
                   <span class="text">
                      {{ account.display_name }}
                   </span>
                   <span class="count value">
-                     ({{ account.followers }})
+                     ({{ account.followers }} followers)
                   </span>
                </a>
             </li>

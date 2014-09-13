@@ -28,6 +28,10 @@ class Account(object):
         return self.__class__.__name__.replace("Account", "")
 
     @cached_property
+    def index_name(self):
+        return self.display_name.lower().replace(" ", "_")
+
+    @cached_property
     def provider_name(self):
         provider_name = self.display_name.lower()
         if provider_name != "twitter":

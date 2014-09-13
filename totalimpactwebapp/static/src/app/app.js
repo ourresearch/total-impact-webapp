@@ -27,6 +27,7 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'genrePage',
+  'accountPage',
   'services.profileService',
   'services.profileAboutService',
   'profileSidebar',

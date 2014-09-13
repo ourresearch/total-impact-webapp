@@ -113,6 +113,18 @@ angular.module('services.profileService', [
 
     }
 
+    function getAccountProduct(indexName){
+      console.log("calling getAccountProducts")
+
+      if (typeof data.account_products == "undefined"){
+        return undefined
+      }
+
+      console.log("account_products", data.account_products)
+
+      return _.findWhere(data.account_products, {index_name: indexName})
+    }
+
 
 
     return {
@@ -123,7 +135,8 @@ angular.module('services.profileService', [
       productsByGenre: productsByGenre,
       genreLookup: genreLookup,
       productByTiid: productByTiid,
-      removeProduct: removeProduct
+      removeProduct: removeProduct,
+      getAccountProduct: getAccountProduct
     }
 
 

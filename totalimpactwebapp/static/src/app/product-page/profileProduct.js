@@ -60,18 +60,9 @@ angular.module("productPage", [
     product,
     profileWithoutProducts,
     ProductWithoutProfile,
-    Breadcrumbs,
     Page) {
 
     console.log("product.host", product.host)
-    Breadcrumbs.set(0, {
-      text: profileWithoutProducts.full_name,
-      url: "/" + profileWithoutProducts.url_slug
-    })
-    Breadcrumbs.set(1, {
-      text: product.display_genre_plural,
-      url: "/" + profileWithoutProducts.url_slug + "/products/" + product.genre
-    })
 
 
 

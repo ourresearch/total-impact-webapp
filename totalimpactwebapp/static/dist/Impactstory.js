@@ -3,6 +3,37 @@
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
  */
+angular.module('accountPage', [
+  'services.page',
+  'resources.users',
+  'services.loading'
+
+])
+
+  .config(['$routeProvider', function($routeProvider) {
+
+    $routeProvider
+      .when("/:url_slug/account/:account_index_name", {
+        templateUrl: 'account-page/account-page.tpl.html',
+        controller: 'AccountPageCtrl',
+        resolve:{
+          userOwnsThisProfile: function(security){
+            return security.testUserAuthenticationLevel("ownsThisProfile")
+          }
+        }
+      })
+
+  }])
+
+  .controller("AccountPageCtrl", function($scope, $routeParams, userOwnsThisProfile, ProfileService, ProfileAboutService, Page){
+    ProfileService.get($routeParams.url_slug)
+    ProfileAboutService.get($routeParams.url_slug)
+    Page.setName($routeParams.account_index_name)
+
+    $scope.templatePath = "account-page/"+ $routeParams.account_index_name  +"-account-page.tpl.html"
+
+
+  })
 angular.module('accounts.account', [
   'directives.forms',
   'directives.onRepeatFinished',
@@ -461,6 +492,7 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'genrePage',
+  'accountPage',
   'services.profileService',
   'services.profileAboutService',
   'profileSidebar',
@@ -1106,18 +1138,9 @@ angular.module("productPage", [
     product,
     profileWithoutProducts,
     ProductWithoutProfile,
-    Breadcrumbs,
     Page) {
 
     console.log("product.host", product.host)
-    Breadcrumbs.set(0, {
-      text: profileWithoutProducts.full_name,
-      url: "/" + profileWithoutProducts.url_slug
-    })
-    Breadcrumbs.set(1, {
-      text: product.display_genre_plural,
-      url: "/" + profileWithoutProducts.url_slug + "/products/" + product.genre
-    })
 
 
 
@@ -4528,6 +4551,18 @@ angular.module('services.profileService', [
 
     }
 
+    function getAccountProduct(indexName){
+      console.log("calling getAccountProducts")
+
+      if (typeof data.account_products == "undefined"){
+        return undefined
+      }
+
+      console.log("account_products", data.account_products)
+
+      return _.findWhere(data.account_products, {index_name: indexName})
+    }
+
 
 
     return {
@@ -4538,7 +4573,8 @@ angular.module('services.profileService', [
       productsByGenre: productsByGenre,
       genreLookup: genreLookup,
       productByTiid: productByTiid,
-      removeProduct: removeProduct
+      removeProduct: removeProduct,
+      getAccountProduct: getAccountProduct
     }
 
 
@@ -4885,7 +4921,34 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['accounts/account.tpl.html', 'footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-sidebar/profile-sidebar.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-sidebar/profile-sidebar.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+
+angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("account-page/account-page.tpl.html",
+    "<h1>account page!</h1>\n" +
+    "\n" +
+    "<div ng-include=\"templatePath\"></div>");
+}]);
+
+angular.module("account-page/github-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("account-page/github-account-page.tpl.html",
+    "<h2>github!</h2>\n" +
+    "");
+}]);
+
+angular.module("account-page/slideshare-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("account-page/slideshare-account-page.tpl.html",
+    "<h2>slideshare!</h2>");
+}]);
+
+angular.module("account-page/twitter-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("account-page/twitter-account-page.tpl.html",
+    "<h2>twitter acccount page!</h2>\n" +
+    "\n" +
+    "followers: {{ profileService.getAccountProduct(\"twitter\").followers }}\n" +
+    "\n" +
+    "");
+}]);
 
 angular.module("accounts/account.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("accounts/account.tpl.html",
@@ -6597,14 +6660,14 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "      <div class=\"nav-group accounts\">\n" +
     "         <ul>\n" +
     "            <li ng-repeat=\"account in profileService.data.account_products | orderBy: 'followers'\">\n" +
-    "               <a href=\"/{{ profileAboutService.data.url_slug }}/accounts/{{ account.display_name.toLowerCase() }}\"\n" +
-    "                  ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
+    "               <a href=\"/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}\"\n" +
+    "                  ng-class=\"{active: page.isNamed(account.index_name)}\">\n" +
     "                  <img ng-src=\"/static/img/favicons/{{ account.display_name.toLowerCase() }}.ico\">\n" +
     "                  <span class=\"text\">\n" +
     "                     {{ account.display_name }}\n" +
     "                  </span>\n" +
     "                  <span class=\"count value\">\n" +
-    "                     ({{ account.followers }})\n" +
+    "                     ({{ account.followers }} followers)\n" +
     "                  </span>\n" +
     "               </a>\n" +
     "            </li>\n" +
