@@ -493,6 +493,58 @@ def refresh_twitter(min_tiid=None):
             pass
 
 
+def run_through_twitter(url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.twitter_id != None).filter(Profile.url_slug==url_slug)
+    else:
+        q = db.session.query(Profile).filter(Profile.twitter_id != None)
+
+    start_time = datetime.datetime.utcnow()
+    number_considered = 0.0
+    number_markups = 0.0
+    
+    from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError
+    from StringIO import StringIO
+    import boto
+    import pickle
+    import time
+
+    client = AppClient(os.getenv("TWITTER_CONSUMER_KEY"), 
+                    os.getenv("TWITTER_CONSUMER_SECRET"),
+                    os.getenv("TWITTER_ACCESS_TOKEN"))
+
+
+    conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
+    bucket_name = os.getenv("AWS_BUCKET", "impactstory-uploads-local")
+    bucket = conn.get_bucket(bucket_name, validate=False)
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        number_considered += 1
+        twitter_handle = profile.twitter_id
+
+        print "have twitter handle", twitter_handle
+        try:
+            r = client.api.statuses.user_timeline.get(screen_name='jasonpriem', count=200)
+        except TwitterRateLimitError:
+            print "rate limit error, sleeping 60 seconds"
+            time.sleep(60)
+
+        print "saving to aws"
+        path = "twitter"
+        key_name = "twitter_{twitter_handle}_1-200.json".format(
+            twitter_handle=twitter_handle)
+        full_key_name = os.path.join(path, key_name)
+        k = bucket.new_key(full_key_name)
+        # file_contents = r.data.items()
+        file_contents = pickle.dumps(r.data)
+        length = k.set_contents_from_file(StringIO(file_contents))
+        print "saved length", length, "with "
+
+        if int(r.headers['x-rate-limit-remaining']) < 10:
+            print "running out of rate limit, sleeping 60 seconds"
+            time.sleep(60)
+
+
 
 def main(function, args):
     if function=="emailreports":
@@ -510,8 +562,10 @@ def main(function, args):
         collect_embed(args["min_tiid"])
     elif function=="linked-accounts":
         linked_accounts("slideshare", args["url_slug"])
-    elif function=="twitter":
+    elif function=="refresh_twitter":
         refresh_twitter()
+    elif function=="twitter":
+        run_through_twitter(args["url_slug"])
 
 
 
