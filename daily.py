@@ -524,7 +524,12 @@ def run_through_twitter(url_slug=None):
 
         print "have twitter handle", twitter_handle
         try:
-            r = client.api.statuses.user_timeline.get(screen_name='jasonpriem', count=200)
+            r = client.api.statuses.user_timeline.get(screen_name=twitter_handle, 
+                    count=200, 
+                    contributor_details=True, 
+                    include_rts=True,
+                    exclude_replies=False,
+                    trim_user=False)
         except TwitterRateLimitError:
             print "rate limit error, sleeping 60 seconds"
             time.sleep(60)
