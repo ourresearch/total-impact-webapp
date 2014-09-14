@@ -506,7 +506,7 @@ def run_through_twitter(url_slug=None, min_url_slug=None):
     number_considered = 0.0
     number_markups = 0.0
     
-    from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError
+    from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
     from StringIO import StringIO
     import boto
     import pickle
@@ -541,7 +541,9 @@ def run_through_twitter(url_slug=None, min_url_slug=None):
         except TwitterApiError:
             print "TwitterApiError error, skipping"
             continue
-
+        except TwitterClientError:
+            print "TwitterClientError error, skipping"
+            continue
 
         print "saving to aws"
         path = "twitter"
