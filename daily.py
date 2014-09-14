@@ -493,11 +493,14 @@ def refresh_twitter(min_tiid=None):
             pass
 
 
-def run_through_twitter(url_slug=None):
+def run_through_twitter(url_slug=None, min_url_slug=None):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.twitter_id != None).filter(Profile.url_slug==url_slug)
     else:
-        q = db.session.query(Profile).filter(Profile.twitter_id != None)
+        if min_url_slug:
+            q = db.session.query(Profile).filter(Profile.twitter_id != None).filter(Profile.url_slug>=min_url_slug)
+        else:
+            q = db.session.query(Profile).filter(Profile.twitter_id != None)
 
     start_time = datetime.datetime.utcnow()
     number_considered = 0.0
@@ -576,7 +579,7 @@ def main(function, args):
     elif function=="refresh_twitter":
         refresh_twitter()
     elif function=="twitter":
-        run_through_twitter(args["url_slug"])
+        run_through_twitter(args["url_slug"], args["min_url_slug"])
 
 
 
@@ -592,6 +595,7 @@ if __name__ == "__main__":
     parser.add_argument('--skip_until_url_slug', default=None, help="when looping don't process till past this url_slug")
     parser.add_argument('--max_emails', default=None, type=int, help="max number of emails to send")
     parser.add_argument('--min_tiid', default=None, type=str, help="min_tiid")
+    parser.add_argument('--min_url_slug', default=None, type=str, help="min_url_slug")
 
     args = vars(parser.parse_args())
     print args
