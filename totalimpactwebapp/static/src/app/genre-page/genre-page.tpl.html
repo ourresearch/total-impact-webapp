@@ -17,27 +17,36 @@
             <div class="genre-summary-top">
                <ul class="genre-cards-best">
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3)">
+
                      <span class="feature-controls">
-                        <a ng-click="pinboardService.pin('genreCard', {genre: genre.name, provider: card.provider, interaction: card.interaction})"
-                           ng-if="!pinboardService.idIsPinned({genre: genre.name, provider: card.provider, interaction: card.interaction})"
+
+                        <a ng-click="pinboardService.pin(['genre', genre.name, 'sum', card.provider, card.interaction])"
+                           ng-if="!pinboardService.isPinned(['genre', genre.name, 'sum', card.provider, card.interaction])"
                            tooltip="Feature this metric on your profile front page"
+                           tooltip-placement="bottom"
                            class="feature-this">
                            <i class="icon-star-empty"></i>
                         </a>
-                        <a class="unfeature-this">
+
+                        <a ng-click="pinboardService.unPin(['genre', genre.name, 'sum', card.provider, card.interaction])"
+                           ng-if="pinboardService.isPinned(['genre', genre.name, 'sum', card.provider, card.interaction])"
+                           tooltip="Feature this metric on your profile front page"
+                           tooltip-placement="bottom"
+                           class="unfeature-this">
                            <i class="icon-star"></i>
                         </a>
+
                      </span>
+
                      <span class="img-and-value">
                         <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >
                         <span class="value">{{ nFormat(card.current_value) }}</span>
                      </span>
+
                      <span class="key">
-                        <!--
-                        <span class="provider">{{ card.provider }}</span>
-                        -->
                         <span class="interaction">{{ card.interaction }}</span>
                      </span>
+
                   </li>
                </ul>
                <div class="clearfix"></div>
@@ -75,7 +84,6 @@
                         ng-if="!pinboardService.isPinned(['product', product.tiid])"
                         tooltip="Feature this product on your profile front page">
                         <i class="icon-star-empty"></i>
-                        <i class="icon-star"></i>
                      </a>
                      <a class="unfeature-product"
                         ng-click="pinboardService.unPin(['product', product.tiid])"

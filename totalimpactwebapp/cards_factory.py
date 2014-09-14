@@ -45,13 +45,13 @@ def make_profile_new_metrics_cards(products, url_slug):
 def make_genre_cards(products):
     cards = []
     cards += make_product_list_cards(products, GenreAccumulationCard)
-    cards += make_product_list_cards(products, GenreProductsWithMoreThanCard)
+    #cards += make_product_list_cards(products, GenreProductsWithMoreThanCard)
     cards.sort(key=lambda x: x.sort_by, reverse=True)
     return cards
 
 def make_genre_new_metrics_cards(products):
     cards = []
-    cards += make_product_list_cards(products, GenreNewDiffCard)
+    #cards += make_product_list_cards(products, GenreNewDiffCard)
     return cards
 
 
