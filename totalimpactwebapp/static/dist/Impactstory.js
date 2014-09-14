@@ -473,7 +473,6 @@ angular.module('app', [
   'ngCookies',
   'ngRoute',
   'ngSanitize',
-  'ngEmbedApp',
   'ngAnimate',
   'emguo.poller',
   'services.loading',
@@ -497,6 +496,7 @@ angular.module('app', [
   'services.profileAboutService',
   'profileSidebar',
   'ui.sortable',
+  'services.pinboardService',
   'settings',
   'xeditable'
 ]);
@@ -1589,7 +1589,6 @@ angular.module("profile", [
   'profileSingleProducts',
   'profileLinkedAccounts',
   'services.userMessage',
-  'services.pinboardService',
   'services.tour',
   'directives.jQueryTools',
   'update.update'
@@ -1700,7 +1699,6 @@ angular.module("profile", [
 
     $scope.pinboardService = PinboardService
     $scope.sortableOptions = {
-      connectWith: ".pinboard-col"
     }
 
 
@@ -4325,16 +4323,26 @@ angular.module('services.pinboardService', [
   'resources.users'
 ])
   .factory("PinboardService", function(ProfilePinboard, security){
-    var cols = [[], []]
 
-    function pin(col, obj){
-      console.log("pin this here thing:", col, obj)
-      var myPin = {
-        type: type,
-        id: id,
-        timestamp: moment.utc().toISOString()
+
+    return {}
+
+    var cols = {
+      one: [],
+      two: []
+    }
+
+    function selectCol(id){
+      if (id[0] == "product") {
+        return cols.one
       }
-      cols[0].push(myPin)
+      else {
+        return cols.two
+      }
+    }
+
+    function pin(id){
+      selectCol(id).push(id)
 
       // every time we change the pins arr, we save.
 
@@ -4351,43 +4359,17 @@ angular.module('services.pinboardService', [
 //      )
     }
 
-    function removeIdFromList(id, list){
-      console.log("unpin this ID: ", id)
-      var indexToRemove = -1
-      for (var i=0; i<list.length; i++){
-        if (_.isEqual(list[i].id, id)) {
-          indexToRemove = i
-        }
-      }
-      if (indexToRemove > -1){
-        list.splice(indexToRemove, 1)
-        return true
-      }
-      else {
-        return false
-      }
+    function unPin(id){
+      var col = selectCol(id)
+      col = _.without(col, id)
+
+      // needs to update db here
+
     }
 
-    function idIsInList(pinId, list){
-      return !!_.find(list, function(myPin){
-        return _.isEqual(myPin.id, pinId)
-      })
-    }
+    function isPinned(id){
+      _.contains(selectCol(id), id)
 
-    function unPin(pinId){
-      _.each(cols, function(colList){
-        removeIdFromList(pinId, colList)
-      })
-    }
-
-    function idIsPinned(pinId){
-      var isInCols = false
-      _.each(cols, function(colList){
-        if (idIsInList(pinId, colList)){
-          isInCols = true
-        }
-      })
-      return isInCols
     }
 
 
@@ -4395,7 +4377,7 @@ angular.module('services.pinboardService', [
       cols: cols,
       pin: pin,
       unPin: unPin,
-      idIsPinned: idIsPinned
+      isPinned: isPinned
     }
 
 
@@ -6857,37 +6839,23 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      </div>\n" +
     "</div>\n" +
     "\n" +
+    "<pre>{{ pinboardService.cols }}</pre>\n" +
+    "\n" +
     "<div id=\"pinboard\">\n" +
-    "   <ul class=\"pinboard-col col-1 empty-{{ !pinboardService.cols[0].length }}\"\n" +
+    "   <ul class=\"pinboard-col col-1\"\n" +
     "       ui-sortable=\"sortableOptions\"\n" +
-    "       ng-model=\"pinboardService.cols[0]\">\n" +
-    "      <li class=\"pin\" ng-repeat=\"pin in pinboardService.cols[0]\">\n" +
+    "       ng-model=\"pinboardService.cols.one\">\n" +
+    "      <li class=\"pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
     "         <div class=\"pin-header\">\n" +
-    "            <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pin.id)\">\n" +
+    "            <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
     "               <i class=\"icon-remove\"></i>\n" +
     "            </a>\n" +
     "         </div>\n" +
-    "         <div class=\"pin-body product-pin\" ng-if=\"pin.type=='product'\">\n" +
-    "            <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pin.id.tiid).markup)\"></div>\n" +
+    "         <div class=\"pin-body product-pin\">\n" +
+    "            <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
     "         </div>\n" +
     "      </li>\n" +
     "   </ul>\n" +
-    "\n" +
-    "   <ul class=\"pinboard-col col-2 empty-{{ !pinboardService.cols[1].length }}\"\n" +
-    "       ui-sortable=\"sortableOptions\"\n" +
-    "       ng-model=\"pinboardService.cols[1]\">\n" +
-    "      <li class=\"pin\" ng-repeat=\"pin in pinboardService.cols[1]\">\n" +
-    "         <div class=\"pin-header\">\n" +
-    "            <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pin.id)\">\n" +
-    "               <i class=\"icon-remove\"></i>\n" +
-    "            </a>\n" +
-    "         </div>\n" +
-    "         <div class=\"pin-body product-pin\" ng-if=\"pin.type=='product'\">\n" +
-    "            <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pin.id.tiid).markup)\"></div>\n" +
-    "         </div>\n" +
-    "      </li>\n" +
-    "   </ul>\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "\n" +

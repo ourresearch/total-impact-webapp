@@ -8,7 +8,6 @@ angular.module('app', [
   'ngCookies',
   'ngRoute',
   'ngSanitize',
-  'ngEmbedApp',
   'ngAnimate',
   'emguo.poller',
   'services.loading',
@@ -32,6 +31,7 @@ angular.module('app', [
   'services.profileAboutService',
   'profileSidebar',
   'ui.sortable',
+  'services.pinboardService',
   'settings',
   'xeditable'
 ]);

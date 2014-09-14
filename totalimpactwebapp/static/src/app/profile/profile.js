@@ -9,7 +9,6 @@ angular.module("profile", [
   'profileSingleProducts',
   'profileLinkedAccounts',
   'services.userMessage',
-  'services.pinboardService',
   'services.tour',
   'directives.jQueryTools',
   'update.update'
@@ -120,7 +119,6 @@ angular.module("profile", [
 
     $scope.pinboardService = PinboardService
     $scope.sortableOptions = {
-      connectWith: ".pinboard-col"
     }
 
 

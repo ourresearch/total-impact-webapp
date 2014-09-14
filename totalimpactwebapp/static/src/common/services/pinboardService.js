@@ -2,16 +2,26 @@ angular.module('services.pinboardService', [
   'resources.users'
 ])
   .factory("PinboardService", function(ProfilePinboard, security){
-    var cols = [[], []]
 
-    function pin(col, obj){
-      console.log("pin this here thing:", col, obj)
-      var myPin = {
-        type: type,
-        id: id,
-        timestamp: moment.utc().toISOString()
+
+    return {}
+
+    var cols = {
+      one: [],
+      two: []
+    }
+
+    function selectCol(id){
+      if (id[0] == "product") {
+        return cols.one
       }
-      cols[0].push(myPin)
+      else {
+        return cols.two
+      }
+    }
+
+    function pin(id){
+      selectCol(id).push(id)
 
       // every time we change the pins arr, we save.
 
@@ -28,43 +38,17 @@ angular.module('services.pinboardService', [
 //      )
     }
 
-    function removeIdFromList(id, list){
-      console.log("unpin this ID: ", id)
-      var indexToRemove = -1
-      for (var i=0; i<list.length; i++){
-        if (_.isEqual(list[i].id, id)) {
-          indexToRemove = i
-        }
-      }
-      if (indexToRemove > -1){
-        list.splice(indexToRemove, 1)
-        return true
-      }
-      else {
-        return false
-      }
+    function unPin(id){
+      var col = selectCol(id)
+      col = _.without(col, id)
+
+      // needs to update db here
+
     }
 
-    function idIsInList(pinId, list){
-      return !!_.find(list, function(myPin){
-        return _.isEqual(myPin.id, pinId)
-      })
-    }
+    function isPinned(id){
+      _.contains(selectCol(id), id)
 
-    function unPin(pinId){
-      _.each(cols, function(colList){
-        removeIdFromList(pinId, colList)
-      })
-    }
-
-    function idIsPinned(pinId){
-      var isInCols = false
-      _.each(cols, function(colList){
-        if (idIsInList(pinId, colList)){
-          isInCols = true
-        }
-      })
-      return isInCols
     }
 
 
@@ -72,7 +56,7 @@ angular.module('services.pinboardService', [
       cols: cols,
       pin: pin,
       unPin: unPin,
-      idIsPinned: idIsPinned
+      isPinned: isPinned
     }
 
 

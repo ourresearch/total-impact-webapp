@@ -80,37 +80,23 @@
       </div>
 </div>
 
+<pre>{{ pinboardService.cols }}</pre>
+
 <div id="pinboard">
-   <ul class="pinboard-col col-1 empty-{{ !pinboardService.cols[0].length }}"
+   <ul class="pinboard-col col-1"
        ui-sortable="sortableOptions"
-       ng-model="pinboardService.cols[0]">
-      <li class="pin" ng-repeat="pin in pinboardService.cols[0]">
+       ng-model="pinboardService.cols.one">
+      <li class="pin" ng-repeat="pinId in pinboardService.cols.one">
          <div class="pin-header">
-            <a class="delete-pin" ng-click="pinboardService.unPin(pin.id)">
+            <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
                <i class="icon-remove"></i>
             </a>
          </div>
-         <div class="pin-body product-pin" ng-if="pin.type=='product'">
-            <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pin.id.tiid).markup)"></div>
+         <div class="pin-body product-pin">
+            <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pinId[1]).markup)"></div>
          </div>
       </li>
    </ul>
-
-   <ul class="pinboard-col col-2 empty-{{ !pinboardService.cols[1].length }}"
-       ui-sortable="sortableOptions"
-       ng-model="pinboardService.cols[1]">
-      <li class="pin" ng-repeat="pin in pinboardService.cols[1]">
-         <div class="pin-header">
-            <a class="delete-pin" ng-click="pinboardService.unPin(pin.id)">
-               <i class="icon-remove"></i>
-            </a>
-         </div>
-         <div class="pin-body product-pin" ng-if="pin.type=='product'">
-            <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pin.id.tiid).markup)"></div>
-         </div>
-      </li>
-   </ul>
-
 </div>
 
 
