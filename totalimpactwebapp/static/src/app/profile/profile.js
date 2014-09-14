@@ -118,6 +118,10 @@ angular.module("profile", [
     Page) {
 
     $scope.pinboardService = PinboardService
+    $scope.$watch("pinboardService.cols", function(newVal, oldVal){
+      PinboardService.saveState(true)
+    }, true)
+
     $scope.sortableOptions = {
     }
 

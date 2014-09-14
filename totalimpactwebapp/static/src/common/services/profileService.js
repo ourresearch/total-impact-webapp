@@ -8,6 +8,7 @@ angular.module('services.profileService', [
                                       UserMessage,
                                       TiMixpanel,
                                       Product,
+                                      PinboardService,
                                       Users){
 
     var loading = true
@@ -20,6 +21,8 @@ angular.module('services.profileService', [
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }
+
+      PinboardService.get(url_slug)
 
       loading = true
       return Users.get(
