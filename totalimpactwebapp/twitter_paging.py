@@ -166,11 +166,15 @@ class TwitterPager(object):
                             max_pages=max_pages, **kwargs)
 
             except AttributeError:
-                kwargs['since_id'] = str(response.data[-1].id)
-                logging.debug('Paginating query: %s' % str(kwargs))
-                self.paginated_search(page=page+1,
-                        page_handler=page_handler,
-                        max_pages=max_pages, **kwargs)
+                try:
+                    kwargs['since_id'] = str(response.data[-1].id)
+                    logging.debug('Paginating query: %s' % str(kwargs))
+                    self.paginated_search(page=page+1,
+                            page_handler=page_handler,
+                            max_pages=max_pages, **kwargs)
+                except IndexError:
+                    logging.debug('IndexError, so stop')
+
         else:
             logging.debug('reached max pages, so stop')
 

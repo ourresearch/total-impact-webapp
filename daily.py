@@ -599,6 +599,11 @@ def run_through_twitter_pages(url_slug=None, min_url_slug=None):
             url_slug=profile.url_slug, twitter_handle=twitter_handle))
 
         def save_to_aws(r):
+            if not r.data:
+                print r.data
+                print "no data, not saving to AWS"
+                return 
+
             print "saving to aws"
             path = "twitter"
             key_name = "twitter_{twitter_handle}_{start_id}.json".format(
