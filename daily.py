@@ -562,6 +562,72 @@ def run_through_twitter(url_slug=None, min_url_slug=None):
 
 
 
+def run_through_twitter_pages(url_slug=None, min_url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.twitter_id != None).filter(Profile.url_slug==url_slug)
+    else:
+        if min_url_slug:
+            q = db.session.query(Profile).filter(Profile.twitter_id != None).filter(Profile.url_slug>=min_url_slug)
+        else:
+            q = db.session.query(Profile).filter(Profile.twitter_id != None)
+
+    start_time = datetime.datetime.utcnow()
+    number_considered = 0.0
+    number_markups = 0.0
+    
+    from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError
+    from totalimpactwebapp.twitter_paging import TwitterPager
+    from StringIO import StringIO
+    import boto
+    import pickle
+    import time
+
+    pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
+                    os.getenv("TWITTER_CONSUMER_SECRET"),
+                    os.getenv("TWITTER_ACCESS_TOKEN"), 
+                    default_max_pages=5)
+
+    conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
+    bucket_name = os.getenv("AWS_BUCKET", "impactstory-uploads-local")
+    bucket = conn.get_bucket(bucket_name, validate=False)
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        number_considered += 1
+        twitter_handle = profile.twitter_id
+
+        logger.info(u"{url_slug} has twitter handle {twitter_handle}".format(
+            url_slug=profile.url_slug, twitter_handle=twitter_handle))
+
+        def save_to_aws(r):
+            print "saving to aws"
+            path = "twitter"
+            key_name = "twitter_{twitter_handle}_{start_id}.json".format(
+                twitter_handle=twitter_handle, start_id=r.data[-1].id_str)
+            full_key_name = os.path.join(path, key_name)
+            print "saving to", full_key_name
+            k = bucket.new_key(full_key_name)
+            # file_contents = r.data.items()
+            file_contents = pickle.dumps(r.data)
+            length = k.set_contents_from_file(StringIO(file_contents))
+            print "saved length", length, "with "  
+
+        r = pager.paginated_search(
+            page_handler=save_to_aws,
+            # see birdy AppClient docs and Twitter API docs for params
+            # to pass in here:
+            screen_name=twitter_handle, 
+            count=200, 
+            contributor_details=True, 
+            include_rts=True,
+            exclude_replies=False,
+            trim_user=False
+            )
+        print "done"
+
+
+  
+
+
 def main(function, args):
     if function=="emailreports":
         if "url_slug" in args and args["url_slug"]:
@@ -582,6 +648,8 @@ def main(function, args):
         refresh_twitter()
     elif function=="twitter":
         run_through_twitter(args["url_slug"], args["min_url_slug"])
+    elif function=="run_through_twitter_pages":
+        run_through_twitter_pages(args["url_slug"], args["min_url_slug"])
 
 
 
