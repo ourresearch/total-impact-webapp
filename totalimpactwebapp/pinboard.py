@@ -9,11 +9,16 @@ logger = logging.getLogger('ti.pinboard')
 
 
 def write_to_pinboard(profile_id, contents):
-    board = Pinboard(
-        profile_id=profile_id,
-        contents=contents)
+    board = Pinboard.query.filter_by(profile_id=profile_id).first()
+    if board:
+        board.contents = contents
+    else:
+        board = Pinboard(
+            profile_id=profile_id,
+            contents=contents)
     db.session.merge(board)
     commit(db)
+    return contents
 
 
 class Pinboard(db.Model):
@@ -28,5 +33,5 @@ class Pinboard(db.Model):
 
     def __repr__(self):
         return u'<Pinboard {profile_id} {timestamp} {contents}>'.format(
-            profile_id=self.profile_id, timestamp=self.timestamp, timestamp=self.contents)
+            profile_id=self.profile_id, timestamp=self.timestamp, contents=self.contents)
 

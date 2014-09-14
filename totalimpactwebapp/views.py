@@ -41,6 +41,8 @@ from totalimpactwebapp.profile import build_profile_dict
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product import add_product_embed_markup
+from totalimpactwebapp.pinboard import Pinboard
+from totalimpactwebapp.pinboard import write_to_pinboard
 
 from totalimpactwebapp.interaction import log_interaction_event
 
@@ -449,12 +451,16 @@ def pinboard(profile_id):
     abort_if_user_not_logged_in(profile)
 
     if request.method == "GET":
-        board = Pinboard.query.filter_by(profile_id=profile_id).first()
+        board = Pinboard.query.filter_by(profile_id=profile.id).first()
+        try:
+            resp = board.contents
+        except AttributeError:
+            abort_json(404, "user has no pinboard set yet.")
 
     elif request.method == "POST":
-        write_to_pinboard(profile_id, request.json["contents"])
+        resp = write_to_pinboard(profile.id, request.json["contents"])
 
-    return json_resp_from_thing({"board": board.contents})
+    return json_resp_from_thing(resp)
 
 
 
@@ -489,20 +495,6 @@ def refresh_status(profile_id):
 
 
 
-
-
-
-
-
-###############################################################################
-#
-#   /profile/:id/pinboard
-#
-###############################################################################
-
-@app.route("/profile/<id>/pinboard", methods=["POST", "GET"])
-def profile_pinboard(id):
-    pass  # save and get stuff.
 
 
 
