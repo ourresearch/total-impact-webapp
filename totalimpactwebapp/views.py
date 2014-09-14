@@ -443,6 +443,19 @@ def user_subscription(profile_id):
     return json_resp_from_thing({"result": ret})
 
 
+@app.route("/profile/<profile_id>/pinboard", methods=["GET", "POST"])
+def pinboard(profile_id):
+    profile = get_user_for_response(profile_id, request)
+    abort_if_user_not_logged_in(profile)
+
+    if request.method == "GET":
+        board = Pinboard.query.filter_by(profile_id=profile_id).first()
+
+    elif request.method == "POST":
+        write_to_pinboard(profile_id, request.json["contents"])
+
+    return json_resp_from_thing({"board": board.contents})
+
 
 
 @app.route("/profile/<profile_id>", methods=['PATCH'])
