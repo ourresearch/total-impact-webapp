@@ -327,53 +327,33 @@ div.view-controls {
 }
 
 #pinboard {
-   ul.pinboard-col {
-      width: 415px;
-      float:left;
-      min-height: 300px;
-      .border-radius(5px, 5px, 5px, 5px);
-      padding: 0;
-      &.empty-true {
-         border: 1px dashed #ddd;
+   div.pinboard-col {
+      float: left;
+      &.col-one {
+         width: 64%;
+         margin-right: 2%;
       }
-      &.col-1 {
-         margin-right: 30px;
-      }
-      &.col-2{
-      }
-   }
-   li.pin {
-      width: 100%;
-      border: 1px solid #eee;
-      background: #fff;
-      .clearfix();
-      margin: 0 0 20px 0;
-      position: relative;
-      cursor: move;
-      div.pin-header {
-         text-align: right;
-         font-size: 12px;
-         position: absolute;
-         top:0;
-         right: 0;
-         opacity: .8;
-         .border-radius(0, 0, 5px, 0);
-         background: #eee;
-         &:hover {
-            opacity: 1;
-         }
+      &.col-two {
+         width: 33%;
 
-         a {
-            padding: 1px 5px;
-            color: #777;
-            &:hover {
-               color: @linkColor;
-            }
+      }
+
+      ul.pinboard-col {
+         min-height: 300px;
+         .border-radius(5px, 5px, 5px, 5px);
+         padding: 0;
+         &.empty-true {
+            border: 1px dashed #ddd;
          }
       }
-      div.pin-body {
-         padding: 10px;
+      li.pin {
+         width: 100%;
+         border: 1px solid #eee;
+         background: #fff;
          .clearfix();
+         margin: 0 0 20px 0;
+         position: relative;
+         cursor: move;
          &.product-pin {
             .biblio {
                h5.title {
@@ -391,6 +371,42 @@ div.view-controls {
                   margin: 7px 2px 0;
                }
             }
+         }
+
+         &.metric-pin {
+            div.genre-card-pin-body {
+               span.img-and-value {
+                  img {
+                     height: 16px;
+                  }
+               }
+            }
+         }
+
+         div.pin-header {
+            text-align: right;
+            font-size: 12px;
+            position: absolute;
+            top:0;
+            right: 0;
+            opacity: .8;
+            .border-radius(0, 0, 5px, 0);
+            background: #eee;
+            &:hover {
+               opacity: 1;
+            }
+
+            a {
+               padding: 1px 5px;
+               color: #777;
+               &:hover {
+                  color: @linkColor;
+               }
+            }
+         }
+         div.pin-body {
+            padding: 10px;
+            .clearfix();
          }
       }
    }

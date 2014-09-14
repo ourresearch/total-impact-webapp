@@ -125,6 +125,22 @@ angular.module('services.profileService', [
       return _.findWhere(data.account_products, {index_name: indexName})
     }
 
+    function getFromPinId(pinId){
+
+      // 'genre', :genre_name, 'sum', :provider, :interaction
+      if (pinId[0] == "genre" && pinId[2] == "sum" && data.genres) {
+        var genre = _.findWhere(data.genres, {name: pinId[1]})
+        var card = _.findWhere(genre.cards, {provider: pinId[3], interaction: pinId[4]})
+        var extraData = {
+          num_products: genre.num_products
+        }
+        return _.extend(card, extraData)
+      }
+      else {
+        return null
+      }
+    }
+
 
 
     return {
@@ -136,7 +152,8 @@ angular.module('services.profileService', [
       genreLookup: genreLookup,
       productByTiid: productByTiid,
       removeProduct: removeProduct,
-      getAccountProduct: getAccountProduct
+      getAccountProduct: getAccountProduct,
+      getFromPinId: getFromPinId
     }
 
 

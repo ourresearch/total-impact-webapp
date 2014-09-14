@@ -1,60 +1,62 @@
 <div class="profile-header" ng-show="userExists">
-      <div class="loading" ng-show="profileLoading()">
-         <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
-      </div>
+   <div class="loading" ng-show="profileLoading()">
+      <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
+   </div>
 
-      <div class="profile-header-loaded" ng-show="!profileLoading()">
+   <div class="profile-header-loaded" ng-show="!profileLoading()">
 
-         <div class="my-vitals">
-            <div class="my-picture" ng-show="profile.about.id">
-               <a href="http://www.gravatar.com" >
-                  <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" /> 
-               </a>
-            </div>
-            <!--
+      <div class="my-vitals">
+         <div class="my-picture" ng-show="profile.about.id">
+            <a href="http://www.gravatar.com" >
+               <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+            </a>
+         </div>
+         <!--
             <h2 class='page-title editable-name' id="profile-owner-name">
                <span class="given-name editable" data-name="given_name">{{ profile.about.given_name }}</span>
                <span class="surname editable" data-name="surname">{{ profile.about.surname }}</span>
             </h2>
             -->
-            <div class="my-metrics">
-               <!-- advisor badge -->
-               <div class="advisor" ng-show="profile.about.is_advisor">
-                  <img src="/static/img/advisor-badge.png">
-               </div>
-               <ul class="profile-award-list">
-                  <li class="profile-award-container level-{{ profileAward.level }}"
-                      ng-include="'profile-award/profile-award.tpl.html'"
-                      ng-repeat="profileAward in profile.awards">
-                  </li>
-               </ul>
+         <div class="my-metrics">
+            <!-- advisor badge -->
+            <div class="advisor" ng-show="profile.about.is_advisor">
+               <img src="/static/img/advisor-badge.png">
             </div>
-            <div class="bio">
-               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </div>
-            <div class="connected-accounts">
-               <ul>
-                  <li ng-repeat="linkedAccount in filteredLinkedAccounts = (profile.about.linked_accounts | filter: {profile_url: '!!'})">
-                     <a href="{{ linkedAccount.profile_url }}" target="_blank">
-                        <img ng-src="/static/img/favicons/{{ linkedAccount.service }}.ico">
-                        <!--
+            <ul class="profile-award-list">
+               <li class="profile-award-container level-{{ profileAward.level }}"
+                   ng-include="'profile-award/profile-award.tpl.html'"
+                   ng-repeat="profileAward in profile.awards">
+               </li>
+            </ul>
+         </div>
+         <div class="bio">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+         </div>
+         <div class="connected-accounts">
+            <ul>
+               <li ng-repeat="linkedAccount in filteredLinkedAccounts = (profile.about.linked_accounts | filter: {profile_url: '!!'})">
+                  <a href="{{ linkedAccount.profile_url }}" target="_blank">
+                     <img ng-src="/static/img/favicons/{{ linkedAccount.service }}.ico">
+                     <!--
                         <span class="service">{{ linkedAccount.display_service }}</span>
                         -->
-                     </a>
-                  </li>
-               </ul>
-
-               <div class="add-connected-account" ng-show="security.isLoggedIn(url_slug)">
-                  <a href="/{{ profile.about.url_slug }}/accounts" class="btn btn-xs btn-info">
-                     <i class="icon-link left"></i>
-                     <span ng-show="filteredLinkedAccounts.length==0" class="first">Import from accounts</span>
-                     <span ng-show="filteredLinkedAccounts.length>0" class="more">Connect more accounts</span>
                   </a>
-               </div>
-            </div>
-         </div>
+               </li>
+            </ul>
 
-         <!--
+            <!--
+            <div class="add-connected-account" ng-show="security.isLoggedIn(url_slug)">
+               <a href="/{{ profile.about.url_slug }}/accounts" class="btn btn-xs btn-info">
+                  <i class="icon-link left"></i>
+                  <span ng-show="filteredLinkedAccounts.length==0" class="first">Import from accounts</span>
+                  <span ng-show="filteredLinkedAccounts.length>0" class="more">Connect more accounts</span>
+               </a>
+            </div>
+            -->
+         </div>
+      </div>
+
+      <!--
          <div class="view-controls">
             <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
                <a href="/{{ profile.about.url_slug }}/products/add">
@@ -77,26 +79,58 @@
          </div>
          -->
 
-      </div>
+   </div>
 </div>
 
-<pre>{{ pinboardService.cols }}</pre>
 
 <div id="pinboard">
-   <ul class="pinboard-col col-1"
-       ui-sortable="sortableOptions"
-       ng-model="pinboardService.cols.one">
-      <li class="pin" ng-repeat="pinId in pinboardService.cols.one">
-         <div class="pin-header">
-            <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
-               <i class="icon-remove"></i>
-            </a>
-         </div>
-         <div class="pin-body product-pin">
-            <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pinId[1]).markup)"></div>
-         </div>
-      </li>
-   </ul>
+   <div class="pinboard-col col-one">
+      <h3>Featured products</h3>
+      <ul class="col-one"
+          ui-sortable="sortableOptions"
+          ng-model="pinboardService.cols.one">
+         <li class="pin product-pin" ng-repeat="pinId in pinboardService.cols.one">
+            <div class="pin-header">
+               <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
+                  <i class="icon-remove"></i>
+               </a>
+            </div>
+            <div class="pin-body product-pin">
+               <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pinId[1]).markup)"></div>
+            </div>
+         </li>
+      </ul>
+   </div>
+
+   <div class="pinboard-col col-two">
+      <h3>Key metrics</h3>
+      <ul class="col-two"
+          ui-sortable="sortableOptions"
+          ng-model="pinboardService.cols.two">
+         <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two">
+            <div class="pin-header">
+               <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
+                  <i class="icon-remove"></i>
+               </a>
+            </div>
+            <div class="pin-body genre-card-pin-body">
+
+               <span class="img-and-value">
+                  <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).provider }}_{{ profileService.getFromPinId(pinId).interaction }}.ico' class='icon' >
+                  <span class="value">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>
+               </span>
+
+               <span class="key">
+                  <span class="interaction">{{ profileService.getFromPinId(pinId).interaction }}</span>
+               </span>
+
+            </div>
+         </li>
+      </ul>
+
+   </div>
+
+
 </div>
 
 

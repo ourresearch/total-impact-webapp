@@ -138,6 +138,18 @@ angular.module('app').controller('AppCtrl', function($scope,
     return $sce.trustAsHtml(str)
   }
 
+  $scope.nFormat = function(num) {
+    // from http://stackoverflow.com/a/14994860/226013
+    if (num >= 1000000) {
+        return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (num >= 1000) {
+        return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    }
+    return num;
+  }
+
+
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
     RouteChangeErrorHandler.handle(event, current, previous, rejection)

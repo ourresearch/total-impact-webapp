@@ -7367,9 +7367,17 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   font-weight: 900;
   font-size: 14px;
 }
-#pinboard ul.pinboard-col {
-  width: 415px;
+#pinboard div.pinboard-col {
   float: left;
+}
+#pinboard div.pinboard-col.col-one {
+  width: 64%;
+  margin-right: 2%;
+}
+#pinboard div.pinboard-col.col-two {
+  width: 33%;
+}
+#pinboard div.pinboard-col ul.pinboard-col {
   min-height: 300px;
   -webkit-border-top-right-radius: 5px;
   -webkit-border-bottom-right-radius: 5px;
@@ -7388,13 +7396,10 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   background-clip: padding-box;
   padding: 0;
 }
-#pinboard ul.pinboard-col.empty-true {
+#pinboard div.pinboard-col ul.pinboard-col.empty-true {
   border: 1px dashed #ddd;
 }
-#pinboard ul.pinboard-col.col-1 {
-  margin-right: 30px;
-}
-#pinboard li.pin {
+#pinboard div.pinboard-col li.pin {
   width: 100%;
   border: 1px solid #eee;
   background: #fff;
@@ -7403,23 +7408,44 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   position: relative;
   cursor: move;
 }
-#pinboard li.pin:before,
-#pinboard li.pin:after {
+#pinboard div.pinboard-col li.pin:before,
+#pinboard div.pinboard-col li.pin:after {
   content: " ";
   display: table;
 }
-#pinboard li.pin:after {
+#pinboard div.pinboard-col li.pin:after {
   clear: both;
 }
-#pinboard li.pin:before,
-#pinboard li.pin:after {
+#pinboard div.pinboard-col li.pin:before,
+#pinboard div.pinboard-col li.pin:after {
   content: " ";
   display: table;
 }
-#pinboard li.pin:after {
+#pinboard div.pinboard-col li.pin:after {
   clear: both;
 }
-#pinboard li.pin div.pin-header {
+#pinboard div.pinboard-col li.pin.product-pin .biblio {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+#pinboard div.pinboard-col li.pin.product-pin .biblio h5.title {
+  font-size: 16px;
+  margin: 0;
+}
+#pinboard div.pinboard-col li.pin.product-pin .biblio h5.title a {
+  color: #555;
+}
+#pinboard div.pinboard-col li.pin.product-pin .biblio h5.title a:hover {
+  color: #333;
+}
+#pinboard div.pinboard-col li.pin.product-pin .awards .ti-badge {
+  font-size: 11px;
+  margin: 7px 2px 0;
+}
+#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.img-and-value img {
+  height: 16px;
+}
+#pinboard div.pinboard-col li.pin div.pin-header {
   text-align: right;
   font-size: 12px;
   position: absolute;
@@ -7443,53 +7469,35 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   background-clip: padding-box;
   background: #eee;
 }
-#pinboard li.pin div.pin-header:hover {
+#pinboard div.pinboard-col li.pin div.pin-header:hover {
   opacity: 1;
 }
-#pinboard li.pin div.pin-header a {
+#pinboard div.pinboard-col li.pin div.pin-header a {
   padding: 1px 5px;
   color: #777;
 }
-#pinboard li.pin div.pin-header a:hover {
+#pinboard div.pinboard-col li.pin div.pin-header a:hover {
   color: #ff4000;
 }
-#pinboard li.pin div.pin-body {
+#pinboard div.pinboard-col li.pin div.pin-body {
   padding: 10px;
   clear: both;
 }
-#pinboard li.pin div.pin-body:before,
-#pinboard li.pin div.pin-body:after {
+#pinboard div.pinboard-col li.pin div.pin-body:before,
+#pinboard div.pinboard-col li.pin div.pin-body:after {
   content: " ";
   display: table;
 }
-#pinboard li.pin div.pin-body:after {
+#pinboard div.pinboard-col li.pin div.pin-body:after {
   clear: both;
 }
-#pinboard li.pin div.pin-body:before,
-#pinboard li.pin div.pin-body:after {
+#pinboard div.pinboard-col li.pin div.pin-body:before,
+#pinboard div.pinboard-col li.pin div.pin-body:after {
   content: " ";
   display: table;
 }
-#pinboard li.pin div.pin-body:after {
+#pinboard div.pinboard-col li.pin div.pin-body:after {
   clear: both;
-}
-#pinboard li.pin div.pin-body.product-pin .biblio {
-  font-size: 12px;
-  margin-bottom: 10px;
-}
-#pinboard li.pin div.pin-body.product-pin .biblio h5.title {
-  font-size: 16px;
-  margin: 0;
-}
-#pinboard li.pin div.pin-body.product-pin .biblio h5.title a {
-  color: #555;
-}
-#pinboard li.pin div.pin-body.product-pin .biblio h5.title a:hover {
-  color: #333;
-}
-#pinboard li.pin div.pin-body.product-pin .awards .ti-badge {
-  font-size: 11px;
-  margin: 7px 2px 0;
 }
 div.profile-subpage .profile-subpage-header {
   background: #555;
@@ -7595,19 +7603,11 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   color: #999999;
   padding: 3px 5px;
 }
-.product div.product-margin span.feature-product-controls a.feature-product i.icon-star {
-  display: none;
-}
-.product div.product-margin span.feature-product-controls a.feature-product i.icon-star-empty {
-  display: inline;
+.product div.product-margin span.feature-product-controls a.feature-product {
   color: #999999;
 }
-.product div.product-margin span.feature-product-controls a.feature-product:hover i.icon-star {
-  display: inline;
-  color: #ff4000;
-}
-.product div.product-margin span.feature-product-controls a.feature-product:hover i.icon-star-empty {
-  display: none;
+.product div.product-margin span.feature-product-controls a.feature-product:hover {
+  color: #000;
 }
 .product div.product-margin span.feature-product-controls a.unfeature-product i.icon-star {
   display: inline;
@@ -9322,21 +9322,23 @@ div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards
   margin: 10px 20px 0 40px;
   line-height: 1;
 }
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls {
+  margin-right: 3px;
+}
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.unfeature-this {
+  color: #ff4000;
+}
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this {
   color: #999;
 }
-div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this i.icon-star {
-  display: none;
-}
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this:hover {
-  color: #ff4000;
+  color: #000;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card img.icon {
   height: 20px;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.img-and-value {
   margin: 0 5px 0 0;
-  float: left;
   font-size: 20px;
   font-weight: bold;
   display: inline-block;

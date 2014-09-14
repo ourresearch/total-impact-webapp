@@ -41,11 +41,14 @@ div.genre-page {
                   line-height: 1;
 
                   span.feature-controls {
+                     margin-right: 3px;
+                     a.unfeature-this {
+                        color: @linkColor;
+                     }
                      a.feature-this {
                         color: #999;
-                        i.icon-star {display:none;}
                         &:hover {
-                           color: @linkColor;
+                           color: #000;
                         }
                      }
                   }
@@ -54,7 +57,6 @@ div.genre-page {
                   }
                   span.img-and-value {
                      margin: 0 5px 0 0;
-                     float:left;
                      font-size: 20px;
                      font-weight: bold;
                      display:inline-block;
