@@ -616,17 +616,24 @@ def run_through_twitter_pages(url_slug=None, min_url_slug=None):
             length = k.set_contents_from_file(StringIO(file_contents))
             print "saved length", length, "with "  
 
-        r = pager.paginated_search(
-            page_handler=save_to_aws,
-            # see birdy AppClient docs and Twitter API docs for params
-            # to pass in here:
-            screen_name=twitter_handle, 
-            count=200, 
-            contributor_details=True, 
-            include_rts=True,
-            exclude_replies=False,
-            trim_user=False
-            )
+        try:
+            r = pager.paginated_search(
+                page_handler=save_to_aws,
+                # see birdy AppClient docs and Twitter API docs for params
+                # to pass in here:
+                screen_name=twitter_handle, 
+                count=200, 
+                contributor_details=True, 
+                include_rts=True,
+                exclude_replies=False,
+                trim_user=False
+                )
+        except TwitterApiError:
+            print "TwitterApiError error, skipping"
+            continue
+        except TwitterClientError:
+            print "TwitterClientError error, skipping"
+            continue        
         print "done"
 
 
