@@ -522,7 +522,9 @@ def run_through_twitter(url_slug=None):
         number_considered += 1
         twitter_handle = profile.twitter_id
 
-        print "have twitter handle", twitter_handle
+        logger.info(u"{url_slug} has twitter handle {twitter_handle}".format(
+            url_slug=profile.url_slug, twitter_handle=twitter_handle))
+
         try:
             r = client.api.statuses.user_timeline.get(screen_name=twitter_handle, 
                     count=200, 
@@ -533,6 +535,10 @@ def run_through_twitter(url_slug=None):
         except TwitterRateLimitError:
             print "rate limit error, sleeping 60 seconds"
             time.sleep(60)
+        except TwitterApiError:
+            print "TwitterApiError error, skipping"
+            continue
+
 
         print "saving to aws"
         path = "twitter"
