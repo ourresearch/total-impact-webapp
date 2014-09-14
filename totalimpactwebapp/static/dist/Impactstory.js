@@ -704,6 +704,7 @@ angular.module("genrePage", [
     Timer,
     security,
     ProfileService,
+    ProfileAboutService,
     PinboardService,
     Page) {
 
@@ -721,7 +722,7 @@ angular.module("genrePage", [
     $scope.isRendering = function(){
       return rendering
     }
-
+    ProfileAboutService.get($routeParams.url_slug)
     ProfileService.get($routeParams.url_slug).then(
       function(resp){
         console.log("genre page loaded products", resp)
@@ -4325,23 +4326,26 @@ angular.module('services.pinboardService', [
   .factory("PinboardService", function(ProfilePinboard, security){
 
 
-    return {}
-
     var cols = {
       one: [],
       two: []
     }
 
     function selectCol(id){
+      return cols[getColName(id)]
+    }
+
+    function getColName(id){
       if (id[0] == "product") {
-        return cols.one
+        return "one"
       }
       else {
-        return cols.two
+        return "two"
       }
     }
 
     function pin(id){
+      console.log("pinning this id: ", id)
       selectCol(id).push(id)
 
       // every time we change the pins arr, we save.
@@ -4360,16 +4364,21 @@ angular.module('services.pinboardService', [
     }
 
     function unPin(id){
-      var col = selectCol(id)
-      col = _.without(col, id)
+      console.log("unpin this!", id)
+      cols[getColName(id)] = _.filter(selectCol(id), function(myPinId){
+        return !_.isEqual(id, myPinId)
+      })
+      return true
+
 
       // needs to update db here
 
     }
 
     function isPinned(id){
-      _.contains(selectCol(id), id)
-
+      return !!_.find(selectCol(id), function(myPinId){
+        return _.isEqual(id, myPinId)
+      })
     }
 
 
@@ -5210,15 +5219,15 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  </span>\n" +
     "                  <span class=\"feature-product-controls\">\n" +
     "                     <a class=\"feature-product\"\n" +
-    "                        ng-click=\"pinboardService.pin('product', {tiid: product.tiid})\"\n" +
-    "                        ng-if=\"!pinboardService.idIsPinned({tiid:product.tiid})\"\n" +
+    "                        ng-click=\"pinboardService.pin(['product', product.tiid])\"\n" +
+    "                        ng-if=\"!pinboardService.isPinned(['product', product.tiid])\"\n" +
     "                        tooltip=\"Feature this product on your profile front page\">\n" +
     "                        <i class=\"icon-star-empty\"></i>\n" +
     "                        <i class=\"icon-star\"></i>\n" +
     "                     </a>\n" +
     "                     <a class=\"unfeature-product\"\n" +
-    "                        ng-click=\"pinboardService.unPin({tiid: product.tiid})\"\n" +
-    "                        ng-if=\"pinboardService.idIsPinned({tiid:product.tiid})\"\n" +
+    "                        ng-click=\"pinboardService.unPin(['product', product.tiid])\"\n" +
+    "                        ng-if=\"pinboardService.isPinned(['product', product.tiid])\"\n" +
     "                        tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
     "                        <i class=\"icon-star\"></i>\n" +
     "                     </a>\n" +

@@ -71,15 +71,15 @@
                   </span>
                   <span class="feature-product-controls">
                      <a class="feature-product"
-                        ng-click="pinboardService.pin('product', {tiid: product.tiid})"
-                        ng-if="!pinboardService.idIsPinned({tiid:product.tiid})"
+                        ng-click="pinboardService.pin(['product', product.tiid])"
+                        ng-if="!pinboardService.isPinned(['product', product.tiid])"
                         tooltip="Feature this product on your profile front page">
                         <i class="icon-star-empty"></i>
                         <i class="icon-star"></i>
                      </a>
                      <a class="unfeature-product"
-                        ng-click="pinboardService.unPin({tiid: product.tiid})"
-                        ng-if="pinboardService.idIsPinned({tiid:product.tiid})"
+                        ng-click="pinboardService.unPin(['product', product.tiid])"
+                        ng-if="pinboardService.isPinned(['product', product.tiid])"
                         tooltip="This product is featured on your profile front page; click to unfeature.">
                         <i class="icon-star"></i>
                      </a>

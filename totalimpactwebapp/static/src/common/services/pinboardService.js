@@ -4,23 +4,26 @@ angular.module('services.pinboardService', [
   .factory("PinboardService", function(ProfilePinboard, security){
 
 
-    return {}
-
     var cols = {
       one: [],
       two: []
     }
 
     function selectCol(id){
+      return cols[getColName(id)]
+    }
+
+    function getColName(id){
       if (id[0] == "product") {
-        return cols.one
+        return "one"
       }
       else {
-        return cols.two
+        return "two"
       }
     }
 
     function pin(id){
+      console.log("pinning this id: ", id)
       selectCol(id).push(id)
 
       // every time we change the pins arr, we save.
@@ -39,16 +42,21 @@ angular.module('services.pinboardService', [
     }
 
     function unPin(id){
-      var col = selectCol(id)
-      col = _.without(col, id)
+      console.log("unpin this!", id)
+      cols[getColName(id)] = _.filter(selectCol(id), function(myPinId){
+        return !_.isEqual(id, myPinId)
+      })
+      return true
+
 
       // needs to update db here
 
     }
 
     function isPinned(id){
-      _.contains(selectCol(id), id)
-
+      return !!_.find(selectCol(id), function(myPinId){
+        return _.isEqual(id, myPinId)
+      })
     }
 
 
