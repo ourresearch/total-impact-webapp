@@ -1,5 +1,6 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import util
+import configs
 import datetime
 import jinja2
 import numpy
@@ -10,6 +11,20 @@ def get_metrics_by_name(products, provider, interaction):
         metric = product.get_metric_by_name(provider, interaction)
         if metric:
             matching_metrics.append(metric)
+    return matching_metrics
+
+def get_metrics_by_engagement(products, engagement):
+    matching_metrics = []
+    all_possible_metrics_config_dicts = configs.metrics().values()
+
+    for product in products:
+        for config_dict in all_possible_metrics_config_dicts:
+            if config_dict["engagement_type"]==engagement:
+                provider = config_dict["provider"]
+                interaction = config_dict["interaction"]
+                metric = product.get_metric_by_name(provider, interaction)
+                if metric:
+                    matching_metrics.append(metric)
     return matching_metrics
 
 
@@ -259,7 +274,7 @@ class GenreNewDiffCard(AbstractNewDiffCard):
         return ret
 
 
-class GenreAccumulationCard(AbstractProductsAccumulationCard):
+class GenreMetricSumCard(AbstractProductsAccumulationCard):
 
     @property
     def sort_by(self):
@@ -315,6 +330,92 @@ class GenreAccumulationCard(AbstractProductsAccumulationCard):
         ret = util.dict_from_dir(self, properties_to_ignore)
         return ret
 
+
+class GenreEngagementSumCard(Card):
+    def __init__(self, products, engagement, url_slug=None, timestamp=None):
+        self.url_slug = url_slug
+        self.products = products
+        self.engagement = engagement
+
+        # this card doesn't have a solo metric object, but it helps to 
+        # save an exemplar metric so that it can be used to access relevant display properies
+        try:
+            self.exemplar_metric = get_metrics_by_engagement(self.products, engagement)[0] #exemplar metric 
+        except IndexError:
+            pass
+        super(GenreEngagementSumCard, self).__init__(timestamp=timestamp)
+
+    @classmethod
+    def would_generate_a_card(cls, products, engagement):
+        return cls.engagement_accumulations(products, engagement) is not None
+
+    @property
+    def sort_by(self):
+        score = 2000 + self.current_value
+        return score
+
+    @property
+    def milestone_awarded(self):
+        try:
+            return self.engagement_accumulations(self.products, self.engagement)["milestone"]
+        except KeyError:
+            return None
+
+    @property
+    def current_value(self):
+        try:
+            return self.engagement_accumulations(self.products, self.engagement)["accumulated_diff_end_value"]
+        except KeyError:
+            return None
+
+    @property
+    def diff_value(self):
+        try:
+            return self.engagement_accumulations(self.products, self.engagement)["accumulated_diff"]
+        except KeyError:
+            return None 
+
+    @classmethod
+    #override with a version that returns all cards, not just ones that freshly pass milestones
+    def engagement_accumulations(cls, products, engagement):
+        matching_metrics = get_metrics_by_engagement(products, engagement)
+        matching_metrics = [m for m in matching_metrics if m.is_int]
+
+        accumulated_diff_start_value = sum([m.diff_window_start_value for m in matching_metrics 
+            if m.diff_window_start_value])
+        accumulated_diff_end_value = sum([m.diff_window_end_value for m in matching_metrics 
+            if m.diff_window_end_value])
+        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
+
+        if not accumulated_diff_end_value:
+            return None
+
+        milestones = configs.orders_of_magnitude()
+
+        # see if we just passed any of them
+        if accumulated_diff_start_value:
+            for milestone in sorted(milestones, reverse=True):
+                if accumulated_diff_start_value < milestone <= accumulated_diff_end_value:
+                    milestone = milestone
+                    break
+        else:
+            milestone = None
+
+        return ({
+            "milestone": milestone, 
+            "accumulated_diff_end_value": accumulated_diff_end_value,
+            "accumulated_diff": accumulated_diff
+            })
+
+    def to_dict(self):
+        # ignore some properties to keep dict small.   
+        properties_to_ignore = [
+            "url_slug", 
+            "exemplar_metric", 
+            "products"
+            ]
+        ret = util.dict_from_dir(self, properties_to_ignore)
+        return ret
 
 
 class GenreProductsWithMoreThanCard(Card):
