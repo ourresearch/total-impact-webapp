@@ -234,26 +234,35 @@ def collect_embed(min_tiid=None):
             print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
 
 
-def linked_accounts(account_type, url_slug=None):
+def linked_accounts(account_type, url_slug=None, min_url_slug=None):
     column_name = account_type+"_id"
     if url_slug:
         q = db.session.query(Profile).filter(getattr(Profile, column_name) != None).filter(Profile.url_slug==url_slug)
     else:
-        q = db.session.query(Profile).filter(getattr(Profile, column_name) != None)
+        if min_url_slug:
+            q = db.session.query(Profile).filter(getattr(Profile, column_name) != None).filter(Profile.url_slug>=min_url_slug)
 
-    start_time = datetime.datetime.utcnow()
+        else:
+            q = db.session.query(Profile).filter(getattr(Profile, column_name) != None)
+
     number_considered = 0.0
-    number_markups = 0.0
     for profile in windowed_query(q, Profile.url_slug, 25):
         number_considered += 1
-        try:
-            print profile.url_slug, "previous number of account products:", len(profile.account_products)
-            print profile.account_products
-        except UnicodeEncodeError:
-            pass
-        tiids = profile.update_products_from_linked_account(account_type, update_even_removed_products=False)
-        if tiids:
-            print "  ", profile.url_slug, account_type, "got a tiid!"
+        logger.info(u"{url_slug} previous number of account products: {num}".format(
+            url_slug=profile.url_slug, num=len(profile.account_products)))
+        existing_account_products = [p.index_name for p in profile.account_products]
+        print existing_account_products
+        if not account_type in existing_account_products:
+            logger.info(u"{url_slug} had no account_product for {account_type}, so adding".format(
+                url_slug=profile.url_slug, account_type=account_type))
+            tiids = profile.update_products_from_linked_account(account_type, update_even_removed_products=False)
+            if tiids:
+                logger.info(u"{url_slug} added {num} products for {account_type}".format(
+                    url_slug=profile.url_slug, num=len(tiids), account_type=account_type))
+        else:
+            logger.info(u"{url_slug} already has an account_product for {account_type}, so skipping".format(
+                url_slug=profile.url_slug, account_type=account_type))
+
 
 
 tiids_that_need_twitter = """sl1uu922rwpl1htii64upwjs
@@ -378,8 +387,8 @@ def main(function, args):
         build_refsets(args["save_after_every_profile"])
     elif function=="embed":
         collect_embed(args["min_tiid"])
-    elif function=="linked-accounts":
-        linked_accounts("slideshare", args["url_slug"])
+    elif function=="linked_accounts":
+        linked_accounts(args["account_type"], args["url_slug"], args["min_url_slug"])
     elif function=="refresh_twitter":
         refresh_twitter()
     elif function=="run_through_twitter_pages":
@@ -400,6 +409,7 @@ if __name__ == "__main__":
     parser.add_argument('--max_emails', default=None, type=int, help="max number of emails to send")
     parser.add_argument('--min_tiid', default=None, type=str, help="min_tiid")
     parser.add_argument('--min_url_slug', default=None, type=str, help="min_url_slug")
+    parser.add_argument('--account_type', default=None, type=str, help="account_type")
 
     args = vars(parser.parse_args())
     print args
