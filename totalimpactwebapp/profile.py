@@ -1,8 +1,10 @@
 from totalimpactwebapp import db
-from totalimpactwebapp import heading_product
 from totalimpactwebapp import profile_award
 from totalimpactwebapp import util
 from totalimpactwebapp import configs
+from totalimpactwebapp.account import account_factory
+from totalimpactwebapp.product_markup import Markup
+from totalimpactwebapp.product_markup import MarkupFactory
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
 
@@ -27,7 +29,6 @@ import hashlib
 import redis
 import csv
 import StringIO
-import arrow
 
 
 logger = logging.getLogger("tiwebapp.profile")
@@ -87,7 +88,6 @@ class RefreshStatus(object):
             precise = 100
 
         return int(precise)
-
 
     def to_dict(self):
         return util.dict_from_dir(self, "products")
@@ -197,12 +197,13 @@ class Profile(db.Model):
     @cached_property
     def account_products(self):
         #temporary till we figure out a better way to do this
-        products_to_return = []
+        accounts_to_return = []
         for product in self.products_not_removed:
-            if product.is_account_product:
-                products_to_return.append(product)
+            account = account_factory(product)
+            if account:
+                accounts_to_return.append(account)
 
-        return products_to_return
+        return accounts_to_return
 
 
     @cached_property
@@ -328,41 +329,6 @@ class Profile(db.Model):
     def get_refresh_status(self):
         return RefreshStatus(self.products_not_removed)
 
-    def get_metrics_by_name(self, provider, interaction):
-        matching_metrics = []
-        for product in self.products_not_removed:
-            metric = product.get_metric_by_name(provider, interaction)
-            if metric:
-                matching_metrics.append(metric)
-        return matching_metrics
-
-    def metric_milestone_just_reached(self, provider, interaction):
-        matching_metrics = self.get_metrics_by_name(provider, interaction)
-
-        metrics_with_diffs = [m for m in matching_metrics if m.can_diff]
-
-         # quit if there's no matching metrics or they dont' have no diffs
-        if not len(metrics_with_diffs):
-            return None
-
-        accumulated_diff_start_value = sum([m.diff_window_start_value for m in metrics_with_diffs])
-        accumulated_diff_end_value = sum([m.diff_window_end_value for m in metrics_with_diffs])
-        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
-
-        # milestones will be the same in all the metrics so just grab the first one
-        milestones = matching_metrics[0].config["milestones"]
-
-        # see if we just passed any of them
-        for milestone in sorted(milestones, reverse=True):
-            if accumulated_diff_start_value < milestone <= accumulated_diff_end_value:
-                return ({
-                    "milestone": milestone, 
-                    "accumulated_diff_end_value": accumulated_diff_end_value,
-                    "accumulated_diff": accumulated_diff
-                    })
-        return None
-
-
     def add_products(self, product_id_dict):
         try:
             analytics_credentials = self.get_analytics_credentials()
@@ -434,18 +400,13 @@ class Profile(db.Model):
         return self
 
 
-    def get_products_markup(self, markup, hide_keys=None, add_heading_products=True):
+    def get_products_markup(self, markup, hide_keys=None):
 
         markup.set_template("product.html")
         markup.context["profile"] = self
 
         product_dicts = [p.to_markup_dict(markup, hide_keys)
                 for p in self.display_products]
-
-        if add_heading_products:
-            headings = heading_product.make_list(self.display_products)
-            markup.set_template("heading-product.html")
-            product_dicts += [hp.to_markup_dict(markup) for hp in headings]
 
         return product_dicts
 
@@ -583,6 +544,27 @@ class Profile(db.Model):
     def __repr__(self):
         return u'<Profile {name} (id {id})>'.format(name=self.full_name, id=self.id)
 
+
+def build_profile_dict(profile, hide_keys, embed):
+    markup = Markup(profile.id, embed=embed)
+
+    profile_dict = {
+        "products": profile.get_products_markup(
+            markup=markup,
+            hide_keys=hide_keys
+        )
+    }
+
+    # things that would be in about, but require products
+    profile_dict["is_refreshing"] = profile.is_refreshing
+    profile_dict["product_count"] = profile.product_count
+    profile_dict["account_products"] = profile.account_products
+
+    if not "about" in hide_keys:
+        profile_dict["about"] = profile.dict_about(show_secrets=False)
+        profile_dict["awards"] = profile.awards
+
+    return profile_dict
 
 
 def delete_products_from_profile(profile, tiids_to_delete):
