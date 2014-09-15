@@ -128,13 +128,12 @@ angular.module("services.page")
      },
      getBodyClasses: function(){
         var conditionalClasses = {
-          'show-tab-on-bottom': uservoiceTabLoc == "bottom",
-          'show-tab-on-right': uservoiceTabLoc == "right",
-          'hide-tab': uservoiceTabLoc == "hidden",
           'embedded': isEmbedded
         }
 
-       var classes = []
+       var classes = [
+         "page-name-" + pageName
+       ]
 
        _.each(conditionalClasses, function(v, k){
          if (v) classes.push(k)

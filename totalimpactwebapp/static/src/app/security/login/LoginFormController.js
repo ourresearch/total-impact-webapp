@@ -9,7 +9,15 @@ angular.module('security.login.form', [
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, $modalInstance, $modal, UserMessage, Page, Loading) {
+.controller('LoginFormController', function($scope,
+                                            security,
+                                            $modalInstance,
+                                            $modal,
+                                            UserMessage,
+                                            email,
+                                            clearMessages,
+                                            Page,
+                                            Loading) {
   var reportError = function(status){
     var key
     if (status == 401) {
@@ -32,6 +40,9 @@ angular.module('security.login.form', [
 
   UserMessage.showOnTop(false)
   $scope.user = {};
+  if (email){
+    $scope.user.email = email
+  }
   $scope.loading = Loading
   $scope.userMessage = UserMessage
 

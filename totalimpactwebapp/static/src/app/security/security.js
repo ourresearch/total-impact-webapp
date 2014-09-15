@@ -27,12 +27,16 @@ angular.module('security.service', [
 
     // Login form dialog stuff
     var loginDialog = null;
-    function openLoginDialog() {
+    function openLoginDialog(email, clearMessages) {
       console.log("openLoginDialog() fired.")
       loginDialog = $modal.open({
         templateUrl: "security/login/form.tpl.html",
         controller: "LoginFormController",
-        windowClass: "creds"
+        windowClass: "creds",
+        resolve: {
+          email: function(){return email},
+          clearMessages: function(){return clearMessages}
+        }
       });
       loginDialog.result.then();
     }
@@ -50,8 +54,8 @@ angular.module('security.service', [
     // The public API of the service
     var service = {
 
-      showLogin: function() {
-        openLoginDialog();
+      showLogin: function(email, clearMessages) {
+        openLoginDialog(email, clearMessages);
       },
 
       login: function(email, password) {

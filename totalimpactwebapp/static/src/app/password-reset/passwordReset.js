@@ -16,8 +16,21 @@ angular.module('passwordReset', [
   )
 })
 
-.controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, UserMessage, security){
+.controller("passwordResetFormCtrl", function($scope,
+                                              $location,
+                                              $routeParams,
+                                              Loading,
+                                              Page,
+                                              UsersPassword,
+                                              ProfileService,
+                                              ProfileAboutService,
+                                              UserMessage,
+                                              security){
+
   console.log("reset token", $routeParams.resetToken)
+  Page.setName("password-reset")
+
+  $scope.userEmail = $routeParams.resetToken.replace(/\.[^.]+\.[^.]+$/, "")
 
   $scope.password = ""
   $scope.onSave = function(){
@@ -27,11 +40,13 @@ angular.module('passwordReset', [
       {id: $routeParams.resetToken, id_type:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
-        UserMessage.set('passwordReset.success');
+        console.log("password reset success")
+        UserMessage.set('passwordReset.success', true);
         $location.path("/")
-        security.showLogin()
+        security.showLogin($scope.userEmail, false)
       },
       function(resp) {
+        console.log("password reset failure")
         UserMessage.set('passwordReset.error.invalidToken', true);
         Loading.finish('saveButton')
         $scope.password = "";  // reset the form
