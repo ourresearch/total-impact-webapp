@@ -791,4 +791,75 @@ code {
 }
 
 
+#under-construction-curtain {
+   position: fixed;
+   top:0;
+   bottom:0;
+   right: 0;
+   left:0;
+   background: #fff;
+   z-index: 999999999;
 
+   .hide-curtain {
+      position: absolute;
+      color: @linkColor;
+      bottom: 0;
+      left:0;
+      height: 30px;
+      width: 30px;
+      text-align: center;
+      background: #fff;
+      i{display:bock; display:none;}
+      &:hover{
+         i{display:inline;}
+      }
+   }
+
+   div.top {
+      background: #ffffff;
+      margin: 0;
+   }
+   div.top div.logo img {
+      width:  175px;
+      display: block;
+      margin: 0 auto;
+      padding: 15px;
+   }
+   div.top h1 {
+      text-align: center;
+      font-family: Lato, helvetica, sans-serif;
+      font-weight: bolder;
+      font-size:  50px;
+      color:  #777;
+      text-align: center;
+      margin: 120px auto 10px;
+      width: 800px;
+      padding: 0 0 10px 0;
+
+   }
+
+
+   div.bottom h2 {
+      font-family: Lato, helvetica, sans-serif;
+      font-size:  24px;
+      color:  #777;
+      text-align: center;
+      margin: 0 auto;
+      padding: 0 0 70px 0;
+      width: 600px;
+   }
+
+   div.bottom p {
+      font-size:  18px;
+      color:  #999;
+      width:  400px;
+      line-height: 2;
+      margin:  0 auto 30px auto;
+      text-align: center;
+      font-family: Lato, helvetica, sans-serif;
+   }
+
+   a {
+      color:  #FF4E00;
+   }
+}
