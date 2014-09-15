@@ -251,18 +251,23 @@ def linked_accounts(account_type, url_slug=None, min_url_slug=None):
         number_considered += 1
         logger.info(u"{url_slug} previous number of account products: {num}".format(
             url_slug=profile.url_slug, num=len(profile.account_products)))
-        existing_account_products = [p.index_name for p in profile.account_products]
-        print existing_account_products
-        if not account_type in existing_account_products:
+        existing_account_product_list = [p for p in profile.account_products if p.index_name==account_type]
+        if existing_account_product_list:
+            existing_account_product = existing_account_product_list[0]
+            if existing_account_product.followers:
+                logger.info(u"{url_slug} already has an account_product for {account_type}, so skipping".format(
+                    url_slug=profile.url_slug, account_type=account_type))
+            else:
+                logger.info(u"{url_slug} already has an account_product for {account_type}, but no followers, so refreshing".format(
+                    url_slug=profile.url_slug, account_type=account_type))
+                refresh_products_from_tiids([existing_account_product.tiid], source="scheduled")
+        else:
             logger.info(u"{url_slug} had no account_product for {account_type}, so adding".format(
                 url_slug=profile.url_slug, account_type=account_type))
             tiids = profile.update_products_from_linked_account(account_type, update_even_removed_products=False)
             if tiids:
                 logger.info(u"{url_slug} added {num} products for {account_type}".format(
                     url_slug=profile.url_slug, num=len(tiids), account_type=account_type))
-        else:
-            logger.info(u"{url_slug} already has an account_product for {account_type}, so skipping".format(
-                url_slug=profile.url_slug, account_type=account_type))
 
 
 
@@ -415,7 +420,7 @@ def main(function, args):
     elif function=="linked_accounts":
         linked_accounts(args["account_type"], args["url_slug"], args["min_url_slug"])
     elif function=="refresh_tweeted_products":
-        refresh_tweeted_products()
+        refresh_tweeted_products(args["min_tiid"])
     elif function=="run_through_twitter_pages":
         run_through_twitter_pages(args["url_slug"], args["min_url_slug"])
 
