@@ -6239,8 +6239,9 @@ div.modal.creds .modal-dialog .modal-footer a {
 }
 div#user-message {
   position: fixed;
-  width: 900px;
-  margin-left: -50px;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 1000;
 }
 div#user-message button.close {
@@ -6253,19 +6254,19 @@ div#user-message .alert {
   text-align: center;
   padding-top: 30px;
   padding-bottom: 25px;
-  padding: 30px 40px 25px 30px;
+  padding: 40px 40px 35px 30px;
   margin-bottom: 0;
   font-size: 16px;
   -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 50px;
+  -webkit-border-bottom-right-radius: 5px;
   -webkit-border-bottom-left-radius: 0;
   -webkit-border-top-left-radius: 0;
   -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomright: 50px;
+  -moz-border-radius-bottomright: 5px;
   -moz-border-radius-bottomleft: 0;
   -moz-border-radius-topleft: 0;
   border-top-right-radius: 0;
-  border-bottom-right-radius: 50px;
+  border-bottom-right-radius: 5px;
   border-bottom-left-radius: 0;
   border-top-left-radius: 0;
   -moz-background-clip: padding;
@@ -6382,19 +6383,16 @@ div.no-page p span.slug {
   margin: 0 auto;
 }
 #header {
-  top: 0;
+  top: 20px;
   right: 0;
   position: fixed;
 }
-#header div.account-nav {
-  margin: 0;
-}
-#header div.account-nav a {
+#header a {
   color: #bbb;
   display: block;
   float: right;
   clear: both;
-  padding: 5px 8px;
+  padding: 5px 10px 5px 8px;
   text-align: right;
   background: #fff;
   -webkit-border-top-right-radius: 0;
@@ -6413,7 +6411,7 @@ div.no-page p span.slug {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-#header div.account-nav a img.gravatar {
+#header a img.gravatar {
   opacity: .7;
   height: 32px;
   -webkit-border-top-right-radius: 16px;
@@ -6432,29 +6430,32 @@ div.no-page p span.slug {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-#header div.account-nav a span.icon-container {
+#header a span.icon-container {
   width: 28px;
   text-align: center;
   display: inline-block;
 }
-#header div.account-nav a span.icon-container i {
+#header a span.icon-container i {
   font-size: 24px;
   vertical-align: -2px;
 }
-#header div.account-nav a span.tip {
+#header a span.tip {
   font-size: 16px;
   display: none;
   margin-right: 2px;
 }
-#header div.account-nav a:hover {
+#header a:hover {
   opacity: 1;
   color: #ff4000;
 }
-#header div.account-nav a:hover img.gravatar {
+#header a:hover img.gravatar {
   opacity: 1;
 }
-#header div.account-nav a:hover span.tip {
+#header a:hover span.tip {
   display: inline;
+}
+#header div.account-nav {
+  margin: 0;
 }
 div.profile-sidebar h1 a {
   color: #333;

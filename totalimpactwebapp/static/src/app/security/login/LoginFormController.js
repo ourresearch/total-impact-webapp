@@ -13,13 +13,13 @@ angular.module('security.login.form', [
   var reportError = function(status){
     var key
     if (status == 401) {
-      UserMessage.set("login.error.invalidPassword")
+      UserMessage.set("login.error.invalidPassword", true)
     }
     else if (status == 404) {
-      UserMessage.set("login.error.invalidUser")
+      UserMessage.set("login.error.invalidUser", true)
     }
     else {
-      UserMessage.set("login.error.serverError")
+      UserMessage.set("login.error.serverError", true)
     }
 
   }

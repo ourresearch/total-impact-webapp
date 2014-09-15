@@ -27,12 +27,12 @@ angular.module('passwordReset', [
       {id: $routeParams.resetToken, id_type:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
-        UserMessage.set('passwordReset.success', true);
+        UserMessage.set('passwordReset.success');
         $location.path("/")
         security.showLogin()
       },
       function(resp) {
-        UserMessage.set('passwordReset.error.invalidToken');
+        UserMessage.set('passwordReset.error.invalidToken', true);
         Loading.finish('saveButton')
         $scope.password = "";  // reset the form
       }

@@ -372,8 +372,10 @@ div.modal {
 
 div#user-message {
    position: fixed;
-   width: @contentWidth;
-   margin-left: -@contentPaddingLeft;
+   top:0;
+   left:0;
+   right:0;
+   z-index: 1000;
    z-index: 1000;
    button.close {
       position: absolute;
@@ -385,10 +387,10 @@ div#user-message {
       text-align: center;
       padding-top: 30px;
       padding-bottom: 25px;
-      padding: 30px 40px 25px 30px;
+      padding: 40px 40px 35px 30px;
       margin-bottom: 0;
       font-size: 16px;
-      .border-radius(0, 50px, 0, 0);
+      .border-radius(0, 5px, 0, 0);
       a {
          font-weight: bold;
          text-decoration: none;
@@ -495,51 +497,51 @@ div.no-page {
 }
 
 #header {
-   top: 0;
+   top: 20px;
    right: 0;
    position: fixed;
-   div.account-nav {
-      margin: 0;
-      a {
-         color: #bbb;
-         display: block;
-         float:right;
-         clear:both;
-         padding: 5px 8px;
-         text-align: right;
-         background: #fff;
-         .border-radius(0, 0, 3px, 3px);
-         img.gravatar {
-            opacity: .7;
-            height: 32px;
-            .border-radius(16px, 16px, 16px, 16px);
-         }
-         span.icon-container {
-            width: 28px;
-            text-align: center;
-            display:inline-block;
-            i {
-               font-size: 24px;
-               vertical-align: -2px;
-            }
-         }
-         span.tip {
-            font-size: 16px;
-            display:none;
-            margin-right: 2px;
-
-         }
-         &:hover {
-            opacity: 1;
-            color: @linkColor;
-            img.gravatar {
-               opacity: 1;
-            }
-            span.tip {
-               display:inline;
-            }
+   a {
+      color: #bbb;
+      display: block;
+      float:right;
+      clear:both;
+      padding: 5px 10px 5px 8px;
+      text-align: right;
+      background: #fff;
+      .border-radius(0, 0, 3px, 3px);
+      img.gravatar {
+         opacity: .7;
+         height: 32px;
+         .border-radius(16px, 16px, 16px, 16px);
+      }
+      span.icon-container {
+         width: 28px;
+         text-align: center;
+         display:inline-block;
+         i {
+            font-size: 24px;
+            vertical-align: -2px;
          }
       }
+      span.tip {
+         font-size: 16px;
+         display:none;
+         margin-right: 2px;
+
+      }
+      &:hover {
+         opacity: 1;
+         color: @linkColor;
+         img.gravatar {
+            opacity: 1;
+         }
+         span.tip {
+            display:inline;
+         }
+      }
+   }
+   div.account-nav {
+      margin: 0;
    }
 }
 

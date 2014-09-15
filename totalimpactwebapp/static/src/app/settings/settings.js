@@ -81,7 +81,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set('settings.profile.change.success', true);
+          UserMessage.set('settings.profile.change.success');
           $scope.home();
         }
       )
@@ -102,7 +102,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set(messageKey, true);
+          UserMessage.set(messageKey);
           $scope.home();
         }
       )
@@ -123,11 +123,11 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         $scope.user,
         function(resp) {
-          UserMessage.set('settings.password.change.success', true);
+          UserMessage.set('settings.password.change.success');
           $scope.home()
         },
         function(resp) {
-          UserMessage.set('settings.password.change.error.unauthenticated');
+          UserMessage.set('settings.password.change.error.unauthenticated', true);
           Loading.finish('saveButton')
           $scope.resetUser();  // reset the form
           $scope.wrongPassword = true;
@@ -148,7 +148,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set('settings.url.change.success', true);
+          UserMessage.set('settings.url.change.success');
           $location.path('/' + resp.about.url_slug)
         }
       )
@@ -243,7 +243,7 @@ angular.module('settings', [
         },
         function(resp){
           console.log("we failed to subscribe a user.", resp)
-          UserMessage.set("settings.subscription.subscribe.error")
+          UserMessage.set("settings.subscription.subscribe.error", true)
           Loading.finish("subscribe")
         }
       )

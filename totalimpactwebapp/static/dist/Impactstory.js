@@ -999,8 +999,8 @@ angular.module( 'infopages', [
 
     var signupFormShowing = false
     $scope.landingPageType = "main"
-    Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
+    Page.setName("landing")
     Page.setTitle("Share the full story of your research impact.")
 
   })
@@ -1074,12 +1074,12 @@ angular.module('passwordReset', [
       {id: $routeParams.resetToken, id_type:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
-        UserMessage.set('passwordReset.success', true);
+        UserMessage.set('passwordReset.success');
         $location.path("/")
         security.showLogin()
       },
       function(resp) {
-        UserMessage.set('passwordReset.error.invalidToken');
+        UserMessage.set('passwordReset.error.invalidToken', true);
         Loading.finish('saveButton')
         $scope.password = "";  // reset the form
       }
@@ -1866,13 +1866,13 @@ angular.module('security.login.form', [
   var reportError = function(status){
     var key
     if (status == 401) {
-      UserMessage.set("login.error.invalidPassword")
+      UserMessage.set("login.error.invalidPassword", true)
     }
     else if (status == 404) {
-      UserMessage.set("login.error.invalidUser")
+      UserMessage.set("login.error.invalidUser", true)
     }
     else {
-      UserMessage.set("login.error.serverError")
+      UserMessage.set("login.error.serverError", true)
     }
 
   }
@@ -2394,7 +2394,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set('settings.profile.change.success', true);
+          UserMessage.set('settings.profile.change.success');
           $scope.home();
         }
       )
@@ -2415,7 +2415,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set(messageKey, true);
+          UserMessage.set(messageKey);
           $scope.home();
         }
       )
@@ -2436,11 +2436,11 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         $scope.user,
         function(resp) {
-          UserMessage.set('settings.password.change.success', true);
+          UserMessage.set('settings.password.change.success');
           $scope.home()
         },
         function(resp) {
-          UserMessage.set('settings.password.change.error.unauthenticated');
+          UserMessage.set('settings.password.change.error.unauthenticated', true);
           Loading.finish('saveButton')
           $scope.resetUser();  // reset the form
           $scope.wrongPassword = true;
@@ -2461,7 +2461,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          UserMessage.set('settings.url.change.success', true);
+          UserMessage.set('settings.url.change.success');
           $location.path('/' + resp.about.url_slug)
         }
       )
@@ -2556,7 +2556,7 @@ angular.module('settings', [
         },
         function(resp){
           console.log("we failed to subscribe a user.", resp)
-          UserMessage.set("settings.subscription.subscribe.error")
+          UserMessage.set("settings.subscription.subscribe.error", true)
           Loading.finish("subscribe")
         }
       )
@@ -3740,11 +3740,10 @@ angular.module('resources.users',['ngResource'])
 
 
 angular.module('services.userMessage', [])
-  .factory('UserMessage', function ($interpolate, $rootScope) {
+  .factory('UserMessage', function ($interpolate, $rootScope, $timeout) {
 
 
     var currentMessageObject
-    var persistAfterNextRouteChange
     var showOnTop = true
 
     var messages = {
@@ -3781,21 +3780,21 @@ angular.module('services.userMessage', [])
       currentMessageObject = null
     }
 
-    $rootScope.$on('$routeChangeSuccess', function () {
-      if (persistAfterNextRouteChange){
-        persistAfterNextRouteChange = false
-      }
-      else {
-        clear()
-      }
-    });
+//    $rootScope.$on('$routeChangeSuccess', function () {
+//      clear()
+//    });
 
 
 
 
     return {
       set: function(key, persist, interpolateParams){
-        persistAfterNextRouteChange = persist
+        if (!persist){
+          $timeout(function(){
+            console.log("removing the user message")
+            clear()
+          }, 2000)
+        }
 
         var msg = messages[key]
         currentMessageObject = {
@@ -5797,11 +5796,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
 angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("infopages/landing.tpl.html",
     "<div class=\"main infopage landing\">\n" +
-    "   <div class=\"toolbar-container\">\n" +
-    "      <div class=\"wrapper\">\n" +
-    "         <login-toolbar></login-toolbar>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
     "   <div class=\"top-screen\" fullscreen> <!-- this needs to be set to the viewport height-->\n" +
     "\n" +
     "      <div id=\"tagline\">\n" +
@@ -7066,20 +7060,28 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "      <a class=\"add-products control\"\n" +
     "         href=\"{{ currentUser.url_slug }}/accounts\">\n" +
-    "         <span class=\"tip animated\">Import things</span>\n" +
+    "         <span class=\"tip\">Import things</span>\n" +
     "         <span class=\"icon-container\">\n" +
     "            <i class=\"icon-plus\"></i>\n" +
     "         </span>\n" +
     "      </a>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div ng-show=\"!currentUser\" class=\"not-logged-in\">\n" +
-    "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup\">Sign up</a>\n" +
-    "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
+    "   <div ng-hide=\"currentUser || page.isNamed('landing')\" class=\"not-logged-in\">\n" +
+    "      <a class=\"login\" ng-click=\"login()\">\n" +
+    "         <span class=\"tip\">Log in</span>\n" +
+    "         <span class=\"icon-container\">\n" +
+    "            <i class=\"icon-signin\"></i>\n" +
+    "         </span>\n" +
+    "      </a>\n" +
+    "      <!--\n" +
+    "      <a  class=\"signup\" href=\"/signup\">Sign up</a>\n" +
+    "      -->\n" +
     "   </div>\n" +
     "\n" +
     "   <a class=\"help control\"\n" +
     "      href=\"javascript:void(0)\"\n" +
+    "      ng-hide=\"page.isNamed('landing')\"\n" +
     "      data-uv-lightbox=\"classic_widget\"\n" +
     "      data-uv-mode=\"full\"\n" +
     "      data-uv-primary-color=\"#cc6d00\"\n" +

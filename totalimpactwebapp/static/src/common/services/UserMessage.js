@@ -1,9 +1,8 @@
 angular.module('services.userMessage', [])
-  .factory('UserMessage', function ($interpolate, $rootScope) {
+  .factory('UserMessage', function ($interpolate, $rootScope, $timeout) {
 
 
     var currentMessageObject
-    var persistAfterNextRouteChange
     var showOnTop = true
 
     var messages = {
@@ -40,21 +39,21 @@ angular.module('services.userMessage', [])
       currentMessageObject = null
     }
 
-    $rootScope.$on('$routeChangeSuccess', function () {
-      if (persistAfterNextRouteChange){
-        persistAfterNextRouteChange = false
-      }
-      else {
-        clear()
-      }
-    });
+//    $rootScope.$on('$routeChangeSuccess', function () {
+//      clear()
+//    });
 
 
 
 
     return {
       set: function(key, persist, interpolateParams){
-        persistAfterNextRouteChange = persist
+        if (!persist){
+          $timeout(function(){
+            console.log("removing the user message")
+            clear()
+          }, 2000)
+        }
 
         var msg = messages[key]
         currentMessageObject = {

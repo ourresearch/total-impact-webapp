@@ -96,8 +96,8 @@ angular.module( 'infopages', [
 
     var signupFormShowing = false
     $scope.landingPageType = "main"
-    Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
+    Page.setName("landing")
     Page.setTitle("Share the full story of your research impact.")
 
   })

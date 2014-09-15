@@ -25,20 +25,28 @@
 
       <a class="add-products control"
          href="{{ currentUser.url_slug }}/accounts">
-         <span class="tip animated">Import things</span>
+         <span class="tip">Import things</span>
          <span class="icon-container">
             <i class="icon-plus"></i>
          </span>
       </a>
    </div>
 
-   <div ng-show="!currentUser" class="not-logged-in">
-      <a ng-show="!page.isLandingPage()" class="signup" href="/signup">Sign up</a>
-      <a class="login" ng-click="login()">Log in<i class="icon-signin"></i></a>
+   <div ng-hide="currentUser || page.isNamed('landing')" class="not-logged-in">
+      <a class="login" ng-click="login()">
+         <span class="tip">Log in</span>
+         <span class="icon-container">
+            <i class="icon-signin"></i>
+         </span>
+      </a>
+      <!--
+      <a  class="signup" href="/signup">Sign up</a>
+      -->
    </div>
 
    <a class="help control"
       href="javascript:void(0)"
+      ng-hide="page.isNamed('landing')"
       data-uv-lightbox="classic_widget"
       data-uv-mode="full"
       data-uv-primary-color="#cc6d00"
