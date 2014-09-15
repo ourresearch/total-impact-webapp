@@ -364,8 +364,7 @@ def get_user_profile(profile_id):
     resp = {
         "products": profile.get_products_markup(
             markup=markup,
-            hide_keys=hide_keys,
-            add_heading_products=True
+            hide_keys=hide_keys
         )
     }
 
