@@ -168,10 +168,15 @@ angular.module('accounts.account', [
     Products,
     GoogleScholar,
     UserProfile,
+    ProfileService,
+    ProfileAboutService,
     Account,
     security,
+    Page,
     Loading,
     TiMixpanel){
+
+    Page.setName("addAccounts")
 
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
@@ -184,6 +189,8 @@ angular.module('accounts.account', [
   $scope.isLinked = function(){
     return !!$scope.account.username.value
   }
+
+
 
   $scope.isLinked = !!$scope.account.username.value
 
@@ -242,7 +249,11 @@ angular.module('accounts.account', [
         TiMixpanel.track("Linked an account", {
           "Account name": $scope.account.displayName
         })
+
+
          // make sure everyone can see the new linked account
+        ProfileAboutService.get($routeParams.url_slug, true)
+        ProfileService.get($routeParams.url_slug, true)
         security.refreshCurrentUser().then(
           function(resp){
             console.log("update the client's current user with our new linked account", resp)
@@ -2695,6 +2706,7 @@ angular.module( 'update.update', [
                               $timeout,
                               $q,
                               poller,
+                              UsersProducts,
                               UsersUpdateStatus){
 
     var status = {}
