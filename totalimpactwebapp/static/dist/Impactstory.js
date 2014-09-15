@@ -1319,6 +1319,8 @@ angular.module("productPage", [
         function(resp){
           console.log("updated product biblio; re-rendering", resp)
           $scope.reRenderProduct()
+          ProfileAboutService.get($routeParams.url_slug, true)
+          ProfileService.get($routeParams.url_slug, true)
         }
       )
     }
@@ -4277,13 +4279,12 @@ angular.module("services.page")
      },
      getBodyClasses: function(){
         var conditionalClasses = {
-          'show-tab-on-bottom': uservoiceTabLoc == "bottom",
-          'show-tab-on-right': uservoiceTabLoc == "right",
-          'hide-tab': uservoiceTabLoc == "hidden",
           'embedded': isEmbedded
         }
 
-       var classes = []
+       var classes = [
+         "page-name-" + pageName
+       ]
 
        _.each(conditionalClasses, function(v, k){
          if (v) classes.push(k)
@@ -5900,6 +5901,11 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "   </div>\n" +
     "\n" +
     "</div>\n" +
+    "\n" +
+    "<div class=\"page-footer\">\n" +
+    "   <div ng-include=\"'footer/footer.tpl.html'\"></div>\n" +
+    "</div>\n" +
+    "\n" +
     "");
 }]);
 
@@ -6249,7 +6255,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                     e-rows=\"3\"\n" +
     "                     onaftersave=\"updateBiblio('title')\"\n" +
     "                     ng-show=\"!loading.is('updateBiblio.title') && userOwnsThisProfile\"\n" +
-    "                     editable-textarea=\"biblio.display_title\">\n" +
+    "                     editable-textarea=\"biblio.title\">\n" +
     "                  {{biblio.display_title || \"click to enter title\"}}\n" +
     "               </span>\n" +
     "\n" +
@@ -6259,7 +6265,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "               <span class=\"loading\" ng-show=\"loading.is('updateBiblio.title')\">\n" +
     "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  updating publication year...\n" +
+    "                  updating title...\n" +
     "               </span>\n" +
     "            </h2>\n" +
     "\n" +
@@ -7067,11 +7073,11 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      </a>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div ng-hide=\"currentUser || page.isNamed('landing')\" class=\"not-logged-in\">\n" +
+    "   <div ng-hide=\"currentUser\" class=\"not-logged-in\">\n" +
     "      <a class=\"login\" ng-click=\"login()\">\n" +
     "         <span class=\"tip\">Log in</span>\n" +
     "         <span class=\"icon-container\">\n" +
-    "            <i class=\"icon-signin\"></i>\n" +
+    "            <i class=\"icon-user\"></i>\n" +
     "         </span>\n" +
     "      </a>\n" +
     "      <!--\n" +
@@ -7081,7 +7087,6 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "   <a class=\"help control\"\n" +
     "      href=\"javascript:void(0)\"\n" +
-    "      ng-hide=\"page.isNamed('landing')\"\n" +
     "      data-uv-lightbox=\"classic_widget\"\n" +
     "      data-uv-mode=\"full\"\n" +
     "      data-uv-primary-color=\"#cc6d00\"\n" +
@@ -7763,7 +7768,9 @@ angular.module("sidebar/profile-sidebar.tpl.html", []).run(["$templateCache", fu
     "      <a href=\"/\" class=\"logo\">\n" +
     "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
     "      </a>\n" +
-    "      <div ng-include=\"'footer/footer.tpl.html'\"></div>\n" +
+    "      <div class=\"page-footer\">\n" +
+    "         <div ng-include=\"'footer/footer.tpl.html'\"></div>\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "</div>\n" +

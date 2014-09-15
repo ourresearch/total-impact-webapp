@@ -641,6 +641,14 @@ div.profile-sidebar {
          }
       }
    }
+
+   div.page-footer {
+      display:none;
+      position: absolute;
+      bottom: 0;
+      left: 200px;
+      width: 800px;
+   }
 }
 
 
@@ -656,19 +664,15 @@ div.profile-sidebar {
 *****************************************************************************
 *****************************************************************************/
 
-div#footer {
+div.page-footer {
+   .clearfix();
+;
    clear:both;
-   position: absolute;
-   bottom: 0;
-   left: 200px;
-   width: 800px;
-   display:none; // show on hover
-
-
    color: #777;
    padding: 60px 20px 40px;
-   border-top: 1px solid #aaa;
-   border-right: 1px solid #aaa;
+   border: 1px solid #aaa;
+   .border-radius(5px, 0, 0, 5px);
+   border-bottom: none;
    background: #ddd;
    font-size: 16px;
 

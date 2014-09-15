@@ -6559,35 +6559,68 @@ div.profile-sidebar div.sidebar-footer a.logo img:hover {
   filter: none;
   -webkit-filter: none;
 }
-/* footer
-*****************************************************************************
-*****************************************************************************
-*****************************************************************************/
-div#footer {
-  clear: both;
+div.profile-sidebar div.page-footer {
+  display: none;
   position: absolute;
   bottom: 0;
   left: 200px;
   width: 800px;
-  display: none;
+}
+/* footer
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div.page-footer {
+  clear: both;
   color: #777;
   padding: 60px 20px 40px;
-  border-top: 1px solid #aaa;
-  border-right: 1px solid #aaa;
+  border: 1px solid #aaa;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 5px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border-bottom: none;
   background: #ddd;
   font-size: 16px;
 }
-div#footer p {
+div.page-footer:before,
+div.page-footer:after {
+  content: " ";
+  display: table;
+}
+div.page-footer:after {
+  clear: both;
+}
+div.page-footer:before,
+div.page-footer:after {
+  content: " ";
+  display: table;
+}
+div.page-footer:after {
+  clear: both;
+}
+div.page-footer p {
   margin: 6px 0 0 0;
   line-height: 1.4;
 }
-div#footer a {
+div.page-footer a {
   color: #777;
 }
-div#footer a:hover {
+div.page-footer a:hover {
   color: #444444;
 }
-div#footer div.footer-col {
+div.page-footer div.footer-col {
   float: left;
   width: 125px;
   padding-right: 0;
@@ -6596,39 +6629,39 @@ div#footer div.footer-col {
   min-height: 150px;
   font-weight: 300;
 }
-div#footer div.footer-col h3 {
+div.page-footer div.footer-col h3 {
   font-weight: 500;
   margin-top: 0;
   font-size: 16px;
   color: #777;
 }
-div#footer div.footer-col ul li {
+div.page-footer div.footer-col ul li {
   line-height: 1.6;
 }
-div#footer div.footer-col ul a {
+div.page-footer div.footer-col ul a {
   font-size: 15px;
 }
-div#footer div.footer-col#footer-help {
+div.page-footer div.footer-col#footer-help {
   border-right: none;
 }
-div#footer div.footer-col#footer-funders {
+div.page-footer div.footer-col#footer-funders {
   width: 200px;
   border-right: none;
   padding-right: none;
   float: right;
   text-align: right;
 }
-div#footer div.footer-col#footer-funders h3 {
+div.page-footer div.footer-col#footer-funders h3 {
   margin: 0 20px 15px 40px;
   text-align: left;
   font-size: 14px;
 }
-div#footer div.footer-col#footer-funders img {
+div.page-footer div.footer-col#footer-funders img {
   margin: 0 5px;
   height: 35px;
   opacity: .6;
 }
-div#footer div.footer-col#footer-funders #footer-nsf-link img {
+div.page-footer div.footer-col#footer-funders #footer-nsf-link img {
   height: 40px;
   margin-top: -2px;
 }
@@ -6676,8 +6709,16 @@ div.infopage p {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+body.page-name-landing #sidebar {
+  display: none;
+}
+body.page-name-landing #not-sidebar {
+  width: 100%;
+  margin: 0;
+}
 div.infopage.landing {
   position: relative;
+  margin-bottom: 100px;
 }
 div.infopage.landing div.toolbar-container {
   position: absolute;
@@ -6784,7 +6825,7 @@ div.infopage.landing div.top-screen div.bottom-of-top-screen div.ask-for-more i 
 }
 div#selling-points {
   clear: both;
-  margin-top: 20px;
+  margin-top: 50px;
 }
 div#selling-points:before,
 div#selling-points:after {
@@ -7949,6 +7990,8 @@ div.product-page div.main-content #biblio form.editable-text {
 }
 div.product-page div.main-content #biblio .loading {
   color: #999;
+  font-size: 16px;
+  font-weight: normal;
   margin: 0 5px;
 }
 div.product-page div.main-content #biblio .loading i {

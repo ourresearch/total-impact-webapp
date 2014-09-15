@@ -12,7 +12,7 @@
                      e-rows="3"
                      onaftersave="updateBiblio('title')"
                      ng-show="!loading.is('updateBiblio.title') && userOwnsThisProfile"
-                     editable-textarea="biblio.display_title">
+                     editable-textarea="biblio.title">
                   {{biblio.display_title || "click to enter title"}}
                </span>
 
@@ -22,7 +22,7 @@
 
                <span class="loading" ng-show="loading.is('updateBiblio.title')">
                   <i class="icon-refresh icon-spin"></i>
-                  updating publication year...
+                  updating title...
                </span>
             </h2>
 

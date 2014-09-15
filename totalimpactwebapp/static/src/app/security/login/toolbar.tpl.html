@@ -32,11 +32,11 @@
       </a>
    </div>
 
-   <div ng-hide="currentUser || page.isNamed('landing')" class="not-logged-in">
+   <div ng-hide="currentUser" class="not-logged-in">
       <a class="login" ng-click="login()">
          <span class="tip">Log in</span>
          <span class="icon-container">
-            <i class="icon-signin"></i>
+            <i class="icon-user"></i>
          </span>
       </a>
       <!--
@@ -46,7 +46,6 @@
 
    <a class="help control"
       href="javascript:void(0)"
-      ng-hide="page.isNamed('landing')"
       data-uv-lightbox="classic_widget"
       data-uv-mode="full"
       data-uv-primary-color="#cc6d00"
