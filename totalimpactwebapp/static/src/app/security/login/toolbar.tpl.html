@@ -1,63 +1,53 @@
-<ul class="account-nav">
-   <li ng-show="currentUser" class="logged-in-user nav-item">
+<div class="account-nav">
+   <div class="logged-in" ng-show="currentUser">
       <a class="current-user"
-         href="/{{ currentUser.url_slug }}"
-         tooltip-placement="left"
-         tooltip="View your profile">
+         href="/{{ currentUser.url_slug }}">
+         <span class="tip">View your profile</span>
          <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ currentUser.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
       </a>
-   </li>
-   <li ng-show="currentUser" class="controls nav-item">
 
       <a class="logout control"
-         tooltip-placement="left"
-         ng-click="logout()"
-         tooltip="Log out">
-         <i class="icon-signout"></i>
+         ng-click="logout()">
+         <span class="tip">Log out</span>
+         <span class="icon-container">
+            <i class="icon-signout"></i>
+         </span>
       </a>
 
       <a class="preferences control"
-         href="/settings/profile"
-         tooltip-placement="left"
-         tooltip="Change profile settings">
-         <i class="icon-cog"></i>
+         href="/settings/profile">
+         <span class="tip">Change settings</span>
+         <span class="icon-container">
+            <i class="icon-cog"></i>
+         </span>
       </a>
+
 
       <a class="add-products control"
-         href="{{ currentUser.url_slug }}/accounts"
-         tooltip-placement="left"
-         tooltip="Add accounts or products">
-         <i class="icon-plus"></i>
+         href="{{ currentUser.url_slug }}/accounts">
+         <span class="tip animated">Import things</span>
+         <span class="icon-container">
+            <i class="icon-plus"></i>
+         </span>
       </a>
+   </div>
 
-      <a class="help control"
-         href="javascript:void(0)"
-         data-uv-lightbox="classic_widget"
-         data-uv-mode="full"
-         data-uv-primary-color="#cc6d00"
-         data-uv-link-color="#007dbf"
-         data-uv-default-mode="support"
-         data-uv-forum-id="166950"
-         tooltip-placement="left"
-         tooltip="Get help or report bug">
-         <i class="icon-question"></i>
-      </a>
-   </li>
-
-   <li ng-show="!currentUser" class="login-and-signup nav-item">
+   <div ng-show="!currentUser" class="not-logged-in">
       <a ng-show="!page.isLandingPage()" class="signup" href="/signup">Sign up</a>
       <a class="login" ng-click="login()">Log in<i class="icon-signin"></i></a>
-      <a class="help control"
-         href="javascript:void(0)"
-         data-uv-lightbox="classic_widget"
-         data-uv-mode="full"
-         data-uv-primary-color="#cc6d00"
-         data-uv-link-color="#007dbf"
-         data-uv-default-mode="support"
-         data-uv-forum-id="166950"
-         tooltip-placement="left"
-         tooltip="Get help or report bug">
-         <i class="icon-question"></i>
-      </a>
-   </li>
-</ul>
+   </div>
+
+   <a class="help control"
+      href="javascript:void(0)"
+      data-uv-lightbox="classic_widget"
+      data-uv-mode="full"
+      data-uv-primary-color="#cc6d00"
+      data-uv-link-color="#007dbf"
+      data-uv-default-mode="support"
+      data-uv-forum-id="166950">
+         <span class="tip">Get help</span>
+         <span class="icon-container">
+            <i class="icon-question"></i>
+         </span>
+   </a>
+</div>

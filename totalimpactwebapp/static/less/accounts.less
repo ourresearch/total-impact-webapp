@@ -1,3 +1,5 @@
+@import "variables";
+
 div.modal-body.google-scholar-import {
    ol {
       margin: 20px 0 40px;
@@ -36,9 +38,11 @@ div.modal-body.google-scholar-import {
 }
 
 div.accounts {
-   width: 100%;
+   width: 400px;
+   margin-left: 60px;
    float:left;
-   border-top: 2px solid #ddd;
+//   border-top: 2px solid #ddd;
+//   border-left: 2px solid #ddd;
    .clearfix();
 
    div.overlay {
@@ -241,10 +245,10 @@ div.accounts {
    div.account-tile {
       float:left;
       background: #fff;
-      width:  50%;
-      padding: 65px 0 65px 0;
-      border-right: 1px solid #ccc;
-      border-bottom: 1px solid #ccc;
+      width:  100%;
+      padding: 20px 0 20px 0;
+//      border-right: 1px solid #ccc;
+//      border-bottom: 1px solid #ccc;
       text-align: center;
       position: relative;
       cursor: pointer;
@@ -274,7 +278,7 @@ div.accounts {
 
       div.account-name {
          float:left;
-         margin-left: 15%;
+         margin-left: 20px;
          img {
             height: 42px;
          }
@@ -282,7 +286,7 @@ div.accounts {
 
       div.linked-info {
          float:right;
-         margin-right: 15%;
+         margin-right: 20px;
          font-size: 20px;
          margin-top: 10px;
          div.linking-in-progress {

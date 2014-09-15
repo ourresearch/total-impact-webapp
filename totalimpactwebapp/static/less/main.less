@@ -1,3 +1,5 @@
+@import 'variables';
+
 body {
    color:  #333;
    font-family: Lato, Helvetica, Arial, sans-serif;
@@ -489,48 +491,48 @@ div.no-page {
 }
 
 #header {
-   ul.account-nav {
-
-      bottom: 0px;
-      right: 0;
-      width: 100%;
-      position:absolute;
+   top: 0;
+   right: 0;
+   position: fixed;
+   div.account-nav {
       margin: 0;
-      padding: 10px;
-      border-top: 1px solid #ddd;
-      img.gravatar {
-         height: 32px;
-         .border-radius(16px, 16px, 16px, 16px);
-      }
-      li {
-         display:inline-block;
-         a {
-            color: #777;
-            padding: 5px 7px;
+      a {
+         color: #bbb;
+         display: block;
+         float:right;
+         clear:both;
+         padding: 5px 8px;
+         text-align: right;
+         background: #fff;
+         .border-radius(0, 0, 3px, 3px);
+         img.gravatar {
+            opacity: .7;
+            height: 32px;
+            .border-radius(16px, 16px, 16px, 16px);
+         }
+         span.icon-container {
+            width: 28px;
+            text-align: center;
+            display:inline-block;
             i {
                font-size: 24px;
-               vertical-align: -5px;
-            }
-            &:hover {
-               color: @linkColor;
+               vertical-align: -2px;
             }
          }
-      }
+         span.tip {
+            font-size: 16px;
+            display:none;
+            margin-right: 2px;
 
-      top: 0;
-      right: 0;
-      width: 50px;
-      text-align: right;
-      position: fixed;
-      padding: 10px 10px 0 0;
-      li {
-         a{
-            opacity: .7;
-            display: block;
-            padding: 5px;
-            text-align: center;
-            &:hover {
+         }
+         &:hover {
+            opacity: 1;
+            color: @linkColor;
+            img.gravatar {
                opacity: 1;
+            }
+            span.tip {
+               display:inline;
             }
          }
       }
@@ -595,7 +597,7 @@ div.profile-sidebar {
          &.genre {
 
          }
-         &.accounts {
+         &.sidebar-accounts {
             a {
                img {
                   height: 16px;

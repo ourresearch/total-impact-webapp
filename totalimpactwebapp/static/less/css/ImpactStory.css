@@ -6363,21 +6363,40 @@ div.no-page p span.slug {
   width: 1100px;
   margin: 0 auto;
 }
-#header ul.account-nav {
-  bottom: 0px;
-  width: 100%;
-  position: absolute;
-  margin: 0;
-  padding: 10px;
-  border-top: 1px solid #ddd;
+#header {
   top: 0;
   right: 0;
-  width: 50px;
-  text-align: right;
   position: fixed;
-  padding: 10px 10px 0 0;
 }
-#header ul.account-nav img.gravatar {
+#header div.account-nav {
+  margin: 0;
+}
+#header div.account-nav a {
+  color: #bbb;
+  display: block;
+  float: right;
+  clear: both;
+  padding: 5px 8px;
+  text-align: right;
+  background: #fff;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 0;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 0;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+#header div.account-nav a img.gravatar {
+  opacity: .7;
   height: 32px;
   -webkit-border-top-right-radius: 16px;
   -webkit-border-bottom-right-radius: 16px;
@@ -6395,28 +6414,29 @@ div.no-page p span.slug {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-#header ul.account-nav li {
+#header div.account-nav a span.icon-container {
+  width: 28px;
+  text-align: center;
   display: inline-block;
 }
-#header ul.account-nav li a {
-  color: #777;
-  padding: 5px 7px;
-}
-#header ul.account-nav li a i {
+#header div.account-nav a span.icon-container i {
   font-size: 24px;
-  vertical-align: -5px;
+  vertical-align: -2px;
 }
-#header ul.account-nav li a:hover {
+#header div.account-nav a span.tip {
+  font-size: 16px;
+  display: none;
+  margin-right: 2px;
+}
+#header div.account-nav a:hover {
+  opacity: 1;
   color: #ff4000;
 }
-#header ul.account-nav li a {
-  opacity: .7;
-  display: block;
-  padding: 5px;
-  text-align: center;
-}
-#header ul.account-nav li a:hover {
+#header div.account-nav a:hover img.gravatar {
   opacity: 1;
+}
+#header div.account-nav a:hover span.tip {
+  display: inline;
 }
 div.profile-sidebar h1 a {
   color: #333;
@@ -6471,7 +6491,7 @@ div.profile-sidebar div.nav div.nav-group li {
   margin: 0;
   padding: 0;
 }
-div.profile-sidebar div.nav div.nav-group.accounts a img {
+div.profile-sidebar div.nav div.nav-group.sidebar-accounts a img {
   height: 16px;
   opacity: 1;
   filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
@@ -6484,7 +6504,7 @@ div.profile-sidebar div.nav div.nav-group.accounts a img {
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-div.profile-sidebar div.nav div.nav-group.accounts a:hover img {
+div.profile-sidebar div.nav div.nav-group.sidebar-accounts a:hover img {
   opacity: 1;
   filter: none;
   -webkit-filter: none;
@@ -7500,46 +7520,47 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   clear: both;
 }
 div.profile-subpage .profile-subpage-header {
-  background: #555;
-  color: #fff;
-}
-div.profile-subpage .profile-subpage-header .wrapper {
-  position: relative;
-  text-align: center;
-}
-div.profile-subpage .profile-subpage-header .wrapper a.back-to-profile {
-  position: absolute;
-  bottom: 47px;
-  left: 0;
-  color: #fff;
-  font-weight: 300;
+  padding: 22px 30px 30px;
+  background: #fafafa;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 30px;
 }
 div.profile-subpage .profile-subpage-header .wrapper h1 {
-  margin-top: 0;
-  padding-top: 60px;
-  color: #fff;
+  margin: 0 0 30px 0;
+  font-size: 30px;
 }
-div.profile-subpage .profile-subpage-header .wrapper h2 {
-  margin: 0 auto;
-  font-size: 20px;
-  font-weight: 300;
-  padding-bottom: 50px;
-  color: #fff;
-  max-width: 600px;
-  line-height: 1.5;
-}
-div.profile-subpage .profile-subpage-header .wrapper h2 a:hover {
-  color: #ff4000;
-  text-decoration: underline;
+div.profile-subpage .profile-subpage-header .wrapper .intro {
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 div.profile-subpage.profile-linked-accounts {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  overflow: scroll;
   width: 100%;
-  background: #ddd;
+  margin-left: -30px;
+  clear: both;
+}
+div.profile-subpage.profile-linked-accounts:before,
+div.profile-subpage.profile-linked-accounts:after {
+  content: " ";
+  display: table;
+}
+div.profile-subpage.profile-linked-accounts:after {
+  clear: both;
+}
+div.profile-subpage.profile-linked-accounts:before,
+div.profile-subpage.profile-linked-accounts:after {
+  content: " ";
+  display: table;
+}
+div.profile-subpage.profile-linked-accounts:after {
+  clear: both;
+}
+div.profile-subpage.profile-linked-accounts ul.ways-to-populate {
+  margin: 0;
+}
+div.profile-subpage.profile-linked-accounts ul.ways-to-populate li {
+  list-style-type: disc;
+  margin-left: 2em;
 }
 div.profile-subpage.profile-single-products div.profile-single-products-body {
   min-height: 600px;
@@ -8736,9 +8757,9 @@ div.modal-body.google-scholar-import div.import-complete a.btn {
   font-weight: 900;
 }
 div.accounts {
-  width: 100%;
+  width: 400px;
+  margin-left: 60px;
   float: left;
-  border-top: 2px solid #ddd;
   clear: both;
 }
 div.accounts:before,
@@ -8964,10 +8985,8 @@ div.accounts div.account-window-wrapper div.account-window .content .google-scho
 div.accounts div.account-tile {
   float: left;
   background: #fff;
-  width: 50%;
-  padding: 65px 0 65px 0;
-  border-right: 1px solid #ccc;
-  border-bottom: 1px solid #ccc;
+  width: 100%;
+  padding: 20px 0 20px 0;
   text-align: center;
   position: relative;
   cursor: pointer;
@@ -8990,14 +9009,14 @@ div.accounts div.account-tile.is-linked {
 }
 div.accounts div.account-tile div.account-name {
   float: left;
-  margin-left: 15%;
+  margin-left: 20px;
 }
 div.accounts div.account-tile div.account-name img {
   height: 42px;
 }
 div.accounts div.account-tile div.linked-info {
   float: right;
-  margin-right: 15%;
+  margin-right: 20px;
   font-size: 20px;
   margin-top: 10px;
 }

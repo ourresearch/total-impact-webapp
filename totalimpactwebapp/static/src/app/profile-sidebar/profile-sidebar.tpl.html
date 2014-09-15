@@ -34,7 +34,7 @@
             </li>
          </ul>
       </div>
-      <div class="nav-group accounts">
+      <div class="nav-group sidebar-accounts">
          <ul>
             <li ng-repeat="account in profileService.data.account_products | orderBy: 'followers'">
                <a href="/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}"

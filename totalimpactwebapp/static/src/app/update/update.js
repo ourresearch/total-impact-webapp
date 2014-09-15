@@ -6,6 +6,7 @@ angular.module( 'update.update', [
                               $timeout,
                               $q,
                               poller,
+                              UsersProducts,
                               UsersUpdateStatus){
 
     var status = {}

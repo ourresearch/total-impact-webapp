@@ -168,10 +168,15 @@ angular.module('accounts.account', [
     Products,
     GoogleScholar,
     UserProfile,
+    ProfileService,
+    ProfileAboutService,
     Account,
     security,
+    Page,
     Loading,
     TiMixpanel){
+
+    Page.setName("addAccounts")
 
   $scope.showAccountWindow = function(){
     $scope.accountWindowOpen = true;
@@ -184,6 +189,8 @@ angular.module('accounts.account', [
   $scope.isLinked = function(){
     return !!$scope.account.username.value
   }
+
+
 
   $scope.isLinked = !!$scope.account.username.value
 
@@ -242,7 +249,11 @@ angular.module('accounts.account', [
         TiMixpanel.track("Linked an account", {
           "Account name": $scope.account.displayName
         })
+
+
          // make sure everyone can see the new linked account
+        ProfileAboutService.get($routeParams.url_slug, true)
+        ProfileService.get($routeParams.url_slug, true)
         security.refreshCurrentUser().then(
           function(resp){
             console.log("update the client's current user with our new linked account", resp)
@@ -1472,14 +1483,21 @@ angular.module('profileLinkedAccounts', [
       })
 
   }])
-  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts, currentUser){
+  .controller("profileLinkedAccountsCtrl", function($scope,
+                                                    Page,
+                                                    $routeParams,
+                                                    AllTheAccounts,
+                                                    ProfileService,
+                                                    ProfileAboutService,
+                                                    currentUser){
 
 
-    Page.showHeader(false)
-    Page.showFooter(false)
+    ProfileAboutService.get($routeParams.url_slug)
+    ProfileService.get($routeParams.url_slug)
+    $scope.url_slug = $routeParams.url_slug
+
 
     console.log("linked accounts page. current user: ", currentUser)
-
     $scope.accounts = AllTheAccounts.get(currentUser)
     $scope.returnLink = "/"+$routeParams.url_slug
 
@@ -2688,6 +2706,7 @@ angular.module( 'update.update', [
                               $timeout,
                               $q,
                               poller,
+                              UsersProducts,
                               UsersUpdateStatus){
 
     var status = {}
@@ -4470,6 +4489,7 @@ angular.module('services.profileService', [
                                       TiMixpanel,
                                       Product,
                                       PinboardService,
+                                      ProfileAboutService,
                                       Users){
 
     var loading = true
@@ -6652,10 +6672,25 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "<div class=\"profile-linked-accounts profile-subpage\" >\n" +
     "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
-    "         <a back-to-profile></a>\n" +
-    "         <h1 class=\"instr\">Connect to other accounts</h1>\n" +
-    "         <h2>We'll automatically import your products from all over the web,\n" +
-    "            so your profile stays up to date.</h2>\n" +
+    "         <h1 class=\"instr\">Import and connect</h1>\n" +
+    "\n" +
+    "         <div class=\"intro\">\n" +
+    "            There are three ways to populate your Impactstory profile:\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <ul class=\"ways-to-populate\">\n" +
+    "            <li class=\"connect-accounts\">\n" +
+    "               Link accounts below to continuously import your research,\n" +
+    "            </li>\n" +
+    "            <li class=\"import-individually\">\n" +
+    "               <a href=\"/{{ url_slug }}/products/add\">add products individually by ID</a>, or\n" +
+    "            </li>\n" +
+    "            <li class=\"import-email\">\n" +
+    "               <a href=\"http://google.com\">send us an email</a> whenever you publish something new!\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "\n" +
+    "\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
@@ -6708,7 +6743,7 @@ angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCa
     "            </li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
-    "      <div class=\"nav-group accounts\">\n" +
+    "      <div class=\"nav-group sidebar-accounts\">\n" +
     "         <ul>\n" +
     "            <li ng-repeat=\"account in profileService.data.account_products | orderBy: 'followers'\">\n" +
     "               <a href=\"/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}\"\n" +
@@ -7108,69 +7143,59 @@ angular.module("security/login/reset-password-modal.tpl.html", []).run(["$templa
 
 angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login/toolbar.tpl.html",
-    "<ul class=\"account-nav\">\n" +
-    "   <li ng-show=\"currentUser\" class=\"logged-in-user nav-item\">\n" +
+    "<div class=\"account-nav\">\n" +
+    "   <div class=\"logged-in\" ng-show=\"currentUser\">\n" +
     "      <a class=\"current-user\"\n" +
-    "         href=\"/{{ currentUser.url_slug }}\"\n" +
-    "         tooltip-placement=\"left\"\n" +
-    "         tooltip=\"View your profile\">\n" +
+    "         href=\"/{{ currentUser.url_slug }}\">\n" +
+    "         <span class=\"tip\">View your profile</span>\n" +
     "         <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ currentUser.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
     "      </a>\n" +
-    "   </li>\n" +
-    "   <li ng-show=\"currentUser\" class=\"controls nav-item\">\n" +
     "\n" +
     "      <a class=\"logout control\"\n" +
-    "         tooltip-placement=\"left\"\n" +
-    "         ng-click=\"logout()\"\n" +
-    "         tooltip=\"Log out\">\n" +
-    "         <i class=\"icon-signout\"></i>\n" +
+    "         ng-click=\"logout()\">\n" +
+    "         <span class=\"tip\">Log out</span>\n" +
+    "         <span class=\"icon-container\">\n" +
+    "            <i class=\"icon-signout\"></i>\n" +
+    "         </span>\n" +
     "      </a>\n" +
     "\n" +
     "      <a class=\"preferences control\"\n" +
-    "         href=\"/settings/profile\"\n" +
-    "         tooltip-placement=\"left\"\n" +
-    "         tooltip=\"Change profile settings\">\n" +
-    "         <i class=\"icon-cog\"></i>\n" +
+    "         href=\"/settings/profile\">\n" +
+    "         <span class=\"tip\">Change settings</span>\n" +
+    "         <span class=\"icon-container\">\n" +
+    "            <i class=\"icon-cog\"></i>\n" +
+    "         </span>\n" +
     "      </a>\n" +
+    "\n" +
     "\n" +
     "      <a class=\"add-products control\"\n" +
-    "         href=\"{{ currentUser.url_slug }}/accounts\"\n" +
-    "         tooltip-placement=\"left\"\n" +
-    "         tooltip=\"Add accounts or products\">\n" +
-    "         <i class=\"icon-plus\"></i>\n" +
+    "         href=\"{{ currentUser.url_slug }}/accounts\">\n" +
+    "         <span class=\"tip animated\">Import things</span>\n" +
+    "         <span class=\"icon-container\">\n" +
+    "            <i class=\"icon-plus\"></i>\n" +
+    "         </span>\n" +
     "      </a>\n" +
+    "   </div>\n" +
     "\n" +
-    "      <a class=\"help control\"\n" +
-    "         href=\"javascript:void(0)\"\n" +
-    "         data-uv-lightbox=\"classic_widget\"\n" +
-    "         data-uv-mode=\"full\"\n" +
-    "         data-uv-primary-color=\"#cc6d00\"\n" +
-    "         data-uv-link-color=\"#007dbf\"\n" +
-    "         data-uv-default-mode=\"support\"\n" +
-    "         data-uv-forum-id=\"166950\"\n" +
-    "         tooltip-placement=\"left\"\n" +
-    "         tooltip=\"Get help or report bug\">\n" +
-    "         <i class=\"icon-question\"></i>\n" +
-    "      </a>\n" +
-    "   </li>\n" +
-    "\n" +
-    "   <li ng-show=\"!currentUser\" class=\"login-and-signup nav-item\">\n" +
+    "   <div ng-show=\"!currentUser\" class=\"not-logged-in\">\n" +
     "      <a ng-show=\"!page.isLandingPage()\" class=\"signup\" href=\"/signup\">Sign up</a>\n" +
     "      <a class=\"login\" ng-click=\"login()\">Log in<i class=\"icon-signin\"></i></a>\n" +
-    "      <a class=\"help control\"\n" +
-    "         href=\"javascript:void(0)\"\n" +
-    "         data-uv-lightbox=\"classic_widget\"\n" +
-    "         data-uv-mode=\"full\"\n" +
-    "         data-uv-primary-color=\"#cc6d00\"\n" +
-    "         data-uv-link-color=\"#007dbf\"\n" +
-    "         data-uv-default-mode=\"support\"\n" +
-    "         data-uv-forum-id=\"166950\"\n" +
-    "         tooltip-placement=\"left\"\n" +
-    "         tooltip=\"Get help or report bug\">\n" +
-    "         <i class=\"icon-question\"></i>\n" +
-    "      </a>\n" +
-    "   </li>\n" +
-    "</ul>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <a class=\"help control\"\n" +
+    "      href=\"javascript:void(0)\"\n" +
+    "      data-uv-lightbox=\"classic_widget\"\n" +
+    "      data-uv-mode=\"full\"\n" +
+    "      data-uv-primary-color=\"#cc6d00\"\n" +
+    "      data-uv-link-color=\"#007dbf\"\n" +
+    "      data-uv-default-mode=\"support\"\n" +
+    "      data-uv-forum-id=\"166950\">\n" +
+    "         <span class=\"tip\">Get help</span>\n" +
+    "         <span class=\"icon-container\">\n" +
+    "            <i class=\"icon-question\"></i>\n" +
+    "         </span>\n" +
+    "   </a>\n" +
+    "</div>\n" +
     "");
 }]);
 
