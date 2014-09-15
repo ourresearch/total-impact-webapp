@@ -372,20 +372,23 @@ div.modal {
 
 div#user-message {
    position: fixed;
-   width: 100%;
+   width: @contentWidth;
+   margin-left: -@contentPaddingLeft;
    z-index: 1000;
    button.close {
       position: absolute;
       top: 25px;
-      right: 20px;
+      right: 34px;
    }
    .alert {
       opacity: .95;
       text-align: center;
       padding-top: 30px;
       padding-bottom: 25px;
+      padding: 30px 40px 25px 30px;
       margin-bottom: 0;
       font-size: 16px;
+      .border-radius(0, 50px, 0, 0);
       a {
          font-weight: bold;
          text-decoration: none;

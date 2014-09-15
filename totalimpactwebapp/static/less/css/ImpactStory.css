@@ -6239,21 +6239,38 @@ div.modal.creds .modal-dialog .modal-footer a {
 }
 div#user-message {
   position: fixed;
-  width: 100%;
+  width: 900px;
+  margin-left: -50px;
   z-index: 1000;
 }
 div#user-message button.close {
   position: absolute;
   top: 25px;
-  right: 20px;
+  right: 34px;
 }
 div#user-message .alert {
   opacity: .95;
   text-align: center;
   padding-top: 30px;
   padding-bottom: 25px;
+  padding: 30px 40px 25px 30px;
   margin-bottom: 0;
   font-size: 16px;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-right-radius: 50px;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomright: 50px;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 50px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
 div#user-message .alert a {
   font-weight: bold;
