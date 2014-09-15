@@ -108,7 +108,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-  $scope.showUnderConstruction = ($location.host() == "impactstory.org")
+  $scope.showUnderConstruction = (_.contains(
+    ["impactstory.org", "www.impactstory.org"],
+    $location.host()
+  ))
 
 
   security.requestCurrentUser().then(function(currentUser){
