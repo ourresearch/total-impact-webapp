@@ -6246,7 +6246,8 @@ div#user-message {
 }
 div#user-message button.close {
   position: absolute;
-  top: 25px;
+  top: 28px;
+  font-size: 40px;
   right: 34px;
 }
 div#user-message .alert {
@@ -6254,7 +6255,7 @@ div#user-message .alert {
   text-align: center;
   padding-top: 30px;
   padding-bottom: 25px;
-  padding: 40px 40px 35px 30px;
+  padding: 40px 65px 35px;
   margin-bottom: 0;
   font-size: 16px;
   -webkit-border-top-right-radius: 0;
@@ -9221,31 +9222,40 @@ div.accounts div.account-tile div.linked-info div.connected-toggle .toggle-housi
   font-size: 12px;
   text-align: center;
 }
-div.password-reset-header {
-  background: #ff4000;
-  height: 100px;
-  padding-top: 20px;
+body.page-name-password-reset #sidebar {
+  display: none;
+}
+body.page-name-password-reset #not-sidebar {
+  width: 100%;
+  margin: 0;
 }
 div.password-reset-header h1 {
   text-align: center;
-  margin: 0;
+  margin: 100px;
 }
 div.password-reset-header h1 img {
   height: 50px;
   margin-top: 5px;
 }
 div.password-reset-header h1 span {
-  font-size: 25px;
+  font-size: 45px;
+  margin-top: 30px;
   font-weight: 300;
   text-transform: uppercase;
-  color: #fff;
+  color: #555;
+  display: block;
 }
 div.password-reset form.password-reset {
   width: 500px;
-  margin: 200px auto 0;
+  margin: 100px auto 0;
 }
 div.password-reset form.password-reset div.new-password {
   position: relative;
+}
+div.password-reset form.password-reset div.new-password label {
+  font-weight: normal;
+  margin-bottom: 15px;
+  color: #555;
 }
 div.password-reset form.password-reset div.new-password input {
   font-size: 30px;

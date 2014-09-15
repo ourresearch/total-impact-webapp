@@ -1063,8 +1063,21 @@ angular.module('passwordReset', [
   )
 })
 
-.controller("passwordResetFormCtrl", function($scope, $location, $routeParams, Loading, Page, UsersPassword, UserMessage, security){
+.controller("passwordResetFormCtrl", function($scope,
+                                              $location,
+                                              $routeParams,
+                                              Loading,
+                                              Page,
+                                              UsersPassword,
+                                              ProfileService,
+                                              ProfileAboutService,
+                                              UserMessage,
+                                              security){
+
   console.log("reset token", $routeParams.resetToken)
+  Page.setName("password-reset")
+
+  $scope.userEmail = $routeParams.resetToken.replace(/\.[^.]+\.[^.]+$/, "")
 
   $scope.password = ""
   $scope.onSave = function(){
@@ -1074,11 +1087,13 @@ angular.module('passwordReset', [
       {id: $routeParams.resetToken, id_type:"reset_token"},
       {newPassword: $scope.password},
       function(resp) {
-        UserMessage.set('passwordReset.success');
+        console.log("password reset success")
+        UserMessage.set('passwordReset.success', true);
         $location.path("/")
-        security.showLogin()
+        security.showLogin($scope.userEmail, false)
       },
       function(resp) {
+        console.log("password reset failure")
         UserMessage.set('passwordReset.error.invalidToken', true);
         Loading.finish('saveButton')
         $scope.password = "";  // reset the form
@@ -1864,7 +1879,15 @@ angular.module('security.login.form', [
 
 // The LoginFormController provides the behaviour behind a reusable form to allow users to authenticate.
 // This controller and its template (login/form.tpl.html) are used in a modal dialog box by the security service.
-.controller('LoginFormController', function($scope, security, $modalInstance, $modal, UserMessage, Page, Loading) {
+.controller('LoginFormController', function($scope,
+                                            security,
+                                            $modalInstance,
+                                            $modal,
+                                            UserMessage,
+                                            email,
+                                            clearMessages,
+                                            Page,
+                                            Loading) {
   var reportError = function(status){
     var key
     if (status == 401) {
@@ -1887,6 +1910,9 @@ angular.module('security.login.form', [
 
   UserMessage.showOnTop(false)
   $scope.user = {};
+  if (email){
+    $scope.user.email = email
+  }
   $scope.loading = Loading
   $scope.userMessage = UserMessage
 
@@ -2042,12 +2068,16 @@ angular.module('security.service', [
 
     // Login form dialog stuff
     var loginDialog = null;
-    function openLoginDialog() {
+    function openLoginDialog(email, clearMessages) {
       console.log("openLoginDialog() fired.")
       loginDialog = $modal.open({
         templateUrl: "security/login/form.tpl.html",
         controller: "LoginFormController",
-        windowClass: "creds"
+        windowClass: "creds",
+        resolve: {
+          email: function(){return email},
+          clearMessages: function(){return clearMessages}
+        }
       });
       loginDialog.result.then();
     }
@@ -2065,8 +2095,8 @@ angular.module('security.service', [
     // The public API of the service
     var service = {
 
-      showLogin: function() {
-        openLoginDialog();
+      showLogin: function(email, clearMessages) {
+        openLoginDialog(email, clearMessages);
       },
 
       login: function(email, password) {
@@ -4992,7 +5022,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -6006,20 +6036,16 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "");
 }]);
 
-angular.module("password-reset/password-reset-header.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("password-reset/password-reset-header.tpl.html",
-    "<div class=\"password-reset-header\">\n" +
-    "   <h1><a class=\"brand\" href=\"/\">\n" +
-    "      <img src=\"/static/img/impactstory-logo-white.png\" alt=\"Impactstory\" /></a>\n" +
-    "      <span class=\"text\">password reset</span>\n" +
-    "   </h1>\n" +
-    "</div>\n" +
-    "<div ng-include=\"'notifications.tpl.html'\" class=\"container-fluid\"></div>\n" +
-    "");
-}]);
-
 angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("password-reset/password-reset.tpl.html",
+    "<div class=\"password-reset-header\">\n" +
+    "   <h1><a class=\"brand\" href=\"/\">\n" +
+    "      <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
+    "      <span class=\"text\">password reset</span>\n" +
+    "      </a>\n" +
+    "   </h1>\n" +
+    "</div>\n" +
+    "\n" +
     "<div class=\"password-reset\">\n" +
     "   <form novalidate\n" +
     "         name=\"passwordResetForm\"\n" +
@@ -6033,7 +6059,7 @@ angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCach
     "      </div>-->\n" +
     "\n" +
     "      <div class=\"form-group new-password\">\n" +
-    "         <label class=\"control-label sr-only\">New password</label>\n" +
+    "         <label class=\"control-label\">Enter a new password for {{ userEmail }}:</label>\n" +
     "         <div class=\"controls \">\n" +
     "            <input ng-model=\"password\"\n" +
     "                   name=\"newPassword\"\n" +
