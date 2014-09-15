@@ -3,7 +3,7 @@
   <p>Change email address used for login and contact</p>
 </div>
 
-<form novalidate name="userEmailForm" class="form-horizontal custom-url" ng-submit="onSave()" ng-controller="emailSettingsCtrl">
+<form novalidate name="userEmailForm" class="form-horizontal custom-email" ng-submit="onSave()" ng-controller="emailSettingsCtrl">
   <div class="form-group change-email"
   ng-model="user.email"
   ng-class="{ 'has-error':  userEmailForm.email.$invalid && userEmailForm.email.$dirty && !loading.is(),

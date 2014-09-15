@@ -1,11 +1,11 @@
 <div class="wrapper settings">
    <div class="settings-nav ">
+      <h4>Settings</h4>
       <ul nav-list nav>
          <li ng-repeat="pageDescr in pageDescriptions">
             <a ng-class="{selected: isCurrentPath(pageDescr.urlPath)}"
                href="{{ pageDescr.urlPath }}">
                {{ pageDescr.displayName }}
-               <i class="icon-chevron-right"></i>
             </a>
          </li>
       </ul>

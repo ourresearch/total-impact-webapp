@@ -2360,8 +2360,21 @@ angular.module('settings', [
     )
   })
 
-  .controller('settingsCtrl', function ($scope, $location, authenticatedUser, SettingsPageDescriptions, $routeParams, Loading) {
+  .controller('settingsCtrl', function ($scope,
+                                        $location,
+                                        authenticatedUser,
+                                        SettingsPageDescriptions,
+                                        ProfileAboutService,
+                                        ProfileService,
+                                        $routeParams,
+                                        Page,
+                                        Loading) {
 
+
+    ProfileAboutService.get(authenticatedUser.url_slug)
+    ProfileService.get(authenticatedUser.url_slug)
+
+    Page.setName("settings")
     $scope.resetUser = function(){
       $scope.user = angular.copy(authenticatedUser)
     }
@@ -7213,7 +7226,7 @@ angular.module("settings/email-settings.tpl.html", []).run(["$templateCache", fu
     "  <p>Change email address used for login and contact</p>\n" +
     "</div>\n" +
     "\n" +
-    "<form novalidate name=\"userEmailForm\" class=\"form-horizontal custom-url\" ng-submit=\"onSave()\" ng-controller=\"emailSettingsCtrl\">\n" +
+    "<form novalidate name=\"userEmailForm\" class=\"form-horizontal custom-email\" ng-submit=\"onSave()\" ng-controller=\"emailSettingsCtrl\">\n" +
     "  <div class=\"form-group change-email\"\n" +
     "  ng-model=\"user.email\"\n" +
     "  ng-class=\"{ 'has-error':  userEmailForm.email.$invalid && userEmailForm.email.$dirty && !loading.is(),\n" +
@@ -7492,12 +7505,12 @@ angular.module("settings/settings.tpl.html", []).run(["$templateCache", function
   $templateCache.put("settings/settings.tpl.html",
     "<div class=\"wrapper settings\">\n" +
     "   <div class=\"settings-nav \">\n" +
+    "      <h4>Settings</h4>\n" +
     "      <ul nav-list nav>\n" +
     "         <li ng-repeat=\"pageDescr in pageDescriptions\">\n" +
     "            <a ng-class=\"{selected: isCurrentPath(pageDescr.urlPath)}\"\n" +
     "               href=\"{{ pageDescr.urlPath }}\">\n" +
     "               {{ pageDescr.displayName }}\n" +
-    "               <i class=\"icon-chevron-right\"></i>\n" +
     "            </a>\n" +
     "         </li>\n" +
     "      </ul>\n" +

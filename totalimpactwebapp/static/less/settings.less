@@ -2,10 +2,9 @@ div.settings {
    div.settings-header {
       margin: 0 0 50px 0;
       padding: 0 0 0 0;
-      width: 600px;
       h1 {
-         font-weight: bolder;
-         font-size: 40px;
+         font-weight: bold;
+         font-size: 30px;
          color: #555;
          padding:0;
          margin:0;
@@ -21,35 +20,36 @@ div.settings {
    }
 
    div.settings-nav {
-      float:left;
+      position: fixed;
+      padding-top: 190px;
+      top:0;
+      left:50%;
+      background: #fafafa;
+      z-index: 100;
+      margin-left: -(@wrapperWidth / 2) + @sidebarWidth;
+      bottom: 0;
       width: 200px;
+      padding-left: 30px;
+      h4 {
+         margin-top: 0;
+      }
       ul {
          li {
             a {
                &:first-letter {
                   text-transform: capitalize;
                }
-               padding: 10px;
-               font-weight: 300;
-               font-size: 18px;
+               padding: 4px 15px 4px 0;
+               font-size: 16px;
                display: block;
-               margin-top:5px;
-               color: @accentColor;
-               .border-radius(3px, 3px, 3px, 3px);
+               color: #777;
                &.selected {
-                  background: @accentColor;
-                  color:  #fff;
+                  color:  @linkColor;
                }
                &:hover {
-                  background: #f5f5f5;
                   text-decoration: none;
-                  &.selected {background: @accentColor;}
+                  color: #000;
                }
-               i {
-                  float:right;
-                  margin-top: 4px;
-               }
-
             }
          }
       }
@@ -58,8 +58,7 @@ div.settings {
    div.settings-input {
 
       float:left;
-      margin: 0 0 0 100px;
-      width: 800px;
+      margin: 20px 0 0 200px;
 
       div.notifications-form-container {
          h2 {
@@ -67,7 +66,6 @@ div.settings {
             margin-bottom: 20px;
             font-size: 30px;
             border-bottom: 1px solid #ddd;
-            width: 600px;
             display:None;
          }
          form {
@@ -111,7 +109,6 @@ div.settings {
             div.email-example {
                float:left;
                margin-right: 20px;
-               margin-bottom: 50px;
                img {
                   width: 400px;
                }
@@ -150,6 +147,8 @@ div.settings {
          width: 600px;
          clear:both;
          margin-bottom: 70px;
+
+
          div.form-title {
             margin-bottom: 30px;
             h3 {
@@ -162,9 +161,27 @@ div.settings {
                font-size: 16px;
             }
          }
-         &.custom-url {
+         &.custom-url, &.custom-email {
+            .form-group {
+               margin-left: 0;
+            }
+            div.col-sm-9{
+               width: 100%;
+            }
+            div.col-sm-10, div.col-xs-10  {
+               padding-left: 0;
+               margin-left: 0;
+            }
+            div.feedback.col-sm-3{
+               width: 100%;
+               text-align: center;
+               text-align: left;
+               padding: 20px 20px 20px 0;
+               .help-block {
+                  float:none;
+               }
+            }
          }
-
          &.upgrade-form {
             input#card-number {
                background-size: auto 50%;
@@ -247,9 +264,7 @@ div.settings {
                   }
                }
             }
-            &.custom-url {
 
-            }
             &.submit {
                margin-top: 10px;
             }

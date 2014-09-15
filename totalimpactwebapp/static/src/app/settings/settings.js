@@ -28,8 +28,21 @@ angular.module('settings', [
     )
   })
 
-  .controller('settingsCtrl', function ($scope, $location, authenticatedUser, SettingsPageDescriptions, $routeParams, Loading) {
+  .controller('settingsCtrl', function ($scope,
+                                        $location,
+                                        authenticatedUser,
+                                        SettingsPageDescriptions,
+                                        ProfileAboutService,
+                                        ProfileService,
+                                        $routeParams,
+                                        Page,
+                                        Loading) {
 
+
+    ProfileAboutService.get(authenticatedUser.url_slug)
+    ProfileService.get(authenticatedUser.url_slug)
+
+    Page.setName("settings")
     $scope.resetUser = function(){
       $scope.user = angular.copy(authenticatedUser)
     }
