@@ -14,6 +14,7 @@ import os
 import requests
 import argparse
 import logging
+import time
 
 logger = logging.getLogger("webapp.daily")
 
@@ -294,6 +295,30 @@ def refresh_twitter(min_tiid=None):
 
 
 
+def refresh_tweeted_products(min_tiid=None):
+
+    if min_tiid:
+        q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.tiid>min_tiid)
+    else:
+        q = db.session.query(Product).filter(Product.profile_id != None)
+
+    start_time = datetime.datetime.utcnow()
+    number_considered = 0.0
+    number_refreshed = 0
+    for product in windowed_query(q, Product.tiid, 25):
+        number_considered += 1
+        try:
+            if product.get_metric_by_name("altmetric_com", "tweets"):
+                print number_refreshed, ". refreshing: ", product.tiid
+                refresh_products_from_tiids([product.tiid], source="scheduled")
+                number_refreshed += 1
+                time.sleep(0.5)
+                elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+                print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+                
+        except AttributeError:
+            pass
+
 
 
 def run_through_twitter_pages(url_slug=None, min_url_slug=None):
@@ -389,8 +414,8 @@ def main(function, args):
         collect_embed(args["min_tiid"])
     elif function=="linked_accounts":
         linked_accounts(args["account_type"], args["url_slug"], args["min_url_slug"])
-    elif function=="refresh_twitter":
-        refresh_twitter()
+    elif function=="refresh_tweeted_products":
+        refresh_tweeted_products()
     elif function=="run_through_twitter_pages":
         run_through_twitter_pages(args["url_slug"], args["min_url_slug"])
 
