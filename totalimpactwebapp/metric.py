@@ -215,6 +215,18 @@ class Metric(object):
         return self.most_recent_snap.last_collected_date
 
     @cached_property
+    def current_value(self):
+        return self.diff_window_end_value
+
+    @cached_property
+    def is_int(self):
+        try:
+            _ = int(self.most_recent_snap.raw_value)
+            return True
+        except (ValueError, TypeError):
+            return False
+
+    @cached_property
     def diff_value(self):
         try:
             return self.diff_window_end_value - self.diff_window_start_value
