@@ -7524,7 +7524,7 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   clear: both;
 }
 div.profile-subpage {
-  margin-left: -30px;
+  margin-left: -50px;
 }
 div.profile-subpage .profile-subpage-header {
   padding: 22px 30px 30px;
@@ -9288,7 +9288,7 @@ div.genre-page {
 }
 div.genre-page div.header {
   padding: 0 10px 10px 30px;
-  margin: 0 0 70px -30px;
+  margin: 0 0 70px -50px;
   border-bottom: 1px solid #eee;
   position: relative;
 }
