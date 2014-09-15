@@ -584,6 +584,9 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
+  $scope.showUnderConstruction = ($location.host() == "impactstory.org")
+
+
   security.requestCurrentUser().then(function(currentUser){
 
     if (!currentUser){
@@ -5022,7 +5025,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -7903,6 +7906,24 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "</div>\n" +
     "\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("under-construction.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("under-construction.tpl.html",
+    "<div id=\"under-construction-curtain\">\n" +
+    "   <div class=\"top\">\n" +
+    "      <div class=\"logo\"><img src=\"/static/img/impactstory-logo.png\" alt=\"ImpactStory\" /></div>\n" +
+    "      <h1>We're down for maintenance...</h1>\n" +
+    "   </div>\n" +
+    "   <div class=\"bottom\">\n" +
+    "      <h2>but hang tight, we'll be back soon.</h2>\n" +
+    "      <p>In the meantime, you can keep updated on our progress via our <a href=\"http://www.twitter.com/ImpactStory_now\">status feed</a>.</p>\n" +
+    "   </div>\n" +
+    "   <div class=\"hide-curtain\" ng-click=\"showUnderConstruction=false\">\n" +
+    "      <i class=\"icon-heart-empty\"></i>\n" +
+    "   </div>\n" +
+    "</div>\n" +
     "");
 }]);
 

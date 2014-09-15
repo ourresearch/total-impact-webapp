@@ -108,6 +108,9 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
+  $scope.showUnderConstruction = ($location.host() == "impactstory.org")
+
+
   security.requestCurrentUser().then(function(currentUser){
 
     if (!currentUser){

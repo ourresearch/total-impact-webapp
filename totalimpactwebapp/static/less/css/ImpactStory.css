@@ -6690,6 +6690,73 @@ div.tooltip.click-to-visit-profile .tooltip-arrow {
 code {
   color: #000;
 }
+#under-construction-curtain {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background: #fff;
+  z-index: 999999999;
+}
+#under-construction-curtain .hide-curtain {
+  position: absolute;
+  color: #ff4000;
+  bottom: 0;
+  left: 0;
+  height: 30px;
+  width: 30px;
+  text-align: center;
+  background: #fff;
+}
+#under-construction-curtain .hide-curtain i {
+  display: bock;
+  display: none;
+}
+#under-construction-curtain .hide-curtain:hover i {
+  display: inline;
+}
+#under-construction-curtain div.top {
+  background: #ffffff;
+  margin: 0;
+}
+#under-construction-curtain div.top div.logo img {
+  width: 175px;
+  display: block;
+  margin: 0 auto;
+  padding: 15px;
+}
+#under-construction-curtain div.top h1 {
+  font-family: Lato, helvetica, sans-serif;
+  font-weight: bolder;
+  font-size: 50px;
+  color: #777;
+  text-align: center;
+  margin: 120px auto 10px;
+  width: 800px;
+  padding: 0 0 10px 0;
+}
+#under-construction-curtain div.bottom h2 {
+  font-family: Lato, helvetica, sans-serif;
+  font-size: 24px;
+  color: #777;
+  text-align: center;
+  margin: 0 auto;
+  padding: 0 0 70px 0;
+  width: 600px;
+}
+#under-construction-curtain div.bottom p {
+  font-size: 18px;
+  color: #999;
+  width: 400px;
+  line-height: 2;
+  margin: 0 auto 30px auto;
+  text-align: center;
+  font-family: Lato, helvetica, sans-serif;
+}
+#under-construction-curtain a {
+  color: #FF4E00;
+}
 /* info pages in general
 *****************************************************************************
 *****************************************************************************

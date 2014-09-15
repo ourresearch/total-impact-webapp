@@ -70,6 +70,7 @@
 </head>
 {% raw %}
 <body class="{{ page.getBodyClasses() }}" jq-popover jq-tooltip>
+   <div ng-include="'under-construction.tpl.html'" ng-show="showUnderConstruction"></div>
 
    <div id="header">
       <login-toolbar></login-toolbar>
