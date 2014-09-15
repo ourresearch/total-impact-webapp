@@ -3,7 +3,6 @@ from totalimpactwebapp.card import ProfileNewDiffCard
 from totalimpactwebapp.card import GenreNewDiffCard
 from totalimpactwebapp.card import GenreMetricSumCard
 from totalimpactwebapp.card import GenreEngagementSumCard
-from totalimpactwebapp.card import GenreProductsWithMoreThanCard
 import configs
 
 import datetime
@@ -64,7 +63,6 @@ def make_genre_cards(products):
     cards = []
     cards += make_product_list_cards(products, GenreMetricSumCard)
     cards += make_product_list_engagement_cards(products, GenreEngagementSumCard)
-    #cards += make_product_list_cards(products, GenreProductsWithMoreThanCard)
     cards.sort(key=lambda x: x.sort_by, reverse=True)
     return cards
 
