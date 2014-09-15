@@ -1,0 +1,23 @@
+<div class="settings-header">
+   <h1>Embed</h1>
+   <p>Show off your Impactstory profile elsewhere on the web</p>
+</div>
+
+<div class="embed-settings-body" ng-controller="EmbedSettingsCtrl">
+
+   <div class="embed-link embed-type">
+      <img src="static/img/impactstory-logo.png" alt="Impactstory logo"/>
+      <h3 class="text">Embed a link to your profile</h3>
+      <span>Paste this code in your page source HTML:</span>
+      <pre>&lt;a href="{{ baseUrl }}/{{ user.url_slug }}"&gt;&lt;img src="{{ baseUrl}}/logo/small" width="200" /&gt;&lt;/a&gt;</pre>
+   </div>
+
+   <div class="embed-type embed-type">
+      <img src="static/img/embedded-profile-example.png" alt="Impactstory profile"/>
+      <h3 class="text">Embed your whole profile</h3>
+      <span>Paste this code in your page source HTML:</span>
+      <pre>&lt;iframe src="{{ baseUrl }}/embed/{{ user.url_slug }}" width="100%" height="600"&gt;&lt;/iframe&gt;</pre>
+   </div>
+
+</div>
+

@@ -155,6 +155,16 @@ angular.module('settings', [
     };
   })
 
+  .controller('EmbedSettingsCtrl', function ($scope, $location, Users, security, $location, UserMessage, Loading) {
+
+    var baseUrl = $location.protocol() + "://"
+    baseUrl += $location.host()
+    if ($location.port() === 5000){ // handle localhost special
+      baseUrl += (":5000")
+    }
+    $scope.baseUrl = baseUrl
+  })
+
 
 
   .controller('subscriptionSettingsCtrl', function ($scope,

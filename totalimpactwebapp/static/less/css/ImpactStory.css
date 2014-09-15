@@ -8533,7 +8533,6 @@ div.settings div.settings-nav ul li a:hover {
   color: #000;
 }
 div.settings div.settings-input {
-  float: left;
   margin: 20px 0 0 200px;
 }
 div.settings div.settings-input div.notifications-form-container h2 {
@@ -8558,6 +8557,20 @@ div.settings div.settings-input div.notifications-form-container form div.radio 
 div.settings div.settings-input div.notifications-form-container form div.radio label p {
   padding-left: 5px;
   font-weight: normal;
+}
+div.settings div.settings-input div.embed-settings-body div.embed-type {
+  margin-bottom: 90px;
+}
+div.settings div.settings-input div.embed-settings-body div.embed-type img {
+  float: left;
+  margin: 30px;
+  width: 150px;
+}
+div.settings div.settings-input div.embed-settings-body div.embed-type span {
+  font-size: 14px;
+}
+div.settings div.settings-input div.embed-settings-body div.embed-type textarea {
+  width: 350px;
 }
 div.settings div.settings-input div.upgrade-form-container div.current-plan-status {
   margin-bottom: 90px;

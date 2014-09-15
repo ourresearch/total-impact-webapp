@@ -235,25 +235,6 @@ angular.module("profile", [
 
 
 
-.controller("profileEmbedModalCtrl", function($scope, $location, Page, url_slug){
-  console.log("user slug is: ", url_slug)
-
-  var baseUrl = $location.protocol() + "://"
-  baseUrl += $location.host()
-  if ($location.port() === 5000){ // handle localhost special
-    baseUrl += (":5000")
-  }
-
-  console.log("base url is ", baseUrl)
-
-
-  $scope.url_slug = url_slug;
-  $scope.baseUrl = baseUrl
-  $scope.embed = {}
-  $scope.embed.type = "badge"
-
-})
-
 .directive("backToProfile",function($location, Loading){
  return {
    restrict: 'A',

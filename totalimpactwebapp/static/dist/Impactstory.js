@@ -1823,25 +1823,6 @@ angular.module("profile", [
 
 
 
-.controller("profileEmbedModalCtrl", function($scope, $location, Page, url_slug){
-  console.log("user slug is: ", url_slug)
-
-  var baseUrl = $location.protocol() + "://"
-  baseUrl += $location.host()
-  if ($location.port() === 5000){ // handle localhost special
-    baseUrl += (":5000")
-  }
-
-  console.log("base url is ", baseUrl)
-
-
-  $scope.url_slug = url_slug;
-  $scope.baseUrl = baseUrl
-  $scope.embed = {}
-  $scope.embed.type = "badge"
-
-})
-
 .directive("backToProfile",function($location, Loading){
  return {
    restrict: 'A',
@@ -2297,8 +2278,8 @@ angular.module('settings.pageDescriptions')
     "Notifications",
     "Custom URL",
     "Email",
-    "Password"
-//    ,"Linked accounts"
+    "Password",
+    "Embed"
   ]
 
   var urlPathFromDisplayName = function(displayName){
@@ -2485,6 +2466,16 @@ angular.module('settings', [
         }
       )
     };
+  })
+
+  .controller('EmbedSettingsCtrl', function ($scope, $location, Users, security, $location, UserMessage, Loading) {
+
+    var baseUrl = $location.protocol() + "://"
+    baseUrl += $location.host()
+    if ($location.port() === 5000){ // handle localhost special
+      baseUrl += (":5000")
+    }
+    $scope.baseUrl = baseUrl
   })
 
 
@@ -3577,7 +3568,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4158,7 +4148,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -5003,7 +4992,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -6766,47 +6755,6 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "</div>");
 }]);
 
-angular.module("profile/profile-embed-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile/profile-embed-modal.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <h4>Embed profile</h4>\n" +
-    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
-    "</div>\n" +
-    "<div class=\"modal-body embed\">\n" +
-    "   <label>\n" +
-    "        <input type=\"radio\" name=\"embed-type\"\n" +
-    "               value=\"link\" ng-model=\"embed.type\" />\n" +
-    "      <span class=\"text\">Embed a <br><strong>link to this profile</strong></span>\n" +
-    "      <img src=\"static/img/impactstory-logo.png\" alt=\"Impactstory logo\"/>\n" +
-    "    </label>\n" +
-    "\n" +
-    "   <label>\n" +
-    "        <input type=\"radio\" name=\"embed-type\"\n" +
-    "               value=\"profile\" ng-model=\"embed.type\" />\n" +
-    "      <span class=\"text\">Embed this <br><strong>whole profile at full size</strong></span>\n" +
-    "      <img src=\"static/img/embedded-profile-example.png\" alt=\"Impactstory profile\"/>\n" +
-    "    </label>\n" +
-    "\n" +
-    "\n" +
-    "   <div class=\"code\">\n" +
-    "      <div class=\"embed-profile\" ng-show=\"embed.type=='profile'\">\n" +
-    "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;iframe src=\"{{ baseUrl }}/embed/{{ url_slug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</textarea>\n" +
-    "      </div>\n" +
-    "      <div class=\"embed-link\" ng-show=\"embed.type=='link'\">\n" +
-    "         <h3>Paste this code in your page source HTML:</h3>\n" +
-    "         <textarea rows=\"3\">&lt;a href=\"{{ baseUrl }}/{{ url_slug }}\"&gt;&lt;img src=\"{{ baseUrl}}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</textarea>\n" +
-    "      </div>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "</div>\n" +
-    "\n" +
-    "");
-}]);
-
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
@@ -7276,6 +7224,34 @@ angular.module("settings/email-settings.tpl.html", []).run(["$templateCache", fu
     "  </div>\n" +
     "\n" +
     "</form>\n" +
+    "");
+}]);
+
+angular.module("settings/embed-settings.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("settings/embed-settings.tpl.html",
+    "<div class=\"settings-header\">\n" +
+    "   <h1>Embed</h1>\n" +
+    "   <p>Show off your Impactstory profile elsewhere on the web</p>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"embed-settings-body\" ng-controller=\"EmbedSettingsCtrl\">\n" +
+    "\n" +
+    "   <div class=\"embed-link embed-type\">\n" +
+    "      <img src=\"static/img/impactstory-logo.png\" alt=\"Impactstory logo\"/>\n" +
+    "      <h3 class=\"text\">Embed a link to your profile</h3>\n" +
+    "      <span>Paste this code in your page source HTML:</span>\n" +
+    "      <pre>&lt;a href=\"{{ baseUrl }}/{{ user.url_slug }}\"&gt;&lt;img src=\"{{ baseUrl}}/logo/small\" width=\"200\" /&gt;&lt;/a&gt;</pre>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"embed-type embed-type\">\n" +
+    "      <img src=\"static/img/embedded-profile-example.png\" alt=\"Impactstory profile\"/>\n" +
+    "      <h3 class=\"text\">Embed your whole profile</h3>\n" +
+    "      <span>Paste this code in your page source HTML:</span>\n" +
+    "      <pre>&lt;iframe src=\"{{ baseUrl }}/embed/{{ user.url_slug }}\" width=\"100%\" height=\"600\"&gt;&lt;/iframe&gt;</pre>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
     "");
 }]);
 

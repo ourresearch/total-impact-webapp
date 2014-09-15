@@ -8,8 +8,8 @@ angular.module('settings.pageDescriptions')
     "Notifications",
     "Custom URL",
     "Email",
-    "Password"
-//    ,"Linked accounts"
+    "Password",
+    "Embed"
   ]
 
   var urlPathFromDisplayName = function(displayName){
