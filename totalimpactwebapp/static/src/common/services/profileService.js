@@ -9,6 +9,7 @@ angular.module('services.profileService', [
                                       TiMixpanel,
                                       Product,
                                       PinboardService,
+                                      ProfileAboutService,
                                       Users){
 
     var loading = true

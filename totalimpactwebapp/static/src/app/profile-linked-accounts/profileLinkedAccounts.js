@@ -22,14 +22,21 @@ angular.module('profileLinkedAccounts', [
       })
 
   }])
-  .controller("profileLinkedAccountsCtrl", function($scope, Page, $routeParams, AllTheAccounts, currentUser){
+  .controller("profileLinkedAccountsCtrl", function($scope,
+                                                    Page,
+                                                    $routeParams,
+                                                    AllTheAccounts,
+                                                    ProfileService,
+                                                    ProfileAboutService,
+                                                    currentUser){
 
 
-    Page.showHeader(false)
-    Page.showFooter(false)
+    ProfileAboutService.get($routeParams.url_slug)
+    ProfileService.get($routeParams.url_slug)
+    $scope.url_slug = $routeParams.url_slug
+
 
     console.log("linked accounts page. current user: ", currentUser)
-
     $scope.accounts = AllTheAccounts.get(currentUser)
     $scope.returnLink = "/"+$routeParams.url_slug
 
