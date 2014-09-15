@@ -260,7 +260,7 @@ def linked_accounts(account_type, url_slug=None, min_url_slug=None):
                 logger.info(u"{url_slug} added {num} products for {account_type}".format(
                     url_slug=profile.url_slug, num=len(tiids), account_type=account_type))
         else:
-            logger.info(u"{url_slug} already has anaccount_product for {account_type}, so skipping".format(
+            logger.info(u"{url_slug} already has an account_product for {account_type}, so skipping".format(
                 url_slug=profile.url_slug, account_type=account_type))
 
 
