@@ -76,16 +76,15 @@
    </div>
 
    <div id="wrapper">
-         <div id="sidebar">
-            <div ng-include="'profile-sidebar/profile-sidebar.tpl.html'"></div>
+      <div id="sidebar">
+         <div ng-include="'sidebar/profile-sidebar.tpl.html'"></div>
+      </div>
+      <div id="not-sidebar">
+         <div ng-include="'user-message.tpl.html'" id="user-message"></div>
+         <div id="main-view-container">
+            <div ng-view class="main-view"></div>
          </div>
-         <div id="not-sidebar">
-            <div ng-include="'user-message.tpl.html'" id="user-message"></div>
-            <div id="main-view-container">
-               <div ng-view class="main-view"></div>
-            </div>
-            <div ng-include="'footer.tpl.html'" id="page-footer"></div>
-         </div>
+      </div>
    </div>
 
 

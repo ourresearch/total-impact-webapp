@@ -19,9 +19,13 @@ angular.module('profileSingleProducts', [
       })
 
   }])
-  .controller("addSingleProductsCtrl", function($scope, Page, $routeParams){
-    Page.showHeader(false)
-    Page.showFooter(false)
+  .controller("addSingleProductsCtrl", function($scope,
+                                                Page,
+                                                ProfileService,
+                                                ProfileAboutService,
+                                                $routeParams){
+    ProfileAboutService.get($routeParams.url_slug)
+    ProfileService.get($routeParams.url_slug)
     $scope.url_slug = $routeParams.url_slug
 
 
@@ -32,8 +36,11 @@ angular.module('profileSingleProducts', [
                                                        $cacheFactory,
                                                        Loading,
                                                        UsersProducts,
+                                                       ProfileService,
+                                                       ProfileAboutService,
                                                        TiMixpanel,
                                                        security){
+
 
     $scope.newlineDelimitedProductIds = ""
     $scope.onCancel = function(){
@@ -51,12 +58,17 @@ angular.module('profileSingleProducts', [
         {product_id_strings: productIds},
         function(resp){
           console.log("saved some single products!", resp)
+          // refresh the profile obj
+
+          ProfileAboutService.get($routeParams.url_slug, true)
+          ProfileService.get($routeParams.url_slug, true)
+
           TiMixpanel.track(
             "Added single products",
             {productsCount: resp.products.length}
           )
           Loading.finish("saveButton")
-          security.redirectToProfile()
+          $scope.newlineDelimitedProductIds = ""
 
         },
         function(resp){

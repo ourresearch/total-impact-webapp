@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-14
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-15
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1115,11 +1115,6 @@ angular.module("productPage", [
           return ProductWithoutProfile.get({
             tiid: $route.current.params.tiid
           }).$promise
-        },
-        profileWithoutProducts: function(ProfileWithoutProducts, $route){
-          return ProfileWithoutProducts.get({
-            profile_id: $route.current.params.url_slug
-          }).$promise
         }
       }
     });
@@ -1149,20 +1144,21 @@ angular.module("productPage", [
     ProductBiblio,
     ProductInteraction,
     product,
-    profileWithoutProducts,
     ProductWithoutProfile,
+    ProfileAboutService,
+    ProfileService,
     Page) {
 
+    ProfileAboutService.get($routeParams.url_slug)
+    ProfileService.get($routeParams.url_slug)
+    Page.setName(product.genre_url_key)
+
     console.log("product.host", product.host)
-
-
 
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
     $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
 
-
-    console.log("product page controller loaded. Profile:", profileWithoutProducts)
 
     security.isLoggedInPromise(slug).then(
       function(resp){
@@ -1204,7 +1200,6 @@ angular.module("productPage", [
       Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
-      $scope.profileWithoutProducts = profileWithoutProducts
       $scope.userSlug = slug
       $scope.loading = Loading
       $scope.aliases = myProduct.aliases
@@ -1504,25 +1499,6 @@ angular.module('profileLinkedAccounts', [
 
 
   })
-angular.module('profileSidebar', [
-    'security',
-    'resources.users',
-    'services.profileService'
-])
-  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
-
-    $scope.page = Page
-//    ProfileService.getCached().then(
-//      function(resp){
-//        $scope.profile = resp
-//      }
-//    )
-
-
-
-
-
-  })
 angular.module('profileSingleProducts', [
   'services.page',
   'resources.users',
@@ -1544,9 +1520,13 @@ angular.module('profileSingleProducts', [
       })
 
   }])
-  .controller("addSingleProductsCtrl", function($scope, Page, $routeParams){
-    Page.showHeader(false)
-    Page.showFooter(false)
+  .controller("addSingleProductsCtrl", function($scope,
+                                                Page,
+                                                ProfileService,
+                                                ProfileAboutService,
+                                                $routeParams){
+    ProfileAboutService.get($routeParams.url_slug)
+    ProfileService.get($routeParams.url_slug)
     $scope.url_slug = $routeParams.url_slug
 
 
@@ -1557,8 +1537,11 @@ angular.module('profileSingleProducts', [
                                                        $cacheFactory,
                                                        Loading,
                                                        UsersProducts,
+                                                       ProfileService,
+                                                       ProfileAboutService,
                                                        TiMixpanel,
                                                        security){
+
 
     $scope.newlineDelimitedProductIds = ""
     $scope.onCancel = function(){
@@ -1576,12 +1559,17 @@ angular.module('profileSingleProducts', [
         {product_id_strings: productIds},
         function(resp){
           console.log("saved some single products!", resp)
+          // refresh the profile obj
+
+          ProfileAboutService.get($routeParams.url_slug, true)
+          ProfileService.get($routeParams.url_slug, true)
+
           TiMixpanel.track(
             "Added single products",
             {productsCount: resp.products.length}
           )
           Loading.finish("saveButton")
-          security.redirectToProfile()
+          $scope.newlineDelimitedProductIds = ""
 
         },
         function(resp){
@@ -2620,6 +2608,25 @@ angular.module('settings', [
 
 
 
+angular.module('profileSidebar', [
+    'security',
+    'resources.users',
+    'services.profileService'
+])
+  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
+
+    $scope.page = Page
+//    ProfileService.getCached().then(
+//      function(resp){
+//        $scope.profile = resp
+//      }
+//    )
+
+
+
+
+
+  })
 angular.module( 'signup', [
     'services.slug',
     'services.page',
@@ -3760,7 +3767,6 @@ angular.module('services.userMessage', [])
 
 
       'profile.removeProduct.success': ["'<em>{{title}}</em>' has been deleted from your profile.", 'info'],
-
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info'],
 
@@ -4982,7 +4988,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-sidebar/profile-sidebar.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset-header.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile-embed-modal.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -5155,8 +5161,8 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "");
 }]);
 
-angular.module("footer.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("footer.tpl.html",
+angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("footer/footer.tpl.html",
     "<div id=\"footer\" ng-show=\"page.showFooter()\">\n" +
     "   <div class=\"wrapper\">\n" +
     "\n" +
@@ -6234,24 +6240,11 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "<div class=\"product-page\">\n" +
     "\n" +
     "   <div class=\"content wrapper\">\n" +
-    "      <!--<div class=\"working\" ng-show=\"loading.is('productPage')\">\n" +
-    "         <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "         <span class=\"text\">Loading product...</span>\n" +
-    "      </div>-->\n" +
-    "\n" +
     "\n" +
     "      <div class=\"main-content\">\n" +
     "\n" +
     "         <div id=\"biblio\">\n" +
     "            <h2 class=\"title\">\n" +
-    "               <span class=\"return-to-profile-link-container\">\n" +
-    "                  <a class=\"return-to-profile\"\n" +
-    "                     tooltip=\"return to {{ profileWithoutProducts.given_name }}'s {{ genre }} list\"\n" +
-    "                     href=\"/{{ profileWithoutProducts.url_slug }}/products/{{ genre }}\">\n" +
-    "                     <i class=\"icon-chevron-left\"></i>\n" +
-    "                  </a>\n" +
-    "               </span>\n" +
-    "\n" +
     "               <span class=\"title-text\"\n" +
     "                     tooltip=\"click to edit\"\n" +
     "                     tooltip-placement=\"left\"\n" +
@@ -6487,9 +6480,11 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           tooltip=\"{{ genre }} may be paywalled. To improve visibility, consider uploading a freely-readable copy.\"></i>\n" +
     "                     </span>\n" +
     "                  </h3>\n" +
+    "                  <!--\n" +
     "                  <a class=\"full-url\" href=\"{{ aliases.resolved_url }}\">\n" +
     "                     {{ aliases.resolved_url }}\n" +
     "                  </a>\n" +
+    "                  -->\n" +
     "                  <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
     "                     <div class=\"oa-version-label\">\n" +
     "                        <i class=\"icon-unlock-alt\"></i>\n" +
@@ -6687,8 +6682,6 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "               <a href=\"http://google.com\">send us an email</a> whenever you publish something new!\n" +
     "            </li>\n" +
     "         </ul>\n" +
-    "\n" +
-    "\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
@@ -6703,83 +6696,25 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "</div>");
 }]);
 
-angular.module("profile-sidebar/profile-sidebar.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile-sidebar/profile-sidebar.tpl.html",
-    "<div class=\"profile-sidebar\"\n" +
-    "     ng-show=\"profileAboutService.data.given_name\"\n" +
-    "     ng-controller=\"profileSidebarCtrl\">\n" +
-    "\n" +
-    "   <h1>\n" +
-    "      <a href=\"/{{ profileAboutService.data.url_slug }}\">\n" +
-    "         <span class=\"given-name\">{{ profileAboutService.data.given_name }}</span>\n" +
-    "         <span class=\"surname\">{{ profileAboutService.data.surname }}</span>\n" +
-    "      </a>\n" +
-    "   </h1>\n" +
-    "\n" +
-    "\n" +
-    "   <div class=\"nav\">\n" +
-    "      <a href=\"/{{ profileAboutService.data.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
-    "         <i class=\"icon-user left\"></i>\n" +
-    "         <span class=\"text\">\n" +
-    "            Overview\n" +
-    "         </span>\n" +
-    "         <div class=\"arrow\"></div>\n" +
-    "      </a>\n" +
-    "      <div class=\"nav-group genres\">\n" +
-    "         <ul>\n" +
-    "            <li ng-repeat=\"genre in profileService.data.genres | orderBy: 'name'\">\n" +
-    "               <a href=\"/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}\"\n" +
-    "                  ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
-    "                  <i class=\"{{ genre.icon }} left\"></i>\n" +
-    "                  <span class=\"text\">\n" +
-    "                     {{ genre.plural_name }}\n" +
-    "                  </span>\n" +
-    "                  <span class=\"count value\">\n" +
-    "                     ({{ genre.num_products }})\n" +
-    "                  </span>\n" +
-    "               </a>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
-    "      </div>\n" +
-    "      <div class=\"nav-group sidebar-accounts\">\n" +
-    "         <ul>\n" +
-    "            <li ng-repeat=\"account in profileService.data.account_products | orderBy: 'followers'\">\n" +
-    "               <a href=\"/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}\"\n" +
-    "                  ng-class=\"{active: page.isNamed(account.index_name)}\">\n" +
-    "                  <img ng-src=\"/static/img/favicons/{{ account.display_name.toLowerCase() }}.ico\">\n" +
-    "                  <span class=\"text\">\n" +
-    "                     {{ account.display_name }}\n" +
-    "                  </span>\n" +
-    "                  <span class=\"count value\">\n" +
-    "                     ({{ account.followers }} followers)\n" +
-    "                  </span>\n" +
-    "               </a>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "   \n" +
-    "   <div class=\"footer\">\n" +
-    "      <a href=\"/\" class=\"logo\">\n" +
-    "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
-    "      </a>\n" +
-    "   </div>\n" +
-    "\n" +
-    "</div>\n" +
-    "");
-}]);
-
 angular.module("profile-single-products/profile-single-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-single-products/profile-single-products.tpl.html",
     "<div class=\"profile-single-products profile-subpage\" >\n" +
-    "   <div class=\"profile-single-products-header profile-subpage-header\">\n" +
+    "\n" +
+    "   <div class=\"profile-accounts-header profile-subpage-header\">\n" +
     "      <div class=\"wrapper\">\n" +
-    "         <a back-to-profile></a>\n" +
     "         <h1 class=\"instr\">Import individual products</h1>\n" +
-    "         <h2>(For faster importing, you can also\n" +
-    "            <a href=\"/{{ url_slug }}/accounts\">link your external accounts</a> to Impactstory, and we'll sync them automatically)</h2>\n" +
+    "      </div>\n" +
+    "      <div class=\"link-back\">\n" +
+    "         <a href=\"/{{ url_slug }}/accounts\">\n" +
+    "            <i class=\"icon-chevron-left\"></i>\n" +
+    "            Return to main import controls\n" +
+    "         </a>\n" +
     "      </div>\n" +
     "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "\n" +
     "   <div class=\"profile-single-products-body\">\n" +
     "      <div class=\"wrapper\">\n" +
@@ -7146,7 +7081,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      <a class=\"current-user\"\n" +
     "         href=\"/{{ currentUser.url_slug }}\">\n" +
     "         <span class=\"tip\">View your profile</span>\n" +
-    "         <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ currentUser.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "         <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ currentUser.email_hash }}?s=110&d=mm\" class=\"gravatar\"  />\n" +
     "      </a>\n" +
     "\n" +
     "      <a class=\"logout control\"\n" +
@@ -7772,6 +7707,73 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "\n" +
     "</div>\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("sidebar/profile-sidebar.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("sidebar/profile-sidebar.tpl.html",
+    "<div class=\"profile-sidebar\"\n" +
+    "     ng-show=\"profileAboutService.data.given_name\"\n" +
+    "     ng-controller=\"profileSidebarCtrl\">\n" +
+    "\n" +
+    "   <h1>\n" +
+    "      <a href=\"/{{ profileAboutService.data.url_slug }}\">\n" +
+    "         <span class=\"given-name\">{{ profileAboutService.data.given_name }}</span>\n" +
+    "         <span class=\"surname\">{{ profileAboutService.data.surname }}</span>\n" +
+    "      </a>\n" +
+    "   </h1>\n" +
+    "\n" +
+    "\n" +
+    "   <div class=\"nav\">\n" +
+    "      <a href=\"/{{ profileAboutService.data.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
+    "         <i class=\"icon-user left\"></i>\n" +
+    "         <span class=\"text\">\n" +
+    "            Overview\n" +
+    "         </span>\n" +
+    "         <div class=\"arrow\"></div>\n" +
+    "      </a>\n" +
+    "      <div class=\"nav-group genres\">\n" +
+    "         <ul>\n" +
+    "            <li ng-repeat=\"genre in profileService.data.genres | orderBy: 'name'\">\n" +
+    "               <a href=\"/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}\"\n" +
+    "                  ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
+    "                  <i class=\"{{ genre.icon }} left\"></i>\n" +
+    "                  <span class=\"text\">\n" +
+    "                     {{ genre.plural_name }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"count value\">\n" +
+    "                     ({{ genre.num_products }})\n" +
+    "                  </span>\n" +
+    "               </a>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "      <div class=\"nav-group sidebar-accounts\">\n" +
+    "         <ul>\n" +
+    "            <li ng-repeat=\"account in profileService.data.account_products | orderBy: 'followers'\">\n" +
+    "               <a href=\"/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}\"\n" +
+    "                  ng-class=\"{active: page.isNamed(account.index_name)}\">\n" +
+    "                  <img ng-src=\"/static/img/favicons/{{ account.display_name.toLowerCase() }}.ico\">\n" +
+    "                  <span class=\"text\">\n" +
+    "                     {{ account.display_name }}\n" +
+    "                  </span>\n" +
+    "                  <span class=\"count value\">\n" +
+    "                     ({{ account.followers }} followers)\n" +
+    "                  </span>\n" +
+    "               </a>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   \n" +
+    "   <div class=\"sidebar-footer\">\n" +
+    "      <a href=\"/\" class=\"logo\">\n" +
+    "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
+    "      </a>\n" +
+    "      <div ng-include=\"'footer/footer.tpl.html'\"></div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "</div>\n" +
     "");
 }]);
 

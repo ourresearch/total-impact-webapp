@@ -1,24 +1,11 @@
 <div class="product-page">
 
    <div class="content wrapper">
-      <!--<div class="working" ng-show="loading.is('productPage')">
-         <i class="icon-refresh icon-spin"></i>
-         <span class="text">Loading product...</span>
-      </div>-->
-
 
       <div class="main-content">
 
          <div id="biblio">
             <h2 class="title">
-               <span class="return-to-profile-link-container">
-                  <a class="return-to-profile"
-                     tooltip="return to {{ profileWithoutProducts.given_name }}'s {{ genre }} list"
-                     href="/{{ profileWithoutProducts.url_slug }}/products/{{ genre }}">
-                     <i class="icon-chevron-left"></i>
-                  </a>
-               </span>
-
                <span class="title-text"
                      tooltip="click to edit"
                      tooltip-placement="left"
@@ -254,9 +241,11 @@
                            tooltip="{{ genre }} may be paywalled. To improve visibility, consider uploading a freely-readable copy."></i>
                      </span>
                   </h3>
+                  <!--
                   <a class="full-url" href="{{ aliases.resolved_url }}">
                      {{ aliases.resolved_url }}
                   </a>
+                  -->
                   <div class="oa-version" ng-show="biblio.free_fulltext_url">
                      <div class="oa-version-label">
                         <i class="icon-unlock-alt"></i>

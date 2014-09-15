@@ -159,7 +159,6 @@ class Product(db.Model):
 
         return genre
 
-
     @cached_property
     def host(self):
         host = None
@@ -189,6 +188,13 @@ class Product(db.Model):
     @cached_property
     def display_genre_plural(self):
         return configs.pluralize_genre(self.genre)
+
+
+    @cached_property
+    def genre_url_key(self):
+        return self.display_genre_plural.replace(" ", "-")
+
+
 
     def get_metric_by_name(self, provider, interaction):
         for metric in self.metrics:

@@ -2,6 +2,7 @@
 
 div.profile-subpage {
 
+   margin-left: -30px;
    .profile-subpage-header {
       padding: 22px 30px 30px;
       background: #fafafa;
@@ -27,7 +28,6 @@ div.profile-subpage {
    &.profile-linked-accounts {
       width: 100%;
 //      margin-left: 30px;
-      margin-left: -30px;
       .clearfix();
 
 
@@ -46,9 +46,16 @@ div.profile-subpage {
 
    // the import single products page
    &.profile-single-products {
+      div.link-back {
+         a {
+            color: #bbb;
+            &:hover{color: @linkColor;}
+         }
+      }
       div.profile-single-products-body {
          min-height: 600px;
          padding-top: 100px;
+         margin-left: 60px;
          form {
             width: 50%;
             float:left;

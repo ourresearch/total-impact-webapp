@@ -1,20 +1,12 @@
-div.product-page {
-   min-height: 500px;
+@import "variables";
 
-   div.working {
-      color: #ddd;
-      font-size: 30px;
-      font-family: Lato;
-      font-weight: bolder;
-      text-align: center;
-      span.text {
-         margin-left: 10px;
-      }
-      padding-top: 100px;
-   }
+div.product-page {
+
+   min-height: 500px;
+   margin-top: 20px;
 
    div.main-content {
-      width: 700px;
+      width: @productMainWidth;
       float: left;
       #biblio {
 
@@ -61,6 +53,9 @@ div.product-page {
             font-size: 28px;
             line-height: 1.3;
             margin: 0 0 5px;
+            span.editable-click {
+               color: #333;
+            }
 
             span.return-to-profile-link-container {
                .tooltip-inner {
@@ -70,21 +65,10 @@ div.product-page {
                   border-color: transparent;
                   border-top-color: #000;
                }
-               a.return-to-profile {
-                  color: #999;
-                  margin-left: -45px;
-                  padding-right: 15px;
-                  width: 40px;
-                  display: inline-block;
-                  text-align: right;
-                  &:hover {
-                     color: @linkColor
-                  }
-               }
             }
 
             textarea {
-               width: 630px;
+               width: @productMainWidth - 70px;
                height: 60px;
                font-weight: normal;
             }
@@ -94,7 +78,7 @@ div.product-page {
          span.biblio-field.authors {
             font-size: 20px;
             input {
-               width: 630px;
+               width: @productMainWidth - 70px;
             }
 
          }
@@ -120,7 +104,7 @@ div.product-page {
             span.biblio-field.journal, span.repository {
                font-style: italic;
                input.editable-input {
-                  width: 580px;
+                  width: @productMainWidth - 120px;
                   margin-left: 10px;
                }
             }
@@ -132,7 +116,7 @@ div.product-page {
             span.value {
             }
             textarea {
-               width: 630px;
+               width: @productMainWidth - 70px;
                height: 200px;
             }
 
@@ -148,7 +132,7 @@ div.product-page {
             font-size: 16px;
             margin-top: 10px;
             input.editable-input {
-               width: 520px;
+               width: @productMainWidth - 180px;
             }
             span.value {
                font-weight: bold;
@@ -183,7 +167,8 @@ div.product-page {
 
       #resource {
          margin-top: 20px;
-         width: 700px;
+         padding-bottom: 100px;
+         width: @productMainWidth - 30px;
 
          .embed-picture {
               width: 90%;         
@@ -221,7 +206,7 @@ div.product-page {
          .upload-cta {
             text-align: center;
             margin-top: 50px;
-            width: 100%;
+            width: @productMainWidth - 30px;
             padding: 10px;
             border: 1px solid #ddd;
             background: #eee;
@@ -279,14 +264,15 @@ div.product-page {
 
             div.icon {
                float: left;
-               font-size: 70px;
-               padding: 20px;
+               font-size: 40px;
+               padding: 10px 20px;
                color: @linkColor;
             }
             .content {
                padding: 15px;
                h3 {
                   font-size: 25px;
+                  margin-top: 5px;
                   font-weight: 300;
                   color: #777;
                   margin-bottom: 0;

@@ -24,11 +24,6 @@ angular.module("productPage", [
           return ProductWithoutProfile.get({
             tiid: $route.current.params.tiid
           }).$promise
-        },
-        profileWithoutProducts: function(ProfileWithoutProducts, $route){
-          return ProfileWithoutProducts.get({
-            profile_id: $route.current.params.url_slug
-          }).$promise
         }
       }
     });
@@ -58,20 +53,21 @@ angular.module("productPage", [
     ProductBiblio,
     ProductInteraction,
     product,
-    profileWithoutProducts,
     ProductWithoutProfile,
+    ProfileAboutService,
+    ProfileService,
     Page) {
 
+    ProfileAboutService.get($routeParams.url_slug)
+    ProfileService.get($routeParams.url_slug)
+    Page.setName(product.genre_url_key)
+
     console.log("product.host", product.host)
-
-
 
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
     $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
 
-
-    console.log("product page controller loaded. Profile:", profileWithoutProducts)
 
     security.isLoggedInPromise(slug).then(
       function(resp){
@@ -113,7 +109,6 @@ angular.module("productPage", [
       Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
-      $scope.profileWithoutProducts = profileWithoutProducts
       $scope.userSlug = slug
       $scope.loading = Loading
       $scope.aliases = myProduct.aliases
