@@ -1,5 +1,6 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import util
+import configs
 import datetime
 import jinja2
 import numpy
@@ -10,6 +11,20 @@ def get_metrics_by_name(products, provider, interaction):
         metric = product.get_metric_by_name(provider, interaction)
         if metric:
             matching_metrics.append(metric)
+    return matching_metrics
+
+def get_metrics_by_engagement(products, engagement):
+    matching_metrics = []
+    all_possible_metrics_config_dicts = configs.metrics().values()
+
+    for product in products:
+        for config_dict in all_possible_metrics_config_dicts:
+            if config_dict["engagement_type"]==engagement:
+                provider = config_dict["provider"]
+                interaction = config_dict["interaction"]
+                metric = product.get_metric_by_name(provider, interaction)
+                if metric:
+                    matching_metrics.append(metric)
     return matching_metrics
 
 
@@ -248,6 +263,10 @@ class ProfileNewDiffCard(AbstractNewDiffCard):
 
 
 class GenreNewDiffCard(AbstractNewDiffCard):
+    @property
+    def genre(self):
+        return self.products[0].genre
+
     def to_dict(self):
         # ignore some properties to keep dict small.   
         properties_to_ignore = [
@@ -259,7 +278,21 @@ class GenreNewDiffCard(AbstractNewDiffCard):
         return ret
 
 
-class GenreAccumulationCard(AbstractProductsAccumulationCard):
+class GenreMetricSumCard(AbstractProductsAccumulationCard):
+    @classmethod
+    def would_generate_a_card(cls, products, provider, interaction):
+        if cls.metric_accumulations(products, provider, interaction) is not None:
+            try:
+                exemplar_metric = get_metrics_by_name(products, provider, interaction)[0] #exemplar metric 
+                if exemplar_metric.engagement_type not in ["viewed", "saved"]:
+                    return True
+            except IndexError:
+                pass       
+        return False
+
+    @property
+    def genre(self):
+        return self.products[0].genre
 
     @property
     def sort_by(self):
@@ -273,6 +306,8 @@ class GenreAccumulationCard(AbstractProductsAccumulationCard):
         if self.provider in ["scopus"]:
             score += 5000
 
+        score += self.current_value
+        
         return score
 
     @classmethod
@@ -316,74 +351,81 @@ class GenreAccumulationCard(AbstractProductsAccumulationCard):
         return ret
 
 
-
-class GenreProductsWithMoreThanCard(Card):
-
-    def __init__(self, products, provider, interaction, url_slug=None):
+class GenreEngagementSumCard(Card):
+    def __init__(self, products, engagement, url_slug=None, timestamp=None):
+        self.url_slug = url_slug
         self.products = products
-        self.provider = provider
-        self.interaction = interaction
-        self.percentile_threshold = 75
+        self.engagement = engagement
 
         # this card doesn't have a solo metric object, but it helps to 
         # save an exemplar metric so that it can be used to access relevant display properies
         try:
-            self.exemplar_metric = get_metrics_by_name(self.products, provider, interaction)[0] #exemplar metric 
+            self.exemplar_metric = get_metrics_by_engagement(self.products, engagement)[0] #exemplar metric 
         except IndexError:
             pass
-        super(GenreProductsWithMoreThanCard, self).__init__()
-
+        super(GenreEngagementSumCard, self).__init__(timestamp=timestamp)
 
     @classmethod
-    def would_generate_a_card(cls, products, provider, interaction):
-        matching_metrics = get_metrics_by_name(products, provider, interaction)
-        matching_metrics = [m for m in matching_metrics if m.is_int]        
-        return len(matching_metrics)>=5
+    def would_generate_a_card(cls, products, engagement):
+        if engagement in ["viewed", "saved"]:
+            if cls.engagement_accumulations(products, engagement) is not None:
+                return True
+        return False
 
     @property
-    def metric_threshold_value(self):
-        matching_metrics = get_metrics_by_name(self.products, self.provider, self.interaction)
-        matching_metrics = [m for m in matching_metrics if m.is_int]        
-        values = [m.current_value for m in matching_metrics]
-        if not values:
-            return None
-        return int(numpy.percentile(values, self.percentile_threshold))
-
-    @property
-    def number_products_this_good(self):
-        matching_metrics = get_metrics_by_name(self.products, self.provider, self.interaction)
-        matching_metrics = [m for m in matching_metrics if m.is_int]        
-
-        value = self.metric_threshold_value
-        large_enough_metrics = [m for m in matching_metrics 
-            if m.current_value >= value]
-        
-        return len(large_enough_metrics)                      
+    def genre(self):
+        return self.products[0].genre
 
     @property
     def sort_by(self):
-        score = 2000
-        if self.provider in ["citeulike", "delicious", "impactstory", "plossearch"]:
-            score -= 10000
-
-        if self.provider in ["mendeley"]:
-            score += 500
-
-        if self.provider in ["scopus"]:
-            score += 10000
-
-        score += self.metric_threshold_value
-        score += self.number_products_this_good
+        score = 2000 + self.current_value
         return score
+
+    @property
+    def current_value(self):
+        try:
+            return self.engagement_accumulations(self.products, self.engagement)["accumulated_diff_end_value"]
+        except KeyError:
+            return None
+
+    @property
+    def diff_value(self):
+        try:
+            return self.engagement_accumulations(self.products, self.engagement)["accumulated_diff"]
+        except KeyError:
+            return None 
+
+    @classmethod
+    #override with a version that returns all cards, not just ones that freshly pass milestones
+    def engagement_accumulations(cls, products, engagement):
+        matching_metrics = get_metrics_by_engagement(products, engagement)
+        matching_metrics = [m for m in matching_metrics if m.is_int]
+
+        accumulated_diff_start_value = sum([m.diff_window_start_value for m in matching_metrics 
+            if m.diff_window_start_value])
+        accumulated_diff_end_value = sum([m.diff_window_end_value for m in matching_metrics 
+            if m.diff_window_end_value])
+        accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
+
+        if not accumulated_diff_end_value:
+            return None
+
+        return ({
+            "accumulated_diff_end_value": accumulated_diff_end_value,
+            "accumulated_diff": accumulated_diff
+            })
 
     def to_dict(self):
         # ignore some properties to keep dict small.   
         properties_to_ignore = [
+            "url_slug", 
             "exemplar_metric", 
             "products"
             ]
         ret = util.dict_from_dir(self, properties_to_ignore)
         return ret
+
+
 
 
 

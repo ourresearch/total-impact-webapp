@@ -107,8 +107,8 @@ angular.module("genrePage", [
     });
 
     $scope.sliceSortedCards = function(cards, startIndex, endIndex){
-      var genreAccumulationCards = _.where(cards, {card_type: "GenreAccumulationCard"}) // temp hack?
-      var sorted = _.sortBy(genreAccumulationCards, "sort_by")
+      // var GenreMetricSumCards = _.where(cards, {card_type: "GenreMetricSumCards"}) // temp hack?
+      var sorted = _.sortBy(cards, "sort_by")
       var reversed = sorted.concat([]).reverse()
       return reversed.slice(startIndex, endIndex)
     }
