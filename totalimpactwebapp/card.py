@@ -324,7 +324,7 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
         if self.provider in ["citeulike", "delicious", "impactstory", "plossearch"]:
             score -= 10000
 
-        if self.provider in ["mendeley"]:
+        if self.provider in ["mendeley", "altmetric_com"]:
             score += 500
 
         if self.provider in ["scopus"]:

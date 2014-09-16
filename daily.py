@@ -1,6 +1,7 @@
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import refresh_products_from_tiids
+from totalimpactwebapp.pinboard import Pinboard
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
@@ -401,6 +402,73 @@ def run_through_twitter_pages(url_slug=None, min_url_slug=None):
         print "done"
 
 
+def star_best_products(url_slug=None, min_url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        if min_url_slug:
+            q = db.session.query(Profile).filter(Profile.url_slug>=min_url_slug)
+
+        else:
+            q = db.session.query(Profile)
+
+    number_considered = 0.0
+    start_time = datetime.datetime.utcnow()
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        number_considered += 1
+
+        if not profile.products:
+            # print "no products"
+            continue
+
+        logger.info(u"*******calculating stars on {url_slug}".format(
+            url_slug=profile.url_slug))
+
+        sorted_products = sorted(profile.products_not_removed, key=lambda x: x.awardedness_score, reverse=True)
+        sorted_products_articles = [p for p in sorted_products if p.genre=="article"]
+        sorted_products_nonarticles = [p for p in sorted_products if p.genre!="article"]
+        selected_products = []
+        num_article_pins = min(3, len(sorted_products_articles))
+        num_nonarticle_pins = min((4 - num_article_pins), len(sorted_products_nonarticles))
+        selected_products += [p for p in sorted_products_articles[0:num_article_pins]]
+        selected_products += [p for p in sorted_products_nonarticles[0:num_nonarticle_pins]]
+        # print
+        # print "\n".join([p.biblio.title for p in selected_products])
+
+        all_cards = []
+        for genre in profile.genres:
+            all_cards.extend(genre.cards)
+        sorted_cards = sorted(all_cards, key=lambda x: x.sort_by, reverse=True)
+
+        sorted_cards_articles = [c for c in sorted_cards if c.genre=="article"]
+        sorted_cards_nonarticles = [c for c in sorted_cards if c.genre!="article"]
+        num_article_cards = min(2, len(sorted_cards_articles))
+        num_nonarticle_cards = min((4 - num_article_cards), len(sorted_cards_nonarticles))
+
+        selected_cards = []
+        selected_cards += [c for c in sorted_cards_articles[0:num_article_cards]]
+        selected_cards += [c for c in sorted_cards_nonarticles[0:num_nonarticle_cards]]
+        # print [(c.card_type, c.genre, c.img_filename) for c in selected_cards]
+
+        contents = {"one":[], "two":[]}
+        contents["one"] = [["product", p.tiid] for p in selected_products]
+        for c in selected_cards:
+            if c.card_type=="GenreEngagementSumCard":
+                address = ["genre", c.genre, "sum", "engagement", c.engagement]
+            elif c.card_type=="GenreMetricSumCard":
+                address = ["genre", c.genre, "sum", "metric", c.provider, c.interaction]
+            contents["two"].append(address)
+
+        # print contents
+        board = Pinboard(
+            profile_id=profile.id,
+            contents=contents)
+
+        db.session.add(board)
+        commit(db)
+
+        elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+        print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
   
 
 def main(function, args):
@@ -423,6 +491,8 @@ def main(function, args):
         refresh_tweeted_products(args["min_tiid"])
     elif function=="run_through_twitter_pages":
         run_through_twitter_pages(args["url_slug"], args["min_url_slug"])
+    elif function=="star":
+        star_best_products(args["url_slug"], args["min_url_slug"])
 
 
 
