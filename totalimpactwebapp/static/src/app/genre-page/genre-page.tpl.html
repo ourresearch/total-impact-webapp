@@ -18,7 +18,6 @@
                <ul class="genre-cards-best">
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()">
 
-
                      <span class="data"
                            tooltip-placement="bottom"
                            tooltip="{{ card.tooltip }}">
@@ -34,16 +33,16 @@
 
                      <span class="feature-controls" ng-show="security.isLoggedIn(url_slug)">
 
-                        <a ng-click="pinboardService.pin(['genre', genre.name, 'sum', card.provider, card.interaction])"
-                           ng-if="!pinboardService.isPinned(['genre', genre.name, 'sum', card.provider, card.interaction])"
+                        <a ng-click="pinboardService.pin(card.genre_card_address)"
+                           ng-if="!pinboardService.isPinned(card.genre_card_address)"
                            tooltip="Feature this metric on your profile front page"
                            tooltip-placement="bottom"
                            class="feature-this">
                            <i class="icon-star-empty"></i>
                         </a>
 
-                        <a ng-click="pinboardService.unPin(['genre', genre.name, 'sum', card.provider, card.interaction])"
-                           ng-if="pinboardService.isPinned(['genre', genre.name, 'sum', card.provider, card.interaction])"
+                        <a ng-click="pinboardService.unPin(card.genre_card_address)"
+                           ng-if="pinboardService.isPinned(card.genre_card_address)"
                            tooltip="Feature this metric on your profile front page"
                            tooltip-placement="bottom"
                            class="unfeature-this">

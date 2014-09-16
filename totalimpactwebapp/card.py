@@ -307,7 +307,7 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
 
     @property
     def genre_card_address(self):
-        return u".".join([self.genre, "sum", "metric", ":".join([self.provider, self.interaction])])
+        return u".".join(["genre", self.genre, "sum", "metric", self.provider, self.interaction])
 
     @property
     def display_things_we_are_counting(self):
@@ -416,7 +416,7 @@ class GenreEngagementSumCard(Card):
 
     @property
     def genre_card_address(self):
-        return u".".join([self.genre, "sum", "engagement", self.engagement])
+        return u".".join(["genre", self.genre, "sum", "engagement", self.engagement])
 
     @property
     def display_things_we_are_counting(self):

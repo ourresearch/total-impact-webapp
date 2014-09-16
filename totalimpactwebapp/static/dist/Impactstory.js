@@ -4719,25 +4719,32 @@ angular.module('services.profileService', [
       return _.findWhere(data.account_products, {index_name: indexName})
     }
 
-    function getFromPinId(pinId){
-
-      // 'genre', :genre_name, 'sum', :provider, :interaction
-      if (pinId[0] == "genre" && pinId[2] == "sum" && data.genres) {
-        var genre = _.findWhere(data.genres, {name: pinId[1]})
-        var card = _.findWhere(genre.cards, {provider: pinId[3], interaction: pinId[4]})
-        var extraData = {
-          genre_num_products: genre.num_products,
-          genre_icon: genre.icon,
-          genre_name: genre.name,
-          genre_plural_name: genre.plural_name,
-          genre_url_representation: genre.url_representation
-
-        }
-        return _.extend(card, extraData)
+    function getFromPinId(pinId){ // only for genre pins
+      /*
+      "genre", :genre_name, "sum", "metric", :provider, :interaction
+      "genre", :genre_name, "sum", "engagement", :engagement_type
+      */
+      if (!data.genres){
+        return false
       }
-      else {
-        return null
+
+      var cards = []
+      _.each(data.genres, function(genre){
+        cards.push(genre.cards)
+      })
+
+      var flatCards = _.flatten(cards)
+      var pinnedCard = _.findWhere(flatCards, {genre_card_address: pinId})
+      var myGenreObj = _.findWhere(data.genres, {name: pinnedCard.genre})
+
+      var extraData = {
+        genre_num_products: myGenreObj.num_products,
+        genre_icon: myGenreObj.icon,
+        genre_plural_name: myGenreObj.plural_name,
+        genre_url_representation: myGenreObj.url_representation
+
       }
+      return _.extend(pinnedCard, extraData)
     }
 
 
@@ -5359,7 +5366,6 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "               <ul class=\"genre-cards-best\">\n" +
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
     "\n" +
-    "\n" +
     "                     <span class=\"data\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           tooltip=\"{{ card.tooltip }}\">\n" +
@@ -5375,16 +5381,16 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "\n" +
     "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.pin(['genre', genre.name, 'sum', card.provider, card.interaction])\"\n" +
-    "                           ng-if=\"!pinboardService.isPinned(['genre', genre.name, 'sum', card.provider, card.interaction])\"\n" +
+    "                        <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
+    "                           ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
     "                           tooltip=\"Feature this metric on your profile front page\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           class=\"feature-this\">\n" +
     "                           <i class=\"icon-star-empty\"></i>\n" +
     "                        </a>\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.unPin(['genre', genre.name, 'sum', card.provider, card.interaction])\"\n" +
-    "                           ng-if=\"pinboardService.isPinned(['genre', genre.name, 'sum', card.provider, card.interaction])\"\n" +
+    "                        <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
+    "                           ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
     "                           tooltip=\"Feature this metric on your profile front page\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           class=\"unfeature-this\">\n" +
