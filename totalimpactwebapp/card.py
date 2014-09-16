@@ -295,6 +295,15 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
         return self.products[0].genre
 
     @property
+    def display_things_we_are_counting(self):
+        return self.exemplar_metric.display_interaction
+
+    @property
+    def img_filename(self):
+        return u"{provider}_{interaction}.ico".format(
+            provider=self.provider, interaction=self.interaction)
+
+    @property
     def sort_by(self):
         score = 1000
         if self.provider in ["citeulike", "delicious", "impactstory", "plossearch"]:
@@ -375,6 +384,16 @@ class GenreEngagementSumCard(Card):
     @property
     def genre(self):
         return self.products[0].genre
+
+    @property
+    def display_things_we_are_counting(self):
+        engagement_types = configs.award_configs["engagement_types"]
+        return engagement_types[self.engagement][0]
+
+    @property
+    def img_filename(self):
+        return u"{engagement}.png".format(
+            engagement=self.engagement)
 
     @property
     def sort_by(self):
