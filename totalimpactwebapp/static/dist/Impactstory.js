@@ -31,6 +31,10 @@ angular.module('accountPage', [
     Page.setName($routeParams.account_index_name)
 
     $scope.templatePath = "account-page/"+ $routeParams.account_index_name  +"-account-page.tpl.html"
+    $scope.accountName =  $routeParams.account_index_name
+    $scope.account = function(){
+      return ProfileService.account_products
+    }
 
 
   })
@@ -3658,7 +3662,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4238,7 +4241,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4784,8 +4786,6 @@ angular.module('services.profileService', [
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId
     }
-
-
   })
 
 
@@ -5169,25 +5169,30 @@ angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
-    "<h1>account page!</h1>\n" +
+    "<div class=\"account-page\">\n" +
+    "   <div ng-include=\"templatePath\"></div>\n" +
+    "</div>\n" +
     "\n" +
-    "<div ng-include=\"templatePath\"></div>");
+    "");
 }]);
 
 angular.module("account-page/github-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/github-account-page.tpl.html",
-    "<h2>github!</h2>\n" +
+    "<h2>\n" +
+    "   <span class=\"account-host\">GitHub</span>\n" +
+    "   <span class=\"account-username\">{{ profileAboutService.data.account_products_dict.github }}</span>\n" +
+    "</h2>\n" +
     "");
 }]);
 
 angular.module("account-page/slideshare-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/slideshare-account-page.tpl.html",
-    "<h2>slideshare!</h2>");
+    "<h2>Slideshare</h2>");
 }]);
 
 angular.module("account-page/twitter-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/twitter-account-page.tpl.html",
-    "<h2>twitter acccount page!</h2>\n" +
+    "<h2>Twitter</h2>\n" +
     "\n" +
     "followers: {{ profileService.getAccountProduct(\"twitter\").followers }}\n" +
     "\n" +
@@ -6738,7 +6743,7 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "               <a href=\"/{{ url_slug }}/products/add\">add products individually by ID</a>, or\n" +
     "            </li>\n" +
     "            <li class=\"import-email\">\n" +
-    "               <a href=\"http://google.com\">send us an email</a> whenever you publish something new!\n" +
+    "               <a href=\"mailto:publications@impactstory.org\" target=\"_blank\">send us an email</a> whenever you publish something new!\n" +
     "            </li>\n" +
     "         </ul>\n" +
     "      </div>\n" +
@@ -7873,6 +7878,8 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "               </li>\n" +
     "            </ul>\n" +
     "         </div>\n" +
+    "\n" +
+    "         <!--\n" +
     "         <div class=\"nav-group sidebar-accounts\">\n" +
     "            <ul>\n" +
     "               <li ng-repeat=\"account in profileService.data.account_products | orderBy: 'followers'\">\n" +
@@ -7889,6 +7896,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "               </li>\n" +
     "            </ul>\n" +
     "         </div>\n" +
+    "         -->\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

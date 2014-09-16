@@ -212,6 +212,14 @@ class Profile(db.Model):
 
         return accounts_to_return
 
+    @cached_property
+    def account_products_dict(self):
+        accounts_to_return = {}
+        for account in self.account_products:
+            accounts_to_return[account.index_name] = account
+
+        return accounts_to_return
+
 
     @cached_property
     def tiids(self):
@@ -568,6 +576,7 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["product_count"] = profile.product_count
     profile_dict["genres"] = profile.genres
     profile_dict["account_products"] = profile.account_products
+    profile_dict["account_products_dict"] = profile.account_products_dict
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)

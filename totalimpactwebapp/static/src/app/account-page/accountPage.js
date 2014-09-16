@@ -26,6 +26,10 @@ angular.module('accountPage', [
     Page.setName($routeParams.account_index_name)
 
     $scope.templatePath = "account-page/"+ $routeParams.account_index_name  +"-account-page.tpl.html"
+    $scope.accountName =  $routeParams.account_index_name
+    $scope.account = function(){
+      return ProfileService.account_products
+    }
 
 
   })
