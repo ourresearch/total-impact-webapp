@@ -5291,13 +5291,15 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
     "\n" +
     "\n" +
-    "                     <span class=\"img-and-value\">\n" +
-    "                        <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
-    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
-    "                     </span>\n" +
+    "                     <span class=\"data\" tooltip=\"{{ card.tooltip }}\">\n" +
+    "                        <span class=\"img-and-value\">\n" +
+    "                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
+    "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
+    "                        </span>\n" +
     "\n" +
-    "                     <span class=\"key\">\n" +
-    "                        <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                        <span class=\"key\">\n" +
+    "                           <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                        </span>\n" +
     "                     </span>\n" +
     "\n" +
     "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +

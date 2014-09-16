@@ -9469,16 +9469,14 @@ div.password-reset form.password-reset div.submit {
   font-size: 80%;
   cursor: help;
 }
-div.genre-page {
-  margin-top: 20px;
-}
 div.genre-page div.header {
-  padding: 0 10px 10px 30px;
+  padding: 20px 10px 10px 30px;
   margin: 0 0 70px -50px;
   border-bottom: 1px solid #eee;
   position: relative;
 }
 div.genre-page div.header .more-button {
+  display: none;
   font-size: 14px;
   background: #fff;
   padding: 0 10px 2px;
@@ -9519,11 +9517,14 @@ div.genre-page div.header div.genre-summary div.genre-summary-top .modal-footer 
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card {
   float: right;
-  margin: 10px 20px 0 40px;
+  margin: 0 20px 0 40px;
   line-height: 1;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls {
   margin-right: 3px;
+}
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a {
+  font-size: 16px;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.unfeature-this {
   color: #ff4000;
@@ -9539,7 +9540,7 @@ div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.img-and-value {
   margin: 0 5px 0 0;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: bold;
   display: inline-block;
 }
@@ -9550,7 +9551,7 @@ div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.key {
   display: inline-block;
   margin-top: 4px;
-  font-size: 20px;
+  font-size: 16px;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.key span.provider {
   display: block;

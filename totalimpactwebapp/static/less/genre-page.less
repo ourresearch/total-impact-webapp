@@ -1,12 +1,12 @@
 div.genre-page {
-   margin-top: 20px;
    div.header {
-      padding: 0 10px 10px 30px;
+      padding: 20px 10px 10px 30px;
       margin: 0 0 70px -@contentPaddingLeft;
       border-bottom: 1px solid #eee;
       position:relative;
 
       .more-button {
+         display:none;
          font-size: 14px;
          background: #fff;
          padding: 0 10px 2px;
@@ -37,12 +37,13 @@ div.genre-page {
             ul.genre-cards-best {
                li.genre-card {
                   float:right;
-                  margin: 10px 20px 0 40px;
+                  margin: 0 20px 0 40px;
                   line-height: 1;
 
                   span.feature-controls {
                      margin-right: 3px;
                      a {
+                        font-size: 16px;
                         &.unfeature-this {
                            color: @linkColor;
                         }
@@ -59,7 +60,7 @@ div.genre-page {
                   }
                   span.img-and-value {
                      margin: 0 5px 0 0;
-                     font-size: 26px;
+                     font-size: 22px;
                      font-weight: bold;
                      display:inline-block;
                      img {
@@ -70,7 +71,7 @@ div.genre-page {
                   span.key {
                      display:inline-block;
                      margin-top: 4px;
-                     font-size: 20px;
+                     font-size: 16px;
                      span.provider {
                         display:block;
                      }

@@ -19,13 +19,15 @@
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()">
 
 
-                     <span class="img-and-value">
-                        <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >
-                        <span class="value">{{ nFormat(card.current_value) }}</span>
-                     </span>
+                     <span class="data" tooltip="{{ card.tooltip }}">
+                        <span class="img-and-value">
+                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >
+                           <span class="value">{{ nFormat(card.current_value) }}</span>
+                        </span>
 
-                     <span class="key">
-                        <span class="interaction">{{ card.display_things_we_are_counting }}</span>
+                        <span class="key">
+                           <span class="interaction">{{ card.display_things_we_are_counting }}</span>
+                        </span>
                      </span>
 
                      <span class="feature-controls" ng-show="security.isLoggedIn(url_slug)">
