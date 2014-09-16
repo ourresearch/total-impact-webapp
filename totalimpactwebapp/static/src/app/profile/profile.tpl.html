@@ -89,7 +89,9 @@
             <h3>Key profile metrics</h3>
             <div class="instr" ng-show="security.isLoggedIn(url_slug)">Drag to change order</div>
          </div>
-         <ul class="col-two pinboard-list"
+
+         <!-- LOGGED-IN version -->
+         <ul class="col-two pinboard-list logged-in"
              ui-sortable="sortableOptions"
              ng-model="pinboardService.cols.two">
             <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two">
@@ -119,12 +121,45 @@
                         {{ profileService.getFromPinId(pinId).genre_plural_name }}
                      </a>
                   </span>
-
-
-
                </div>
             </li>
          </ul>
+
+
+         <!-- LOGGED-OUT version -->
+         <!--
+         <ul class="col-two pinboard-list logged-out">
+            <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two">
+               <div class="pin-header">
+                  <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
+                     <i class="icon-remove"></i>
+                  </a>
+               </div>
+
+               <div class="pin-body genre-card-pin-body">
+                  <span class="main val">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>
+                  <span class="interaction" tooltip="{{ profileService.getFromPinId(pinId).tooltip }}">
+                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >
+                     <span class="my-label">
+                        <span class="things-we-are-counting">
+                           {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}
+                        </span>
+                         on
+                     </span>
+                  </span>
+                  <span class="genre">
+                     <a href="{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}"
+                        tooltip-placement="bottom"
+                        tooltip="Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}">
+                        <i class="icon {{ profileService.getFromPinId(pinId).genre_icon }}"></i>
+                        <span class="val">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>
+                        {{ profileService.getFromPinId(pinId).genre_plural_name }}
+                     </a>
+                  </span>
+               </div>
+            </li>
+         </ul>
+         -->
       </div>
 
 

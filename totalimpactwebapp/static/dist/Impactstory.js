@@ -6844,7 +6844,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            <h3>Key profile metrics</h3>\n" +
     "            <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "         </div>\n" +
-    "         <ul class=\"col-two pinboard-list\"\n" +
+    "\n" +
+    "         <!-- LOGGED-IN version -->\n" +
+    "         <ul class=\"col-two pinboard-list logged-in\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
     "             ng-model=\"pinboardService.cols.two\">\n" +
     "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
@@ -6874,12 +6876,45 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                        {{ profileService.getFromPinId(pinId).genre_plural_name }}\n" +
     "                     </a>\n" +
     "                  </span>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "               </div>\n" +
     "            </li>\n" +
     "         </ul>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- LOGGED-OUT version -->\n" +
+    "         <!--\n" +
+    "         <ul class=\"col-two pinboard-list logged-out\">\n" +
+    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
+    "               <div class=\"pin-header\">\n" +
+    "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "                     <i class=\"icon-remove\"></i>\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"pin-body genre-card-pin-body\">\n" +
+    "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
+    "                  <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
+    "                     <span class=\"my-label\">\n" +
+    "                        <span class=\"things-we-are-counting\">\n" +
+    "                           {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}\n" +
+    "                        </span>\n" +
+    "                         on\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "                  <span class=\"genre\">\n" +
+    "                     <a href=\"{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}\"\n" +
+    "                        tooltip-placement=\"bottom\"\n" +
+    "                        tooltip=\"Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}\">\n" +
+    "                        <i class=\"icon {{ profileService.getFromPinId(pinId).genre_icon }}\"></i>\n" +
+    "                        <span class=\"val\">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>\n" +
+    "                        {{ profileService.getFromPinId(pinId).genre_plural_name }}\n" +
+    "                     </a>\n" +
+    "                  </span>\n" +
+    "               </div>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "         -->\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
