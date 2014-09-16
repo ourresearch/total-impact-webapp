@@ -565,6 +565,7 @@ angular.module('app').run(function(security, $window, Page, $location, editableO
 
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
+                                                     $http,
                                                      $route,
                                                      $sce,
                                                      UserMessage,
@@ -588,6 +589,11 @@ angular.module('app').controller('AppCtrl', function($scope,
     ["impactstory.org", "www.impactstory.org"],
     $location.host()
   ))
+
+  $http.get("/configs/genres")
+    .success(function(resp){
+      $rootScope.genreConfigs = resp
+    })
 
 
   security.requestCurrentUser().then(function(currentUser){
@@ -1009,6 +1015,7 @@ angular.module( 'infopages', [
     $scope.landingPageType = "main"
     Page.setUservoiceTabLoc("hidden")
     Page.setName("landing")
+    Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
 
   })
@@ -1017,6 +1024,7 @@ angular.module( 'infopages', [
     $scope.landingPageType = "h-index"
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
+    Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
 
@@ -1024,31 +1032,37 @@ angular.module( 'infopages', [
     $scope.landingPageType = "open-science"
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
+    Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
+    Page.setInfopage(true)
     $scope.providers = providersInfo
     console.log("faq page controller running")
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
     Page.setTitle("about")
+    Page.setInfopage(true)
 
   })
 
   .controller('advisorsPageCtrl', function($scope, Page) {
     Page.setTitle("advisors")
+    Page.setInfopage(true)
 
   })
   .controller('SpreadTheWordCtrl', function($scope, Page) {
     Page.setTitle("Spread the word")
+    Page.setInfopage(true)
 
   })
 
   .controller( 'collectionPageCtrl', function aboutPageCtrl ( $scope, Page ) {
     Page.setTitle("Collections are retired")
+    Page.setInfopage(true)
 
   });
 
@@ -1230,6 +1244,8 @@ angular.module("productPage", [
       $scope.metrics = myProduct.metrics
       $scope.displayGenrePlural = myProduct.display_genre_plural
       $scope.genre = myProduct.genre
+      $scope.genre_icon = myProduct.genre_icon
+      $scope.tiid = myProduct.tiid
       $scope.productHost = parseHostname(myProduct.aliases.resolved_url)
       $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
@@ -1297,6 +1313,18 @@ angular.module("productPage", [
 
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
+    }
+
+    $scope.openChangeGenreModal = function(){
+      $modal.open({
+        templateUrl: "product-page/change-genre-modal.tpl.html",
+        controller: "productUploadCtrl",
+        resolve: {
+          tiid: function(){
+            return product.tiid
+          }
+        }
+      })
     }
 
     $scope.openFulltextLocationModal = function(){
@@ -1435,6 +1463,35 @@ angular.module("productPage", [
 
     }
 })
+
+.controller("changeGenreModalCtrl", function($scope, $rootScope, Loading, ProductBiblio, tiid){
+    $scope.foo = function(){
+      console.log("we foo!")
+    }
+
+
+    $scope.genreConfigs = $rootScope.genreConfigs
+    $scope.myGenre = {}
+
+
+
+    $scope.saveGenre = function(){
+      console.log("saving genre")
+
+      ProductBiblio.patch(
+        {'tiid': tiid},
+        {genre: $scope.myGenre.input.name},
+        function(resp){
+          console.log("finished saving new genre", resp)
+          Loading.finish("saveButton")
+          return $scope.$close(resp)
+        }
+      )
+
+    }
+
+
+  })
 
 
 
@@ -2659,16 +2716,9 @@ angular.module('profileSidebar', [
 ])
   .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
 
-    $scope.page = Page
-//    ProfileService.getCached().then(
-//      function(resp){
-//        $scope.profile = resp
-//      }
-//    )
+  })
 
-
-
-
+  .controller("infopageSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
 
   })
 angular.module( 'signup', [
@@ -4191,7 +4241,7 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function($location){
+.factory("Page", function($location, $rootScope){
    var title = '';
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
@@ -4200,6 +4250,13 @@ angular.module("services.page")
    var headerFullName
    var profileUrl
    var pageName
+   var isInfopage
+
+
+    $rootScope.$on('$routeChangeSuccess', function () {
+      isInfopage = false
+      pageName = null
+    });
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -4333,6 +4390,13 @@ angular.module("services.page")
 
 
      },
+     isInfopage: function(){
+       return !!isInfopage
+     },
+     setInfopage: function(val){
+       isInfopage = !!val
+     },
+
      'isEmbedded': function(){
        return isEmbedded
      } ,
@@ -5035,7 +5099,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/metric-pin.tpl.html', 'profile/product-pin.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -6137,156 +6201,31 @@ angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($t
     "");
 }]);
 
-angular.module("product-page/edit-product-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product-page/edit-product-modal.tpl.html",
-    "<!--<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
-    "   <h3>Edit {{ fieldToEdit }}</h3>\n" +
-    "</div>-->\n" +
+angular.module("product-page/change-genre-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-page/change-genre-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>Change product genre</h4>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "<div class=\"modal-body change-product-genre\">\n" +
+    "   <label for=\"change-genre-input\">\n" +
+    "      Select a new genre:\n" +
+    "   </label>\n" +
+    "   <select ng-model=\"myGenre.input\"\n" +
+    "           id=\"change-genre-input\"\n" +
+    "           ng-options=\"config.name for config in genreConfigs\">\n" +
+    "   </select>\n" +
+    "</div>\n" +
+    "<div class=\"modal-footer\">\n" +
+    "   <span class=\"btn btn-primary\"\n" +
+    "      ng-click=\"foo()\"\n" +
+    "      ng-show=\"myGenre.input.name\">\n" +
+    "      <i class=\"{{ myGenre.input.icon }} left\"></i>\n" +
+    "      Change genre to '{{ myGenre.input.name }}'\n" +
+    "   </span>\n" +
     "\n" +
-    "<div class=\"modal-body edit-product\">\n" +
-    "\n" +
-    "   <form\n" +
-    "           name=\"editProductForm\"\n" +
-    "           novalidate\n" +
-    "           ng-submit=\"onSave()\"\n" +
-    "           ng-controller=\"editProductFormCtrl\">\n" +
-    "\n" +
-    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='title'\">\n" +
-    "         <label>Edit publication title:</label>\n" +
-    "         <input\n" +
-    "           class=\"form-control\"\n" +
-    "           type=\"text\"\n" +
-    "           required\n" +
-    "           name=\"productTitle\"\n" +
-    "           ng-model=\"product.biblio.title\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"from-group\" ng-show=\"fieldToEdit=='authors'\">\n" +
-    "         <label>Edit authors:</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productAuthors\"\n" +
-    "           ng-model=\"product.biblio.authors\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='year'\">\n" +
-    "         <label>Edit publication year:</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productYear\"\n" +
-    "           ng-model=\"product.biblio.year\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='journal'\">\n" +
-    "         <label>Edit journal:</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productJournal\"\n" +
-    "           ng-model=\"product.biblio.journal\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='repository'\">\n" +
-    "         <label>Edit repository:</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productJournal\"\n" +
-    "           ng-model=\"product.biblio.journal\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='keywords'\">\n" +
-    "         <label>\n" +
-    "            Edit publication keywords:\n" +
-    "            <span class=\"sublabel\">Separate keywords with semicolons</span>\n" +
-    "         </label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productYear\"\n" +
-    "           ng-model=\"product.biblio.keywords\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div class=\"form-group\" ng-show=\"fieldToEdit=='abstract'\">\n" +
-    "         <label>Edit publication abstract:</label>\n" +
-    "         <input\n" +
-    "           type=\"text\"\n" +
-    "           class=\"form-control\"\n" +
-    "           name=\"productYear\"\n" +
-    "           ng-model=\"product.biblio.abstract\">\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <save-buttons valid=\"editProductForm.$valid\"></save-buttons>\n" +
-    "\n" +
-    "   </form>\n" +
     "</div>\n" +
     "");
-}]);
-
-angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product-page/fulltext-location-modal.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$dismiss()\">&times;</button>\n" +
-    "   <h3>Embed your article</h3>\n" +
-    "</div>\n" +
-    "<div class=\"modal-body free-fulltext-url\">\n" +
-    "\n" +
-    "   <div class=\"add-link\">\n" +
-    "      <p>Do you already have a free version of this article, outside any paywalls?\n" +
-    "         Nice! You can embed it on this page via URL.\n" +
-    "      </p>\n" +
-    "\n" +
-    "      <form\n" +
-    "              name=\"freeFulltextUrlForm\"\n" +
-    "              novalidate\n" +
-    "              ng-submit=\"onSave()\"\n" +
-    "              ng-controller=\"freeFulltextUrlFormCtrl\">\n" +
-    "         <div class=\"input-group\">\n" +
-    "            <span class=\"input-group-addon icon-globe\"></span>\n" +
-    "            <input\n" +
-    "                    class=\"free-fulltext-url form-control\"\n" +
-    "                    type=\"url\"\n" +
-    "                    name=\"freeFulltextUrl\"\n" +
-    "                    required\n" +
-    "                    placeholder=\"Paste the link to PDF or image file here\"\n" +
-    "                    ng-model=\"free_fulltext_url\" />\n" +
-    "         </div>\n" +
-    "         <save-buttons ng-show=\"freeFulltextUrlForm.$valid && freeFulltextUrlForm.$dirty\"\n" +
-    "                       valid=\"freeFulltextUrlForm.$valid\"></save-buttons>\n" +
-    "\n" +
-    "      </form>\n" +
-    "   </div>\n" +
-    "</div>");
-}]);
-
-angular.module("product-page/percentilesInfoModal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product-page/percentilesInfoModal.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <button type=\"button\" class=\"close\" ng-click=\"$close()\">&times;</button>\n" +
-    "   <h3>What do these numbers mean?</h3>\n" +
-    "</div>\n" +
-    "<div class=\"modal-body\">\n" +
-    "   <p>Impactstory classifies metrics along two dimensions: <strong>audience</strong> (<em>scholars</em> or the <em>public</em>) and <strong>type of engagement</strong> with research (<em>view</em>, <em>discuss</em>, <em>save</em>, <em>cite</em>, and <em>recommend</em>).</p>\n" +
-    "\n" +
-    "   <p>For each metric, the coloured bar shows its percentile relative to all articles indexed in the Web of Science that year.  The bars show a range, representing the 95% confidence interval around your percentile (and also accounting for ties).  Along with ranges, we show “Highly” badges for metrics above the 75th percentile that exceed a minimum frequency.</p>\n" +
-    "\n" +
-    "   <p>Each metric's raw count is shown to the left of its name.  Click the raw count to visit that metric source's external page for the item; there, you can explore the engagement in more detail.</p>\n" +
-    "\n" +
-    "   <p>For more information, see these blog posts and <a href=\"{{ url_for('faq') }}\">FAQ</a> sections:</p>\n" +
-    "\n" +
-    "   <ul>\n" +
-    "      <li><a href=\"http://blog.impactstory.org/2012/09/10/31256247948/\">What do we expect?</a></li>\n" +
-    "      <li><a href=\"http://blog.impactstory.org/2012/09/14/31524247207/\">Our framework for classifying altmetrics</a></li>\n" +
-    "      <li>Reference sets: <a href=\"http://blog.impactstory.org/2012/09/13/31461657926/\">Motivation</a>; Choosing Web of Science (TBA)</li>\n" +
-    "      <li>Percentiles: <a href=\"http://blog.impactstory.org/2012/09/11/31342582590/\">Part 1</a>, <a href=\"http://blog.impactstory.org/2012/09/12/31408899657/\">Part 2</a>, and <a href=\"http://blog.impactstory.org/2012/09/12/31411187588/\">Part 3</a></li>\n" +
-    "      <li>Why <a href=\"{{ url_for('faq') }}#toc_3_9\">citation counts may not be what you expect</a></li>\n" +
-    "      <li>Sampling and 95% confidence (TBA)</li>\n" +
-    "   </ul>\n" +
-    "</div>");
 }]);
 
 angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -6489,11 +6428,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "            <div class=\"share-buttons\">\n" +
     "               <!--\n" +
-    "               <a class=\"facebook\"\n" +
-    "                  ng-click=\"fbShare()\">\n" +
-    "                     facebook\n" +
-    "                  </a>\n" +
+    "               <a class=\"btn btn-xs btn-default\" ng-click=\"openChangeGenreModal()\">\n" +
+    "                  <i class=\"{{ genre_icon }}\"></i>\n" +
+    "                  Change genre\n" +
+    "               </a>\n" +
     "               -->\n" +
+    "               <a href=\"/product/{{ tiid }}\" class=\"download-json btn btn-default btn-xs\" target=\"_blank\">Download JSON</a>\n" +
     "               <a class=\"twitter\"\n" +
     "                  tooltip=\"Share this {{ genre }} on Twitter\"\n" +
     "                  href=\"https://twitter.com/share?text={{ biblio.display_title }}&url={{ page.getUrl() }}\"\n" +
@@ -6805,49 +6745,6 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "</div>");
 }]);
 
-angular.module("profile/metric-pin.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile/metric-pin.tpl.html",
-    "<li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
-    "   <div class=\"pin-header\">\n" +
-    "      <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
-    "         <i class=\"icon-remove\"></i>\n" +
-    "      </a>\n" +
-    "   </div>\n" +
-    "   <div class=\"pin-body genre-card-pin-body\">\n" +
-    "      <i class=\"{{ profileService.getFromPinId(pinId).icon }}\"></i>\n" +
-    "      <span class=\"data\"\n" +
-    "            tooltip-placement=\"bottom\"\n" +
-    "            tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
-    "         <span class=\"img-and-value\">\n" +
-    "            <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
-    "            <span class=\"value\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "         </span>\n" +
-    "\n" +
-    "         <span class=\"key\">\n" +
-    "            <span class=\"interaction\">{{ profileService.getFromPinId(pinId).display_things_we_are_counting }}</span>\n" +
-    "            <span class=\"context\">on <span class=\"val\">{{ profileService.getFromPinId(pinId).num_products }}</span>\n" +
-    "               {{ profileService.getFromPinId(pinId).plural_name }}</span>\n" +
-    "         </span>\n" +
-    "      </span>\n" +
-    "   </div>\n" +
-    "</li>");
-}]);
-
-angular.module("profile/product-pin.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("profile/product-pin.tpl.html",
-    "<li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
-    "   <div class=\"pin-header\">\n" +
-    "      <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
-    "         <i class=\"icon-remove\"></i>\n" +
-    "      </a>\n" +
-    "   </div>\n" +
-    "   <div class=\"pin-body product-pin\">\n" +
-    "      <i class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
-    "      <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
-    "   </div>\n" +
-    "</li>");
-}]);
-
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
@@ -6924,7 +6821,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </a>\n" +
     "            </div>\n" +
     "            <div class=\"pin-body product-pin\">\n" +
-    "               <i class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
+    "               <i tooltip-placement=\"left\"\n" +
+    "                  tooltip=\"{{ profileService.productByTiid(pinId[1]).genre }}\"\n" +
+    "                  class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
     "               <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
     "            </div>\n" +
     "         </li>\n" +
@@ -7802,66 +7701,115 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "");
 }]);
 
-angular.module("sidebar/profile-sidebar.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("sidebar/profile-sidebar.tpl.html",
-    "<div class=\"profile-sidebar\"\n" +
-    "     ng-show=\"profileAboutService.data.given_name\"\n" +
-    "     ng-controller=\"profileSidebarCtrl\">\n" +
+angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("sidebar/sidebar.tpl.html",
+    "<div class=\"main-sidebar\">\n" +
     "\n" +
-    "   <h1>\n" +
-    "      <a href=\"/{{ profileAboutService.data.url_slug }}\">\n" +
-    "         <span class=\"given-name\">{{ profileAboutService.data.given_name }}</span>\n" +
-    "         <span class=\"surname\">{{ profileAboutService.data.surname }}</span>\n" +
-    "      </a>\n" +
-    "   </h1>\n" +
+    "   <div class=\"profile-sidebar\"\n" +
+    "        ng-show=\"profileAboutService.data.given_name\">\n" +
+    "\n" +
+    "      <h1>\n" +
+    "         <a href=\"/{{ profileAboutService.data.url_slug }}\">\n" +
+    "            <span class=\"given-name\">{{ profileAboutService.data.given_name }}</span>\n" +
+    "            <span class=\"surname\">{{ profileAboutService.data.surname }}</span>\n" +
+    "         </a>\n" +
+    "      </h1>\n" +
     "\n" +
     "\n" +
-    "   <div class=\"nav\">\n" +
-    "      <a href=\"/{{ profileAboutService.data.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
-    "         <i class=\"icon-user left\"></i>\n" +
-    "         <span class=\"text\">\n" +
-    "            Overview\n" +
-    "         </span>\n" +
-    "         <div class=\"arrow\"></div>\n" +
-    "      </a>\n" +
-    "      <div class=\"nav-group genres\">\n" +
-    "         <ul>\n" +
-    "            <li ng-repeat=\"genre in profileService.data.genres | orderBy: 'name'\">\n" +
-    "               <a href=\"/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}\"\n" +
-    "                  ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
-    "                  <i class=\"{{ genre.icon }} left\"></i>\n" +
-    "                  <span class=\"text\">\n" +
-    "                     {{ genre.plural_name }}\n" +
-    "                  </span>\n" +
-    "                  <span class=\"count value\">\n" +
-    "                     ({{ genre.num_products }})\n" +
-    "                  </span>\n" +
-    "               </a>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
-    "      </div>\n" +
-    "      <div class=\"nav-group sidebar-accounts\">\n" +
-    "         <ul>\n" +
-    "            <li ng-repeat=\"account in profileService.data.account_products | orderBy: 'followers'\">\n" +
-    "               <a href=\"/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}\"\n" +
-    "                  ng-class=\"{active: page.isNamed(account.index_name)}\">\n" +
-    "                  <img ng-src=\"/static/img/favicons/{{ account.display_name.toLowerCase() }}.ico\">\n" +
-    "                  <span class=\"text\">\n" +
-    "                     {{ account.display_name }}\n" +
-    "                  </span>\n" +
-    "                  <span class=\"count value\">\n" +
-    "                     ({{ account.followers }} followers)\n" +
-    "                  </span>\n" +
-    "               </a>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
+    "      <div class=\"nav\">\n" +
+    "         <a href=\"/{{ profileAboutService.data.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
+    "            <i class=\"icon-user left\"></i>\n" +
+    "            <span class=\"text\">\n" +
+    "               Overview\n" +
+    "            </span>\n" +
+    "            <div class=\"arrow\"></div>\n" +
+    "         </a>\n" +
+    "         <div class=\"nav-group genres\">\n" +
+    "            <ul>\n" +
+    "               <li ng-repeat=\"genre in profileService.data.genres | orderBy: 'name'\">\n" +
+    "                  <a href=\"/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}\"\n" +
+    "                     ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
+    "                     <i class=\"{{ genre.icon }} left\"></i>\n" +
+    "                     <span class=\"text\">\n" +
+    "                        {{ genre.plural_name }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"count value\">\n" +
+    "                        ({{ genre.num_products }})\n" +
+    "                     </span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "         <div class=\"nav-group sidebar-accounts\">\n" +
+    "            <ul>\n" +
+    "               <li ng-repeat=\"account in profileService.data.account_products | orderBy: 'followers'\">\n" +
+    "                  <a href=\"/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}\"\n" +
+    "                     ng-class=\"{active: page.isNamed(account.index_name)}\">\n" +
+    "                     <img ng-src=\"/static/img/favicons/{{ account.display_name.toLowerCase() }}.ico\">\n" +
+    "                     <span class=\"text\">\n" +
+    "                        {{ account.display_name }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"count value\">\n" +
+    "                        ({{ account.followers }} followers)\n" +
+    "                     </span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "   \n" +
+    "\n" +
+    "\n" +
+    "   <div class=\"infopage-sidebar\"\n" +
+    "        ng-show=\"!profileAboutService.data.given_name\">\n" +
+    "      <h1>\n" +
+    "         <a href=\"/\" class=\"logo\">\n" +
+    "            <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
+    "         </a>\n" +
+    "      </h1>\n" +
+    "\n" +
+    "      <div class=\"nav\">\n" +
+    "         <div class=\"nav-group sidebar-accounts\">\n" +
+    "            <li><a href=\"/about\">About us</a></li>\n" +
+    "            <li><a href=\"/faq\">FAQ</a></li>\n" +
+    "            <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
+    "            <li><a href=\"/signup\">Free trial</a></li>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"nav-group sidebar-accounts\">\n" +
+    "            <li><a href=\"http://eepurl.com/RaRZ1\"><i class=\"icon-envelope-alt left\"></i>Newsletter</a></li>\n" +
+    "            <li><a href=\"http://twitter.com/Impactstory\"><i class=\"icon-twitter left\"></i>Twitter</a></li>\n" +
+    "            <li><a href=\"http://blog.impactstory.org\"><i class=\"icon-rss left\"></i>Blog</a></li>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "   <div class=\"sidebar-footer\">\n" +
-    "      <a href=\"/\" class=\"logo\">\n" +
+    "      <a href=\"/\" class=\"logo\" ng-show=\"profileAboutService.data.given_name\">\n" +
     "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
     "      </a>\n" +
+    "\n" +
+    "      <div ng-show=\"!profileAboutService.data.given_name\"\n" +
+    "           class=\"sidebar-funders\">\n" +
+    "         <h3>Supported by</h3>\n" +
+    "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
+    "            <img src=\"/static/img/logos/nsf-seal.png\" />\n" +
+    "         </a>\n" +
+    "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
+    "            <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
+    "         </a>\n" +
+    "         <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\">\n" +
+    "            <img src=\"/static/img/logos/jisc.png\" />\n" +
+    "         </a>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "      <i class=\"icon-reorder show-footer-button\"\n" +
     "         ng-mouseover=\"footer.show=true\"></i>\n" +
     "\n" +

@@ -1,0 +1,113 @@
+<div class="main-sidebar">
+
+   <div class="profile-sidebar"
+        ng-show="profileAboutService.data.given_name">
+
+      <h1>
+         <a href="/{{ profileAboutService.data.url_slug }}">
+            <span class="given-name">{{ profileAboutService.data.given_name }}</span>
+            <span class="surname">{{ profileAboutService.data.surname }}</span>
+         </a>
+      </h1>
+
+
+      <div class="nav">
+         <a href="/{{ profileAboutService.data.url_slug }}" ng-class="{active: page.isNamed('overview')}">
+            <i class="icon-user left"></i>
+            <span class="text">
+               Overview
+            </span>
+            <div class="arrow"></div>
+         </a>
+         <div class="nav-group genres">
+            <ul>
+               <li ng-repeat="genre in profileService.data.genres | orderBy: 'name'">
+                  <a href="/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}"
+                     ng-class="{active: page.isNamed(genre.url_representation)}">
+                     <i class="{{ genre.icon }} left"></i>
+                     <span class="text">
+                        {{ genre.plural_name }}
+                     </span>
+                     <span class="count value">
+                        ({{ genre.num_products }})
+                     </span>
+                  </a>
+               </li>
+            </ul>
+         </div>
+         <div class="nav-group sidebar-accounts">
+            <ul>
+               <li ng-repeat="account in profileService.data.account_products | orderBy: 'followers'">
+                  <a href="/{{ profileAboutService.data.url_slug }}/account/{{ account.display_name.toLowerCase() }}"
+                     ng-class="{active: page.isNamed(account.index_name)}">
+                     <img ng-src="/static/img/favicons/{{ account.display_name.toLowerCase() }}.ico">
+                     <span class="text">
+                        {{ account.display_name }}
+                     </span>
+                     <span class="count value">
+                        ({{ account.followers }} followers)
+                     </span>
+                  </a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </div>
+
+
+   <div class="infopage-sidebar"
+        ng-show="!profileAboutService.data.given_name">
+      <h1>
+         <a href="/" class="logo">
+            <img src="static/img/impactstory-logo-sideways.png" alt=""/>
+         </a>
+      </h1>
+
+      <div class="nav">
+         <div class="nav-group sidebar-accounts">
+            <li><a href="/about">About us</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/CarlBoettiger">Example profile</a></li>
+            <li><a href="/signup">Free trial</a></li>
+         </div>
+
+         <div class="nav-group sidebar-accounts">
+            <li><a href="http://eepurl.com/RaRZ1"><i class="icon-envelope-alt left"></i>Newsletter</a></li>
+            <li><a href="http://twitter.com/Impactstory"><i class="icon-twitter left"></i>Twitter</a></li>
+            <li><a href="http://blog.impactstory.org"><i class="icon-rss left"></i>Blog</a></li>
+         </div>
+
+
+      </div>
+
+   </div>
+
+
+
+   <div class="sidebar-footer">
+      <a href="/" class="logo" ng-show="profileAboutService.data.given_name">
+         <img src="static/img/impactstory-logo-sideways.png" alt=""/>
+      </a>
+
+      <div ng-show="!profileAboutService.data.given_name"
+           class="sidebar-funders">
+         <h3>Supported by</h3>
+         <a href="http://nsf.gov" id="footer-nsf-link">
+            <img src="/static/img/logos/nsf-seal.png" />
+         </a>
+         <a href="http://sloan.org/" id="footer-sloan-link">
+            <img src="/static/img/logos/sloan-seal.png" />
+         </a>
+         <a href="http://www.jisc.ac.uk/" id="footer-jisc-link">
+            <img src="/static/img/logos/jisc.png" />
+         </a>
+      </div>
+
+
+
+      <i class="icon-reorder show-footer-button"
+         ng-mouseover="footer.show=true"></i>
+
+   </div>
+
+</div>

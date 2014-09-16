@@ -89,6 +89,7 @@ angular.module('app').run(function(security, $window, Page, $location, editableO
 
 angular.module('app').controller('AppCtrl', function($scope,
                                                      $window,
+                                                     $http,
                                                      $route,
                                                      $sce,
                                                      UserMessage,
@@ -112,6 +113,11 @@ angular.module('app').controller('AppCtrl', function($scope,
     ["impactstory.org", "www.impactstory.org"],
     $location.host()
   ))
+
+  $http.get("/configs/genres")
+    .success(function(resp){
+      $rootScope.genreConfigs = resp
+    })
 
 
   security.requestCurrentUser().then(function(currentUser){

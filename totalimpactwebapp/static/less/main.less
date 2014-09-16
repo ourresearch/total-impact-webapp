@@ -463,10 +463,6 @@ div.no-page {
    margin-left: -@wrapperWidth / 2;
    padding: 20px 0 20px;
    background: #fff;
-   h1 {
-      font-size: 30px;
-      margin: 0;
-   }
 }
 
 @media all and (max-width: @wrapperWidth) {
@@ -547,8 +543,19 @@ div.no-page {
 }
 
 
-div.profile-sidebar {
+
+div.main-sidebar {
+   div.infopage-sidebar {
+      h1 {
+         margin-top: 10px;
+         img {
+            width: 180px;
+         }
+      }
+   }
    h1 {
+      margin: 0;
+      font-size: 30px;
       a {
          color: #333;
          &:hover {color: @linkColor;}
@@ -627,13 +634,36 @@ div.profile-sidebar {
       padding: 20px 0 15px;
       text-align: center;
 
+      div.sidebar-funders {
+         margin-right: 10px;
+         h3 {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 300;
+         }
+         img {
+            margin: 0 5px;
+            height: 30px;
+            opacity: .6;
+         }
+         a:hover{
+            img{opacity: 1;}
+         }
+         #footer-nsf-link {
+            img {height: 40px; margin-top: -2px;}
+         }
+         #footer-jisc-link {
+         }
+      }
+
       i.show-footer-button {
          position:absolute;
          padding: 8px 8px 8px 0;
          border: 1px solid #999;
+         font-size: 12px;
          border-left: 0;
-         right:-24px;
-         bottom: 10px;
+         right:-19px;
+         bottom: 15px;
          background: #fff;
          .border-radius(20px, 20px, 0, 0);
          color: #777;

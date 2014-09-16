@@ -2,7 +2,7 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function($location){
+.factory("Page", function($location, $rootScope){
    var title = '';
    var notificationsLoc = "header"
    var uservoiceTabLoc = "right"
@@ -11,6 +11,13 @@ angular.module("services.page")
    var headerFullName
    var profileUrl
    var pageName
+   var isInfopage
+
+
+    $rootScope.$on('$routeChangeSuccess', function () {
+      isInfopage = false
+      pageName = null
+    });
 
    var showHeaderNow = true
    var showFooterNow = true
@@ -144,6 +151,13 @@ angular.module("services.page")
 
 
      },
+     isInfopage: function(){
+       return !!isInfopage
+     },
+     setInfopage: function(val){
+       isInfopage = !!val
+     },
+
      'isEmbedded': function(){
        return isEmbedded
      } ,

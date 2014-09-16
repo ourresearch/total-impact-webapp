@@ -1072,6 +1072,19 @@ def pluralize_genre(genre):
     return genre_plural
 
 
+def genre_configs():
+    ret = []
+    for name, icon in genre_icons.iteritems():
+        my_plural = pluralize_genre(name)
+        my_config_dict = {
+            "name": name,
+            "icon": icon,
+            "plural_name": my_plural
+        }
+        ret.append(my_config_dict)
+
+    return ret
+
 
 
 

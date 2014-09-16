@@ -196,11 +196,12 @@
 
             <div class="share-buttons">
                <!--
-               <a class="facebook"
-                  ng-click="fbShare()">
-                     facebook
-                  </a>
+               <a class="btn btn-xs btn-default" ng-click="openChangeGenreModal()">
+                  <i class="{{ genre_icon }}"></i>
+                  Change genre
+               </a>
                -->
+               <a href="/product/{{ tiid }}" class="download-json btn btn-default btn-xs" target="_blank">Download JSON</a>
                <a class="twitter"
                   tooltip="Share this {{ genre }} on Twitter"
                   href="https://twitter.com/share?text={{ biblio.display_title }}&url={{ page.getUrl() }}"

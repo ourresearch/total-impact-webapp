@@ -116,6 +116,8 @@ angular.module("productPage", [
       $scope.metrics = myProduct.metrics
       $scope.displayGenrePlural = myProduct.display_genre_plural
       $scope.genre = myProduct.genre
+      $scope.genre_icon = myProduct.genre_icon
+      $scope.tiid = myProduct.tiid
       $scope.productHost = parseHostname(myProduct.aliases.resolved_url)
       $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
@@ -183,6 +185,18 @@ angular.module("productPage", [
 
     $scope.openInfoModal = function(){
       $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
+    }
+
+    $scope.openChangeGenreModal = function(){
+      $modal.open({
+        templateUrl: "product-page/change-genre-modal.tpl.html",
+        controller: "productUploadCtrl",
+        resolve: {
+          tiid: function(){
+            return product.tiid
+          }
+        }
+      })
     }
 
     $scope.openFulltextLocationModal = function(){
@@ -321,6 +335,35 @@ angular.module("productPage", [
 
     }
 })
+
+.controller("changeGenreModalCtrl", function($scope, $rootScope, Loading, ProductBiblio, tiid){
+    $scope.foo = function(){
+      console.log("we foo!")
+    }
+
+
+    $scope.genreConfigs = $rootScope.genreConfigs
+    $scope.myGenre = {}
+
+
+
+    $scope.saveGenre = function(){
+      console.log("saving genre")
+
+      ProductBiblio.patch(
+        {'tiid': tiid},
+        {genre: $scope.myGenre.input.name},
+        function(resp){
+          console.log("finished saving new genre", resp)
+          Loading.finish("saveButton")
+          return $scope.$close(resp)
+        }
+      )
+
+    }
+
+
+  })
 
 
 

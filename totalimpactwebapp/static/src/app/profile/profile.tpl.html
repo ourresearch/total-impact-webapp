@@ -72,7 +72,9 @@
                </a>
             </div>
             <div class="pin-body product-pin">
-               <i class="genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}"></i>
+               <i tooltip-placement="left"
+                  tooltip="{{ profileService.productByTiid(pinId[1]).genre }}"
+                  class="genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}"></i>
                <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pinId[1]).markup)"></div>
             </div>
          </li>

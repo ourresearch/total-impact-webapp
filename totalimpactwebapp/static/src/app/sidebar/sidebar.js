@@ -5,15 +5,8 @@ angular.module('profileSidebar', [
 ])
   .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
 
-    $scope.page = Page
-//    ProfileService.getCached().then(
-//      function(resp){
-//        $scope.profile = resp
-//      }
-//    )
+  })
 
-
-
-
+  .controller("infopageSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
 
   })

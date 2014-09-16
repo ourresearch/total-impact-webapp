@@ -98,6 +98,7 @@ angular.module( 'infopages', [
     $scope.landingPageType = "main"
     Page.setUservoiceTabLoc("hidden")
     Page.setName("landing")
+    Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
 
   })
@@ -106,6 +107,7 @@ angular.module( 'infopages', [
     $scope.landingPageType = "h-index"
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
+    Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
 
@@ -113,31 +115,37 @@ angular.module( 'infopages', [
     $scope.landingPageType = "open-science"
     Page.showHeader(false)
     Page.setUservoiceTabLoc("hidden")
+    Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
     Page.setTitle("FAQ")
+    Page.setInfopage(true)
     $scope.providers = providersInfo
     console.log("faq page controller running")
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
     Page.setTitle("about")
+    Page.setInfopage(true)
 
   })
 
   .controller('advisorsPageCtrl', function($scope, Page) {
     Page.setTitle("advisors")
+    Page.setInfopage(true)
 
   })
   .controller('SpreadTheWordCtrl', function($scope, Page) {
     Page.setTitle("Spread the word")
+    Page.setInfopage(true)
 
   })
 
   .controller( 'collectionPageCtrl', function aboutPageCtrl ( $scope, Page ) {
     Page.setTitle("Collections are retired")
+    Page.setInfopage(true)
 
   });
 

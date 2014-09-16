@@ -6343,10 +6343,6 @@ div.no-page p span.slug {
   padding: 20px 0 20px;
   background: #fff;
 }
-#sidebar h1 {
-  font-size: 30px;
-  margin: 0;
-}
 @media all and (max-width: 1100px) {
   #sidebar {
     left: 0;
@@ -6458,17 +6454,27 @@ div.no-page p span.slug {
 #header div.account-nav {
   margin: 0;
 }
-div.profile-sidebar h1 a {
+div.main-sidebar div.infopage-sidebar h1 {
+  margin-top: 10px;
+}
+div.main-sidebar div.infopage-sidebar h1 img {
+  width: 180px;
+}
+div.main-sidebar h1 {
+  margin: 0;
+  font-size: 30px;
+}
+div.main-sidebar h1 a {
   color: #333;
 }
-div.profile-sidebar h1 a:hover {
+div.main-sidebar h1 a:hover {
   color: #ff4000;
 }
-div.profile-sidebar div.nav {
+div.main-sidebar div.nav {
   margin-top: 100px;
   font-size: 16px;
 }
-div.profile-sidebar div.nav a {
+div.main-sidebar div.nav a {
   color: #777;
   position: relative;
   font-size: 16px;
@@ -6477,20 +6483,20 @@ div.profile-sidebar div.nav a {
   margin-left: 1px;
   padding: 4px 15px 4px 5px;
 }
-div.profile-sidebar div.nav a:hover {
+div.main-sidebar div.nav a:hover {
   color: #000;
 }
-div.profile-sidebar div.nav a span.count {
+div.main-sidebar div.nav a span.count {
   font-size: 70%;
   font-weight: 300;
 }
-div.profile-sidebar div.nav a.active {
+div.main-sidebar div.nav a.active {
   color: #000;
   font-weight: 900;
   color: #ff4000;
   font-weight: normal;
 }
-div.profile-sidebar div.nav a.active span.text::after {
+div.main-sidebar div.nav a.active span.text::after {
   background-image: url(http://i.imgur.com/60o1JnH.png);
   background-position: 0 -69px;
   background-repeat: no-repeat;
@@ -6503,15 +6509,15 @@ div.profile-sidebar div.nav a.active span.text::after {
   height: 28px;
   margin-top: -14px;
 }
-div.profile-sidebar div.nav div.nav-group {
+div.main-sidebar div.nav div.nav-group {
   border-top: 1px solid #eee;
   margin-top: 10px;
 }
-div.profile-sidebar div.nav div.nav-group li {
+div.main-sidebar div.nav div.nav-group li {
   margin: 0;
   padding: 0;
 }
-div.profile-sidebar div.nav div.nav-group.sidebar-accounts a img {
+div.main-sidebar div.nav div.nav-group.sidebar-accounts a img {
   height: 16px;
   opacity: 1;
   filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
@@ -6524,12 +6530,12 @@ div.profile-sidebar div.nav div.nav-group.sidebar-accounts a img {
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-div.profile-sidebar div.nav div.nav-group.sidebar-accounts a:hover img {
+div.main-sidebar div.nav div.nav-group.sidebar-accounts a:hover img {
   opacity: 1;
   filter: none;
   -webkit-filter: none;
 }
-div.profile-sidebar div.sidebar-footer {
+div.main-sidebar div.sidebar-footer {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -6537,13 +6543,34 @@ div.profile-sidebar div.sidebar-footer {
   padding: 20px 0 15px;
   text-align: center;
 }
-div.profile-sidebar div.sidebar-footer i.show-footer-button {
+div.main-sidebar div.sidebar-footer div.sidebar-funders {
+  margin-right: 10px;
+}
+div.main-sidebar div.sidebar-footer div.sidebar-funders h3 {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 300;
+}
+div.main-sidebar div.sidebar-footer div.sidebar-funders img {
+  margin: 0 5px;
+  height: 30px;
+  opacity: .6;
+}
+div.main-sidebar div.sidebar-footer div.sidebar-funders a:hover img {
+  opacity: 1;
+}
+div.main-sidebar div.sidebar-footer div.sidebar-funders #footer-nsf-link img {
+  height: 40px;
+  margin-top: -2px;
+}
+div.main-sidebar div.sidebar-footer i.show-footer-button {
   position: absolute;
   padding: 8px 8px 8px 0;
   border: 1px solid #999;
+  font-size: 12px;
   border-left: 0;
-  right: -24px;
-  bottom: 10px;
+  right: -19px;
+  bottom: 15px;
   background: #fff;
   -webkit-border-top-right-radius: 20px;
   -webkit-border-bottom-right-radius: 20px;
@@ -6562,14 +6589,14 @@ div.profile-sidebar div.sidebar-footer i.show-footer-button {
   background-clip: padding-box;
   color: #777;
 }
-div.profile-sidebar div.sidebar-footer i.show-footer-button:hover {
+div.main-sidebar div.sidebar-footer i.show-footer-button:hover {
   color: #ff4000;
 }
-div.profile-sidebar div.sidebar-footer a.logo {
+div.main-sidebar div.sidebar-footer a.logo {
   color: #999;
   margin-left: -17px;
 }
-div.profile-sidebar div.sidebar-footer a.logo img {
+div.main-sidebar div.sidebar-footer a.logo img {
   width: 150px;
   opacity: 0.8;
   filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
@@ -6582,7 +6609,7 @@ div.profile-sidebar div.sidebar-footer a.logo img {
   /* Chrome 19+, Safari 6+, Safari 6+ iOS */
 
 }
-div.profile-sidebar div.sidebar-footer a.logo img:hover {
+div.main-sidebar div.sidebar-footer a.logo img:hover {
   opacity: 1;
   filter: none;
   -webkit-filter: none;
@@ -6787,6 +6814,9 @@ code {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+div.infopage {
+  margin-bottom: 200px;
+}
 div.infopage h2.infopage-heading {
   font-size: 50px;
 }
@@ -7516,6 +7546,9 @@ div.modal-body.embed div.code h3 {
 }
 #pinboard div.pinboard-col.col-two {
   width: 33%;
+  border: 1px solid #eee;
+  padding-top: 15px;
+  margin-top: -10px;
 }
 #pinboard div.pinboard-col.col-two h3 {
   margin: 10px 0 10px 0;
@@ -7528,7 +7561,6 @@ div.modal-body.embed div.code h3 {
   margin-left: 17px;
 }
 #pinboard div.pinboard-col ul.pinboard-list.col-two {
-  border: 1px solid #eee;
   padding-bottom: 100px;
   padding-top: 10px;
 }
@@ -8225,6 +8257,14 @@ div.product-page div.main-content #biblio div.share-buttons .tooltip-arrow {
 div.product-page div.main-content #biblio div.share-buttons a img {
   height: 16px;
 }
+div.product-page div.main-content #biblio div.share-buttons a.btn {
+  font-size: 12px;
+  margin-right: 5px;
+  color: #999;
+}
+div.product-page div.main-content #biblio div.share-buttons a.btn:hover {
+  color: #333;
+}
 div.product-page div.main-content #resource {
   margin-top: 20px;
   padding-bottom: 100px;
@@ -8444,6 +8484,12 @@ div.modal-body.free-fulltext-url div.archive-this a.btn {
 div.modal-body.free-fulltext-url div.archive-this a.btn span {
   margin-right: 5px;
 }
+div.modal-body.change-product-genre {
+  text-align: center;
+}
+div.modal-body.change-product-genre label {
+  margin-right: 10px;
+}
 #product-page-sidebar {
   width: 250px;
   float: right;
@@ -8556,9 +8602,10 @@ div.modal-body.free-fulltext-url div.archive-this a.btn span {
 div.signup-page {
   position: fixed;
   top: 0;
-  left: 0;
+  left: 50%;
+  margin-left: -550px;
   bottom: 0;
-  width: 100%;
+  width: 1100px;
 }
 div.signup-page div.signup-main-page {
   width: 70%;

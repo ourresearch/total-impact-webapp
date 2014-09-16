@@ -1014,6 +1014,14 @@ def test_emailer():
 def get_configs():
     return json_resp_from_thing(configs.metrics())
 
+
+@app.route("/configs/genres")
+def get_genre_configs():
+    return json_resp_from_thing(configs.genre_configs())
+
+
+
+
 ###############################################################################
 #
 #   WIDGET STUFF
