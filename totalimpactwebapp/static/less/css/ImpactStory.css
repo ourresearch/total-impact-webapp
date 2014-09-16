@@ -7560,6 +7560,16 @@ div.modal-body.embed div.code h3 {
 #pinboard div.pinboard-col.col-two div.col-header {
   margin-left: 17px;
 }
+#pinboard div.pinboard-col ul.pinboard-list.logged-out li.pin {
+  cursor: default;
+  border: none;
+}
+#pinboard div.pinboard-col ul.pinboard-list.logged-out li.pin:hover {
+  border: none;
+}
+#pinboard div.pinboard-col ul.pinboard-list.logged-out li.pin:hover div.pin-header {
+  display: none;
+}
 #pinboard div.pinboard-col ul.pinboard-list.col-two {
   padding-bottom: 100px;
   padding-top: 10px;

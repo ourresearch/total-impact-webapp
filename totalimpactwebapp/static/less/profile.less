@@ -324,6 +324,17 @@ div.modal-body.embed {
       }
 
       ul.pinboard-list {
+         &.logged-out {
+            li.pin {
+               cursor: default;
+               border:none;
+               &:hover {
+                  border:none;
+                  div.pin-header {display:none;}
+               }
+            }
+         }
+
          &.col-two {
             padding-bottom: 100px;
             padding-top: 10px;

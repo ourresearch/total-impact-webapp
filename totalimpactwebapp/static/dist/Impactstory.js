@@ -6820,9 +6820,29 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"pinboard-col col-one\">\n" +
     "         <h3>Featured products</h3>\n" +
     "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
-    "         <ul class=\"col-one pinboard-list\"\n" +
+    "\n" +
+    "         <!-- LOGGED IN version -->\n" +
+    "         <ul class=\"col-one pinboard-list logged-in\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
+    "             ng-if=\"security.isLoggedIn(url_slug)\"\n" +
     "             ng-model=\"pinboardService.cols.one\">\n" +
+    "            <li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
+    "               <div class=\"pin-header\">\n" +
+    "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "                     <i class=\"icon-remove\"></i>\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
+    "               <div class=\"pin-body product-pin\">\n" +
+    "                  <i tooltip-placement=\"left\"\n" +
+    "                     tooltip=\"{{ profileService.productByTiid(pinId[1]).genre }}\"\n" +
+    "                     class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
+    "                  <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
+    "               </div>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "\n" +
+    "         <!-- LOGGED OUT version -->\n" +
+    "         <ul class=\"col-one pinboard-list logged-out\" ng-if=\"!security.isLoggedIn(url_slug)\">\n" +
     "            <li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
     "               <div class=\"pin-header\">\n" +
     "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
@@ -6847,6 +6867,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "         <!-- LOGGED-IN version -->\n" +
     "         <ul class=\"col-two pinboard-list logged-in\"\n" +
+    "             ng-if=\"security.isLoggedIn(url_slug)\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
     "             ng-model=\"pinboardService.cols.two\">\n" +
     "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
@@ -6882,8 +6903,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "         <!-- LOGGED-OUT version -->\n" +
-    "         <!--\n" +
-    "         <ul class=\"col-two pinboard-list logged-out\">\n" +
+    "         <ul class=\"col-two pinboard-list logged-out\" ng-if=\"!security.isLoggedIn(url_slug)\">\n" +
     "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
     "               <div class=\"pin-header\">\n" +
     "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
@@ -6914,7 +6934,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </div>\n" +
     "            </li>\n" +
     "         </ul>\n" +
-    "         -->\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
