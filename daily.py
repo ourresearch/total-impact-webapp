@@ -452,12 +452,7 @@ def star_best_products(url_slug=None, min_url_slug=None):
 
         contents = {"one":[], "two":[]}
         contents["one"] = [["product", p.tiid] for p in selected_products]
-        for c in selected_cards:
-            if c.card_type=="GenreEngagementSumCard":
-                address = ["genre", c.genre, "sum", "engagement", c.engagement]
-            elif c.card_type=="GenreMetricSumCard":
-                address = ["genre", c.genre, "sum", "metric", c.provider, c.interaction]
-            contents["two"].append(address)
+        contents["two"] = [c.genre_card_address for c in selected_cards]
 
         # print contents
         board = Pinboard(
