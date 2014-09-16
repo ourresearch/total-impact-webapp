@@ -22,8 +22,8 @@ def write_to_pinboard(profile_id, contents):
 
 
 class Pinboard(db.Model):
-    pinboard_id = db.Column(db.Integer, Sequence('pinboard_id_seq'), primary_key=True)
-    profile_id = db.Column(db.Integer)
+    pinboard_id = db.Column(db.Integer, Sequence('pinboard_id_seq'))
+    profile_id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime())
     contents = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
 
