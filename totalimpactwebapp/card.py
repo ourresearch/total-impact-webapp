@@ -4,6 +4,7 @@ import configs
 import datetime
 import jinja2
 import numpy
+from collections import defaultdict
 
 def get_metrics_by_name(products, provider, interaction):
     matching_metrics = []
@@ -296,7 +297,11 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
 
     @property
     def display_things_we_are_counting(self):
-        return self.exemplar_metric.display_interaction
+        plural_interaction = self.exemplar_metric.display_interaction
+        if not plural_interaction.endswith("s"):
+            plural_interaction += "s"    
+        return plural_interaction
+
 
     @property
     def img_filename(self):
@@ -414,6 +419,13 @@ class GenreEngagementSumCard(Card):
         except KeyError:
             return None 
 
+    @property
+    def accumulated_string(self):
+        try:
+            return self.engagement_accumulations(self.products, self.engagement)["accumulated_string"]
+        except KeyError:
+            return None 
+
     @classmethod
     #override with a version that returns all cards, not just ones that freshly pass milestones
     def engagement_accumulations(cls, products, engagement):
@@ -426,12 +438,27 @@ class GenreEngagementSumCard(Card):
             if m.diff_window_end_value])
         accumulated_diff = accumulated_diff_end_value - accumulated_diff_start_value
 
+        accumulated_dict = defaultdict(int)
+        for m in matching_metrics:
+            plural_interaction = m.display_interaction
+            if not plural_interaction.endswith("s"):
+                plural_interaction += "s"    
+            display_key = u"{provider} {interaction}".format(
+                provider=m.display_provider, interaction=plural_interaction)
+            accumulated_dict[display_key] += m.diff_window_end_value
+
+        sorted_accumulated_list = sorted(accumulated_dict.iteritems(), key=lambda (k,v): (v,k), reverse=True)
+
+        accumulated_list = [u"{v} {k}".format(k=k, v=v) for (k, v) in sorted_accumulated_list]
+        accumulated_string = ", ".join(accumulated_list)
+
         if not accumulated_diff_end_value:
             return None
 
         return ({
             "accumulated_diff_end_value": accumulated_diff_end_value,
-            "accumulated_diff": accumulated_diff
+            "accumulated_diff": accumulated_diff,
+            "accumulated_string": accumulated_string
             })
 
     def to_dict(self):
