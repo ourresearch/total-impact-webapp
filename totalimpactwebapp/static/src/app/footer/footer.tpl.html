@@ -1,54 +1,60 @@
-<div id="footer" ng-show="page.showFooter()">
-   <div class="wrapper">
+<div id="page-footer-container">
 
-      <div id="footer-about" class="footer-col">
-         <h3>About</h3>
-         <ul>
-            <li><a href="/about">About us</a></li>
-            <li><a href="/faq#tos" target="_self">Terms of use</a></li>
-            <li><a href="/faq#copyright" target="_self">Copyright</a></li>
-            <li><a href="https://github.com/total-impact">GitHub</a></li>
-         </ul>
+   <div id="page-footer"
+        ng-if="footer.show"
+        ng-mouseleave="footer.show=false"
+        class="animated slideInUp slideOutDown">
+      <div class="wrapper">
+
+         <div id="footer-about" class="footer-col">
+            <h3>About</h3>
+            <ul>
+               <li><a href="/about">About us</a></li>
+               <li><a href="/faq#tos" target="_self">Terms of use</a></li>
+               <li><a href="/faq#copyright" target="_self">Copyright</a></li>
+               <li><a href="https://github.com/total-impact">GitHub</a></li>
+            </ul>
+         </div>
+
+         <div id="footer-follow" class="footer-col">
+            <h3>Community</h3>
+            <ul>
+               <li><a href="http://eepurl.com/RaRZ1">Newsletter</a></li>
+               <li><a href="http://twitter.com/Impactstory">Twitter</a></li>
+               <li><a href="http://blog.impactstory.org">Blog</a></li>
+               <li><a href="/advisors">Advisors</a></li>
+               <li><a href="https://docs.google.com/forms/d/1gpIGnifvh0YBGgMAGozBEWhBUP1EZGMYRn2X6U25XzM/viewform?usp=send_form" target="_blank">Free stickers!</a></li>
+
+            </ul>
+         </div>
+
+         <div id="footer-help" class="footer-col">
+            <h3>Help</h3>
+            <ul>
+               <li><a href="http://feedback.impactstory.org" target="_blank">Suggestions</a></li>
+               <li>
+                  <a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950">Report bug</a>
+               </li>
+               <li><a href="/faq">FAQ</a></li>
+               <li><a href="/CarlBoettiger">Example profile</a></li>
+            </ul>
+         </div>
+
+
+         <div id="footer-funders" class="footer-col">
+            <h3>Supported by</h3>
+            <a href="http://nsf.gov" id="footer-nsf-link">
+               <img src="/static/img/logos/nsf-seal.png" />
+            </a>
+            <a href="http://sloan.org/" id="footer-sloan-link">
+               <img src="/static/img/logos/sloan-seal.png" />
+            </a>
+            <a href="http://www.jisc.ac.uk/" id="footer-jisc-link">
+               <img src="/static/img/logos/jisc.png" />
+            </a>
+         </div>
+
+
       </div>
-
-      <div id="footer-follow" class="footer-col">
-         <h3>Community</h3>
-         <ul>
-            <li><a href="http://eepurl.com/RaRZ1">Newsletter</a></li>
-            <li><a href="http://twitter.com/Impactstory">Twitter</a></li>
-            <li><a href="http://blog.impactstory.org">Blog</a></li>
-            <li><a href="/advisors">Advisors</a></li>
-            <li><a href="https://docs.google.com/forms/d/1gpIGnifvh0YBGgMAGozBEWhBUP1EZGMYRn2X6U25XzM/viewform?usp=send_form" target="_blank">Free stickers!</a></li>
-
-         </ul>
-      </div>
-
-      <div id="footer-help" class="footer-col">
-         <h3>Help</h3>
-         <ul>
-            <li><a href="http://feedback.impactstory.org" target="_blank">Suggestions</a></li>
-            <li>
-               <a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950">Report bug</a>
-            </li>
-            <li><a href="/faq">FAQ</a></li>
-            <li><a href="/CarlBoettiger">Example profile</a></li>
-         </ul>
-      </div>
-
-
-      <div id="footer-funders" class="footer-col">
-         <h3>Supported by</h3>
-         <a href="http://nsf.gov" id="footer-nsf-link">
-            <img src="/static/img/logos/nsf-seal.png" />
-         </a>
-         <a href="http://sloan.org/" id="footer-sloan-link">
-            <img src="/static/img/logos/sloan-seal.png" />
-         </a>
-         <a href="http://www.jisc.ac.uk/" id="footer-jisc-link">
-            <img src="/static/img/logos/jisc.png" />
-         </a>
-      </div>
-
-
-   </div>
-</div> <!-- end footer -->
+   </div> <!-- end footer -->
+</div>

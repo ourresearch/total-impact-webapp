@@ -624,18 +624,30 @@ div.profile-sidebar {
       bottom: 0;
       right: 0;
       left: 0;
-      padding: 20px 0 10px;
+      padding: 20px 0 15px;
       text-align: center;
-      &:hover {
-      }
 
+      i.show-footer-button {
+         position:absolute;
+         padding: 8px 8px 8px 0;
+         border: 1px solid #999;
+         border-left: 0;
+         right:-24px;
+         bottom: 10px;
+         background: #fff;
+         .border-radius(20px, 20px, 0, 0);
+         color: #777;
+         &:hover {
+            color: @linkColor;
+         }
+
+      }
       a.logo {
          color: #999;
          margin-left: -17px;
          img {
             width: 150px;
-            opacity: .7;
-            .grayscale(.5);
+            .grayscale(.8);
             &:hover {
                .ungrayscale();
             }
@@ -643,13 +655,6 @@ div.profile-sidebar {
       }
    }
 
-   div.page-footer {
-      display:none;
-      position: absolute;
-      bottom: 0;
-      left: 200px;
-      width: 800px;
-   }
 }
 
 
@@ -664,85 +669,93 @@ div.profile-sidebar {
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
+#page-footer-container {
 
-div.page-footer {
-   .clearfix();
-;
-   clear:both;
-   color: #777;
-   padding: 60px 20px 40px;
-   border: 1px solid #aaa;
-   .border-radius(5px, 0, 0, 5px);
-   border-bottom: none;
-   background: #ddd;
-   font-size: 16px;
+   #page-footer {
+      .clearfix();
+      opacity: .95;
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      width: @contentWidth - 100px;
+      margin-left: -@wrapperWidth / 2 + @sidebarWidth - 1px;
 
-
-   p {
-      margin:6px 0 0 0;
-      line-height: 1.4;
-   }
-
-   a {
-      color: #777;
-      &:hover {color: darken(#777777, 20%);}
-   }
+      clear:both;
+      color: #555;
+      padding: 60px 20px 40px;
+      border: 1px solid #aaa;
+      .border-radius(5px, 0, 0, 0);
+      border-bottom: none;
+      background: #eee;
+      font-size: 16px;
+      z-index: 1000;
 
 
-   div.footer-col {
-      float:left;
-      width: 125px;
-      padding-right: 0;
-      margin-left: 32px;
-      border-right: 1px solid #ccc;
-      min-height: 150px;
-      font-weight: 300;
-
-
-      h3 {
-         font-weight: 500;
-         margin-top: 0;
-         font-size: 16px;
-         color: #777;
+      p {
+         margin:6px 0 0 0;
+         line-height: 1.4;
       }
 
-      ul {
-         li {
-            line-height: 1.6;
-         }
-         a {
-            font-size: 15px;
-         }
-      }
-
-      &#footer-help {
-         border-right: none;
+      a {
+         color: #333;
+         &:hover {color: darken(#777777, 20%);}
       }
 
 
-      &#footer-funders {
-         width:  200px;
-         border-right: none;
-         padding-right: none;
-         float:right;
-         text-align: right;
+      div.footer-col {
+         float:left;
+         width: 125px;
+         padding-right: 0;
+         margin-left: 32px;
+         border-right: 1px solid #ccc;
+         min-height: 150px;
+
+
          h3 {
-            margin: 0 20px 15px 40px;
-            text-align: left;
-            font-size: 14px;
+            font-weight: bold;
+            margin-top: 0;
+            font-size: 16px;
+            color: #333;
          }
-         img {
-            margin: 0 5px;
-            height: 35px;
-            opacity: .6;
-         }
-         #footer-nsf-link {
-            img {height: 40px; margin-top: -2px;}
-         }
-         #footer-jisc-link {
-         }
-      }
 
+         ul {
+            li {
+               line-height: 1.6;
+            }
+            a {
+               font-size: 15px;
+            }
+         }
+
+         &#footer-help {
+            border-right: none;
+         }
+
+
+         &#footer-funders {
+            width:  200px;
+            border-right: none;
+            padding-right: none;
+            float:right;
+            text-align: right;
+            h3 {
+               margin: 0 20px 15px 40px;
+               text-align: left;
+               font-size: 14px;
+            }
+            img {
+               margin: 0 5px;
+               height: 35px;
+               opacity: .6;
+            }
+            #footer-nsf-link {
+               img {height: 40px; margin-top: -2px;}
+            }
+            #footer-jisc-link {
+            }
+         }
+
+      }
    }
 }
 

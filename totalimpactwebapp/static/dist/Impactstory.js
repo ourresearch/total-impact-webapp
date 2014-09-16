@@ -620,6 +620,8 @@ angular.module('app').controller('AppCtrl', function($scope,
     return $sce.trustAsHtml(str)
   }
 
+  $scope.footer = {}
+
   $scope.nFormat = function(num) {
     // from http://stackoverflow.com/a/14994860/226013
     if (num >= 1000000) {
@@ -5203,60 +5205,66 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
 
 angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("footer/footer.tpl.html",
-    "<div id=\"footer\" ng-show=\"page.showFooter()\">\n" +
-    "   <div class=\"wrapper\">\n" +
+    "<div id=\"page-footer-container\">\n" +
     "\n" +
-    "      <div id=\"footer-about\" class=\"footer-col\">\n" +
-    "         <h3>About</h3>\n" +
-    "         <ul>\n" +
-    "            <li><a href=\"/about\">About us</a></li>\n" +
-    "            <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
-    "            <li><a href=\"/faq#copyright\" target=\"_self\">Copyright</a></li>\n" +
-    "            <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
-    "         </ul>\n" +
+    "   <div id=\"page-footer\"\n" +
+    "        ng-if=\"footer.show\"\n" +
+    "        ng-mouseleave=\"footer.show=false\"\n" +
+    "        class=\"animated slideInUp slideOutDown\">\n" +
+    "      <div class=\"wrapper\">\n" +
+    "\n" +
+    "         <div id=\"footer-about\" class=\"footer-col\">\n" +
+    "            <h3>About</h3>\n" +
+    "            <ul>\n" +
+    "               <li><a href=\"/about\">About us</a></li>\n" +
+    "               <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
+    "               <li><a href=\"/faq#copyright\" target=\"_self\">Copyright</a></li>\n" +
+    "               <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div id=\"footer-follow\" class=\"footer-col\">\n" +
+    "            <h3>Community</h3>\n" +
+    "            <ul>\n" +
+    "               <li><a href=\"http://eepurl.com/RaRZ1\">Newsletter</a></li>\n" +
+    "               <li><a href=\"http://twitter.com/Impactstory\">Twitter</a></li>\n" +
+    "               <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
+    "               <li><a href=\"/advisors\">Advisors</a></li>\n" +
+    "               <li><a href=\"https://docs.google.com/forms/d/1gpIGnifvh0YBGgMAGozBEWhBUP1EZGMYRn2X6U25XzM/viewform?usp=send_form\" target=\"_blank\">Free stickers!</a></li>\n" +
+    "\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div id=\"footer-help\" class=\"footer-col\">\n" +
+    "            <h3>Help</h3>\n" +
+    "            <ul>\n" +
+    "               <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
+    "               <li>\n" +
+    "                  <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
+    "               </li>\n" +
+    "               <li><a href=\"/faq\">FAQ</a></li>\n" +
+    "               <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <div id=\"footer-funders\" class=\"footer-col\">\n" +
+    "            <h3>Supported by</h3>\n" +
+    "            <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
+    "               <img src=\"/static/img/logos/nsf-seal.png\" />\n" +
+    "            </a>\n" +
+    "            <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
+    "               <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
+    "            </a>\n" +
+    "            <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\">\n" +
+    "               <img src=\"/static/img/logos/jisc.png\" />\n" +
+    "            </a>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "      </div>\n" +
-    "\n" +
-    "      <div id=\"footer-follow\" class=\"footer-col\">\n" +
-    "         <h3>Community</h3>\n" +
-    "         <ul>\n" +
-    "            <li><a href=\"http://eepurl.com/RaRZ1\">Newsletter</a></li>\n" +
-    "            <li><a href=\"http://twitter.com/Impactstory\">Twitter</a></li>\n" +
-    "            <li><a href=\"http://blog.impactstory.org\">Blog</a></li>\n" +
-    "            <li><a href=\"/advisors\">Advisors</a></li>\n" +
-    "            <li><a href=\"https://docs.google.com/forms/d/1gpIGnifvh0YBGgMAGozBEWhBUP1EZGMYRn2X6U25XzM/viewform?usp=send_form\" target=\"_blank\">Free stickers!</a></li>\n" +
-    "\n" +
-    "         </ul>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <div id=\"footer-help\" class=\"footer-col\">\n" +
-    "         <h3>Help</h3>\n" +
-    "         <ul>\n" +
-    "            <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
-    "            <li>\n" +
-    "               <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
-    "            </li>\n" +
-    "            <li><a href=\"/faq\">FAQ</a></li>\n" +
-    "            <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
-    "         </ul>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <div id=\"footer-funders\" class=\"footer-col\">\n" +
-    "         <h3>Supported by</h3>\n" +
-    "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
-    "            <img src=\"/static/img/logos/nsf-seal.png\" />\n" +
-    "         </a>\n" +
-    "         <a href=\"http://sloan.org/\" id=\"footer-sloan-link\">\n" +
-    "            <img src=\"/static/img/logos/sloan-seal.png\" />\n" +
-    "         </a>\n" +
-    "         <a href=\"http://www.jisc.ac.uk/\" id=\"footer-jisc-link\">\n" +
-    "            <img src=\"/static/img/logos/jisc.png\" />\n" +
-    "         </a>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "   </div>\n" +
-    "</div> <!-- end footer -->\n" +
+    "   </div> <!-- end footer -->\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -5280,7 +5288,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "         <div class=\"genre-summary\">\n" +
     "            <div class=\"genre-summary-top\">\n" +
     "               <ul class=\"genre-cards-best\">\n" +
-    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3)\">\n" +
+    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
     "\n" +
     "                     <span class=\"feature-controls\">\n" +
     "\n" +
@@ -7800,9 +7808,9 @@ angular.module("sidebar/profile-sidebar.tpl.html", []).run(["$templateCache", fu
     "      <a href=\"/\" class=\"logo\">\n" +
     "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
     "      </a>\n" +
-    "      <div class=\"page-footer\">\n" +
-    "         <div ng-include=\"'footer/footer.tpl.html'\"></div>\n" +
-    "      </div>\n" +
+    "      <i class=\"icon-reorder show-footer-button\"\n" +
+    "         ng-mouseover=\"footer.show=true\"></i>\n" +
+    "\n" +
     "   </div>\n" +
     "\n" +
     "</div>\n" +

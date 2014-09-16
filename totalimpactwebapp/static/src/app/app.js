@@ -144,6 +144,8 @@ angular.module('app').controller('AppCtrl', function($scope,
     return $sce.trustAsHtml(str)
   }
 
+  $scope.footer = {}
+
   $scope.nFormat = function(num) {
     // from http://stackoverflow.com/a/14994860/226013
     if (num >= 1000000) {
