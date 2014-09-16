@@ -31,6 +31,10 @@ angular.module('accountPage', [
     Page.setName($routeParams.account_index_name)
 
     $scope.templatePath = "account-page/"+ $routeParams.account_index_name  +"-account-page.tpl.html"
+    $scope.accountName =  $routeParams.account_index_name
+    $scope.account = function(){
+      return ProfileService.account_products
+    }
 
 
   })
@@ -4782,8 +4786,6 @@ angular.module('services.profileService', [
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId
     }
-
-
   })
 
 
@@ -5167,25 +5169,30 @@ angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
-    "<h1>account page!</h1>\n" +
+    "<div class=\"account-page\">\n" +
+    "   <div ng-include=\"templatePath\"></div>\n" +
+    "</div>\n" +
     "\n" +
-    "<div ng-include=\"templatePath\"></div>");
+    "");
 }]);
 
 angular.module("account-page/github-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/github-account-page.tpl.html",
-    "<h2>github!</h2>\n" +
+    "<h2>\n" +
+    "   <span class=\"account-host\">GitHub</span>\n" +
+    "   <span class=\"account-username\">{{ profileAboutService.data.account_products_dict.github }}</span>\n" +
+    "</h2>\n" +
     "");
 }]);
 
 angular.module("account-page/slideshare-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/slideshare-account-page.tpl.html",
-    "<h2>slideshare!</h2>");
+    "<h2>Slideshare</h2>");
 }]);
 
 angular.module("account-page/twitter-account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/twitter-account-page.tpl.html",
-    "<h2>twitter acccount page!</h2>\n" +
+    "<h2>Twitter</h2>\n" +
     "\n" +
     "followers: {{ profileService.getAccountProduct(\"twitter\").followers }}\n" +
     "\n" +
@@ -7871,6 +7878,8 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "               </li>\n" +
     "            </ul>\n" +
     "         </div>\n" +
+    "\n" +
+    "         <!--\n" +
     "         <div class=\"nav-group sidebar-accounts\">\n" +
     "            <ul>\n" +
     "               <li ng-repeat=\"account in profileService.data.account_products | orderBy: 'followers'\">\n" +
@@ -7887,6 +7896,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "               </li>\n" +
     "            </ul>\n" +
     "         </div>\n" +
+    "         -->\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +

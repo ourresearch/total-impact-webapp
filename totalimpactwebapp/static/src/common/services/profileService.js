@@ -171,8 +171,6 @@ angular.module('services.profileService', [
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId
     }
-
-
   })
 
 
