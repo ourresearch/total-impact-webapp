@@ -455,9 +455,14 @@ def star_best_products(url_slug=None, min_url_slug=None):
         contents["two"] = [c.genre_card_address for c in selected_cards]
 
         # print contents
-        board = Pinboard(
-            profile_id=profile.id,
-            contents=contents)
+        board = Pinboard.query.filter_by(profile_id=profile.id).first()
+        if board:
+            board.contents = contents
+            board.timestamp = datetime.datetime.utcnow()
+        else:        
+            board = Pinboard(
+                profile_id=profile.id,
+                contents=contents)
 
         db.session.add(board)
         commit(db)
