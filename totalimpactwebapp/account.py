@@ -50,6 +50,9 @@ class Account(object):
         else:
             return 0
 
+    @cached_property
+    def account(self):
+        return self.product.biblio.account
 
     def to_dict(self):
         attributes_to_ignore = [
@@ -65,6 +68,6 @@ class TwitterAccount(Account):
 
 class GitHubAccount(Account):
     pass
-
+    
 class SlideShareAccount(Account):
     pass
