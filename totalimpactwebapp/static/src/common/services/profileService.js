@@ -10,6 +10,7 @@ angular.module('services.profileService', [
                                       Product,
                                       PinboardService,
                                       ProfileAboutService,
+                                      SelfCancellingProfileResource,
                                       Users){
 
     var loading = true
@@ -26,11 +27,10 @@ angular.module('services.profileService', [
       PinboardService.get(url_slug)
 
       loading = true
-      return Users.get(
+      return SelfCancellingProfileResource.createResource().get(
         {id: url_slug, embedded: Page.isEmbedded()},
         function(resp){
           console.log("ProfileService got a response", resp)
-          profileObj = resp  // cache for future use
           _.each(data, function(v, k){delete data[k]})
           angular.extend(data, resp)
           loading = false
@@ -174,3 +174,38 @@ angular.module('services.profileService', [
 
 
   })
+
+
+
+// http://stackoverflow.com/a/24958268
+.factory( 'SelfCancellingProfileResource', ['$resource','$q',
+function( $resource, $q ) {
+  var canceler = $q.defer();
+
+  var cancel = function() {
+    canceler.resolve();
+    canceler = $q.defer();
+  };
+
+  // Check if a username exists
+  // create a resource
+  // (we have to re-craete it every time because this is the only
+  // way to renew the promise)
+  var createResource = function() {
+    cancel();
+    return $resource( '/profile/:id',
+      {},
+      {
+        get: {
+          method : 'GET',
+          timeout : canceler.promise
+        }
+      });
+  };
+
+  return {
+    createResource: createResource,
+    cancelResource: cancel
+  };
+}]);
+
