@@ -16,7 +16,7 @@
          <div class="genre-summary">
             <div class="genre-summary-top">
                <ul class="genre-cards-best">
-                  <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3)">
+                  <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()">
 
                      <span class="feature-controls">
 

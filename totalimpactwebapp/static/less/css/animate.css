@@ -3114,6 +3114,61 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 
+/*                   Next Block                   */
+/**************************************************/
+
+@-webkit-keyframes slideInUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(2000px);
+    transform: translateY(2000px);
+  }
+
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(2000px);
+    -ms-transform: translateY(2000px);
+    transform: translateY(2000px);
+  }
+
+  100% {
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+.slideInUp.ng-enter {
+  -webkit-animation-name: slideInUp;
+  animation-name: slideInUp;
+}
+
+.slideInUp.ng-show {
+    display: block !important; /* yes, important */
+
+  -webkit-animation-name: slideInUp;
+  animation-name: slideInUp;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*                   Next Block                   */
@@ -3336,6 +3391,53 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 .slideOutUp.ng-leave {
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                   Next Block                   */
+/**************************************************/
+@-webkit-keyframes slideOutDown {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(2000px);
+    transform: translateY(2000px);
+  }
+}
+
+@keyframes slideOutDown {
+  0% {
+    -webkit-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(2000px);
+    -ms-transform: translateY(2000px);
+    transform: translateY(2000px);
+  }
+}
+
+.slideOutDown.ng-leave {
+  -webkit-animation-name: slideOutDown;
+  animation-name: slideOutDown;
 }
 
 

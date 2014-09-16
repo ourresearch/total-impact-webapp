@@ -6534,8 +6534,36 @@ div.profile-sidebar div.sidebar-footer {
   bottom: 0;
   right: 0;
   left: 0;
-  padding: 20px 0 10px;
+  padding: 20px 0 15px;
   text-align: center;
+}
+div.profile-sidebar div.sidebar-footer i.show-footer-button {
+  position: absolute;
+  padding: 8px 8px 8px 0;
+  border: 1px solid #999;
+  border-left: 0;
+  right: -24px;
+  bottom: 10px;
+  background: #fff;
+  -webkit-border-top-right-radius: 20px;
+  -webkit-border-bottom-right-radius: 20px;
+  -webkit-border-bottom-left-radius: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-radius-topright: 20px;
+  -moz-border-radius-bottomright: 20px;
+  -moz-border-radius-bottomleft: 0;
+  -moz-border-radius-topleft: 0;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  color: #777;
+}
+div.profile-sidebar div.sidebar-footer i.show-footer-button:hover {
+  color: #ff4000;
 }
 div.profile-sidebar div.sidebar-footer a.logo {
   color: #999;
@@ -6543,8 +6571,7 @@ div.profile-sidebar div.sidebar-footer a.logo {
 }
 div.profile-sidebar div.sidebar-footer a.logo img {
   width: 150px;
-  opacity: .7;
-  opacity: 0.5;
+  opacity: 0.8;
   filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale");
   /* Firefox 10+, Firefox on Android */
 
@@ -6560,109 +6587,108 @@ div.profile-sidebar div.sidebar-footer a.logo img:hover {
   filter: none;
   -webkit-filter: none;
 }
-div.profile-sidebar div.page-footer {
-  display: none;
-  position: absolute;
-  bottom: 0;
-  left: 200px;
-  width: 800px;
-}
 /* footer
 *****************************************************************************
 *****************************************************************************
 *****************************************************************************/
-div.page-footer {
+#page-footer-container #page-footer {
+  opacity: .95;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  width: 800px;
+  margin-left: -351px;
   clear: both;
-  color: #777;
+  color: #555;
   padding: 60px 20px 40px;
   border: 1px solid #aaa;
   -webkit-border-top-right-radius: 5px;
   -webkit-border-bottom-right-radius: 0;
   -webkit-border-bottom-left-radius: 0;
-  -webkit-border-top-left-radius: 5px;
+  -webkit-border-top-left-radius: 0;
   -moz-border-radius-topright: 5px;
   -moz-border-radius-bottomright: 0;
   -moz-border-radius-bottomleft: 0;
-  -moz-border-radius-topleft: 5px;
+  -moz-border-radius-topleft: 0;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  border-top-left-radius: 5px;
+  border-top-left-radius: 0;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border-bottom: none;
-  background: #ddd;
+  background: #eee;
   font-size: 16px;
+  z-index: 1000;
 }
-div.page-footer:before,
-div.page-footer:after {
+#page-footer-container #page-footer:before,
+#page-footer-container #page-footer:after {
   content: " ";
   display: table;
 }
-div.page-footer:after {
+#page-footer-container #page-footer:after {
   clear: both;
 }
-div.page-footer:before,
-div.page-footer:after {
+#page-footer-container #page-footer:before,
+#page-footer-container #page-footer:after {
   content: " ";
   display: table;
 }
-div.page-footer:after {
+#page-footer-container #page-footer:after {
   clear: both;
 }
-div.page-footer p {
+#page-footer-container #page-footer p {
   margin: 6px 0 0 0;
   line-height: 1.4;
 }
-div.page-footer a {
-  color: #777;
+#page-footer-container #page-footer a {
+  color: #333;
 }
-div.page-footer a:hover {
+#page-footer-container #page-footer a:hover {
   color: #444444;
 }
-div.page-footer div.footer-col {
+#page-footer-container #page-footer div.footer-col {
   float: left;
   width: 125px;
   padding-right: 0;
   margin-left: 32px;
   border-right: 1px solid #ccc;
   min-height: 150px;
-  font-weight: 300;
 }
-div.page-footer div.footer-col h3 {
-  font-weight: 500;
+#page-footer-container #page-footer div.footer-col h3 {
+  font-weight: bold;
   margin-top: 0;
   font-size: 16px;
-  color: #777;
+  color: #333;
 }
-div.page-footer div.footer-col ul li {
+#page-footer-container #page-footer div.footer-col ul li {
   line-height: 1.6;
 }
-div.page-footer div.footer-col ul a {
+#page-footer-container #page-footer div.footer-col ul a {
   font-size: 15px;
 }
-div.page-footer div.footer-col#footer-help {
+#page-footer-container #page-footer div.footer-col#footer-help {
   border-right: none;
 }
-div.page-footer div.footer-col#footer-funders {
+#page-footer-container #page-footer div.footer-col#footer-funders {
   width: 200px;
   border-right: none;
   padding-right: none;
   float: right;
   text-align: right;
 }
-div.page-footer div.footer-col#footer-funders h3 {
+#page-footer-container #page-footer div.footer-col#footer-funders h3 {
   margin: 0 20px 15px 40px;
   text-align: left;
   font-size: 14px;
 }
-div.page-footer div.footer-col#footer-funders img {
+#page-footer-container #page-footer div.footer-col#footer-funders img {
   margin: 0 5px;
   height: 35px;
   opacity: .6;
 }
-div.page-footer div.footer-col#footer-funders #footer-nsf-link img {
+#page-footer-container #page-footer div.footer-col#footer-funders #footer-nsf-link img {
   height: 40px;
   margin-top: -2px;
 }
@@ -7762,7 +7788,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   margin-top: 4px;
 }
 .product div.product-margin a {
-  color: #999999;
+  color: #aaa;
   padding: 3px 5px;
 }
 .product div.product-margin span.feature-product-controls a.feature-product {
