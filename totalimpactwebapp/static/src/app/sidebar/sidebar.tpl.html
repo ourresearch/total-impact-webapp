@@ -11,7 +11,7 @@
       </h1>
 
 
-      <div class="nav">
+      <div class="nav animated fadeIn" ng-if="profileService.data.genres">
          <a href="/{{ profileAboutService.data.url_slug }}" ng-class="{active: page.isNamed('overview')}">
             <i class="icon-user left"></i>
             <span class="text">

@@ -9,18 +9,26 @@ div.signup-page {
    width: @wrapperWidth;
 
    div.signup-main-page {
-      width: 70%;
       div.form-container {
-         width: 400px;
-         margin: 70px auto;
+         margin: 70px 0 0 0;
+         position:absolute;
+         padding-right: 100px;
+         top:0;
+         right:0;
+         width:@contentWidth - 400px;
          h1 {
             margin-bottom:0;
-            font-size: 45px;
+            font-size: 35px;
+         }
+         span.more {
+            font-size: 14px;
+            line-height: 1;
+            color: #777;
          }
          h2{
             margin: 10px 0 40px;
             font-size: 20px;
-            font-weight: normal;
+            line-height: 1.4;
             strong {
                font-weight: 900;
             }
@@ -55,8 +63,6 @@ div.signup-page {
             }
             div.submit-button {
                button.btn {
-                  background: @linkColor;
-                  border:none;
                   &[disabled] {
                      opacity: .8;
                   }
@@ -68,7 +74,6 @@ div.signup-page {
                   }
                }
                div.working {
-                  padding-left: 20px;
                   padding-top: 20px;
                   font-weight: 900;
                   font-size: 25px;
@@ -83,22 +88,30 @@ div.signup-page {
    }
 
    div.signup-sidebar{
-      width: 30%;
-      position:absolute;
-      top: 0;
+
+      position: fixed;
+      top:0;
+      left:50%;
+      background: #fafafa;
+      z-index: 100;
+      margin-left: -(@wrapperWidth / 2) + @sidebarWidth;
+      bottom: 0;
+      width: 200px;
+
       display:table;
       height:100%;
       right: 0;
-      background: #fafafa;
       div.testimonials-container {
-         display:table-cell;
-         vertical-align: middle;
-         height:100%;
+//         display:table-cell;
+//         vertical-align: middle;
+//         height:100%;
+         padding:0 20px;
          div.testimonial {
-            margin: -100px auto 0;
+//            margin: -200px auto 0;
+            margin: 200px auto 0;
 
             @imgWidth: 120px;
-            width: 300px;
+            width: 200px;
             text-align: center;
 
             img {
@@ -108,7 +121,7 @@ div.signup-page {
                border: 1px solid #eee;
             }
             q {
-               font-size: 24px;
+               font-size: 20px;
                color: #555;
                padding-top: 20px;
                display:block;

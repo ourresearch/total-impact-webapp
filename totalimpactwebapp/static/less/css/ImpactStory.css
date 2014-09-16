@@ -8607,21 +8607,27 @@ div.signup-page {
   bottom: 0;
   width: 1100px;
 }
-div.signup-page div.signup-main-page {
-  width: 70%;
-}
 div.signup-page div.signup-main-page div.form-container {
-  width: 400px;
-  margin: 70px auto;
+  margin: 70px 0 0 0;
+  position: absolute;
+  padding-right: 100px;
+  top: 0;
+  right: 0;
+  width: 500px;
 }
 div.signup-page div.signup-main-page div.form-container h1 {
   margin-bottom: 0;
-  font-size: 45px;
+  font-size: 35px;
+}
+div.signup-page div.signup-main-page div.form-container span.more {
+  font-size: 14px;
+  line-height: 1;
+  color: #777;
 }
 div.signup-page div.signup-main-page div.form-container h2 {
   margin: 10px 0 40px;
   font-size: 20px;
-  font-weight: normal;
+  line-height: 1.4;
 }
 div.signup-page div.signup-main-page div.form-container h2 strong {
   font-weight: 900;
@@ -8648,8 +8654,6 @@ div.signup-page div.signup-main-page div.form-container #main-signup-form div.fo
   width: 120px;
 }
 div.signup-page div.signup-main-page div.form-container #main-signup-form div.submit-button button.btn {
-  background: #ff4000;
-  border: none;
   font-weight: 900;
   padding: 15px 20px;
   margin-top: 20px;
@@ -8661,29 +8665,30 @@ div.signup-page div.signup-main-page div.form-container #main-signup-form div.su
   margin-left: 10px;
 }
 div.signup-page div.signup-main-page div.form-container #main-signup-form div.submit-button div.working {
-  padding-left: 20px;
   padding-top: 20px;
   font-weight: 900;
   font-size: 25px;
   color: #999999;
 }
 div.signup-page div.signup-sidebar {
-  width: 30%;
-  position: absolute;
+  position: fixed;
   top: 0;
+  left: 50%;
+  background: #fafafa;
+  z-index: 100;
+  margin-left: -350px;
+  bottom: 0;
+  width: 200px;
   display: table;
   height: 100%;
   right: 0;
-  background: #fafafa;
 }
 div.signup-page div.signup-sidebar div.testimonials-container {
-  display: table-cell;
-  vertical-align: middle;
-  height: 100%;
+  padding: 0 20px;
 }
 div.signup-page div.signup-sidebar div.testimonials-container div.testimonial {
-  margin: -100px auto 0;
-  width: 300px;
+  margin: 200px auto 0;
+  width: 200px;
   text-align: center;
 }
 div.signup-page div.signup-sidebar div.testimonials-container div.testimonial img {
@@ -8707,7 +8712,7 @@ div.signup-page div.signup-sidebar div.testimonials-container div.testimonial im
   border: 1px solid #eee;
 }
 div.signup-page div.signup-sidebar div.testimonials-container div.testimonial q {
-  font-size: 24px;
+  font-size: 20px;
   color: #555;
   padding-top: 20px;
   display: block;
