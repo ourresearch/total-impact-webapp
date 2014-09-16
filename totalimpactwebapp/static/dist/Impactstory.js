@@ -6663,7 +6663,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "                     <a class=\"percentile\"\n" +
     "                        ng-show=\"metric.percentile\"\n" +
-    "                        href=\"/faq#percentiles\"\n" +
+    "                        href=\"http://feedback.impactstory.org/knowledgebase/articles/400281--highly-cited-and-other-impact-badges\"\n" +
     "                        target=\"_self\"\n" +
     "                        tooltip-placement=\"left\"\n" +
     "                        tooltip=\"Compared to other {{ metric.percentile.mendeley_discipline_str }} {{ displayGenrePlural }} from {{ biblio.display_year }}. Click to read more about how we determine percentiles.\">\n" +
