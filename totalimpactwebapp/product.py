@@ -161,7 +161,10 @@ class Product(db.Model):
 
     @cached_property
     def genre_icon(self):
-        return configs.genre_icons[self.genre]
+        try:
+            return configs.genre_icons[self.genre]
+        except KeyError:
+            return configs.genre_icons["unknown"]
 
 
     @cached_property

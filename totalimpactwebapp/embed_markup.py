@@ -35,7 +35,7 @@ def wrap_with_embedly(url):
     # if not client.is_supported(url):
     #     return None
 
-    response_dict = client.oembed(url, maxwidth=700, width=700)
+    response_dict = client.oembed(url, maxwidth=580, width=580)
     try:
         html = response_dict["html"]
         html = html.replace("http://docs.google", "https://docs.google")
