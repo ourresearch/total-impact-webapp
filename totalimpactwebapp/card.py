@@ -311,9 +311,12 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
     @property
     def tooltip(self):
         try:
-            return self.exemplar_metric.config["description"]
+            return u"{num} {provider} {interaction}".format(
+                num=self.current_value, 
+                provider=self.exemplar_metric.display_provider,
+                interaction=self.display_things_we_are_counting)
         except KeyError:
-            return None 
+            return "" 
 
     @property
     def sort_by(self):
@@ -409,7 +412,7 @@ class GenreEngagementSumCard(Card):
 
     @property
     def sort_by(self):
-        score = 2000 + self.current_value
+        score = 1000 + self.current_value
         return score
 
     @property
