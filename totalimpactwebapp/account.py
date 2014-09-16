@@ -1,6 +1,7 @@
 import logging
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp import configs
 
 logger = logging.getLogger("ti.account")
 
@@ -51,8 +52,16 @@ class Account(object):
             return 0
 
     @cached_property
-    def account(self):
-        return self.product.biblio.account
+    def username(self):
+        username = self.product.biblio.account
+        if "/" in self.product.biblio.account:
+            username = username.split("/")[-1]
+        return username
+        
+    @cached_property
+    def account_url(self):
+        return configs.linked_accounts[self.index_name].format(
+            id=self.username)
 
     def to_dict(self):
         attributes_to_ignore = [
@@ -68,6 +77,6 @@ class TwitterAccount(Account):
 
 class GitHubAccount(Account):
     pass
-    
+
 class SlideShareAccount(Account):
     pass
