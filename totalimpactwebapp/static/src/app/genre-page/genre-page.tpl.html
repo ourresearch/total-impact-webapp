@@ -18,7 +18,17 @@
                <ul class="genre-cards-best">
                   <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()">
 
-                     <span class="feature-controls">
+
+                     <span class="img-and-value">
+                        <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >
+                        <span class="value">{{ nFormat(card.current_value) }}</span>
+                     </span>
+
+                     <span class="key">
+                        <span class="interaction">{{ card.display_things_we_are_counting }}</span>
+                     </span>
+
+                     <span class="feature-controls" ng-show="security.isLoggedIn(url_slug)">
 
                         <a ng-click="pinboardService.pin(['genre', genre.name, 'sum', card.provider, card.interaction])"
                            ng-if="!pinboardService.isPinned(['genre', genre.name, 'sum', card.provider, card.interaction])"
@@ -36,15 +46,6 @@
                            <i class="icon-star"></i>
                         </a>
 
-                     </span>
-
-                     <span class="img-and-value">
-                        <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >
-                        <span class="value">{{ nFormat(card.current_value) }}</span>
-                     </span>
-
-                     <span class="key">
-                        <span class="interaction">{{ card.interaction }}</span>
                      </span>
 
                   </li>

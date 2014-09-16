@@ -9535,22 +9535,22 @@ div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards
   color: #000;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card img.icon {
-  height: 20px;
+  height: 18px;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.img-and-value {
   margin: 0 5px 0 0;
-  font-size: 20px;
+  font-size: 26px;
   font-weight: bold;
   display: inline-block;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.img-and-value img {
-  height: 16px;
+  height: 20px;
   vertical-align: 0;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.key {
   display: inline-block;
   margin-top: 4px;
-  font-size: 16px;
+  font-size: 20px;
 }
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.key span.provider {
   display: block;
