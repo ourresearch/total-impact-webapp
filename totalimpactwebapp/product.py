@@ -160,6 +160,11 @@ class Product(db.Model):
         return genre
 
     @cached_property
+    def genre_icon(self):
+        return configs.genre_icons[self.genre]
+
+
+    @cached_property
     def host(self):
         host = None
         if self.biblio.calculated_host is not None:
