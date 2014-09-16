@@ -128,6 +128,8 @@ class Profile(db.Model):
     last_email_check = db.Column(db.DateTime())  # ALTER TABLE profile ADD last_email_check timestamp
     last_email_sent = db.Column(db.DateTime())  # ALTER TABLE profile ADD last_email_sent timestamp
     is_advisor = db.Column(db.Boolean)  # ALTER TABLE profile ADD is_advisor bool
+    bio = db.Column(db.Text)  # ALTER TABLE profile ADD bio text
+
 
     products = db.relationship(
         'Product',
@@ -495,6 +497,7 @@ class Profile(db.Model):
         properties_to_return = [
             "id",
             "given_name",
+            "bio",
             "surname",
             "full_name",
             "email",

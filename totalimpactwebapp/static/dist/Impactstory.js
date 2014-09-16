@@ -4555,14 +4555,18 @@ angular.module('services.pinboardService', [
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
-  .factory("ProfileAboutService", function($q, $timeout, Update, Page, ProfileAbout){
+  .factory("ProfileAboutService", function($q, $timeout, Update, Page, Users, ProfileAbout){
 
     var loading = true
     var data = {}
 
 
-    function get(url_slug){
-      console.log("calling ProfileAboutService.get()")
+    function get(url_slug, getFromServer){
+      console.log("calling ProfileAboutService.get() with ", url_slug)
+      if (data && !getFromServer && !loading){
+        return $q.when(data)
+      }
+
 
       loading = true
       return ProfileAbout.get(
@@ -4581,9 +4585,26 @@ angular.module('services.profileAboutService', [
       ).$promise
     }
 
+    function upload(){
+      console.log("calling ProfileAboutService.upload() with ", data.url_slug)
+
+      Users.patch(
+        {id: data.url_slug},
+        {about: data},
+        function(resp){
+          console.log("ProfileAboutService.upload() returned success", resp)
+        },
+        function(resp){
+          console.log("ProfileAboutService.upload() returned failure", resp)
+        }
+      )
+
+    }
+
 
     return {
       get: get,
+      upload: upload,
       data: data
     }
 
@@ -4607,7 +4628,7 @@ angular.module('services.profileService', [
 
 
     function get(url_slug, getFromServer){
-      console.log("calling ProfileService.get()")
+      console.log("calling ProfileService.get() with", url_slug)
 
       if (data && !getFromServer && !loading){
         return $q.when(data)
@@ -6785,9 +6806,21 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </li>\n" +
     "               </ul>\n" +
     "            </div>\n" +
+    "\n" +
     "            <div class=\"bio\">\n" +
-    "               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n" +
+    "               <span class=\"value\"\n" +
+    "                  tooltip=\"click to edit your bio\"\n" +
+    "                  ng-show=\"security.isLoggedIn(url_slug)\"\n" +
+    "                  tooltip-placement=\"bottom\"\n" +
+    "                  editable-textarea=\"profileAboutService.data.bio\"\n" +
+    "                  onaftersave=\"profileAboutService.upload()\">\n" +
+    "                  {{ trustHtml(profileAboutService.data.bio) || 'click to enter your bio'}}\n" +
+    "               </span>\n" +
+    "               <span class=\"value\" ng-show=\"!security.isLoggedIn(url_slug)\">\n" +
+    "                  {{ trustHtml(profileAboutService.data.bio) }}\n" +
+    "               </span>\n" +
     "            </div>\n" +
+    "\n" +
     "\n" +
     "            <div class=\"connected-accounts\">\n" +
     "               <ul>\n" +
@@ -6798,7 +6831,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  </li>\n" +
     "               </ul>\n" +
     "\n" +
-    "               <!--\n" +
     "               <div class=\"add-connected-account\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
     "                  <a href=\"/{{ profileAboutService.data.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
     "                     <i class=\"icon-link left\"></i>\n" +
@@ -6806,7 +6838,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                     <span ng-show=\"filteredLinkedAccounts.length>0\" class=\"more\">Connect more accounts</span>\n" +
     "                  </a>\n" +
     "               </div>\n" +
-    "               -->\n" +
     "            </div>\n" +
     "         </div>\n" +
     "\n" +

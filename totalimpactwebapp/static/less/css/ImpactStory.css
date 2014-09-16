@@ -7332,13 +7332,20 @@ div.profile-header div.my-vitals h2.editable-name {
 div.profile-header div.my-vitals div.bio {
   width: 700px;
 }
+div.profile-header div.my-vitals div.bio .editable-click {
+  color: #555;
+  border-bottom: none;
+}
+div.profile-header div.my-vitals div.bio textarea {
+  width: 500px;
+  height: 80px;
+}
 div.profile-header div.my-vitals div.connected-accounts {
   clear: left;
 }
-div.profile-header div.my-vitals div.connected-accounts div.add-connected-account {
-  clear: both;
-}
 div.profile-header div.my-vitals div.connected-accounts div.add-connected-account a {
+  font-size: 12px;
+  font-weight: normal;
   margin-top: 5px;
 }
 div.profile-header div.my-vitals div.connected-accounts li {
@@ -7794,6 +7801,7 @@ div.profile-subpage.profile-linked-accounts ul.ways-to-populate {
   margin: 0;
 }
 div.profile-subpage.profile-linked-accounts ul.ways-to-populate li {
+  font-size: 15px;
   list-style-type: disc;
   margin-left: 2em;
 }

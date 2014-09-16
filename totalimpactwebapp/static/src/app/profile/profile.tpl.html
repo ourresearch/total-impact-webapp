@@ -30,9 +30,21 @@
                   </li>
                </ul>
             </div>
+
             <div class="bio">
-               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+               <span class="value"
+                  tooltip="click to edit your bio"
+                  ng-show="security.isLoggedIn(url_slug)"
+                  tooltip-placement="bottom"
+                  editable-textarea="profileAboutService.data.bio"
+                  onaftersave="profileAboutService.upload()">
+                  {{ trustHtml(profileAboutService.data.bio) || 'click to enter your bio'}}
+               </span>
+               <span class="value" ng-show="!security.isLoggedIn(url_slug)">
+                  {{ trustHtml(profileAboutService.data.bio) }}
+               </span>
             </div>
+
 
             <div class="connected-accounts">
                <ul>
@@ -43,7 +55,6 @@
                   </li>
                </ul>
 
-               <!--
                <div class="add-connected-account" ng-show="security.isLoggedIn(url_slug)">
                   <a href="/{{ profileAboutService.data.url_slug }}/accounts" class="btn btn-xs btn-info">
                      <i class="icon-link left"></i>
@@ -51,7 +62,6 @@
                      <span ng-show="filteredLinkedAccounts.length>0" class="more">Connect more accounts</span>
                   </a>
                </div>
-               -->
             </div>
          </div>
 
