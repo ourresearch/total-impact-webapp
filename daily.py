@@ -14,6 +14,7 @@ import os
 import requests
 import argparse
 import logging
+import time
 
 logger = logging.getLogger("webapp.daily")
 
@@ -250,18 +251,23 @@ def linked_accounts(account_type, url_slug=None, min_url_slug=None):
         number_considered += 1
         logger.info(u"{url_slug} previous number of account products: {num}".format(
             url_slug=profile.url_slug, num=len(profile.account_products)))
-        existing_account_products = [p.index_name for p in profile.account_products]
-        print existing_account_products
-        if not account_type in existing_account_products:
+        existing_account_product_list = [p for p in profile.account_products if p.index_name==account_type]
+        if existing_account_product_list:
+            existing_account_product = existing_account_product_list[0]
+            if existing_account_product.followers:
+                logger.info(u"{url_slug} already has an account_product for {account_type}, so skipping".format(
+                    url_slug=profile.url_slug, account_type=account_type))
+            else:
+                logger.info(u"{url_slug} already has an account_product for {account_type}, but no followers, so refreshing".format(
+                    url_slug=profile.url_slug, account_type=account_type))
+                refresh_products_from_tiids([existing_account_product.tiid], source="scheduled")
+        else:
             logger.info(u"{url_slug} had no account_product for {account_type}, so adding".format(
                 url_slug=profile.url_slug, account_type=account_type))
             tiids = profile.update_products_from_linked_account(account_type, update_even_removed_products=False)
             if tiids:
                 logger.info(u"{url_slug} added {num} products for {account_type}".format(
                     url_slug=profile.url_slug, num=len(tiids), account_type=account_type))
-        else:
-            logger.info(u"{url_slug} already has an account_product for {account_type}, so skipping".format(
-                url_slug=profile.url_slug, account_type=account_type))
 
 
 
@@ -293,6 +299,30 @@ def refresh_twitter(min_tiid=None):
             pass
 
 
+
+def refresh_tweeted_products(min_tiid=None):
+
+    if min_tiid:
+        q = db.session.query(Product).filter(Product.profile_id != None).filter(Product.tiid>min_tiid)
+    else:
+        q = db.session.query(Product).filter(Product.profile_id != None)
+
+    start_time = datetime.datetime.utcnow()
+    number_considered = 0.0
+    number_refreshed = 0
+    for product in windowed_query(q, Product.tiid, 25):
+        number_considered += 1
+        try:
+            if product.get_metric_by_name("altmetric_com", "tweets"):
+                print number_refreshed, ". refreshing: ", product.tiid
+                refresh_products_from_tiids([product.tiid], source="scheduled")
+                number_refreshed += 1
+                time.sleep(0.5)
+                elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+                print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+                
+        except AttributeError:
+            pass
 
 
 
@@ -389,8 +419,8 @@ def main(function, args):
         collect_embed(args["min_tiid"])
     elif function=="linked_accounts":
         linked_accounts(args["account_type"], args["url_slug"], args["min_url_slug"])
-    elif function=="refresh_twitter":
-        refresh_twitter()
+    elif function=="refresh_tweeted_products":
+        refresh_tweeted_products(args["min_tiid"])
     elif function=="run_through_twitter_pages":
         run_through_twitter_pages(args["url_slug"], args["min_url_slug"])
 

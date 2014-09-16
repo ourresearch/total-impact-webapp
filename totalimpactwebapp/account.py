@@ -32,6 +32,10 @@ class Account(object):
         return self.display_name.lower().replace(" ", "_")
 
     @cached_property
+    def tiid(self):
+        return self.product.tiid
+
+    @cached_property
     def provider_name(self):
         provider_name = self.display_name.lower()
         if provider_name != "twitter":
