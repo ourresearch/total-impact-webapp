@@ -49,6 +49,16 @@ class Card(object):
     def card_type(self):
         return type(self).__name__
 
+    @property
+    def card_type_short(self):
+        if "metric" in self.card_type.lower():
+            return "metric"
+        if "engagement" in self.card_type.lower():
+            return "engagement"
+        if "diff" in self.card_type.lower():
+            return "diff"
+        return self.card_type.lower().replace("card", "")
+
 
     @property
     def sort_by(self):
@@ -296,6 +306,10 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
         return self.products[0].genre
 
     @property
+    def genre_card_address(self):
+        return u".".join([self.genre, "sum", "metric", ":".join([self.provider, self.interaction])])
+
+    @property
     def display_things_we_are_counting(self):
         plural_interaction = self.exemplar_metric.display_interaction
         if not plural_interaction.endswith("s"):
@@ -399,6 +413,10 @@ class GenreEngagementSumCard(Card):
     @property
     def genre(self):
         return self.products[0].genre
+
+    @property
+    def genre_card_address(self):
+        return u".".join([self.genre, "sum", "engagement", self.engagement])
 
     @property
     def display_things_we_are_counting(self):
