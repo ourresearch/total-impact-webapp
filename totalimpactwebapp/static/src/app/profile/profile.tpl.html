@@ -89,16 +89,7 @@
       <ul class="col-one"
           ui-sortable="sortableOptions"
           ng-model="pinboardService.cols.one">
-         <li class="pin product-pin" ng-repeat="pinId in pinboardService.cols.one">
-            <div class="pin-header">
-               <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
-                  <i class="icon-remove"></i>
-               </a>
-            </div>
-            <div class="pin-body product-pin">
-               <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pinId[1]).markup)"></div>
-            </div>
-         </li>
+         <div ng-include="'profile/product-pin.tpl.html'"></div>
       </ul>
    </div>
 
@@ -107,30 +98,9 @@
       <ul class="col-two"
           ui-sortable="sortableOptions"
           ng-model="pinboardService.cols.two">
-         <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two">
-            <div class="pin-header">
-               <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
-                  <i class="icon-remove"></i>
-               </a>
-            </div>
-            <div class="pin-body genre-card-pin-body">
-
-               <span class="img-and-value">
-                  <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).provider }}_{{ profileService.getFromPinId(pinId).interaction }}.ico' class='icon' >
-                  <span class="value">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>
-               </span>
-
-               <span class="key">
-                  <span class="interaction">{{ profileService.getFromPinId(pinId).interaction }}</span>
-               </span>
-
-            </div>
-         </li>
+         <div ng-include="'profile/metric-pin.tpl.html'"></div>
       </ul>
-
    </div>
-
-
 </div>
 
 

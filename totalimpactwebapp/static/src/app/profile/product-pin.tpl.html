@@ -1,0 +1,11 @@
+<li class="pin product-pin" ng-repeat="pinId in pinboardService.cols.one">
+   <div class="pin-header">
+      <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
+         <i class="icon-remove"></i>
+      </a>
+   </div>
+   <div class="pin-body product-pin">
+      <i class="{{ profileService.productByTiid(pinId[1]).genre.icon }}"></i>
+      <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pinId[1]).markup)"></div>
+   </div>
+</li>

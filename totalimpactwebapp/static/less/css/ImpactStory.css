@@ -7620,8 +7620,29 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   font-size: 11px;
   margin: 7px 2px 0;
 }
-#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.img-and-value img {
-  height: 16px;
+#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data {
+  cursor: default;
+}
+#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data img.icon {
+  height: 18px;
+}
+#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data span.img-and-value {
+  margin: 0 5px 0 0;
+  font-size: 22px;
+  font-weight: bold;
+  display: inline-block;
+}
+#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data span.img-and-value img {
+  height: 20px;
+  vertical-align: 0;
+}
+#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data span.key {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 16px;
+}
+#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data span.key span.provider {
+  display: block;
 }
 #pinboard div.pinboard-col li.pin div.pin-header {
   text-align: right;
@@ -9470,7 +9491,7 @@ div.password-reset form.password-reset div.submit {
   cursor: help;
 }
 div.genre-page div.header {
-  padding: 20px 10px 10px 30px;
+  padding: 20px 10px 10px 50px;
   margin: 0 0 70px -50px;
   border-bottom: 1px solid #eee;
   position: relative;
@@ -9535,25 +9556,28 @@ div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards
 div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this:hover {
   color: #000;
 }
-div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card img.icon {
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data {
+  cursor: default;
+}
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data img.icon {
   height: 18px;
 }
-div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.img-and-value {
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value {
   margin: 0 5px 0 0;
   font-size: 22px;
   font-weight: bold;
   display: inline-block;
 }
-div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.img-and-value img {
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value img {
   height: 20px;
   vertical-align: 0;
 }
-div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.key {
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key {
   display: inline-block;
   margin-top: 4px;
   font-size: 16px;
 }
-div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.key span.provider {
+div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key span.provider {
   display: block;
 }
 div.genre-page div.products {

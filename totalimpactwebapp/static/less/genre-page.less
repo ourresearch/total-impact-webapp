@@ -1,6 +1,6 @@
 div.genre-page {
    div.header {
-      padding: 20px 10px 10px 30px;
+      padding: 20px 10px 10px @contentPaddingLeft;
       margin: 0 0 70px -@contentPaddingLeft;
       border-bottom: 1px solid #eee;
       position:relative;
@@ -55,25 +55,29 @@ div.genre-page {
                         }
                      }
                   }
-                  img.icon {
-                     height: 18px;
-                  }
-                  span.img-and-value {
-                     margin: 0 5px 0 0;
-                     font-size: 22px;
-                     font-weight: bold;
-                     display:inline-block;
-                     img {
-                        height: 20px;
-                        vertical-align: 0;
+
+                  span.data {
+                     cursor: default;
+                     img.icon {
+                        height: 18px;
                      }
-                  }
-                  span.key {
-                     display:inline-block;
-                     margin-top: 4px;
-                     font-size: 16px;
-                     span.provider {
-                        display:block;
+                     span.img-and-value {
+                        margin: 0 5px 0 0;
+                        font-size: 22px;
+                        font-weight: bold;
+                        display:inline-block;
+                        img {
+                           height: 20px;
+                           vertical-align: 0;
+                        }
+                     }
+                     span.key {
+                        display:inline-block;
+                        margin-top: 4px;
+                        font-size: 16px;
+                        span.provider {
+                           display:block;
+                        }
                      }
                   }
                }

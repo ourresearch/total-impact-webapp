@@ -136,7 +136,11 @@ angular.module('services.profileService', [
         var genre = _.findWhere(data.genres, {name: pinId[1]})
         var card = _.findWhere(genre.cards, {provider: pinId[3], interaction: pinId[4]})
         var extraData = {
-          num_products: genre.num_products
+          num_products: genre.num_products,
+          icon: genre.icon,
+          name: genre.name,
+          plural_name: genre.plural_name
+
         }
         return _.extend(card, extraData)
       }

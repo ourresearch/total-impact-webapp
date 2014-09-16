@@ -4662,7 +4662,11 @@ angular.module('services.profileService', [
         var genre = _.findWhere(data.genres, {name: pinId[1]})
         var card = _.findWhere(genre.cards, {provider: pinId[3], interaction: pinId[4]})
         var extraData = {
-          num_products: genre.num_products
+          num_products: genre.num_products,
+          icon: genre.icon,
+          name: genre.name,
+          plural_name: genre.plural_name
+
         }
         return _.extend(card, extraData)
       }
@@ -5030,7 +5034,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/edit-product-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/percentilesInfoModal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/metric-pin.tpl.html', 'profile/product-pin.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/profile-sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -5291,7 +5295,9 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
     "\n" +
     "\n" +
-    "                     <span class=\"data\" tooltip=\"{{ card.tooltip }}\">\n" +
+    "                     <span class=\"data\"\n" +
+    "                           tooltip-placement=\"bottom\"\n" +
+    "                           tooltip=\"{{ card.tooltip }}\">\n" +
     "                        <span class=\"img-and-value\">\n" +
     "                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
     "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
@@ -6798,6 +6804,49 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
     "</div>");
 }]);
 
+angular.module("profile/metric-pin.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile/metric-pin.tpl.html",
+    "<li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
+    "   <div class=\"pin-header\">\n" +
+    "      <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "         <i class=\"icon-remove\"></i>\n" +
+    "      </a>\n" +
+    "   </div>\n" +
+    "   <div class=\"pin-body genre-card-pin-body\">\n" +
+    "      <i class=\"{{ profileService.getFromPinId(pinId).icon }}\"></i>\n" +
+    "      <span class=\"data\"\n" +
+    "            tooltip-placement=\"bottom\"\n" +
+    "            tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "         <span class=\"img-and-value\">\n" +
+    "            <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
+    "            <span class=\"value\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
+    "         </span>\n" +
+    "\n" +
+    "         <span class=\"key\">\n" +
+    "            <span class=\"interaction\">{{ profileService.getFromPinId(pinId).display_things_we_are_counting }}</span>\n" +
+    "            <span class=\"context\">on <span class=\"val\">{{ profileService.getFromPinId(pinId).num_products }}</span>\n" +
+    "               {{ profileService.getFromPinId(pinId).plural_name }}</span>\n" +
+    "         </span>\n" +
+    "      </span>\n" +
+    "   </div>\n" +
+    "</li>");
+}]);
+
+angular.module("profile/product-pin.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile/product-pin.tpl.html",
+    "<li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
+    "   <div class=\"pin-header\">\n" +
+    "      <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "         <i class=\"icon-remove\"></i>\n" +
+    "      </a>\n" +
+    "   </div>\n" +
+    "   <div class=\"pin-body product-pin\">\n" +
+    "      <i class=\"{{ profileService.productByTiid(pinId[1]).genre.icon }}\"></i>\n" +
+    "      <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
+    "   </div>\n" +
+    "</li>");
+}]);
+
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
     "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
@@ -6891,16 +6940,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <ul class=\"col-one\"\n" +
     "          ui-sortable=\"sortableOptions\"\n" +
     "          ng-model=\"pinboardService.cols.one\">\n" +
-    "         <li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
-    "            <div class=\"pin-header\">\n" +
-    "               <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
-    "                  <i class=\"icon-remove\"></i>\n" +
-    "               </a>\n" +
-    "            </div>\n" +
-    "            <div class=\"pin-body product-pin\">\n" +
-    "               <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
-    "            </div>\n" +
-    "         </li>\n" +
+    "         <div ng-include=\"'profile/product-pin.tpl.html'\"></div>\n" +
     "      </ul>\n" +
     "   </div>\n" +
     "\n" +
@@ -6909,30 +6949,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <ul class=\"col-two\"\n" +
     "          ui-sortable=\"sortableOptions\"\n" +
     "          ng-model=\"pinboardService.cols.two\">\n" +
-    "         <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
-    "            <div class=\"pin-header\">\n" +
-    "               <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
-    "                  <i class=\"icon-remove\"></i>\n" +
-    "               </a>\n" +
-    "            </div>\n" +
-    "            <div class=\"pin-body genre-card-pin-body\">\n" +
-    "\n" +
-    "               <span class=\"img-and-value\">\n" +
-    "                  <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).provider }}_{{ profileService.getFromPinId(pinId).interaction }}.ico' class='icon' >\n" +
-    "                  <span class=\"value\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "               </span>\n" +
-    "\n" +
-    "               <span class=\"key\">\n" +
-    "                  <span class=\"interaction\">{{ profileService.getFromPinId(pinId).interaction }}</span>\n" +
-    "               </span>\n" +
-    "\n" +
-    "            </div>\n" +
-    "         </li>\n" +
+    "         <div ng-include=\"'profile/metric-pin.tpl.html'\"></div>\n" +
     "      </ul>\n" +
-    "\n" +
     "   </div>\n" +
-    "\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "\n" +
