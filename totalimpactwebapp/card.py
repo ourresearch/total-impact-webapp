@@ -309,6 +309,13 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
             provider=self.provider, interaction=self.interaction)
 
     @property
+    def tooltip(self):
+        try:
+            return self.exemplar_metric.config["description"]
+        except KeyError:
+            return None 
+
+    @property
     def sort_by(self):
         score = 1000
         if self.provider in ["citeulike", "delicious", "impactstory", "plossearch"]:
@@ -420,7 +427,7 @@ class GenreEngagementSumCard(Card):
             return None 
 
     @property
-    def accumulated_string(self):
+    def tooltip(self):
         try:
             return self.engagement_accumulations(self.products, self.engagement)["accumulated_string"]
         except KeyError:
