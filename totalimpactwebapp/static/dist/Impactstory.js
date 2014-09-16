@@ -6747,133 +6747,137 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
 
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
-    "<div class=\"profile-header\" ng-show=\"userExists\">\n" +
-    "   <div class=\"loading\" ng-show=\"profileLoading()\">\n" +
-    "      <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"profile-header-loaded\" ng-show=\"!profileLoading()\">\n" +
-    "\n" +
-    "      <div class=\"my-vitals\">\n" +
-    "         <div class=\"my-picture\" ng-show=\"profile.about.id\">\n" +
-    "            <a href=\"http://www.gravatar.com\">\n" +
-    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\"\n" +
-    "                    class=\"gravatar\"\n" +
-    "                    tooltip-placement=\"bottom\"\n" +
-    "                    tooltip=\"Modify your icon at Gravatar.com\" />\n" +
-    "            </a>\n" +
-    "         </div>\n" +
-    "         <div class=\"my-metrics\">\n" +
-    "            <!-- advisor badge -->\n" +
-    "            <div class=\"advisor\" ng-show=\"profile.about.is_advisor\">\n" +
-    "               <img src=\"/static/img/advisor-badge.png\">\n" +
-    "            </div>\n" +
-    "            <ul class=\"profile-award-list\">\n" +
-    "               <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
-    "                   ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
-    "                   ng-repeat=\"profileAward in profile.awards\">\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
-    "         </div>\n" +
-    "         <div class=\"bio\">\n" +
-    "            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n" +
-    "         </div>\n" +
-    "         <div class=\"connected-accounts\">\n" +
-    "            <ul>\n" +
-    "               <li ng-repeat=\"linkedAccount in filteredLinkedAccounts = (profile.about.linked_accounts | filter: {profile_url: '!!'})\">\n" +
-    "                  <a href=\"{{ linkedAccount.profile_url }}\" target=\"_blank\">\n" +
-    "                     <img ng-src=\"/static/img/favicons/{{ linkedAccount.service }}.ico\">\n" +
-    "                     <!--\n" +
-    "                        <span class=\"service\">{{ linkedAccount.display_service }}</span>\n" +
-    "                        -->\n" +
-    "                  </a>\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
-    "\n" +
-    "            <!--\n" +
-    "            <div class=\"add-connected-account\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
-    "               <a href=\"/{{ profile.about.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
-    "                  <i class=\"icon-link left\"></i>\n" +
-    "                  <span ng-show=\"filteredLinkedAccounts.length==0\" class=\"first\">Import from accounts</span>\n" +
-    "                  <span ng-show=\"filteredLinkedAccounts.length>0\" class=\"more\">Connect more accounts</span>\n" +
-    "               </a>\n" +
-    "            </div>\n" +
-    "            -->\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "   </div>\n" +
+    "<div class=\"loading\" ng-show=\"!profileService.data.about\">\n" +
+    "   <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "</div>\n" +
     "\n" +
+    "<div class=\"profile-content animated fadeIn\" ng-if=\"profileService.data.about\" >\n" +
     "\n" +
-    "<div id=\"pinboard\">\n" +
-    "   <div class=\"pinboard-col col-one\">\n" +
-    "      <h3>Featured products</h3>\n" +
-    "      <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
-    "      <ul class=\"col-one pinboard-list\"\n" +
-    "          ui-sortable=\"sortableOptions\"\n" +
-    "          ng-model=\"pinboardService.cols.one\">\n" +
-    "         <li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
-    "            <div class=\"pin-header\">\n" +
-    "               <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
-    "                  <i class=\"icon-remove\"></i>\n" +
+    "   <div class=\"profile-header\" ng-show=\"userExists\">\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"profile-header-loaded\">\n" +
+    "\n" +
+    "         <div class=\"my-vitals\">\n" +
+    "            <div class=\"my-picture\">\n" +
+    "               <a href=\"http://www.gravatar.com\">\n" +
+    "                  <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profileAboutService.data.email_hash }}?s=110&d=mm\"\n" +
+    "                       class=\"gravatar\"\n" +
+    "                       tooltip-placement=\"bottom\"\n" +
+    "                       tooltip=\"Modify your icon at Gravatar.com\" />\n" +
     "               </a>\n" +
     "            </div>\n" +
-    "            <div class=\"pin-body product-pin\">\n" +
-    "               <i tooltip-placement=\"left\"\n" +
-    "                  tooltip=\"{{ profileService.productByTiid(pinId[1]).genre }}\"\n" +
-    "                  class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
-    "               <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
+    "            <div class=\"my-metrics\">\n" +
+    "               <!-- advisor badge -->\n" +
+    "               <div class=\"advisor\" ng-show=\"profileAboutService.data.is_advisor\">\n" +
+    "                  <img src=\"/static/img/advisor-badge.png\">\n" +
+    "               </div>\n" +
+    "               <ul class=\"profile-award-list\">\n" +
+    "                  <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
+    "                      ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
+    "                      ng-repeat=\"profileAward in profile.awards\">\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
     "            </div>\n" +
-    "         </li>\n" +
-    "      </ul>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"pinboard-col col-two\">\n" +
-    "      <div class=\"col-header\">\n" +
-    "         <h3>Key profile metrics</h3>\n" +
-    "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
-    "      </div>\n" +
-    "      <ul class=\"col-two pinboard-list\"\n" +
-    "          ui-sortable=\"sortableOptions\"\n" +
-    "          ng-model=\"pinboardService.cols.two\">\n" +
-    "         <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
-    "            <div class=\"pin-header\">\n" +
-    "               <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
-    "                  <i class=\"icon-remove\"></i>\n" +
-    "               </a>\n" +
+    "            <div class=\"bio\">\n" +
+    "               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"pin-body genre-card-pin-body\">\n" +
-    "               <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "               <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
-    "                  <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
-    "                  <span class=\"my-label\">\n" +
-    "                     <span class=\"things-we-are-counting\">\n" +
-    "                        {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}\n" +
-    "                     </span>\n" +
-    "                      on\n" +
-    "                  </span>\n" +
-    "               </span>\n" +
-    "               <span class=\"genre\">\n" +
-    "                  <a href=\"{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}\"\n" +
-    "                     tooltip-placement=\"bottom\"\n" +
-    "                     tooltip=\"Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}\">\n" +
-    "                     <i class=\"icon {{ profileService.getFromPinId(pinId).genre_icon }}\"></i>\n" +
-    "                     <span class=\"val\">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>\n" +
-    "                     {{ profileService.getFromPinId(pinId).genre_plural_name }}\n" +
+    "            <div class=\"connected-accounts\">\n" +
+    "               <ul>\n" +
+    "                  <li ng-repeat=\"linkedAccount in filteredLinkedAccounts = (profileAboutService.data.linked_accounts | filter: {profile_url: '!!'})\">\n" +
+    "                     <a href=\"{{ linkedAccount.profile_url }}\" target=\"_blank\">\n" +
+    "                        <img ng-src=\"/static/img/favicons/{{ linkedAccount.service }}.ico\">\n" +
+    "                     </a>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "\n" +
+    "               <!--\n" +
+    "               <div class=\"add-connected-account\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                  <a href=\"/{{ profileAboutService.data.url_slug }}/accounts\" class=\"btn btn-xs btn-info\">\n" +
+    "                     <i class=\"icon-link left\"></i>\n" +
+    "                     <span ng-show=\"filteredLinkedAccounts.length==0\" class=\"first\">Import from accounts</span>\n" +
+    "                     <span ng-show=\"filteredLinkedAccounts.length>0\" class=\"more\">Connect more accounts</span>\n" +
     "                  </a>\n" +
-    "               </span>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "               </div>\n" +
+    "               -->\n" +
     "            </div>\n" +
-    "         </li>\n" +
-    "      </ul>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
+    "\n" +
+    "   <div id=\"pinboard\">\n" +
+    "      <div class=\"pinboard-col col-one\">\n" +
+    "         <h3>Featured products</h3>\n" +
+    "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
+    "         <ul class=\"col-one pinboard-list\"\n" +
+    "             ui-sortable=\"sortableOptions\"\n" +
+    "             ng-model=\"pinboardService.cols.one\">\n" +
+    "            <li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
+    "               <div class=\"pin-header\">\n" +
+    "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "                     <i class=\"icon-remove\"></i>\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
+    "               <div class=\"pin-body product-pin\">\n" +
+    "                  <i tooltip-placement=\"left\"\n" +
+    "                     tooltip=\"{{ profileService.productByTiid(pinId[1]).genre }}\"\n" +
+    "                     class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
+    "                  <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
+    "               </div>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"pinboard-col col-two\">\n" +
+    "         <div class=\"col-header\">\n" +
+    "            <h3>Key profile metrics</h3>\n" +
+    "            <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
+    "         </div>\n" +
+    "         <ul class=\"col-two pinboard-list\"\n" +
+    "             ui-sortable=\"sortableOptions\"\n" +
+    "             ng-model=\"pinboardService.cols.two\">\n" +
+    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
+    "               <div class=\"pin-header\">\n" +
+    "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "                     <i class=\"icon-remove\"></i>\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
+    "\n" +
+    "               <div class=\"pin-body genre-card-pin-body\">\n" +
+    "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
+    "                  <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
+    "                     <span class=\"my-label\">\n" +
+    "                        <span class=\"things-we-are-counting\">\n" +
+    "                           {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}\n" +
+    "                        </span>\n" +
+    "                         on\n" +
+    "                     </span>\n" +
+    "                  </span>\n" +
+    "                  <span class=\"genre\">\n" +
+    "                     <a href=\"{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}\"\n" +
+    "                        tooltip-placement=\"bottom\"\n" +
+    "                        tooltip=\"Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}\">\n" +
+    "                        <i class=\"icon {{ profileService.getFromPinId(pinId).genre_icon }}\"></i>\n" +
+    "                        <span class=\"val\">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>\n" +
+    "                        {{ profileService.getFromPinId(pinId).genre_plural_name }}\n" +
+    "                     </a>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "               </div>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"profile-footer\">\n" +
@@ -7716,7 +7720,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "      </h1>\n" +
     "\n" +
     "\n" +
-    "      <div class=\"nav\">\n" +
+    "      <div class=\"nav animated fadeIn\" ng-if=\"profileService.data.genres\">\n" +
     "         <a href=\"/{{ profileAboutService.data.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
     "            <i class=\"icon-user left\"></i>\n" +
     "            <span class=\"text\">\n" +
@@ -7822,10 +7826,28 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
     "<div class=\"signup-page\">\n" +
+    "\n" +
+    "   <div class=\"signup-sidebar\">\n" +
+    "      <div class=\"testimonials-container\">\n" +
+    "         <div class=\"testimonial\">\n" +
+    "            <img src=\"/static/img/people/luo.png\"/>\n" +
+    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
+    "            <cite>\n" +
+    "               <span class=\"name\">Ruibang Luo,</span>\n" +
+    "               <span class=\"inst\">Hong Kong University</span>\n" +
+    "            </cite>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "   <div class=\"signup-main-page\">\n" +
     "      <div class=\"form-container\">\n" +
-    "         <h1>Reveal your full scholarly impact.</h1>\n" +
-    "         <h2>Try Impactstory <strong>free</strong> for 30 days:</h2>\n" +
+    "         <h1>Try us free for 30 days.</h1>\n" +
+    "         <span class=\"more\">Then pay just $60/year. There's no credit card required, and no strings attached--if you\n" +
+    "         don't fall in love with Impactstory, your account will cancel after 30 days.</span>\n" +
+    "         <h2 class=\"cta\">Start discovering your full scholarly impact in under 60 seconds.</h2>\n" +
     "         <form novalidate\n" +
     "               name=\"signupForm\"\n" +
     "               ng-controller=\"signupFormCtrl\"\n" +
@@ -7896,23 +7918,6 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "   </div>\n" +
     "\n" +
     "\n" +
-    "   <div class=\"signup-sidebar\">\n" +
-    "      <div class=\"testimonials-container\">\n" +
-    "         <div class=\"testimonial\">\n" +
-    "            <img src=\"/static/img/people/luo.png\"/>\n" +
-    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
-    "            <cite>\n" +
-    "               <span class=\"name\">Ruibang Luo,</span>\n" +
-    "               <span class=\"inst\">Hong Kong University</span>\n" +
-    "            </cite>\n" +
-    "         </div>\n" +
-    "\n" +
-    "\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "   </div>\n" +
     "\n" +
     "\n" +
     "\n" +
