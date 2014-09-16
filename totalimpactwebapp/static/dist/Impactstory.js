@@ -5290,7 +5290,17 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "               <ul class=\"genre-cards-best\">\n" +
     "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
     "\n" +
-    "                     <span class=\"feature-controls\">\n" +
+    "\n" +
+    "                     <span class=\"img-and-value\">\n" +
+    "                        <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
+    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"key\">\n" +
+    "                        <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
     "\n" +
     "                        <a ng-click=\"pinboardService.pin(['genre', genre.name, 'sum', card.provider, card.interaction])\"\n" +
     "                           ng-if=\"!pinboardService.isPinned(['genre', genre.name, 'sum', card.provider, card.interaction])\"\n" +
@@ -5308,15 +5318,6 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                           <i class=\"icon-star\"></i>\n" +
     "                        </a>\n" +
     "\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                     <span class=\"img-and-value\">\n" +
-    "                        <img ng-src='/static/img/favicons/{{ card.provider }}_{{ card.interaction }}.ico' class='icon' >\n" +
-    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                     <span class=\"key\">\n" +
-    "                        <span class=\"interaction\">{{ card.interaction }}</span>\n" +
     "                     </span>\n" +
     "\n" +
     "                  </li>\n" +
