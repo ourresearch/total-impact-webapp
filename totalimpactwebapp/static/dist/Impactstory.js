@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-15
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-16
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -4662,10 +4662,11 @@ angular.module('services.profileService', [
         var genre = _.findWhere(data.genres, {name: pinId[1]})
         var card = _.findWhere(genre.cards, {provider: pinId[3], interaction: pinId[4]})
         var extraData = {
-          num_products: genre.num_products,
-          icon: genre.icon,
-          name: genre.name,
-          plural_name: genre.plural_name
+          genre_num_products: genre.num_products,
+          genre_icon: genre.icon,
+          genre_name: genre.name,
+          genre_plural_name: genre.plural_name,
+          genre_url_representation: genre.url_representation
 
         }
         return _.extend(card, extraData)
@@ -6841,7 +6842,7 @@ angular.module("profile/product-pin.tpl.html", []).run(["$templateCache", functi
     "      </a>\n" +
     "   </div>\n" +
     "   <div class=\"pin-body product-pin\">\n" +
-    "      <i class=\"{{ profileService.productByTiid(pinId[1]).genre.icon }}\"></i>\n" +
+    "      <i class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
     "      <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
     "   </div>\n" +
     "</li>");
@@ -6858,16 +6859,13 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <div class=\"my-vitals\">\n" +
     "         <div class=\"my-picture\" ng-show=\"profile.about.id\">\n" +
-    "            <a href=\"http://www.gravatar.com\" >\n" +
-    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\" data-toggle=\"tooltip\" class=\"gravatar\" rel=\"tooltip\" title=\"Modify your icon at Gravatar.com\" />\n" +
+    "            <a href=\"http://www.gravatar.com\">\n" +
+    "               <img class=\"gravatar\" ng-src=\"//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm\"\n" +
+    "                    class=\"gravatar\"\n" +
+    "                    tooltip-placement=\"bottom\"\n" +
+    "                    tooltip=\"Modify your icon at Gravatar.com\" />\n" +
     "            </a>\n" +
     "         </div>\n" +
-    "         <!--\n" +
-    "            <h2 class='page-title editable-name' id=\"profile-owner-name\">\n" +
-    "               <span class=\"given-name editable\" data-name=\"given_name\">{{ profile.about.given_name }}</span>\n" +
-    "               <span class=\"surname editable\" data-name=\"surname\">{{ profile.about.surname }}</span>\n" +
-    "            </h2>\n" +
-    "            -->\n" +
     "         <div class=\"my-metrics\">\n" +
     "            <!-- advisor badge -->\n" +
     "            <div class=\"advisor\" ng-show=\"profile.about.is_advisor\">\n" +
@@ -6907,28 +6905,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <!--\n" +
-    "         <div class=\"view-controls\">\n" +
-    "            <div class=\"admin-controls\" ng-show=\"security.isLoggedIn(url_slug) && !page.isEmbedded()\">\n" +
-    "               <a href=\"/{{ profile.about.url_slug }}/products/add\">\n" +
-    "                  <i class=\"icon-upload\"></i>Import individual products\n" +
-    "               </a>\n" +
-    "            </div>\n" +
-    "            <div class=\"everyone-controls\">\n" +
-    "               <a ng-click=\"openProfileEmbedModal()\" ng-show=\"!page.isEmbedded()\">\n" +
-    "                  <i class=\"icon-suitcase\"></i>\n" +
-    "                  Embed\n" +
-    "               </a>\n" +
-    "               <span class=\"dropdown download\">\n" +
-    "                  <a id=\"adminmenu\" role=\"button\" class=\"dropdown-toggle\"><i class=\"icon-download\"></i>Download</a>\n" +
-    "                  <ul class=\"dropdown-menu\" role=\"menu\" aria-labelledby=\"adminmenu\">\n" +
-    "                     <li><a tabindex=\"-1\" href=\"/profile/{{ profile.about.url_slug }}/products.csv\" target=\"_self\"><i class=\"icon-table\"></i>csv</a></li>\n" +
-    "                     <li><a tabindex=\"-1\" href=\"/profile/{{ profile.about.url_slug }}?hide=markup,awards\" target=\"_blank\"><i class=\"json\">{&hellip;}</i>json</a></li>\n" +
-    "                  </ul>\n" +
-    "               </span>\n" +
-    "            </div>\n" +
-    "         </div>\n" +
-    "         -->\n" +
     "\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -6937,21 +6913,77 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div id=\"pinboard\">\n" +
     "   <div class=\"pinboard-col col-one\">\n" +
     "      <h3>Featured products</h3>\n" +
-    "      <ul class=\"col-one\"\n" +
+    "      <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
+    "      <ul class=\"col-one pinboard-list\"\n" +
     "          ui-sortable=\"sortableOptions\"\n" +
     "          ng-model=\"pinboardService.cols.one\">\n" +
-    "         <div ng-include=\"'profile/product-pin.tpl.html'\"></div>\n" +
+    "         <li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
+    "            <div class=\"pin-header\">\n" +
+    "               <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "                  <i class=\"icon-remove\"></i>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "            <div class=\"pin-body product-pin\">\n" +
+    "               <i class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
+    "               <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
+    "            </div>\n" +
+    "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"pinboard-col col-two\">\n" +
-    "      <h3>Key metrics</h3>\n" +
-    "      <ul class=\"col-two\"\n" +
+    "      <div class=\"col-header\">\n" +
+    "         <h3>Key profile metrics</h3>\n" +
+    "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
+    "      </div>\n" +
+    "      <ul class=\"col-two pinboard-list\"\n" +
     "          ui-sortable=\"sortableOptions\"\n" +
     "          ng-model=\"pinboardService.cols.two\">\n" +
-    "         <div ng-include=\"'profile/metric-pin.tpl.html'\"></div>\n" +
+    "         <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
+    "            <div class=\"pin-header\">\n" +
+    "               <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "                  <i class=\"icon-remove\"></i>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"pin-body genre-card-pin-body\">\n" +
+    "               <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
+    "               <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                  <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
+    "                  <span class=\"my-label\">\n" +
+    "                     <span class=\"things-we-are-counting\">\n" +
+    "                        {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}\n" +
+    "                     </span>\n" +
+    "                      on\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "               <span class=\"genre\">\n" +
+    "                  <a href=\"{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}\"\n" +
+    "                     tooltip-placement=\"bottom\"\n" +
+    "                     tooltip=\"Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}\">\n" +
+    "                     <i class=\"icon {{ profileService.getFromPinId(pinId).genre_icon }}\"></i>\n" +
+    "                     <span class=\"val\">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>\n" +
+    "                     {{ profileService.getFromPinId(pinId).genre_plural_name }}\n" +
+    "                  </a>\n" +
+    "               </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "            </div>\n" +
+    "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
+    "\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"profile-footer\">\n" +
+    "   <span class=\"download\">\n" +
+    "      Download profile as\n" +
+    "      <a href=\"/profile/{{ profile.about.url_slug }}/products.csv\" target=\"_self\">csv</a>\n" +
+    "      or\n" +
+    "      <a href=\"/profile/{{ profile.about.url_slug }}?hide=markup,awards\" target=\"_blank\">json</a>\n" +
+    "   </span>\n" +
     "</div>\n" +
     "\n" +
     "\n" +

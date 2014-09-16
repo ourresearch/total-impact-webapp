@@ -7261,6 +7261,7 @@ a.refresh {
 }
 div.profile-header {
   margin-top: 30px;
+  margin-bottom: 50px;
   clear: both;
 }
 div.profile-header:before,
@@ -7470,181 +7471,174 @@ div.modal-body.embed div.code h3 {
   margin-top: 30px;
   text-align: center;
 }
-div.view-controls {
-  float: none;
-  margin-top: 50px;
+#pinboard {
   clear: both;
+  margin-bottom: 200px;
 }
-div.view-controls:before,
-div.view-controls:after {
+#pinboard:before,
+#pinboard:after {
   content: " ";
   display: table;
 }
-div.view-controls:after {
+#pinboard:after {
   clear: both;
 }
-div.view-controls:before,
-div.view-controls:after {
+#pinboard:before,
+#pinboard:after {
   content: " ";
   display: table;
 }
-div.view-controls:after {
+#pinboard:after {
   clear: both;
-}
-div.view-controls div.admin-controls {
-  float: left;
-}
-div.view-controls div.everyone-controls {
-  float: left;
-}
-div.view-controls a {
-  color: #777;
-  margin-right: 20px;
-  display: inline-block;
-}
-div.view-controls a i {
-  margin-right: 5px;
-}
-div.view-controls span.dropdown ul.dropdown-menu {
-  border: none;
-  -webkit-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  -moz-box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
-  -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 0;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomright: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-topleft: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 0;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  padding: 0;
-  background: #eee;
-  top: 22px;
-  min-width: 120px;
-}
-div.view-controls span.dropdown ul.dropdown-menu a {
-  margin: 0;
-  width: 100%;
-}
-div.view-controls span.dropdown ul.dropdown-menu a:hover {
-  color: #fff;
-}
-div.view-controls span.dropdown ul.dropdown-menu i {
-  font-style: normal;
-  margin-right: 5px;
-}
-div.view-controls span.dropdown ul.dropdown-menu i.json {
-  font-weight: 900;
-  font-size: 14px;
 }
 #pinboard div.pinboard-col {
   float: left;
 }
+#pinboard div.pinboard-col h3 {
+  font-weight: 300;
+  margin: 0 0 20px 0;
+  color: #0053b0;
+}
+#pinboard div.pinboard-col div.instr {
+  margin-bottom: 20px;
+  font-size: 12px;
+  margin-top: -10px;
+  color: #999;
+}
 #pinboard div.pinboard-col.col-one {
-  width: 64%;
-  margin-right: 2%;
+  width: 66%;
+}
+#pinboard div.pinboard-col.col-one h3 {
+  font-size: 32px;
+}
+#pinboard div.pinboard-col.col-one div.instr {
+  margin-top: -20px;
 }
 #pinboard div.pinboard-col.col-two {
   width: 33%;
 }
-#pinboard div.pinboard-col ul.pinboard-col {
-  min-height: 300px;
-  -webkit-border-top-right-radius: 5px;
-  -webkit-border-bottom-right-radius: 5px;
-  -webkit-border-bottom-left-radius: 5px;
-  -webkit-border-top-left-radius: 5px;
-  -moz-border-radius-topright: 5px;
-  -moz-border-radius-bottomright: 5px;
-  -moz-border-radius-bottomleft: 5px;
-  -moz-border-radius-topleft: 5px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top-left-radius: 5px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  padding: 0;
+#pinboard div.pinboard-col.col-two h3 {
+  margin: 10px 0 10px 0;
+  font-size: 22px;
 }
-#pinboard div.pinboard-col ul.pinboard-col.empty-true {
-  border: 1px dashed #ddd;
+#pinboard div.pinboard-col.col-two div.instr {
+  margin-bottom: 5px;
 }
-#pinboard div.pinboard-col li.pin {
-  width: 100%;
+#pinboard div.pinboard-col.col-two div.col-header {
+  margin-left: 17px;
+}
+#pinboard div.pinboard-col ul.pinboard-list.col-two {
   border: 1px solid #eee;
+  padding-bottom: 100px;
+  padding-top: 10px;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin {
+  width: 100%;
   background: #fff;
+  border: 1px solid #fff;
   clear: both;
-  margin: 0 0 20px 0;
+  margin-left: -10px;
+  padding-right: 30px;
   position: relative;
   cursor: move;
 }
-#pinboard div.pinboard-col li.pin:before,
-#pinboard div.pinboard-col li.pin:after {
+#pinboard div.pinboard-col ul.pinboard-list li.pin:before,
+#pinboard div.pinboard-col ul.pinboard-list li.pin:after {
   content: " ";
   display: table;
 }
-#pinboard div.pinboard-col li.pin:after {
+#pinboard div.pinboard-col ul.pinboard-list li.pin:after {
   clear: both;
 }
-#pinboard div.pinboard-col li.pin:before,
-#pinboard div.pinboard-col li.pin:after {
+#pinboard div.pinboard-col ul.pinboard-list li.pin:before,
+#pinboard div.pinboard-col ul.pinboard-list li.pin:after {
   content: " ";
   display: table;
 }
-#pinboard div.pinboard-col li.pin:after {
+#pinboard div.pinboard-col ul.pinboard-list li.pin:after {
   clear: both;
 }
-#pinboard div.pinboard-col li.pin.product-pin .biblio {
+#pinboard div.pinboard-col ul.pinboard-list li.pin:hover {
+  border: 1px solid #eee;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin:hover div.pin-header {
+  display: block;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin {
+  margin-bottom: 30px;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin i.genre-icon {
+  float: left;
+  margin-right: 5px;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin .biblio {
+  margin-left: 20px;
   font-size: 12px;
   margin-bottom: 10px;
 }
-#pinboard div.pinboard-col li.pin.product-pin .biblio h5.title {
+#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin .biblio h5.title {
   font-size: 16px;
-  margin: 0;
+  line-height: 1.5;
+  margin: -5px 0 0 0;
 }
-#pinboard div.pinboard-col li.pin.product-pin .biblio h5.title a {
+#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin .biblio h5.title a {
   color: #555;
 }
-#pinboard div.pinboard-col li.pin.product-pin .biblio h5.title a:hover {
+#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin .biblio h5.title a:hover {
   color: #333;
 }
-#pinboard div.pinboard-col li.pin.product-pin .awards .ti-badge {
+#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin .awards {
+  margin-left: 20px;
+  margin-top: -8px;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin .awards .ti-badge {
   font-size: 11px;
   margin: 7px 2px 0;
 }
-#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data {
-  cursor: default;
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin {
+  margin-bottom: 0;
+  margin: 0;
+  width: 100%;
+  padding: 0 20px;
+  border-left: none;
+  border-right: none;
 }
-#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data img.icon {
-  height: 18px;
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body {
+  font-size: 14px;
 }
-#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data span.img-and-value {
-  margin: 0 5px 0 0;
-  font-size: 22px;
-  font-weight: bold;
-  display: inline-block;
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body span.val.main {
+  font-size: 36px;
+  margin: 5px 10px 0 0;
+  padding-right: 10px;
+  border-right: 1px solid #ddd;
+  font-weight: 300;
+  color: #555;
+  line-height: 1;
+  float: left;
 }
-#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data span.img-and-value img {
-  height: 20px;
-  vertical-align: 0;
-}
-#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data span.key {
-  display: inline-block;
-  margin-top: 4px;
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body .icon {
   font-size: 16px;
+  height: 16px;
+  margin-right: 3px;
 }
-#pinboard div.pinboard-col li.pin.metric-pin div.genre-card-pin-body span.data span.key span.provider {
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body span.interaction {
+  display: block;
+  margin-bottom: 4px;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body span.interaction .things-we-are-counting {
+  font-weight: bold;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body span.genre {
   display: block;
 }
-#pinboard div.pinboard-col li.pin div.pin-header {
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body span.genre a {
+  color: #555;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body span.genre a:hover {
+  color: #ff4000;
+}
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-header {
+  display: none;
   text-align: right;
   font-size: 12px;
   position: absolute;
@@ -7668,35 +7662,53 @@ div.view-controls span.dropdown ul.dropdown-menu i.json {
   background-clip: padding-box;
   background: #eee;
 }
-#pinboard div.pinboard-col li.pin div.pin-header:hover {
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-header:hover {
   opacity: 1;
 }
-#pinboard div.pinboard-col li.pin div.pin-header a {
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-header a {
   padding: 1px 5px;
   color: #777;
 }
-#pinboard div.pinboard-col li.pin div.pin-header a:hover {
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-header a:hover {
   color: #ff4000;
 }
-#pinboard div.pinboard-col li.pin div.pin-body {
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-body {
   padding: 10px;
   clear: both;
 }
-#pinboard div.pinboard-col li.pin div.pin-body:before,
-#pinboard div.pinboard-col li.pin div.pin-body:after {
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-body:before,
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-body:after {
   content: " ";
   display: table;
 }
-#pinboard div.pinboard-col li.pin div.pin-body:after {
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-body:after {
   clear: both;
 }
-#pinboard div.pinboard-col li.pin div.pin-body:before,
-#pinboard div.pinboard-col li.pin div.pin-body:after {
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-body:before,
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-body:after {
   content: " ";
   display: table;
 }
-#pinboard div.pinboard-col li.pin div.pin-body:after {
+#pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-body:after {
   clear: both;
+}
+div.profile-footer {
+  position: absolute;
+  padding: 10px;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: #999;
+}
+div.profile-footer span.download {
+  font-size: 13px;
+}
+div.profile-footer span.download a {
+  color: #999;
+  text-decoration: underline;
+}
+div.profile-footer span.download a:hover {
+  color: #333;
 }
 div.profile-subpage {
   margin-left: -50px;

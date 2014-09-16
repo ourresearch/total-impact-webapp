@@ -7,16 +7,13 @@
 
       <div class="my-vitals">
          <div class="my-picture" ng-show="profile.about.id">
-            <a href="http://www.gravatar.com" >
-               <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm" data-toggle="tooltip" class="gravatar" rel="tooltip" title="Modify your icon at Gravatar.com" />
+            <a href="http://www.gravatar.com">
+               <img class="gravatar" ng-src="//www.gravatar.com/avatar/{{ profile.about.email_hash }}?s=110&d=mm"
+                    class="gravatar"
+                    tooltip-placement="bottom"
+                    tooltip="Modify your icon at Gravatar.com" />
             </a>
          </div>
-         <!--
-            <h2 class='page-title editable-name' id="profile-owner-name">
-               <span class="given-name editable" data-name="given_name">{{ profile.about.given_name }}</span>
-               <span class="surname editable" data-name="surname">{{ profile.about.surname }}</span>
-            </h2>
-            -->
          <div class="my-metrics">
             <!-- advisor badge -->
             <div class="advisor" ng-show="profile.about.is_advisor">
@@ -56,28 +53,6 @@
          </div>
       </div>
 
-      <!--
-         <div class="view-controls">
-            <div class="admin-controls" ng-show="security.isLoggedIn(url_slug) && !page.isEmbedded()">
-               <a href="/{{ profile.about.url_slug }}/products/add">
-                  <i class="icon-upload"></i>Import individual products
-               </a>
-            </div>
-            <div class="everyone-controls">
-               <a ng-click="openProfileEmbedModal()" ng-show="!page.isEmbedded()">
-                  <i class="icon-suitcase"></i>
-                  Embed
-               </a>
-               <span class="dropdown download">
-                  <a id="adminmenu" role="button" class="dropdown-toggle"><i class="icon-download"></i>Download</a>
-                  <ul class="dropdown-menu" role="menu" aria-labelledby="adminmenu">
-                     <li><a tabindex="-1" href="/profile/{{ profile.about.url_slug }}/products.csv" target="_self"><i class="icon-table"></i>csv</a></li>
-                     <li><a tabindex="-1" href="/profile/{{ profile.about.url_slug }}?hide=markup,awards" target="_blank"><i class="json">{&hellip;}</i>json</a></li>
-                  </ul>
-               </span>
-            </div>
-         </div>
-         -->
 
    </div>
 </div>
@@ -86,21 +61,77 @@
 <div id="pinboard">
    <div class="pinboard-col col-one">
       <h3>Featured products</h3>
-      <ul class="col-one"
+      <div class="instr" ng-show="security.isLoggedIn(url_slug)">Drag to change order</div>
+      <ul class="col-one pinboard-list"
           ui-sortable="sortableOptions"
           ng-model="pinboardService.cols.one">
-         <div ng-include="'profile/product-pin.tpl.html'"></div>
+         <li class="pin product-pin" ng-repeat="pinId in pinboardService.cols.one">
+            <div class="pin-header">
+               <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
+                  <i class="icon-remove"></i>
+               </a>
+            </div>
+            <div class="pin-body product-pin">
+               <i class="genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}"></i>
+               <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pinId[1]).markup)"></div>
+            </div>
+         </li>
       </ul>
    </div>
 
    <div class="pinboard-col col-two">
-      <h3>Key metrics</h3>
-      <ul class="col-two"
+      <div class="col-header">
+         <h3>Key profile metrics</h3>
+         <div class="instr" ng-show="security.isLoggedIn(url_slug)">Drag to change order</div>
+      </div>
+      <ul class="col-two pinboard-list"
           ui-sortable="sortableOptions"
           ng-model="pinboardService.cols.two">
-         <div ng-include="'profile/metric-pin.tpl.html'"></div>
+         <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two">
+            <div class="pin-header">
+               <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
+                  <i class="icon-remove"></i>
+               </a>
+            </div>
+
+            <div class="pin-body genre-card-pin-body">
+               <span class="main val">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>
+               <span class="interaction" tooltip="{{ profileService.getFromPinId(pinId).tooltip }}">
+                  <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >
+                  <span class="my-label">
+                     <span class="things-we-are-counting">
+                        {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}
+                     </span>
+                      on
+                  </span>
+               </span>
+               <span class="genre">
+                  <a href="{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}"
+                     tooltip-placement="bottom"
+                     tooltip="Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}">
+                     <i class="icon {{ profileService.getFromPinId(pinId).genre_icon }}"></i>
+                     <span class="val">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>
+                     {{ profileService.getFromPinId(pinId).genre_plural_name }}
+                  </a>
+               </span>
+
+
+
+            </div>
+         </li>
       </ul>
    </div>
+
+
+</div>
+
+<div class="profile-footer">
+   <span class="download">
+      Download profile as
+      <a href="/profile/{{ profile.about.url_slug }}/products.csv" target="_self">csv</a>
+      or
+      <a href="/profile/{{ profile.about.url_slug }}?hide=markup,awards" target="_blank">json</a>
+   </span>
 </div>
 
 
