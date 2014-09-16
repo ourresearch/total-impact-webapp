@@ -7543,7 +7543,7 @@ div.modal-body.embed div.code h3 {
   color: #999;
 }
 #pinboard div.pinboard-col.col-one {
-  width: 66%;
+  width: 65%;
 }
 #pinboard div.pinboard-col.col-one h3 {
   font-size: 32px;
@@ -7552,7 +7552,7 @@ div.modal-body.embed div.code h3 {
   margin-top: -20px;
 }
 #pinboard div.pinboard-col.col-two {
-  width: 33%;
+  width: 35%;
   border: 1px solid #eee;
   padding-top: 15px;
   margin-top: -10px;
@@ -7648,12 +7648,13 @@ div.modal-body.embed div.code h3 {
   margin-bottom: 0;
   margin: 0;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 10px 0 20px;
   border-left: none;
   border-right: none;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body {
   font-size: 14px;
+  padding: 10px 0;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin.metric-pin div.genre-card-pin-body span.val.main {
   font-size: 36px;
