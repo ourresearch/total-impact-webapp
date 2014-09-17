@@ -173,6 +173,7 @@ angular.module('settings', [
                                                     TiMixpanel,
                                                     UsersSubscription) {
 
+    console.log("subscriptionSettingsCtrl is running.")
 
     // important! this is how we get stuff out of the form from here
     $scope.subscribeForm = {
