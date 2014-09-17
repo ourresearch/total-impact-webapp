@@ -822,8 +822,8 @@ providers = [
                 "milestones": fives_then_orders_of_magnitude()
             },
             "news": {
-                "description": "Number of times the product has been tweeted",
-                "display_name": "tweets",
+                "description": "Number of times the product has been mentioned in the mainstream media",
+                "display_name": "news mentions",
                 "display_provider": "Twitter",
                 "icon": "https://twitter.com/favicon.ico",
                 "provider_name": "Altmetric.com",
@@ -833,7 +833,7 @@ providers = [
                 "milestones": fives_then_orders_of_magnitude()
             },            
             "impressions": {
-                "description": "Number of times a tweet about the product has appeared in a user's twitter stream",
+                "description": "Number of times a tweet about the product has appeared in someone's twitter stream",
                 "display_name": "impressions",
                 "display_provider": "Twitter",
                 "icon": "https://twitter.com/favicon.ico",

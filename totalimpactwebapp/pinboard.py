@@ -12,6 +12,7 @@ def write_to_pinboard(profile_id, contents):
     board = Pinboard.query.filter_by(profile_id=profile_id).first()
     if board:
         board.contents = contents
+        board.timestamp = datetime.datetime.utcnow()
     else:
         board = Pinboard(
             profile_id=profile_id,
@@ -28,7 +29,7 @@ class Pinboard(db.Model):
     contents = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
 
     def __init__(self, **kwargs):
-        self.created = datetime.datetime.utcnow()
+        self.timestamp = datetime.datetime.utcnow()
         super(Pinboard, self).__init__(**kwargs)
 
     def __repr__(self):
