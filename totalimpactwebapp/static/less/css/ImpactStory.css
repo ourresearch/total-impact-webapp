@@ -7318,7 +7318,7 @@ div.profile-header div.my-picture img {
   padding: 0 20px 20px 0;
 }
 div.profile-header div.my-vitals {
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 div.profile-header div.my-vitals h2.editable-name {
   font-family: Lato, Helvetica, Arial, sans-serif;
@@ -7547,6 +7547,9 @@ div.modal-body.embed div.code h3 {
 }
 #pinboard div.pinboard-col.col-one h3.pinboard-col-heading {
   font-size: 32px;
+}
+#pinboard div.pinboard-col.col-one .product-container .awards ul.awards-list {
+  width: 500px;
 }
 #pinboard div.pinboard-col.col-one div.instr {
   margin-top: -20px;
