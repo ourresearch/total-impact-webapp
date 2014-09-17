@@ -58,8 +58,6 @@ angular.module("productPage", [
     ProfileService,
     Page) {
 
-    ProfileAboutService.get($routeParams.url_slug)
-    ProfileService.get($routeParams.url_slug)
     Page.setName(product.genre_url_key)
 
     console.log("product.host", product.host)

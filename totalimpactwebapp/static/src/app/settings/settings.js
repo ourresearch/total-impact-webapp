@@ -39,9 +39,6 @@ angular.module('settings', [
                                         Loading) {
 
 
-    ProfileAboutService.get(authenticatedUser.url_slug)
-    ProfileService.get(authenticatedUser.url_slug)
-
     Page.setName("settings")
     $scope.resetUser = function(){
       $scope.user = angular.copy(authenticatedUser)

@@ -74,7 +74,6 @@ angular.module("genrePage", [
     $scope.isRendering = function(){
       return rendering
     }
-    ProfileAboutService.get($routeParams.url_slug)
     ProfileService.get($routeParams.url_slug).then(
       function(resp){
         console.log("genre page loaded products", resp)

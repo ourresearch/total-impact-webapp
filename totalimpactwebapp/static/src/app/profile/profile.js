@@ -130,7 +130,6 @@ angular.module("profile", [
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
     Page.setName('overview')
-    ProfileAboutService.get($routeParams.url_slug)
 
     var url_slug = $routeParams.url_slug;
 

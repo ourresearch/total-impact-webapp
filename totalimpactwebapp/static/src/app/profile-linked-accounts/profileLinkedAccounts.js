@@ -31,8 +31,6 @@ angular.module('profileLinkedAccounts', [
                                                     currentUser){
 
 
-    ProfileAboutService.get($routeParams.url_slug)
-    ProfileService.get($routeParams.url_slug)
     $scope.url_slug = $routeParams.url_slug
 
 

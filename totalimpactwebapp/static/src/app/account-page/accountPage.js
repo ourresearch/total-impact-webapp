@@ -21,8 +21,6 @@ angular.module('accountPage', [
   }])
 
   .controller("AccountPageCtrl", function($scope, $routeParams, userOwnsThisProfile, ProfileService, ProfileAboutService, Page){
-    ProfileService.get($routeParams.url_slug)
-    ProfileAboutService.get($routeParams.url_slug)
     Page.setName($routeParams.account_index_name)
 
     $scope.templatePath = "account-page/"+ $routeParams.account_index_name  +"-account-page.tpl.html"

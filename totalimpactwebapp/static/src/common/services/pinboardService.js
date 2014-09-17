@@ -5,7 +5,7 @@ angular.module('services.pinboardService', [
 
 
 
-    var data
+    var data = {}
     var cols = {
       one: [],
       two: []

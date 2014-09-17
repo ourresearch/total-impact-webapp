@@ -26,8 +26,6 @@ angular.module('accountPage', [
   }])
 
   .controller("AccountPageCtrl", function($scope, $routeParams, userOwnsThisProfile, ProfileService, ProfileAboutService, Page){
-    ProfileService.get($routeParams.url_slug)
-    ProfileAboutService.get($routeParams.url_slug)
     Page.setName($routeParams.account_index_name)
 
     $scope.templatePath = "account-page/"+ $routeParams.account_index_name  +"-account-page.tpl.html"
@@ -761,7 +759,6 @@ angular.module("genrePage", [
     $scope.isRendering = function(){
       return rendering
     }
-    ProfileAboutService.get($routeParams.url_slug)
     ProfileService.get($routeParams.url_slug).then(
       function(resp){
         console.log("genre page loaded products", resp)
@@ -1183,8 +1180,6 @@ angular.module("productPage", [
     ProfileService,
     Page) {
 
-    ProfileAboutService.get($routeParams.url_slug)
-    ProfileService.get($routeParams.url_slug)
     Page.setName(product.genre_url_key)
 
     console.log("product.host", product.host)
@@ -1566,8 +1561,6 @@ angular.module('profileLinkedAccounts', [
                                                     currentUser){
 
 
-    ProfileAboutService.get($routeParams.url_slug)
-    ProfileService.get($routeParams.url_slug)
     $scope.url_slug = $routeParams.url_slug
 
 
@@ -1604,8 +1597,6 @@ angular.module('profileSingleProducts', [
                                                 ProfileService,
                                                 ProfileAboutService,
                                                 $routeParams){
-    ProfileAboutService.get($routeParams.url_slug)
-    ProfileService.get($routeParams.url_slug)
     $scope.url_slug = $routeParams.url_slug
 
 
@@ -1797,7 +1788,6 @@ angular.module("profile", [
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
     Page.setName('overview')
-    ProfileAboutService.get($routeParams.url_slug)
 
     var url_slug = $routeParams.url_slug;
 
@@ -2448,9 +2438,6 @@ angular.module('settings', [
                                         Page,
                                         Loading) {
 
-
-    ProfileAboutService.get(authenticatedUser.url_slug)
-    ProfileService.get(authenticatedUser.url_slug)
 
     Page.setName("settings")
     $scope.resetUser = function(){
@@ -4461,7 +4448,7 @@ angular.module('services.pinboardService', [
 
 
 
-    var data
+    var data = {}
     var cols = {
       one: [],
       two: []
