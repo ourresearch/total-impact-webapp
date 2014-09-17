@@ -5,6 +5,7 @@ angular.module('services.pinboardService', [
 
 
 
+    var data
     var cols = {
       one: [],
       two: []
@@ -38,15 +39,16 @@ angular.module('services.pinboardService', [
         {id: security.getCurrentUserSlug()},
         {contents: cols},
         function(resp){
-          console.log("success pushing cols", resp)
+//          console.log("success pushing cols", resp)
         },
         function(resp){
-          console.log("failure pushing cols", resp)
+//          console.log("failure pushing cols", resp)
         }
       )
     }
 
     function get(id){
+      data.url_slug = id
       ProfilePinboard.get(
         {id: id},
         function(resp){
@@ -56,10 +58,15 @@ angular.module('services.pinboardService', [
         },
         function(resp){
           console.log("no pinboard set yet.")
-          cols.one.length = 0
-          cols.two.length = 0
+          clear()
         }
       )
+    }
+
+    function clear(){
+      cols.one.length = 0
+      cols.two.length = 0
+      for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
     }
 
     function isEmpty(){
@@ -89,7 +96,11 @@ angular.module('services.pinboardService', [
       unPin: unPin,
       isPinned: isPinned,
       get: get,
-      saveState: saveState
+      saveState: saveState,
+      getUrlSlug: function(){
+        return data.url_slug
+      },
+      clear: clear
     }
 
 

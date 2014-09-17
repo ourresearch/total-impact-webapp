@@ -657,8 +657,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.showHeader(true)
-    Page.showFooter(true)
     Page.setProfileUrl(false)
     Breadcrumbs.clear()
     Loading.clear()
@@ -1017,7 +1015,6 @@ angular.module( 'infopages', [
 
     var signupFormShowing = false
     $scope.landingPageType = "main"
-    Page.setUservoiceTabLoc("hidden")
     Page.setName("landing")
     Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
@@ -1026,16 +1023,12 @@ angular.module( 'infopages', [
 
   .controller("hIndexLandingPageCtrl", function($scope, Page){
     $scope.landingPageType = "h-index"
-    Page.showHeader(false)
-    Page.setUservoiceTabLoc("hidden")
     Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
 
   .controller("openScienceLandingPageCtrl", function($scope, Page){
     $scope.landingPageType = "open-science"
-    Page.showHeader(false)
-    Page.setUservoiceTabLoc("hidden")
     Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
@@ -2119,6 +2112,7 @@ angular.module('security.service', [
   .factory('security', function($http,
                                 $q,
                                 $location,
+                                $location,
                                 $modal,
                                 TiMixpanel,
                                 UserMessage) {
@@ -2171,8 +2165,8 @@ angular.module('security.service', [
       login: function(email, password) {
         return $http.post('/profile/current/login', {email: email, password: password})
           .success(function(data, status) {
-            console.log("user just logged in: ", currentUser)
             currentUser = data.user;
+            console.log("user just logged in: ", currentUser)
             TiMixpanel.identify(currentUser.id)
             TiMixpanel.registerFromUserObject(currentUser)
           })
@@ -2270,10 +2264,12 @@ angular.module('security.service', [
 
       logout: function() {
         console.log("logging out user.", currentUser)
+
         currentUser = null;
         $http.get('/profile/current/logout').success(function(data, status, headers, config) {
           UserMessage.set("logout.success")
           TiMixpanel.clearCookie()
+
         });
       },
 
@@ -2750,9 +2746,6 @@ angular.module( 'signup', [
 
   .controller('signupCtrl', function($scope, Page){
 
-    Page.setUservoiceTabLoc("bottom")
-    Page.showHeader(false)
-    Page.showFooter(false)
 
   })
 
@@ -4245,53 +4238,87 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function($location, $rootScope){
-   var title = '';
-   var notificationsLoc = "header"
-   var uservoiceTabLoc = "right"
-   var lastScrollPosition = {}
-   var isEmbedded =  _($location.path()).startsWith("/embed/")
-   var headerFullName
-   var profileUrl
-   var pageName
-   var isInfopage
+  .factory("Page", function($location,
+                            $rootScope,
+                            PinboardService,
+                            ProfileAboutService,
+                            ProfileService){
+    var title = '';
+    var notificationsLoc = "header"
+    var lastScrollPosition = {}
+    var isEmbedded =  _($location.path()).startsWith("/embed/")
+    var profileUrl
+    var pageName
+    var isInfopage
+    var profileSlug
+
+    var nonProfilePages = [
+      "/",
+      "/reset-password",
+      "/h-index",
+      "/open-science",
+      "/faq",
+      "/signup",
+      "/about",
+      "/advisors",
+      "/settings", // sort of a profile page
+      "/spread-the-word"
+    ]
 
 
     $rootScope.$on('$routeChangeSuccess', function () {
       isInfopage = false
       pageName = null
+      profileSlug = findProfileSlug()
+      if (profileSlug){
+        if (ProfileAboutService.getUrlSlug() != profileSlug){
+          ProfileAboutService.get(profileSlug, true)
+        }
+
+        if (ProfileService.getUrlSlug() != profileSlug){
+          ProfileService.get(profileSlug, true)
+        }
+
+        if (PinboardService.getUrlSlug() != profileSlug){
+          PinboardService.get(profileSlug, true)
+        }
+      }
+      else {
+        ProfileAboutService.clear()
+        ProfileService.clear()
+        PinboardService.clear()
+      }
     });
 
-   var showHeaderNow = true
-   var showFooterNow = true
 
-   var frameTemplatePaths = {
-     header: "",
-     footer: ""
-   }
+    function findProfileSlug(){
+      var firstPartOfPath = "/" + $location.path().split("/")[1]
 
-   var addTplHtml = function(pathRoot){
-     if (pathRoot){
-       return pathRoot + ".tpl.html"
-     }
-     else {
-       return ""
-     }
-   }
+      if (_.contains(nonProfilePages, firstPartOfPath)){
+        return undefined
+      }
+      else {
+        return firstPartOfPath.substr(1) // no slash
+      }
+    }
+
+
+
+
 
     var getPageType = function(){
       var myPageType = "profile"
       var path = $location.path()
 
       var settingsPages = [
-          "/settings",
-          "/reset-password"
+        "/settings",
+        "/reset-password"
       ]
 
       var infopages = [
-          "/faq",
-          "/about"
-        ]
+        "/faq",
+        "/about"
+      ]
 
       if (path === "/"){
         myPageType = "landing"
@@ -4319,134 +4346,101 @@ angular.module("services.page")
     }
 
 
-   return {
-     showHeader: function(showHeaderArg){
-       // read current value
-       if (typeof showHeaderArg === "undefined"){
-         return showHeaderNow
-       }
-
-       // set value
-       else {
-         showHeaderNow = !!showHeaderArg
-         return showHeaderNow
-       }
-     },
-     showFooter: function(showFooterArg){
-
-       // read current value
-       if (typeof showFooterArg === "undefined"){
-         return showFooterNow
-       }
-
-       // set value
-       else {
-         showFooterNow = !!showFooterArg
-         return showFooterNow
-       }
-     },
-
-     setHeaderFullName: function(name){
-       headerFullName = name
-     },
+    return {
 
 
-     getHeaderFullName: function(name){
-       return headerFullName
-     },
+      setProfileUrl: function(url){
+        profileUrl = url
+      },
+      getProfileUrl: function(){
+        return profileUrl
+      },
 
-     setProfileUrl: function(url){
-       profileUrl = url
-     },
-     getProfileUrl: function(){
-       return profileUrl
-     },
-
-     getUrl: function(){
-       return window.location.href
-     },
+      getUrl: function(){
+        return window.location.href
+      },
 
 
-     'setNotificationsLoc': function(loc){
-         notificationsLoc = loc;
-     },
-     showNotificationsIn: function(loc){
-       return notificationsLoc == loc
-     },
-     setVersion: function(versionName){
-       version = versionName;
-     },
-     getBodyClasses: function(){
+      'setNotificationsLoc': function(loc){
+        notificationsLoc = loc;
+      },
+      showNotificationsIn: function(loc){
+        return notificationsLoc == loc
+      },
+      setVersion: function(versionName){
+        version = versionName;
+      },
+      getBodyClasses: function(){
         var conditionalClasses = {
           'embedded': isEmbedded
         }
 
-       var classes = [
-         "page-name-" + pageName
-       ]
+        var classes = [
+          "page-name-" + pageName
+        ]
 
-       _.each(conditionalClasses, function(v, k){
-         if (v) classes.push(k)
-       })
+        _.each(conditionalClasses, function(v, k){
+          if (v) classes.push(k)
+        })
 
-       return classes.join(" ")
+        return classes.join(" ")
 
 
 
-     },
-     isInfopage: function(){
-       return !!isInfopage
-     },
-     setInfopage: function(val){
-       isInfopage = !!val
-     },
+      },
+      isInfopage: function(){
+        return !!isInfopage
+      },
+      setInfopage: function(val){
+        isInfopage = !!val
+      },
 
-     'isEmbedded': function(){
-       return isEmbedded
-     } ,
-     setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
+      'isEmbedded': function(){
+        return isEmbedded
+      } ,
 
-     getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
+      getTitle: function() { return title; },
+      setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
 
-     isLandingPage: function(){
-       return ($location.path() === "/")
-     },
 
-     isProfile:function(){
-       var path = $location.path()
-       return (path != "/") && (path != "/faq") && (path != "/about")
-     },
+      isProfile:function(){
+        var path = $location.path()
+        return (path != "/") && (path != "/faq") && (path != "/about")
+      },
 
-     setName: function(name){
-       pageName = name
-     },
+      setName: function(name){
+        pageName = name
+      },
 
-     isNamed: function(name){
-       return name === pageName
-     },
+      getUrlSlug: function(){
+        return profileSlug
+      },
 
-     setLastScrollPosition: function(pos, path){
-       if (pos) {
-        lastScrollPosition[path] = pos
-       }
-     },
-     getLastScrollPosition: function(path){
-       return lastScrollPosition[path]
-     },
-     sendPageloadToSegmentio: function(){
+      isNamed: function(name){
+        return name === pageName
+      },
 
-       analytics.page(
-         getPageType(),
-         $location.path(),
-         {
-           "viewport width": $(window).width(),
-           "page_type": getPageType()
-         }
-       )
-     }
-   };
-})
+      setLastScrollPosition: function(pos, path){
+        if (pos) {
+          lastScrollPosition[path] = pos
+        }
+      },
+      getLastScrollPosition: function(path){
+        return lastScrollPosition[path]
+      },
+      sendPageloadToSegmentio: function(){
+
+        analytics.page(
+          getPageType(),
+          $location.path(),
+          {
+            "viewport width": $(window).width(),
+            "page_type": getPageType()
+          }
+        )
+      }
+    };
+  })
 
 
 
@@ -4467,6 +4461,7 @@ angular.module('services.pinboardService', [
 
 
 
+    var data
     var cols = {
       one: [],
       two: []
@@ -4500,15 +4495,16 @@ angular.module('services.pinboardService', [
         {id: security.getCurrentUserSlug()},
         {contents: cols},
         function(resp){
-          console.log("success pushing cols", resp)
+//          console.log("success pushing cols", resp)
         },
         function(resp){
-          console.log("failure pushing cols", resp)
+//          console.log("failure pushing cols", resp)
         }
       )
     }
 
     function get(id){
+      data.url_slug = id
       ProfilePinboard.get(
         {id: id},
         function(resp){
@@ -4518,10 +4514,15 @@ angular.module('services.pinboardService', [
         },
         function(resp){
           console.log("no pinboard set yet.")
-          cols.one.length = 0
-          cols.two.length = 0
+          clear()
         }
       )
+    }
+
+    function clear(){
+      cols.one.length = 0
+      cols.two.length = 0
+      for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
     }
 
     function isEmpty(){
@@ -4551,7 +4552,11 @@ angular.module('services.pinboardService', [
       unPin: unPin,
       isPinned: isPinned,
       get: get,
-      saveState: saveState
+      saveState: saveState,
+      getUrlSlug: function(){
+        return data.url_slug
+      },
+      clear: clear
     }
 
 
@@ -4559,7 +4564,7 @@ angular.module('services.pinboardService', [
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
-  .factory("ProfileAboutService", function($q, $timeout, Update, Page, Users, ProfileAbout){
+  .factory("ProfileAboutService", function($q, $timeout, Update, Users, ProfileAbout){
 
     var loading = true
     var data = {}
@@ -4578,7 +4583,7 @@ angular.module('services.profileAboutService', [
         function(resp){
           console.log("ProfileAbout got a response", resp)
           _.each(data, function(v, k){delete data[k]})
-          angular.extend(data, resp)
+          angular.extend(data, resp)  // this sets the url_slug too
           loading = false
         },
 
@@ -4588,6 +4593,12 @@ angular.module('services.profileAboutService', [
         }
       ).$promise
     }
+
+    function clear(){
+      // from http://stackoverflow.com/questions/684575/how-to-quickly-clear-a-javascript-object
+      for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
+    }
+
 
     function upload(){
       console.log("calling ProfileAboutService.upload() with ", data.url_slug)
@@ -4609,7 +4620,11 @@ angular.module('services.profileAboutService', [
     return {
       get: get,
       upload: upload,
-      data: data
+      data: data,
+      clear: clear,
+      getUrlSlug: function(){
+        return data.url_slug
+      }
     }
 
   })
@@ -4619,7 +4634,6 @@ angular.module('services.profileService', [
   .factory("ProfileService", function($q,
                                       $timeout,
                                       Update,
-                                      Page,
                                       UserMessage,
                                       TiMixpanel,
                                       Product,
@@ -4632,22 +4646,21 @@ angular.module('services.profileService', [
     var data = {}
 
 
-    function get(url_slug, getFromServer){
+    function get(url_slug, getFromServer, isEmbedded){
       console.log("calling ProfileService.get() with", url_slug)
 
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }
 
-      PinboardService.get(url_slug)
 
       loading = true
       return SelfCancellingProfileResource.createResource().get(
-        {id: url_slug, embedded: Page.isEmbedded()},
+        {id: url_slug, embedded:isEmbedded},
         function(resp){
           console.log("ProfileService got a response", resp)
           _.each(data, function(v, k){delete data[k]})
-          angular.extend(data, resp)
+          angular.extend(data, resp) // this sets the url_slug too
           loading = false
 
 
@@ -4728,9 +4741,11 @@ angular.module('services.profileService', [
       return _.findWhere(data.products, {tiid: tiid})
     }
 
-    function getGenreCard(idObj){
-
+    function clear(){
+      // from http://stackoverflow.com/questions/684575/how-to-quickly-clear-a-javascript-object
+      for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
     }
+
 
     function getAccountProduct(indexName){
       console.log("calling getAccountProducts")
@@ -4784,7 +4799,13 @@ angular.module('services.profileService', [
       productByTiid: productByTiid,
       removeProduct: removeProduct,
       getAccountProduct: getAccountProduct,
-      getFromPinId: getFromPinId
+      getFromPinId: getFromPinId,
+      clear: clear,
+      getUrlSlug: function(){
+        if (data && data.about) {
+          return data.about.url_slug
+        }
+      }
     }
   })
 

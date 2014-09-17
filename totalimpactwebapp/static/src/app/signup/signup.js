@@ -23,9 +23,6 @@ angular.module( 'signup', [
 
   .controller('signupCtrl', function($scope, Page){
 
-    Page.setUservoiceTabLoc("bottom")
-    Page.showHeader(false)
-    Page.showFooter(false)
 
   })
 

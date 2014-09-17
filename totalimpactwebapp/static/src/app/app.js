@@ -177,8 +177,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.showHeader(true)
-    Page.showFooter(true)
     Page.setProfileUrl(false)
     Breadcrumbs.clear()
     Loading.clear()

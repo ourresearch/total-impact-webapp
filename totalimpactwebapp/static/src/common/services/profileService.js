@@ -4,7 +4,6 @@ angular.module('services.profileService', [
   .factory("ProfileService", function($q,
                                       $timeout,
                                       Update,
-                                      Page,
                                       UserMessage,
                                       TiMixpanel,
                                       Product,
@@ -17,22 +16,21 @@ angular.module('services.profileService', [
     var data = {}
 
 
-    function get(url_slug, getFromServer){
+    function get(url_slug, getFromServer, isEmbedded){
       console.log("calling ProfileService.get() with", url_slug)
 
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }
 
-      PinboardService.get(url_slug)
 
       loading = true
       return SelfCancellingProfileResource.createResource().get(
-        {id: url_slug, embedded: Page.isEmbedded()},
+        {id: url_slug, embedded:isEmbedded},
         function(resp){
           console.log("ProfileService got a response", resp)
           _.each(data, function(v, k){delete data[k]})
-          angular.extend(data, resp)
+          angular.extend(data, resp) // this sets the url_slug too
           loading = false
 
 
@@ -113,9 +111,11 @@ angular.module('services.profileService', [
       return _.findWhere(data.products, {tiid: tiid})
     }
 
-    function getGenreCard(idObj){
-
+    function clear(){
+      // from http://stackoverflow.com/questions/684575/how-to-quickly-clear-a-javascript-object
+      for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
     }
+
 
     function getAccountProduct(indexName){
       console.log("calling getAccountProducts")
@@ -169,7 +169,13 @@ angular.module('services.profileService', [
       productByTiid: productByTiid,
       removeProduct: removeProduct,
       getAccountProduct: getAccountProduct,
-      getFromPinId: getFromPinId
+      getFromPinId: getFromPinId,
+      clear: clear,
+      getUrlSlug: function(){
+        if (data && data.about) {
+          return data.about.url_slug
+        }
+      }
     }
   })
 

@@ -9,6 +9,7 @@ angular.module('security.service', [
   .factory('security', function($http,
                                 $q,
                                 $location,
+                                $location,
                                 $modal,
                                 TiMixpanel,
                                 UserMessage) {
@@ -61,8 +62,8 @@ angular.module('security.service', [
       login: function(email, password) {
         return $http.post('/profile/current/login', {email: email, password: password})
           .success(function(data, status) {
-            console.log("user just logged in: ", currentUser)
             currentUser = data.user;
+            console.log("user just logged in: ", currentUser)
             TiMixpanel.identify(currentUser.id)
             TiMixpanel.registerFromUserObject(currentUser)
           })
@@ -160,10 +161,12 @@ angular.module('security.service', [
 
       logout: function() {
         console.log("logging out user.", currentUser)
+
         currentUser = null;
         $http.get('/profile/current/logout').success(function(data, status, headers, config) {
           UserMessage.set("logout.success")
           TiMixpanel.clearCookie()
+
         });
       },
 

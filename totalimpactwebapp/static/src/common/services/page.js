@@ -2,53 +2,87 @@ angular.module("services.page", [
   'signup'
 ])
 angular.module("services.page")
-.factory("Page", function($location, $rootScope){
-   var title = '';
-   var notificationsLoc = "header"
-   var uservoiceTabLoc = "right"
-   var lastScrollPosition = {}
-   var isEmbedded =  _($location.path()).startsWith("/embed/")
-   var headerFullName
-   var profileUrl
-   var pageName
-   var isInfopage
+  .factory("Page", function($location,
+                            $rootScope,
+                            PinboardService,
+                            ProfileAboutService,
+                            ProfileService){
+    var title = '';
+    var notificationsLoc = "header"
+    var lastScrollPosition = {}
+    var isEmbedded =  _($location.path()).startsWith("/embed/")
+    var profileUrl
+    var pageName
+    var isInfopage
+    var profileSlug
+
+    var nonProfilePages = [
+      "/",
+      "/reset-password",
+      "/h-index",
+      "/open-science",
+      "/faq",
+      "/signup",
+      "/about",
+      "/advisors",
+      "/settings", // sort of a profile page
+      "/spread-the-word"
+    ]
 
 
     $rootScope.$on('$routeChangeSuccess', function () {
       isInfopage = false
       pageName = null
+      profileSlug = findProfileSlug()
+      if (profileSlug){
+        if (ProfileAboutService.getUrlSlug() != profileSlug){
+          ProfileAboutService.get(profileSlug, true)
+        }
+
+        if (ProfileService.getUrlSlug() != profileSlug){
+          ProfileService.get(profileSlug, true)
+        }
+
+        if (PinboardService.getUrlSlug() != profileSlug){
+          PinboardService.get(profileSlug, true)
+        }
+      }
+      else {
+        ProfileAboutService.clear()
+        ProfileService.clear()
+        PinboardService.clear()
+      }
     });
 
-   var showHeaderNow = true
-   var showFooterNow = true
 
-   var frameTemplatePaths = {
-     header: "",
-     footer: ""
-   }
+    function findProfileSlug(){
+      var firstPartOfPath = "/" + $location.path().split("/")[1]
 
-   var addTplHtml = function(pathRoot){
-     if (pathRoot){
-       return pathRoot + ".tpl.html"
-     }
-     else {
-       return ""
-     }
-   }
+      if (_.contains(nonProfilePages, firstPartOfPath)){
+        return undefined
+      }
+      else {
+        return firstPartOfPath.substr(1) // no slash
+      }
+    }
+
+
+
+
 
     var getPageType = function(){
       var myPageType = "profile"
       var path = $location.path()
 
       var settingsPages = [
-          "/settings",
-          "/reset-password"
+        "/settings",
+        "/reset-password"
       ]
 
       var infopages = [
-          "/faq",
-          "/about"
-        ]
+        "/faq",
+        "/about"
+      ]
 
       if (path === "/"){
         myPageType = "landing"
@@ -76,134 +110,101 @@ angular.module("services.page")
     }
 
 
-   return {
-     showHeader: function(showHeaderArg){
-       // read current value
-       if (typeof showHeaderArg === "undefined"){
-         return showHeaderNow
-       }
-
-       // set value
-       else {
-         showHeaderNow = !!showHeaderArg
-         return showHeaderNow
-       }
-     },
-     showFooter: function(showFooterArg){
-
-       // read current value
-       if (typeof showFooterArg === "undefined"){
-         return showFooterNow
-       }
-
-       // set value
-       else {
-         showFooterNow = !!showFooterArg
-         return showFooterNow
-       }
-     },
-
-     setHeaderFullName: function(name){
-       headerFullName = name
-     },
+    return {
 
 
-     getHeaderFullName: function(name){
-       return headerFullName
-     },
+      setProfileUrl: function(url){
+        profileUrl = url
+      },
+      getProfileUrl: function(){
+        return profileUrl
+      },
 
-     setProfileUrl: function(url){
-       profileUrl = url
-     },
-     getProfileUrl: function(){
-       return profileUrl
-     },
-
-     getUrl: function(){
-       return window.location.href
-     },
+      getUrl: function(){
+        return window.location.href
+      },
 
 
-     'setNotificationsLoc': function(loc){
-         notificationsLoc = loc;
-     },
-     showNotificationsIn: function(loc){
-       return notificationsLoc == loc
-     },
-     setVersion: function(versionName){
-       version = versionName;
-     },
-     getBodyClasses: function(){
+      'setNotificationsLoc': function(loc){
+        notificationsLoc = loc;
+      },
+      showNotificationsIn: function(loc){
+        return notificationsLoc == loc
+      },
+      setVersion: function(versionName){
+        version = versionName;
+      },
+      getBodyClasses: function(){
         var conditionalClasses = {
           'embedded': isEmbedded
         }
 
-       var classes = [
-         "page-name-" + pageName
-       ]
+        var classes = [
+          "page-name-" + pageName
+        ]
 
-       _.each(conditionalClasses, function(v, k){
-         if (v) classes.push(k)
-       })
+        _.each(conditionalClasses, function(v, k){
+          if (v) classes.push(k)
+        })
 
-       return classes.join(" ")
+        return classes.join(" ")
 
 
 
-     },
-     isInfopage: function(){
-       return !!isInfopage
-     },
-     setInfopage: function(val){
-       isInfopage = !!val
-     },
+      },
+      isInfopage: function(){
+        return !!isInfopage
+      },
+      setInfopage: function(val){
+        isInfopage = !!val
+      },
 
-     'isEmbedded': function(){
-       return isEmbedded
-     } ,
-     setUservoiceTabLoc: function(loc) {uservoiceTabLoc = loc},
+      'isEmbedded': function(){
+        return isEmbedded
+      } ,
 
-     getTitle: function() { return title; },
-     setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
+      getTitle: function() { return title; },
+      setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
 
-     isLandingPage: function(){
-       return ($location.path() === "/")
-     },
 
-     isProfile:function(){
-       var path = $location.path()
-       return (path != "/") && (path != "/faq") && (path != "/about")
-     },
+      isProfile:function(){
+        var path = $location.path()
+        return (path != "/") && (path != "/faq") && (path != "/about")
+      },
 
-     setName: function(name){
-       pageName = name
-     },
+      setName: function(name){
+        pageName = name
+      },
 
-     isNamed: function(name){
-       return name === pageName
-     },
+      getUrlSlug: function(){
+        return profileSlug
+      },
 
-     setLastScrollPosition: function(pos, path){
-       if (pos) {
-        lastScrollPosition[path] = pos
-       }
-     },
-     getLastScrollPosition: function(path){
-       return lastScrollPosition[path]
-     },
-     sendPageloadToSegmentio: function(){
+      isNamed: function(name){
+        return name === pageName
+      },
 
-       analytics.page(
-         getPageType(),
-         $location.path(),
-         {
-           "viewport width": $(window).width(),
-           "page_type": getPageType()
-         }
-       )
-     }
-   };
-})
+      setLastScrollPosition: function(pos, path){
+        if (pos) {
+          lastScrollPosition[path] = pos
+        }
+      },
+      getLastScrollPosition: function(path){
+        return lastScrollPosition[path]
+      },
+      sendPageloadToSegmentio: function(){
+
+        analytics.page(
+          getPageType(),
+          $location.path(),
+          {
+            "viewport width": $(window).width(),
+            "page_type": getPageType()
+          }
+        )
+      }
+    };
+  })
 
 
 

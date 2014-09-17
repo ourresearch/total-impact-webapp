@@ -96,7 +96,6 @@ angular.module( 'infopages', [
 
     var signupFormShowing = false
     $scope.landingPageType = "main"
-    Page.setUservoiceTabLoc("hidden")
     Page.setName("landing")
     Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
@@ -105,16 +104,12 @@ angular.module( 'infopages', [
 
   .controller("hIndexLandingPageCtrl", function($scope, Page){
     $scope.landingPageType = "h-index"
-    Page.showHeader(false)
-    Page.setUservoiceTabLoc("hidden")
     Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
 
   .controller("openScienceLandingPageCtrl", function($scope, Page){
     $scope.landingPageType = "open-science"
-    Page.showHeader(false)
-    Page.setUservoiceTabLoc("hidden")
     Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })

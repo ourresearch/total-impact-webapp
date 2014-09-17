@@ -1,7 +1,7 @@
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
-  .factory("ProfileAboutService", function($q, $timeout, Update, Page, Users, ProfileAbout){
+  .factory("ProfileAboutService", function($q, $timeout, Update, Users, ProfileAbout){
 
     var loading = true
     var data = {}
@@ -20,7 +20,7 @@ angular.module('services.profileAboutService', [
         function(resp){
           console.log("ProfileAbout got a response", resp)
           _.each(data, function(v, k){delete data[k]})
-          angular.extend(data, resp)
+          angular.extend(data, resp)  // this sets the url_slug too
           loading = false
         },
 
@@ -30,6 +30,12 @@ angular.module('services.profileAboutService', [
         }
       ).$promise
     }
+
+    function clear(){
+      // from http://stackoverflow.com/questions/684575/how-to-quickly-clear-a-javascript-object
+      for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
+    }
+
 
     function upload(){
       console.log("calling ProfileAboutService.upload() with ", data.url_slug)
@@ -51,7 +57,11 @@ angular.module('services.profileAboutService', [
     return {
       get: get,
       upload: upload,
-      data: data
+      data: data,
+      clear: clear,
+      getUrlSlug: function(){
+        return data.url_slug
+      }
     }
 
   })
