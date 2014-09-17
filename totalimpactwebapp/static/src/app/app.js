@@ -109,10 +109,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-  $scope.showUnderConstruction = (_.contains(
-    ["impactstory.org", "www.impactstory.org"],
-    $location.host()
-  ))
+//  $scope.showUnderConstruction = (_.contains(
+//    ["impactstory.org", "www.impactstory.org"],
+//    $location.host()
+//  ))
 
   $http.get("/configs/genres")
     .success(function(resp){

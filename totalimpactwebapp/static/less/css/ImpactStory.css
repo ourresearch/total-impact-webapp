@@ -7895,120 +7895,120 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 .product div.product-margin span.delete-product-controls .tooltip-arrow {
   border-top-color: red;
 }
-.product .biblio {
+.product-container .biblio {
   float: left;
   width: 420px;
 }
-.product .biblio h5 {
+.product-container .biblio h5 {
   margin-top: 0;
 }
-.product .biblio h5 a.title-text {
+.product-container .biblio h5 a.title-text {
   font-size: 16px;
   color: #333;
   margin: 0 0 -3px 0;
   padding: 0 5px 0 0;
 }
-.product .biblio h5 a.title-text:hover {
+.product-container .biblio h5 a.title-text:hover {
   color: #000;
   text-decoration: underline;
 }
-.product .biblio h5 a.has-fulltext {
+.product-container .biblio h5 a.has-fulltext {
   color: #777;
 }
-.product .biblio h5 a.has-fulltext:hover {
+.product-container .biblio h5 a.has-fulltext:hover {
   color: #ff4000;
   text-decoration: none;
 }
-.product .biblio div.optional-biblio {
+.product-container .biblio div.optional-biblio {
   clear: both;
   font-size: 13px;
   color: #888;
   line-height: 1.3;
 }
-.product .biblio div.optional-biblio span.repository {
+.product-container .biblio div.optional-biblio span.repository {
   font-style: italic;
 }
-.product .biblio div.optional-biblio span.journal {
+.product-container .biblio div.optional-biblio span.journal {
   font-style: italic;
 }
-.product .biblio div.mendeley-reader-breakdowns {
+.product-container .biblio div.mendeley-reader-breakdowns {
   display: none;
   font-size: 15px;
   line-height: 1.9;
 }
-.product .biblio div.mendeley-reader-breakdowns .metric-name {
+.product-container .biblio div.mendeley-reader-breakdowns .metric-name {
   padding-right: 15px;
   font-weight: 300;
   display: inline-block;
   width: 150px;
   text-align: right;
 }
-.product .biblio div.mendeley-reader-breakdowns .reader-type-name-and-value {
+.product-container .biblio div.mendeley-reader-breakdowns .reader-type-name-and-value {
   margin-right: 10px;
 }
-.product .biblio div.mendeley-reader-breakdowns .reader-type-name-and-value .reader-type-name {
+.product-container .biblio div.mendeley-reader-breakdowns .reader-type-name-and-value .reader-type-name {
   color: #555;
 }
-.product .awards {
+.product-container .awards {
   width: 330px;
   margin-left: 20px;
   float: left;
 }
-.product .awards ul.awards-list {
+.product-container .awards ul.awards-list {
   float: left;
 }
-.product .awards ul.awards-list .award {
+.product-container .awards ul.awards-list .award {
   margin: 0 4px 4px 0;
   line-height: 1.7;
   float: left;
 }
-.product div.popover {
+.product-container div.popover {
   font-family: helvetica, arial, sans-serif;
   min-width: 200px;
 }
-.product div.popover h3 {
+.product-container div.popover h3 {
   font-size: 18px;
   font-weight: bold;
 }
-.product div.popover h3.new-metrics-heading {
+.product-container div.popover h3.new-metrics-heading {
   font-weight: bold;
   margin-bottom: 10px;
   font-size: 14px;
   border-bottom: 1px solid #ddd;
 }
-.product div.popover h3:first-letter {
+.product-container div.popover h3:first-letter {
   text-transform: uppercase;
 }
-.product div.popover .popover-content {
+.product-container div.popover .popover-content {
   font-size: 14px;
 }
-.product div.popover ul.new-metrics {
+.product-container div.popover ul.new-metrics {
   margin-bottom: 10px;
   margin-top: 10px;
   border-top: 1px solid #ddd;
 }
-.product div.popover ul.new-metrics li {
+.product-container div.popover ul.new-metrics li {
   font-size: 12px;
   margin-top: 10px;
   clear: both;
 }
-.product div.popover ul.new-metrics li:before,
-.product div.popover ul.new-metrics li:after {
+.product-container div.popover ul.new-metrics li:before,
+.product-container div.popover ul.new-metrics li:after {
   content: " ";
   display: table;
 }
-.product div.popover ul.new-metrics li:after {
+.product-container div.popover ul.new-metrics li:after {
   clear: both;
 }
-.product div.popover ul.new-metrics li:before,
-.product div.popover ul.new-metrics li:after {
+.product-container div.popover ul.new-metrics li:before,
+.product-container div.popover ul.new-metrics li:after {
   content: " ";
   display: table;
 }
-.product div.popover ul.new-metrics li:after {
+.product-container div.popover ul.new-metrics li:after {
   clear: both;
 }
-.product div.popover ul.new-metrics li img.icon {
+.product-container div.popover ul.new-metrics li img.icon {
   width: 16px;
   margin-right: 10px;
   -webkit-border-top-right-radius: 3px;
@@ -8028,12 +8028,12 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   background-clip: padding-box;
   float: left;
 }
-.product div.popover ul.new-metrics li span.text {
+.product-container div.popover ul.new-metrics li span.text {
   float: left;
   width: 80%;
   line-height: 1.1;
 }
-.product div.popover ul.new-metrics li span.text span.count {
+.product-container div.popover ul.new-metrics li span.text span.count {
   font-weight: bold;
 }
 .ti-badge {
