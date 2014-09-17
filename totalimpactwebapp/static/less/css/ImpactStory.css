@@ -7548,6 +7548,9 @@ div.modal-body.embed div.code h3 {
 #pinboard div.pinboard-col.col-one h3.pinboard-col-heading {
   font-size: 32px;
 }
+#pinboard div.pinboard-col.col-one .product-container .awards ul.awards-list {
+  width: 500px;
+}
 #pinboard div.pinboard-col.col-one div.instr {
   margin-top: -20px;
 }
