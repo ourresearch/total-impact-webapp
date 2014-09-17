@@ -49,7 +49,7 @@ class Biblio(object):
     def display_year(self):
         try:
             return str(self.year)
-        except AttributeError:
+        except (AttributeError, UnicodeEncodeError):
             return None
 
 

@@ -458,6 +458,15 @@ def pinboard(profile_id):
 
     elif request.method == "POST":
         abort_if_user_not_logged_in(profile)
+
+        # debugging
+        contents = request.json["contents"]
+        product_pins = contents["one"]
+        for (product_lable, tiid) in product_pins:
+            if not current_user_owns_tiid(tiid):
+                logger.error(u"user {url_slug} doesn't own tiid {tiid}".format(
+                    url_slug=profile.url_slug, tiid=tiid))
+                return abort_json(400, "user doesn't own these tiids")
         resp = write_to_pinboard(profile.id, request.json["contents"])
 
     return json_resp_from_thing(resp)

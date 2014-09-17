@@ -31,16 +31,21 @@ angular.module('services.pinboardService', [
     }
 
     function saveState(saveOnlyIfNotEmpty) {
+      var current_user_url_slug = security.getCurrentUserSlug()
 
-      console.log("saving pinboard state")
+      console.log("saving pinboard state, current_user_url_slug", current_user_url_slug)
+      if (!current_user_url_slug){
+        return false
+      }
       if (saveOnlyIfNotEmpty && isEmpty()){
         console.log("aborting this pinboard save because", saveOnlyIfNotEmpty, isEmpty())
         return false
       }
+
       console.log("making the ProfilePinboard.save() call")
 
       ProfilePinboard.save(
-        {id: security.getCurrentUserSlug()},
+        {id: current_user_url_slug},
         {contents: cols},
         function(resp){
           console.log("success pushing cols", resp, cols)
