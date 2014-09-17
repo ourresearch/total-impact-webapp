@@ -706,7 +706,7 @@ def save_profile_last_viewed_profile_timestamp(profile_id, timestamp=None):
     return True
 
 def create_profile_from_slug(url_slug, profile_request_dict, db):
-    logger.debug(u"create_may be functional_from_slug new may be functional {url_slug} with profile_dict {profile_request_dict}".format(
+    logger.debug(u"in create_profile_from_slug {url_slug} with profile_dict {profile_request_dict}".format(
         url_slug=url_slug, profile_request_dict=profile_request_dict))
 
     # have to explicitly unicodify ascii-looking strings even when encoding
