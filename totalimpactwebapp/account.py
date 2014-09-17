@@ -53,11 +53,14 @@ class Account(object):
 
     @cached_property
     def username(self):
-        username = self.product.biblio.account
-        if "/" in self.product.biblio.account:
-            username = username.split("/")[-1]
+        try:
+            username = self.product.biblio.account
+            if "/" in self.product.biblio.account:
+                username = username.split("/")[-1]
+        except TypeError:
+            username = None
         return username
-        
+
     @cached_property
     def account_url(self):
         return configs.linked_accounts[self.index_name].format(
