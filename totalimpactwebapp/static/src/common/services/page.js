@@ -41,7 +41,9 @@ angular.module("services.page")
         }
 
         if (ProfileService.getUrlSlug() != profileSlug){
+          console.log("in Page, running ProfileService.clear()")
           ProfileService.clear()
+          console.log("clear() done. here's our ProfileService.data", ProfileService.data)
           ProfileService.get(profileSlug, true)
         }
 
