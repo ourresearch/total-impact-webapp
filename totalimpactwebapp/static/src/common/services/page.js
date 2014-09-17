@@ -43,12 +43,13 @@ angular.module("services.page")
         if (ProfileService.getUrlSlug() != profileSlug){
           console.log("in Page, running ProfileService.clear()")
           ProfileService.clear()
-          console.log("clear() done. here's our ProfileService.data", ProfileService.data)
           ProfileService.get(profileSlug, true)
         }
 
         if (PinboardService.getUrlSlug() != profileSlug){
+          console.log("looks like the pinboard slug is different from profile slug:", PinboardService.getUrlSlug(), profileSlug)
           PinboardService.clear()
+          console.log("supposedly, the pinboard is clear now:", PinboardService.cols, PinboardService.data)
           PinboardService.get(profileSlug, true)
         }
       }

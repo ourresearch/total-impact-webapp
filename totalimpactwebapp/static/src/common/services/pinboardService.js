@@ -51,7 +51,7 @@ angular.module('services.pinboardService', [
     }
 
     function get(id){
-      console.log("ProfilePinboard.get()", id)
+      console.log("calling ProfilePinboard.get(" + id + ")", cols, data)
       data.url_slug = id
       ProfilePinboard.get(
         {id: id},
@@ -69,8 +69,9 @@ angular.module('services.pinboardService', [
 
     function clear(){
       console.log("clearing this pinboard data: ", cols, data)
-      cols.one.length = 0
-      cols.two.length = 0
+      cols.one = []
+      cols.two = []
+
       for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
       console.log("cleaned out the pinboard data: ", cols, data)
     }

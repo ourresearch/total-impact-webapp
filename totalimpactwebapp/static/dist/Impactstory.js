@@ -4274,12 +4274,13 @@ angular.module("services.page")
         if (ProfileService.getUrlSlug() != profileSlug){
           console.log("in Page, running ProfileService.clear()")
           ProfileService.clear()
-          console.log("clear() done. here's our ProfileService.data", ProfileService.data)
           ProfileService.get(profileSlug, true)
         }
 
         if (PinboardService.getUrlSlug() != profileSlug){
+          console.log("looks like the pinboard slug is different from profile slug:", PinboardService.getUrlSlug(), profileSlug)
           PinboardService.clear()
+          console.log("supposedly, the pinboard is clear now:", PinboardService.cols, PinboardService.data)
           PinboardService.get(profileSlug, true)
         }
       }
@@ -4507,7 +4508,7 @@ angular.module('services.pinboardService', [
     }
 
     function get(id){
-      console.log("ProfilePinboard.get()", id)
+      console.log("calling ProfilePinboard.get(" + id + ")", cols, data)
       data.url_slug = id
       ProfilePinboard.get(
         {id: id},
@@ -4525,13 +4526,14 @@ angular.module('services.pinboardService', [
 
     function clear(){
       console.log("clearing this pinboard data: ", cols, data)
-      cols.one.length = 0
-      cols.two.length = 0
+      cols.one = []
+      cols.two = []
+
       for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
       console.log("cleaned out the pinboard data: ", cols, data)
     }
 
-    function isEmpty(){ 
+    function isEmpty(){
       return !cols.one.length && !cols.two.length
     }
 
