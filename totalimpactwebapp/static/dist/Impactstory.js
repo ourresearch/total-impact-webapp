@@ -587,10 +587,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-  $scope.showUnderConstruction = (_.contains(
-    ["impactstory.org", "www.impactstory.org"],
-    $location.host()
-  ))
+//  $scope.showUnderConstruction = (_.contains(
+//    ["impactstory.org", "www.impactstory.org"],
+//    $location.host()
+//  ))
 
   $http.get("/configs/genres")
     .success(function(resp){
@@ -816,6 +816,8 @@ angular.module("googleScholar", [
 .factory("GoogleScholar", function($modal,
                                    $q,
                                    UsersProducts,
+                                   ProfileService,
+                                   ProfileAboutService,
                                    Loading,
                                    TiMixpanel,
                                    security){
@@ -865,12 +867,17 @@ angular.module("googleScholar", [
         "Number of products": bibtexArticlesCount()
       })
 
+      var url_slug = security.getCurrentUser("url_slug")
+
       return UsersProducts.patch(
-        {id: security.getCurrentUser("url_slug")},
+        {id: url_slug},
         {bibtex: bibtex},
         function(resp){
           console.log("successfully uploaded bibtex!", resp)
           Loading.finish("bibtex")
+          ProfileService.get(url_slug, true)
+          ProfileAboutService.get(url_slug, true)
+
 
         },
         function(resp){
