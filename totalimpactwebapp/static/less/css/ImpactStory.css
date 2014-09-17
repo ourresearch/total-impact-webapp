@@ -7531,7 +7531,7 @@ div.modal-body.embed div.code h3 {
 #pinboard div.pinboard-col {
   float: left;
 }
-#pinboard div.pinboard-col h3 {
+#pinboard div.pinboard-col h3.pinboard-col-heading {
   font-weight: 300;
   margin: 0 0 20px 0;
   color: #0053b0;
@@ -7545,7 +7545,7 @@ div.modal-body.embed div.code h3 {
 #pinboard div.pinboard-col.col-one {
   width: 65%;
 }
-#pinboard div.pinboard-col.col-one h3 {
+#pinboard div.pinboard-col.col-one h3.pinboard-col-heading {
   font-size: 32px;
 }
 #pinboard div.pinboard-col.col-one div.instr {
@@ -7557,7 +7557,7 @@ div.modal-body.embed div.code h3 {
   padding-top: 15px;
   margin-top: -10px;
 }
-#pinboard div.pinboard-col.col-two h3 {
+#pinboard div.pinboard-col.col-two h3.pinboard-col-heading {
   margin: 10px 0 10px 0;
   font-size: 22px;
 }
@@ -7621,7 +7621,7 @@ div.modal-body.embed div.code h3 {
   margin-right: 5px;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin .biblio {
-  margin-left: 20px;
+  margin-left: 2px;
   font-size: 12px;
   margin-bottom: 10px;
 }

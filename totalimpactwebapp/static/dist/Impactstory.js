@@ -6949,7 +6949,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "   <div id=\"pinboard\">\n" +
     "      <div class=\"pinboard-col col-one\">\n" +
-    "         <h3>Featured products</h3>\n" +
+    "         <h3 class=\"pinboard-col-heading\">Featured products</h3>\n" +
     "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "\n" +
     "         <!-- LOGGED IN version -->\n" +
@@ -6990,9 +6990,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </ul>\n" +
     "      </div>\n" +
     "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "      <div class=\"pinboard-col col-two\">\n" +
     "         <div class=\"col-header\">\n" +
-    "            <h3>Key profile metrics</h3>\n" +
+    "            <h3 class=\"pinboard-col-heading\">Key profile metrics</h3>\n" +
     "            <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "         </div>\n" +
     "\n" +
