@@ -11,12 +11,17 @@ logger = logging.getLogger('ti.pinboard')
 def write_to_pinboard(profile_id, contents):
     board = Pinboard.query.filter_by(profile_id=profile_id).first()
     if board:
+        logger.info(u"saving board for {profile_id}: previous contents: {contents}".format(
+            profile_id=profile_id, contents=board.contents))
+
         board.contents = contents
         board.timestamp = datetime.datetime.utcnow()
     else:
         board = Pinboard(
             profile_id=profile_id,
             contents=contents)
+    logger.info(u"saving board for {profile_id}: new contents: {contents}".format(
+        profile_id=profile_id, contents=contents))
     db.session.merge(board)
     commit(db)
     return contents
