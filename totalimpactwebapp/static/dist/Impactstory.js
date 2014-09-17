@@ -4276,7 +4276,7 @@ angular.module("services.page")
         }
       }
       else {
-        ProfileAboutService.clear() 
+        ProfileAboutService.clear()
         ProfileService.clear()
         PinboardService.clear()
       }
