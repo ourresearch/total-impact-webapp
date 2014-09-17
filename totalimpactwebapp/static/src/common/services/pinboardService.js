@@ -34,6 +34,7 @@ angular.module('services.pinboardService', [
 
       console.log("saving pinboard state")
       if (saveOnlyIfNotEmpty && isEmpty()){
+        console.log("aborting this pinboard save because", saveOnlyIfNotEmpty, isEmpty())
         return false
       }
       console.log("making the ProfilePinboard.save() call")

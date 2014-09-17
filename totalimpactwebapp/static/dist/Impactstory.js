@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-17
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -4281,7 +4281,7 @@ angular.module("services.page")
           console.log("looks like the pinboard slug is different from profile slug:", PinboardService.getUrlSlug(), profileSlug)
           PinboardService.clear()
           console.log("supposedly, the pinboard is clear now:", PinboardService.cols, PinboardService.data)
-          PinboardService.get(profileSlug, true)
+          PinboardService.get(profileSlug)
         }
       }
       else {
@@ -4491,6 +4491,7 @@ angular.module('services.pinboardService', [
 
       console.log("saving pinboard state")
       if (saveOnlyIfNotEmpty && isEmpty()){
+        console.log("aborting this pinboard save because", saveOnlyIfNotEmpty, isEmpty())
         return false
       }
       console.log("making the ProfilePinboard.save() call")
@@ -6957,7 +6958,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "   <div id=\"pinboard\">\n" +
     "      <div class=\"pinboard-col col-one\">\n" +
-    "         <h3 class=\"pinboard-col-heading\">Featured products</h3>\n" +
+    "         <h3 class=\"pinboard-col-heading\">Selected works</h3>\n" +
     "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "\n" +
     "         <!-- LOGGED IN version -->\n" +
