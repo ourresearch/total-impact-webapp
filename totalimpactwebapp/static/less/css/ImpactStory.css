@@ -7959,6 +7959,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 }
 .product .awards ul.awards-list .award {
   margin: 0 4px 4px 0;
+  line-height: 1.7;
   float: left;
 }
 .product div.popover {
@@ -8766,7 +8767,7 @@ div.settings div.settings-nav {
   top: 0;
   left: 50%;
   background: #fafafa;
-  z-index: 100;
+  z-index: 98;
   margin-left: -350px;
   bottom: 0;
   width: 200px;
