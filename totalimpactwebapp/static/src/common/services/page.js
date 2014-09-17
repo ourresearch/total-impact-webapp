@@ -36,14 +36,17 @@ angular.module("services.page")
       profileSlug = findProfileSlug()
       if (profileSlug){
         if (ProfileAboutService.getUrlSlug() != profileSlug){
+          ProfileAboutService.clear()
           ProfileAboutService.get(profileSlug, true)
         }
 
         if (ProfileService.getUrlSlug() != profileSlug){
+          ProfileService.clear()
           ProfileService.get(profileSlug, true)
         }
 
         if (PinboardService.getUrlSlug() != profileSlug){
+          PinboardService.clear()
           PinboardService.get(profileSlug, true)
         }
       }
