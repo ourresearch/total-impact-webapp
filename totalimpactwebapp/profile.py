@@ -259,7 +259,8 @@ class Profile(db.Model):
     def is_paid_subscriber(self):
         if self.stripe_id:
             stripe_customer = stripe.Customer.retrieve(self.stripe_id)
-            if ("cards" in stripe_customer) and ("data" in stripe_customer["cards"]):
+            if (("cards" in stripe_customer) and \
+                ("data" in stripe_customer["cards"]) and stripe_customer["cards"]):
                 return True
         return False
 
