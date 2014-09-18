@@ -488,6 +488,7 @@ def count_news_for_subscribers(url_slug=None, min_url_slug=None):
     total_number_of_products_with_news = defaultdict(int)
     start_time = datetime.datetime.utcnow()
     for profile in windowed_query(q, Profile.url_slug, 25):
+        number_considered += 1
 
         logger.info(u"count_news_for_subscribers: {url_slug}".format(
             url_slug=profile.url_slug))
@@ -500,8 +501,10 @@ def count_news_for_subscribers(url_slug=None, min_url_slug=None):
             total_number_of_products_with_news[number_of_products_with_news] += 1
             total_with_news += 1
 
-        logger.info(u"total_with_news:{total_with_news}\ntotal_number_of_products_with_news:{total_number_of_products_with_news}".format(
-            total_with_news=total_with_news, total_number_of_products_with_news=total_number_of_products_with_news))
+        logger.info(u"total_with_news:{total_with_news} {percent}\ntotal_number_of_products_with_news:{total_number_of_products_with_news}".format(
+            total_with_news=total_with_news, 
+            percent=100*total_with_news/number_considered,
+            total_number_of_products_with_news=total_number_of_products_with_news))
 
 
 def main(function, args):
