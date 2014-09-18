@@ -253,7 +253,7 @@ class Profile(db.Model):
 
     @cached_property
     def is_subscribed(self):
-        return bool(self.stripe_id)
+        return bool(self.stripe_id) or self.is_advisor
 
     @cached_property
     def is_trialing(self):
