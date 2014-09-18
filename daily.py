@@ -501,7 +501,8 @@ def count_news_for_subscribers(url_slug=None, min_url_slug=None):
             total_number_of_products_with_news[number_of_products_with_news] += 1
             total_with_news += 1
 
-        logger.info(u"total_with_news:{total_with_news} {percent}\ntotal_number_of_products_with_news:{total_number_of_products_with_news}".format(
+        logger.info(u"of {total} profiles, total_with_news:{total_with_news} ({percent}%)\ntotal_number_of_products_with_news:{total_number_of_products_with_news}".format(
+            total=number_considered,
             total_with_news=total_with_news, 
             percent=100*total_with_news/number_considered,
             total_number_of_products_with_news=total_number_of_products_with_news))
