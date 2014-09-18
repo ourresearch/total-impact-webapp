@@ -38,6 +38,7 @@ angular.module('services.pinboardService', [
         return false
       }
       if (saveOnlyIfNotEmpty && isEmpty()){
+        console.log("aborting this pinboard save because", saveOnlyIfNotEmpty, isEmpty())
         return false
       }
 

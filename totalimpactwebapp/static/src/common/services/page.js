@@ -50,7 +50,7 @@ angular.module("services.page")
           console.log("looks like the pinboard slug is different from profile slug:", PinboardService.getUrlSlug(), profileSlug)
           PinboardService.clear()
           console.log("supposedly, the pinboard is clear now:", PinboardService.cols, PinboardService.data)
-          PinboardService.get(profileSlug, true)
+          PinboardService.get(profileSlug)
         }
       }
       else {

@@ -6242,7 +6242,7 @@ div#user-message {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 99999;
 }
 div#user-message button.close {
   position: absolute;
@@ -6383,6 +6383,7 @@ div.no-page p span.slug {
   top: 20px;
   right: 0;
   position: fixed;
+  z-index: 100;
 }
 #header a {
   color: #bbb;
