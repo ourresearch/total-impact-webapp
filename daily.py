@@ -489,7 +489,7 @@ def count_news_for_subscribers(url_slug=None, min_url_slug=None):
     start_time = datetime.datetime.utcnow()
     for profile in windowed_query(q, Profile.url_slug, 25):
         if profile.is_paid_subscriber:
-                
+
             number_considered += 1
 
             logger.info(u"count_news_for_subscribers: {url_slug}".format(
@@ -508,6 +508,10 @@ def count_news_for_subscribers(url_slug=None, min_url_slug=None):
                 total_with_news=total_with_news, 
                 percent=100*total_with_news/number_considered,
                 total_number_of_products_with_news=total_number_of_products_with_news))
+        else:
+            logger.info(u"count_news_for_subscribers: not counting {url_slug} because not a subscriber".format(
+                url_slug=profile.url_slug))
+
 
 
 def main(function, args):
