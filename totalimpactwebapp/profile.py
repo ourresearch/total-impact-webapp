@@ -260,7 +260,7 @@ class Profile(db.Model):
         if self.stripe_id:
             stripe_customer = stripe.Customer.retrieve(self.stripe_id)
             if (("cards" in stripe_customer) and \
-                ("data" in stripe_customer["cards"]) and stripe_customer["cards"]):
+                ("data" in stripe_customer["cards"]) and stripe_customer["cards"]["data"]):
                 return True
         return False
 
