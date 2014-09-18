@@ -841,7 +841,8 @@ providers = [
                 "provider_url": "http://twitter.com",
                 "audience": "public",
                 "engagement_type": "discussed",
-                "milestones": fives_then_orders_of_magnitude()
+                "milestones": fives_then_orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"
             }              
         },
         "name": "altmetric_com",
