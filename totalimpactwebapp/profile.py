@@ -256,6 +256,14 @@ class Profile(db.Model):
         return bool(self.stripe_id) or self.is_advisor
 
     @cached_property
+    def is_paid_subscriber(self):
+        if self.stripe_id:
+            stripe_customer = stripe.Customer.retrieve(self.stripe_id)
+            if ("cards" in stripe_customer) and ("data" in stripe_customer["cards"]):
+                return True
+        return False
+
+    @cached_property
     def is_trialing(self):
         in_trial_period = self.trial_age_timedelta < free_trial_timedelta
         return in_trial_period and not self.is_subscribed
@@ -535,6 +543,7 @@ class Profile(db.Model):
             "is_advisor",
             "linked_accounts",
             "is_subscribed",
+            "is_paid_subscriber",            
             "is_trialing",
             "is_live"
         ]

@@ -488,24 +488,26 @@ def count_news_for_subscribers(url_slug=None, min_url_slug=None):
     total_number_of_products_with_news = defaultdict(int)
     start_time = datetime.datetime.utcnow()
     for profile in windowed_query(q, Profile.url_slug, 25):
-        number_considered += 1
+        if profile.is_paid_subscriber:
+                
+            number_considered += 1
 
-        logger.info(u"count_news_for_subscribers: {url_slug}".format(
-            url_slug=profile.url_slug))
-        number_of_products_with_news = 0
-        for product in profile.products_not_removed:
-            metric = product.get_metric_by_name("altmetric_com", "news")
-            if metric:
-                number_of_products_with_news += 1
-        if number_of_products_with_news:
-            total_number_of_products_with_news[number_of_products_with_news] += 1
-            total_with_news += 1
+            logger.info(u"count_news_for_subscribers: {url_slug}".format(
+                url_slug=profile.url_slug))
+            number_of_products_with_news = 0
+            for product in profile.products_not_removed:
+                metric = product.get_metric_by_name("altmetric_com", "news")
+                if metric:
+                    number_of_products_with_news += 1
+            if number_of_products_with_news:
+                total_number_of_products_with_news[number_of_products_with_news] += 1
+                total_with_news += 1
 
-        logger.info(u"of {total} profiles, total_with_news:{total_with_news} ({percent}%)\ntotal_number_of_products_with_news:{total_number_of_products_with_news}".format(
-            total=number_considered,
-            total_with_news=total_with_news, 
-            percent=100*total_with_news/number_considered,
-            total_number_of_products_with_news=total_number_of_products_with_news))
+            logger.info(u"of {total} profiles, total_with_news:{total_with_news} ({percent}%)\ntotal_number_of_products_with_news:{total_number_of_products_with_news}".format(
+                total=number_considered,
+                total_with_news=total_with_news, 
+                percent=100*total_with_news/number_considered,
+                total_number_of_products_with_news=total_number_of_products_with_news))
 
 
 def main(function, args):
