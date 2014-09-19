@@ -189,6 +189,10 @@ angular.module('settings', [
       return security.getCurrentUser("is_subscribed")
     }
 
+    $scope.isLive = function(){
+      return security.getCurrentUser("is_live")
+    }
+
 
     $scope.daysLeftInTrial = function(){
       return security.getCurrentUser("days_left_in_trial")

@@ -2596,6 +2596,10 @@ angular.module('settings', [
       return security.getCurrentUser("is_subscribed")
     }
 
+    $scope.isLive = function(){
+      return security.getCurrentUser("is_live")
+    }
+
 
     $scope.daysLeftInTrial = function(){
       return security.getCurrentUser("days_left_in_trial")
@@ -7728,11 +7732,23 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "\n" +
     "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
     "\n" +
-    "   <div class=\"cancelled\" ng-if=\"planStatus('cancelled')\">\n" +
-    "      <h1>Your account is cancelled!</h1>\n" +
+    "   <div class=\"current-plan-status cancelled\" ng-if=\"!isLive()\">\n" +
+    "      <span class=\"setup\">Your account is cancelled!</span>\n" +
+    "\n" +
+    "      <div class=\"pitch\">\n" +
+    "         <p>But you can get it back! And you should, because your research is\n" +
+    "            making impacts all the time.\n" +
+    "         And with Impactstory, you can see and share them all&mdash;\n" +
+    "            everything from citations to downloads to tweets\n" +
+    "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
+    "         <p>By subscribing today, you'll restore your impact profile and\n" +
+    "            email notifications&mdash;and   you'll be helping to keep\n" +
+    "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
+    "         cost of a coffee once a month.</p>\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"current-plan-status paid\" ng-if=\"isSubscribed()\">\n" +
+    "   <div class=\"current-plan-status paid\" ng-if=\"isSubscribed() && isLive()\">\n" +
     "      <span class=\"setup\">\n" +
     "         Your Impactstory subscription has been active\n" +
     "         since {{ paidSince() }}.\n" +
@@ -7740,7 +7756,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing()\">\n" +
+    "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing() && isLive()\">\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
@@ -7765,7 +7781,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
-    "         ng-if=\"isTrialing()\"\n" +
+    "         ng-if=\"isTrialing() || !isLive()\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "      <div class=\"form-title trial\">\n" +
