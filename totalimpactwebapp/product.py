@@ -167,6 +167,11 @@ class Product(db.Model):
             return configs.genre_icons["unknown"]
 
 
+    #@cached_property
+    #def genre_url_representation(self):
+    #    return self.display_genre_plural
+
+
     @cached_property
     def host(self):
         host = None

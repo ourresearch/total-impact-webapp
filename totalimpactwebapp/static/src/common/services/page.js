@@ -5,6 +5,7 @@ angular.module("services.page")
   .factory("Page", function($location,
                             $rootScope,
                             PinboardService,
+                            security,
                             ProfileAboutService,
                             ProfileService){
     var title = '';
@@ -25,7 +26,7 @@ angular.module("services.page")
       "/signup",
       "/about",
       "/advisors",
-      "/settings", // sort of a profile page
+//      "/settings", // sort of a profile page
       "/spread-the-word"
     ]
 
@@ -35,6 +36,7 @@ angular.module("services.page")
       pageName = null
       profileSlug = findProfileSlug()
       if (profileSlug){
+
         if (ProfileAboutService.getUrlSlug() != profileSlug){
           ProfileAboutService.clear()
           ProfileAboutService.get(profileSlug, true)
@@ -63,6 +65,11 @@ angular.module("services.page")
 
     function findProfileSlug(){
       var firstPartOfPath = "/" + $location.path().split("/")[1]
+      if (firstPartOfPath == "/settings") {
+        console.log("findprofileslug reporting /settings page")
+        return security.getCurrentUserSlug()
+      }
+
 
       if (_.contains(nonProfilePages, firstPartOfPath)){
         return undefined
