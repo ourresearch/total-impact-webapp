@@ -265,6 +265,16 @@ class Profile(db.Model):
         return False
 
     @cached_property
+    def subscription_start_date(self):
+        if self.stripe_id:
+            stripe_customer = stripe.Customer.retrieve(self.stripe_id)
+            subscription_start_date = arrow.get(stripe_customer["created"]).isoformat()
+            return subscription_start_date
+        elif self.is_advisor:
+            return self.created.strftime("%B %d %Y")
+        return None
+
+    @cached_property
     def is_trialing(self):
         in_trial_period = self.trial_age_timedelta < free_trial_timedelta
         return in_trial_period and not self.is_subscribed
@@ -545,6 +555,7 @@ class Profile(db.Model):
             "linked_accounts",
             "is_subscribed",
             "is_paid_subscriber",            
+            "subscription_start_date",            
             "is_trialing",
             "is_live"
         ]

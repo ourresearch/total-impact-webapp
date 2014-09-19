@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-17
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-19
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -2602,8 +2602,7 @@ angular.module('settings', [
     }
 
     $scope.paidSince = function(){
-      var su = security.getCurrentUser("subscription")
-      return "August 2014"  // short-term hack
+      return security.getCurrentUser("subscription_start_date")  // short-term hack
     }
 
     $scope.editCard = function(){
