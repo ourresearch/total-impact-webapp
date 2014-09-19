@@ -36,7 +36,7 @@ logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
 free_trial_timedelta = datetime.timedelta(days=30)
-trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=22)
+trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=21)
 
 
 
@@ -258,18 +258,28 @@ class Profile(db.Model):
     @cached_property
     def is_paid_subscriber(self):
         if self.stripe_id:
-            stripe_customer = stripe.Customer.retrieve(self.stripe_id)
-            if (("cards" in stripe_customer) and \
-                ("data" in stripe_customer["cards"]) and stripe_customer["cards"]["data"]):
-                return True
+            try:
+                stripe_customer = stripe.Customer.retrieve(self.stripe_id)
+                if (("cards" in stripe_customer) and \
+                    ("data" in stripe_customer["cards"]) and stripe_customer["cards"]["data"]):
+                    return True
+            except InvalidRequestError:
+                logger.debug(u"InvalidRequestError for stripe_id {stripe_id}".format(
+                    stripe_id=self.stripe_id))
+
+                return False
         return False
 
     @cached_property
     def subscription_start_date(self):
         if self.stripe_id:
-            stripe_customer = stripe.Customer.retrieve(self.stripe_id)
-            subscription_start_date = arrow.get(stripe_customer["created"]).isoformat()
-            return subscription_start_date
+            try:
+                stripe_customer = stripe.Customer.retrieve(self.stripe_id)
+                subscription_start_date = arrow.get(stripe_customer["created"]).isoformat()
+                return subscription_start_date
+            except InvalidRequestError:
+                logger.debug(u"InvalidRequestError for stripe_id {stripe_id}".format(
+                    stripe_id=self.stripe_id))
         elif self.is_advisor:
             return self.created.strftime("%B %d %Y")
         return None
