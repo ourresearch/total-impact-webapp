@@ -151,20 +151,25 @@ class Metric(object):
             return None
 
         min_for_diff = self.product_create_date.replace(
-            minutes=self.product_min_age_for_diff_minutes
-        )
-
+            minutes=self.product_min_age_for_diff_minutes)
 
         # we're currently in the first minutes of this product's life
         if arrow.utcnow() < min_for_diff:
             return None
 
+        # we first introduced this metric less than a week ago: then no diff.
+        if ("metric_debut_date" in self.config):
+            metric_debut_time = arrow.get(self.config["metric_debut_date"])
+            if metric_debut_time >= window_start_time:
+                return self.oldest_snap
+
          # it's a newish product, but we can get get diffs still
         if self.product_create_date > window_start_time:
             oldest_snap_date = arrow.get(self.oldest_snap.last_collected_date)
-            if self.product_create_date.replace(minutes=self.assume_we_have_first_snap_by_minutes) < oldest_snap_date:
-                snap_to_return = ZeroSnap(self.product_create_date.datetime)
-                return snap_to_return
+            earliest_valid_snap_time = self.product_create_date.replace(minutes=self.assume_we_have_first_snap_by_minutes)
+            if earliest_valid_snap_time < oldest_snap_date:
+                # we could've got an earlier snap but didn't, so assume we tried and got 0
+                return ZeroSnap(self.product_create_date.datetime)
             else:
                 return self.oldest_snap
 

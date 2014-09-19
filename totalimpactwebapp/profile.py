@@ -253,7 +253,26 @@ class Profile(db.Model):
 
     @cached_property
     def is_subscribed(self):
-        return bool(self.stripe_id)
+        return bool(self.stripe_id) or self.is_advisor
+
+    @cached_property
+    def is_paid_subscriber(self):
+        if self.stripe_id:
+            stripe_customer = stripe.Customer.retrieve(self.stripe_id)
+            if (("cards" in stripe_customer) and \
+                ("data" in stripe_customer["cards"]) and stripe_customer["cards"]["data"]):
+                return True
+        return False
+
+    @cached_property
+    def subscription_start_date(self):
+        if self.stripe_id:
+            stripe_customer = stripe.Customer.retrieve(self.stripe_id)
+            subscription_start_date = arrow.get(stripe_customer["created"]).isoformat()
+            return subscription_start_date
+        elif self.is_advisor:
+            return self.created.strftime("%B %d %Y")
+        return None
 
     @cached_property
     def is_trialing(self):
@@ -535,6 +554,8 @@ class Profile(db.Model):
             "is_advisor",
             "linked_accounts",
             "is_subscribed",
+            "is_paid_subscriber",            
+            "subscription_start_date",            
             "is_trialing",
             "is_live"
         ]

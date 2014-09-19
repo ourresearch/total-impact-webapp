@@ -238,7 +238,8 @@ providers = [
                 "provider_url": "http://www.slideshare.net/",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "milestones": orders_of_magnitude()
+                "milestones": orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"
             }
         },
         "name": "slideshare_account",
@@ -569,7 +570,8 @@ providers = [
                 "provider_url": "http://github.com",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "milestones": orders_of_magnitude()
+                "milestones": orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"                
             },
             "longest_streak_days": {
                 "description": "The longest commit streak (consecutive days with code commits) this year",
@@ -579,7 +581,8 @@ providers = [
                 "provider_url": "http://github.com",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "milestones": orders_of_magnitude()
+                "milestones": orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"                
             }
         },
         "name": "github_account",
@@ -830,7 +833,8 @@ providers = [
                 "provider_url": "http://twitter.com",
                 "audience": "public",
                 "engagement_type": "discussed",
-                "milestones": fives_then_orders_of_magnitude()
+                "milestones": fives_then_orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"                
             },            
             "impressions": {
                 "description": "Number of times a tweet about the product has appeared in someone's twitter stream",
@@ -841,7 +845,8 @@ providers = [
                 "provider_url": "http://twitter.com",
                 "audience": "public",
                 "engagement_type": "discussed",
-                "milestones": fives_then_orders_of_magnitude()
+                "milestones": fives_then_orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"
             }              
         },
         "name": "altmetric_com",
@@ -934,7 +939,8 @@ providers = [
                 "provider_url": "http:\\/\\/twitter.com\\/",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "milestones": orders_of_magnitude()
+                "milestones": orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"
             },
             "lists": {
                 "description": "Twitter lists:  the number of lists that include this twitter account",
@@ -944,7 +950,8 @@ providers = [
                 "provider_url": "http:\\/\\/twitter.com\\/",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "milestones": orders_of_magnitude()
+                "milestones": orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"                
             },
             "number_tweets": {
                 "description": "Twitter number of tweets: the number of tweets sent by this twitter account",
@@ -954,7 +961,8 @@ providers = [
                 "provider_url": "http:\\/\\/twitter.com\\/",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "milestones": orders_of_magnitude()
+                "milestones": orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"                
             }        
         },
         "name": "twitter",

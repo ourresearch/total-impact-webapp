@@ -16,6 +16,7 @@ import requests
 import argparse
 import logging
 import time
+from collections import defaultdict
 
 logger = logging.getLogger("webapp.daily")
 
@@ -471,6 +472,48 @@ def star_best_products(url_slug=None, min_url_slug=None):
         print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
   
 
+def count_news_for_subscribers(url_slug=None, min_url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        if min_url_slug:
+            q = db.session.query(Profile).filter(Profile.stripe_id!=None).filter(Profile.url_slug>=min_url_slug)
+
+        else:
+            q = db.session.query(Profile).filter(Profile.stripe_id!=None)
+
+
+    number_considered = 0.0
+    total_with_news = 0
+    total_number_of_products_with_news = defaultdict(int)
+    start_time = datetime.datetime.utcnow()
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        if profile.is_paid_subscriber:
+
+            number_considered += 1
+
+            logger.info(u"count_news_for_subscribers: {url_slug}".format(
+                url_slug=profile.url_slug))
+            number_of_products_with_news = 0
+            for product in profile.products_not_removed:
+                metric = product.get_metric_by_name("altmetric_com", "news")
+                if metric:
+                    number_of_products_with_news += 1
+            if number_of_products_with_news:
+                total_number_of_products_with_news[number_of_products_with_news] += 1
+                total_with_news += 1
+
+            logger.info(u"of {total} profiles, total_with_news:{total_with_news} ({percent}%)\ntotal_number_of_products_with_news:{total_number_of_products_with_news}".format(
+                total=number_considered,
+                total_with_news=total_with_news, 
+                percent=100*total_with_news/number_considered,
+                total_number_of_products_with_news=total_number_of_products_with_news))
+        else:
+            logger.info(u"count_news_for_subscribers: not counting {url_slug} because not a subscriber".format(
+                url_slug=profile.url_slug))
+
+
+
 def main(function, args):
     if function=="emailreports":
         if "url_slug" in args and args["url_slug"]:
@@ -493,6 +536,8 @@ def main(function, args):
         run_through_twitter_pages(args["url_slug"], args["min_url_slug"])
     elif function=="star":
         star_best_products(args["url_slug"], args["min_url_slug"])
+    elif function=="count_news":
+        count_news_for_subscribers(args["url_slug"], args["min_url_slug"])
 
 
 

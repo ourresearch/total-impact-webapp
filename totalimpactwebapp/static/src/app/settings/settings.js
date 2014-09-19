@@ -195,8 +195,7 @@ angular.module('settings', [
     }
 
     $scope.paidSince = function(){
-      var su = security.getCurrentUser("subscription")
-      return "August 2014"  // short-term hack
+      return security.getCurrentUser("subscription_start_date")  // short-term hack
     }
 
     $scope.editCard = function(){
