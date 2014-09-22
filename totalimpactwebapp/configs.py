@@ -1073,7 +1073,7 @@ def pluralize_genre(genre):
 
     if genre_plural.endswith("ys"):
         genre_plural = genre[:-1] + u"ies"
-    if genre == "thesis"
+    if genre == "thesis":
         genre_plural = "theses"
 
     if genre_plural.startswith("other"):
