@@ -7741,7 +7741,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"current-plan-status trial\">\n" +
+    "   <div class=\"current-plan-status trial\" ng-if=\"!isSubscribed()\">\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
@@ -7764,6 +7764,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
+    "         ng-if=\"!isSubscribed()\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "       <div class=\"form-title trial\">\n" +
