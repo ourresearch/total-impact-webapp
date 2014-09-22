@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-20
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-22
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5936,7 +5936,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   Tell us about bugs! <a href=\"http://twitter.com/#!/Impactstory\">@Impactstory</a> (or via email to team@impactstory.org)\n" +
     "\n" +
-    "   <h3 id=\"what-do-i-get\">what do I get for the $5 a month?</h3>\n" +
+    "   <h3 id=\"what-do-i-get\">what do I get for the $10 a month?</h3>\n" +
     "\n" +
     "   <p>Currently, your subscription dollars buy you an Impactstory profile (featuring open metrics, with context, for diverse research products) that updates weekly, pulling in your new publications, datasets, slide decks, and other research outputs alongside their updated metrics. You also get notification emails that tell you when new metrics are added to your profile.</p>\n" +
     "\n" +
@@ -5956,13 +5956,13 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p>The only catch? We are bound by the terms of service of our data providers. We lobby them hard for the most open terms possible, but some still forbid anyone to download their data.</p>\n" +
     "\n" +
     "\n" +
-    "   <h3 id=\"waiver\">what if I can&rsquo;t afford $5 a month?</h3>\n" +
+    "   <h3 id=\"waiver\">what if I can&rsquo;t afford $10 a month?</h3>\n" +
     "\n" +
     "   <p>We’ve got a no-questions-asked waiver; send us an email to team@impactstory.org showing us how you’re linking to your Impactstory profile in your email signature and we’ll send you a coupon for a free account.</p>\n" +
     "\n" +
     "   <h3 id=\"fee-but-open\">how can profiles still be Open if they cost money?</h3>\n" +
     "\n" +
-    "   <p>Good question! Much like other open science non-profits PLOS and Dryad support their missions and daily operations by recovering costs up front, we&rsquo;re asking our users to pay $5/month for an app that both helps them discover and share their scholarly impact and supports a larger mission of making altmetrics Open.</p>\n" +
+    "   <p>Good question! Much like other open science non-profits PLOS and Dryad support their missions and daily operations by recovering costs up front, we&rsquo;re asking our users to pay $10/month for an app that both helps them discover and share their scholarly impact and supports a larger mission of making altmetrics Open.</p>\n" +
     "\n" +
     "   <p>On the other hand, there are services like Google Scholar that are free for authors to use, but are far from Open.They don&rsquo;t allow authors to download and reuse their own citation data; they won&rsquo;t open up their source code nor provide an API, so others can improve upon their service; and they lack transparency that allows their users to understand exactly how metrics are gathered.</p>\n" +
     "\n" +
@@ -7741,7 +7741,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing()\">\n" +
+    "   <div class=\"current-plan-status trial\">\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
@@ -7755,21 +7755,18 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
     "         <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
     "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
-    "         cost of a coffee once a month.</p>\n" +
+    "         Impactstory a sustainable, open-source nonprofit.</p>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
-    "\n" +
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
-    "         ng-if=\"isTrialing()\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
-    "      <div class=\"form-title trial\">\n" +
+    "       <div class=\"form-title trial\">\n" +
     "         <h3>Continue your subscription</h3>\n" +
     "         <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>\n" +
     "      </div>\n" +
@@ -7782,18 +7779,18 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         <div class=\"col-sm-9\" id=\"plan-options\">\n" +
     "            <div class=\"radio\">\n" +
     "               <label>\n" +
-    "                  <input type=\"radio\" name=\"plan\" value=\"base-monthly\" ng-model=\"subscribeForm.plan\">\n" +
-    "                  $5 per month\n" +
+    "                  <input type=\"radio\" name=\"plan\" value=\"ongoing-monthly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                  $10 per month\n" +
     "               </label>\n" +
     "            </div>\n" +
     "            <div class=\"radio\">\n" +
     "               <label>\n" +
-    "                  <input type=\"radio\" name=\"plan\" value=\"base-yearly\" ng-model=\"subscribeForm.plan\">\n" +
-    "                  $45 per year <strong>(saves 25%)</strong>\n" +
+    "                  <input type=\"radio\" name=\"plan\" value=\"ongoing-yearly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                  $60 per year\n" +
     "               </label>\n" +
     "            </div>\n" +
     "         </div>\n" +
-    "      </div>\n" +
+    "      </div> \n" +
     "\n" +
     "      <!-- name on card -->\n" +
     "      <div class=\"form-group\">\n" +
@@ -7891,7 +7888,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "               </div>\n" +
     "         </div>\n" +
     "         <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
-    "            Trouble affording $5/mo? No worries, we've been through some lean times\n" +
+    "            Trouble affording the subscription? No worries, we've been through some lean times\n" +
     "            ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
     "\n" +
     "            <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
@@ -7903,7 +7900,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "\n" +
     "         </div>\n" +
     "      </div>\n" +
-    "   </form>\n" +
+    "   </form> \n" +
     "\n" +
     "   <div class=\"subscriber-buttons\" ng-if=\"isSubscribed()\">\n" +
     "      <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +

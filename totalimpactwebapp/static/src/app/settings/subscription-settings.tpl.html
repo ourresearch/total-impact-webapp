@@ -17,7 +17,7 @@
       <span class="thanks">Thanks for helping to keep Impactstory nonprofit and open source!</span>
    </div>
 
-   <div class="current-plan-status trial" ng-if="isTrialing()">
+   <div class="current-plan-status trial">
       <span class="setup" ng-if="daysLeftInTrial()>0">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>
       <span class="setup" ng-if="daysLeftInTrial()==0">Your Impactstory trial ends today!</span>
 
@@ -31,21 +31,18 @@
          and more&mdash;on your profile and delivered straight to your inbox. </p>
          <p>By extending your free trial today, you'll keep benefiting from your impact profile and
             email notifications&mdash;and   you'll be helping to keep
-         Impactstory a sustainable, open-source nonprofit. And all for less than than the
-         cost of a coffee once a month.</p>
+         Impactstory a sustainable, open-source nonprofit.</p>
       </div>
 
    </div>
 
 
-
    <form stripe-form="handleStripe"
          name="upgradeForm"
          novalidate
-         ng-if="isTrialing()"
          class="form-horizontal upgrade-form">
 
-      <div class="form-title trial">
+       <div class="form-title trial">
          <h3>Continue your subscription</h3>
          <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>
       </div>
@@ -58,18 +55,18 @@
          <div class="col-sm-9" id="plan-options">
             <div class="radio">
                <label>
-                  <input type="radio" name="plan" value="base-monthly" ng-model="subscribeForm.plan">
-                  $5 per month
+                  <input type="radio" name="plan" value="ongoing-monthly" ng-model="subscribeForm.plan">
+                  $10 per month
                </label>
             </div>
             <div class="radio">
                <label>
-                  <input type="radio" name="plan" value="base-yearly" ng-model="subscribeForm.plan">
-                  $45 per year <strong>(saves 25%)</strong>
+                  <input type="radio" name="plan" value="ongoing-yearly" ng-model="subscribeForm.plan">
+                  $60 per year
                </label>
             </div>
          </div>
-      </div>
+      </div> 
 
       <!-- name on card -->
       <div class="form-group">
@@ -167,7 +164,7 @@
                </div>
          </div>
          <div class="col-sm-offset-3 col-sm-9 money-help" ng-hide="loading.is('subscribe')">
-            Trouble affording $5/mo? No worries, we've been through some lean times
+            Trouble affording the subscription? No worries, we've been through some lean times
             ourselves. So we've got a <a ng-click="showFeeWaiverDetails=!showFeeWaiverDetails">no-questions-asked fee waiver for you.</a>
 
             <div class="fee-waiver-details" ng-show="showFeeWaiverDetails">
@@ -179,7 +176,7 @@
 
          </div>
       </div>
-   </form>
+   </form> 
 
    <div class="subscriber-buttons" ng-if="isSubscribed()">
       <button ng-click="editCard()" class="btn btn-primary edit-credit-card">
