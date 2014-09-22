@@ -142,4 +142,15 @@ def send_email_report(profile, now=None):
     return status
 
 
+def send_trial_expiring(profile, now=None):
+    if os.getenv("ENVIRONMENT", "testing") == "production":
+        email = profile.email
+    else:
+        email = "heather@impactstory.org"
+
+    msg = emailer.send(email, "Your Impactstory", "report", report)
+    logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=profile.url_slug))
+
+    return status
+
 

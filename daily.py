@@ -162,7 +162,7 @@ def email_report_to_everyone_who_needs_one(max_emails=None):
         try:
             if not profile.is_live:
                 logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
-            if not profile.email or (u"@" not in profile.email):
+            elif not profile.email or (u"@" not in profile.email):
                 logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
             elif profile.notification_email_frequency == "none":
                 logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
