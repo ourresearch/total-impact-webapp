@@ -30,6 +30,7 @@ import hashlib
 import redis
 import csv
 import StringIO
+import arrow
 
 
 logger = logging.getLogger("tiwebapp.profile")
@@ -278,7 +279,7 @@ class Profile(db.Model):
         if self.stripe_id:
             try:
                 stripe_customer = stripe.Customer.retrieve(self.stripe_id)
-                subscription_start_date = arrow.get(stripe_customer["created"]).isoformat()
+                subscription_start_date = arrow.get(stripe_customer["created"])
                 return subscription_start_date.strftime("%B %d %Y")
             except InvalidRequestError:
                 logger.debug(u"InvalidRequestError for stripe_id {stripe_id}".format(
