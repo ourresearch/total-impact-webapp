@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-22
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-23
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -3687,7 +3687,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4267,7 +4266,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -7829,7 +7827,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing()\">\n" +
+    "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing() && isLive()\">\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
@@ -7843,17 +7841,17 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
     "         <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
     "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
-    "         cost of a coffee once a month.</p>\n" +
+    "         Impactstory a sustainable, open-source nonprofit. </p>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
+    "\n" +
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
-    "         ng-if=\"isTrialing()\"\n" +
+    "         ng-if=\"isTrialing() || !isLive()\" \n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "       <div class=\"form-title trial\">\n" +
@@ -7978,7 +7976,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "               </div>\n" +
     "         </div>\n" +
     "         <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
-    "            Trouble affording the subscription? No worries, we've been through some lean times\n" +
+    "            Trouble affording a subscription? No worries, we've been through some lean times\n" +
     "            ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
     "\n" +
     "            <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
