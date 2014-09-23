@@ -26,41 +26,60 @@ angular.module("services.page")
       "/signup",
       "/about",
       "/advisors",
-//      "/settings", // sort of a profile page
       "/spread-the-word"
     ]
 
-
     $rootScope.$on('$routeChangeSuccess', function () {
-      isInfopage = false
-      pageName = null
+      isInfopage = false // init...it's being set elsewhere
+      pageName = null // init...it's being set elsewhere
+
       profileSlug = findProfileSlug()
-      if (profileSlug){
 
-        if (ProfileAboutService.getUrlSlug() != profileSlug){
-          ProfileAboutService.clear()
-          ProfileAboutService.get(profileSlug, true)
-        }
-
-        if (ProfileService.getUrlSlug() != profileSlug){
-          console.log("in Page, running ProfileService.clear()")
-          ProfileService.clear()
-          ProfileService.get(profileSlug, true)
-        }
-
-        if (PinboardService.getUrlSlug() != profileSlug){
-          console.log("looks like the pinboard slug is different from profile slug:", PinboardService.getUrlSlug(), profileSlug)
-          PinboardService.clear()
-          console.log("supposedly, the pinboard is clear now:", PinboardService.cols, PinboardService.data)
-          PinboardService.get(profileSlug)
-        }
+      if (!profileSlug) {
+        clearProfileData()
       }
-      else {
+
+      handleDeadProfile(ProfileAboutService, profileSlug)
+
+      if (ProfileAboutService.slugIsNew(profileSlug)) {
+        console.log("new user slug; loading new profile.")
+        clearProfileData()
+        ProfileService.get(profileSlug, true)
+        PinboardService.get(profileSlug)
+        ProfileAboutService.get(profileSlug, true).then(function(resp){
+            handleDeadProfile(ProfileAboutService, profileSlug)
+          }
+        )
+
+      }
+    });
+
+
+    function clearProfileData(){
         ProfileAboutService.clear()
         ProfileService.clear()
         PinboardService.clear()
+    }
+
+
+    function handleDeadProfile(ProfileAboutService, profileSlug){
+      if (ProfileAboutService.data.is_live === false){
+        console.log("we've got a dead profile.")
+
+        ProfileService.clear()
+        PinboardService.clear()
+
+        // is this profile's owner here? give em a chance to subscribe.
+        if (security.getCurrentUserSlug() == profileSlug){
+          $location.path("/settings/subscription")
+        }
+
+        // for everyone else, show a Dead Profile page
+        else {
+          $location.path(profileSlug + "/expired")
+        }
       }
-    });
+    }
 
 
     function findProfileSlug(){
@@ -77,6 +96,12 @@ angular.module("services.page")
       else {
         return firstPartOfPath.substr(1) // no slash
       }
+    }
+
+    var isSubscriptionPage = function(){
+      var splitPath = $location.path().split("/")
+      return splitPath[1] == "settings" && splitPath[2] == "subscription"
+
     }
 
 
@@ -205,6 +230,9 @@ angular.module("services.page")
       getLastScrollPosition: function(path){
         return lastScrollPosition[path]
       },
+
+      findProfileSlug: findProfileSlug,
+
       sendPageloadToSegmentio: function(){
 
         analytics.page(

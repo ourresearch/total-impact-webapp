@@ -1,7 +1,7 @@
 <div class="main-sidebar">
 
    <div class="profile-sidebar"
-        ng-show="profileAboutService.data.given_name">
+        ng-show="profileAboutService.data.is_live">
 
       <h1>
          <a href="/{{ profileAboutService.data.url_slug }}">
@@ -59,7 +59,7 @@
 
 
    <div class="infopage-sidebar"
-        ng-show="!profileAboutService.data.given_name">
+        ng-show="!profileAboutService.data.is_live">
       <h1>
          <a href="/" class="logo">
             <img src="static/img/impactstory-logo-sideways.png" alt=""/>

@@ -17,8 +17,6 @@ angular.module('services.profileService', [
 
 
     function get(url_slug, getFromServer, isEmbedded){
-      console.log("calling ProfileService.get() with", url_slug)
-
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }

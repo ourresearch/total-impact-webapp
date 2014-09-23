@@ -249,7 +249,6 @@ class Profile(db.Model):
 
     @cached_property
     def is_live(self):
-
         return self.is_subscribed or self.is_trialing
 
     @cached_property

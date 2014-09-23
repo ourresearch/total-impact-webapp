@@ -31,6 +31,7 @@ angular.module('app', [
   'services.profileAboutService',
   'profileSidebar',
   'ui.sortable',
+  'deadProfile',
   'services.pinboardService',
   'settings',
   'xeditable'
@@ -178,7 +179,6 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.setProfileUrl(false)
-    Breadcrumbs.clear()
     Loading.clear()
   })
 

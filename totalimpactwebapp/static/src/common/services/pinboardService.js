@@ -33,25 +33,19 @@ angular.module('services.pinboardService', [
     function saveState(saveOnlyIfNotEmpty) {
       var current_user_url_slug = security.getCurrentUserSlug()
 
-      console.log("saving pinboard state, current_user_url_slug", current_user_url_slug)
       if (!current_user_url_slug){
         return false
       }
       if (saveOnlyIfNotEmpty && isEmpty()){
-        console.log("aborting this pinboard save because", saveOnlyIfNotEmpty, isEmpty())
         return false
       }
-
-      console.log("making the ProfilePinboard.save() call")
 
       ProfilePinboard.save(
         {id: current_user_url_slug},
         {contents: cols},
         function(resp){
-          console.log("success pushing cols", resp, cols)
         },
         function(resp){
-          console.log("failure pushing cols", resp, cols)
         }
       )
     }
@@ -62,7 +56,6 @@ angular.module('services.pinboardService', [
       ProfilePinboard.get(
         {id: id},
         function(resp){
-          console.log("got a response back from cols GET", resp)
           cols.one = resp.one
           cols.two = resp.two
         },
@@ -74,12 +67,10 @@ angular.module('services.pinboardService', [
     }
 
     function clear(){
-      console.log("clearing this pinboard data: ", cols, data)
       cols.one = []
       cols.two = []
 
       for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
-      console.log("cleaned out the pinboard data: ", cols, data)
     }
 
     function isEmpty(){

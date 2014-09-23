@@ -8,7 +8,6 @@ angular.module('services.profileAboutService', [
 
 
     function get(url_slug, getFromServer){
-      console.log("calling ProfileAboutService.get() with ", url_slug)
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }
@@ -38,8 +37,6 @@ angular.module('services.profileAboutService', [
 
 
     function upload(){
-      console.log("calling ProfileAboutService.upload() with ", data.url_slug)
-
       Users.patch(
         {id: data.url_slug},
         {about: data},
@@ -53,6 +50,10 @@ angular.module('services.profileAboutService', [
 
     }
 
+    function slugIsNew(slug){
+        return slug && data.url_slug !== slug
+    }
+
 
     return {
       get: get,
@@ -61,7 +62,8 @@ angular.module('services.profileAboutService', [
       clear: clear,
       getUrlSlug: function(){
         return data.url_slug
-      }
+      },
+      slugIsNew: slugIsNew
     }
 
   })

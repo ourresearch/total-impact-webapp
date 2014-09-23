@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-19
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-22
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -509,6 +509,7 @@ angular.module('app', [
   'services.profileAboutService',
   'profileSidebar',
   'ui.sortable',
+  'deadProfile',
   'services.pinboardService',
   'settings',
   'xeditable'
@@ -656,7 +657,6 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.setProfileUrl(false)
-    Breadcrumbs.clear()
     Loading.clear()
   })
 
@@ -683,6 +683,22 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   };
 }]);
 
+
+angular.module('deadProfile', []).config(function ($routeProvider) {
+
+
+    $routeProvider.when("/:url_slug/expired", {
+      templateUrl: "dead-profile/dead-profile.tpl.html",
+      controller: "DeadProfileCtrl"
+    })
+
+
+})
+
+
+.controller("DeadProfileCtrl", function(){
+    console.log("dead profile ctrl")
+  })
 angular.module("genrePage", [
   'resources.users',
   'services.page',
@@ -1870,9 +1886,14 @@ angular.module("profile", [
     ProfileService.get(url_slug).then(
       function(resp){
         // put our stuff in the scope
-        console.log("putting resp in profile from controller", resp)
+
+        // hack. profile service was cleared because profile is dead.
+        if (_.isEmpty(resp)){
+          return false
+        }
+
         $scope.profile = resp
-        Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+        Page.setTitle(resp.about.full_name)
         security.isLoggedInPromise(url_slug).then(
           function(){
             var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
@@ -2477,13 +2498,15 @@ angular.module('settings', [
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
+  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading, ProfileAboutService) {
     $scope.onSave = function() {
+
       Loading.start('saveButton')
       Users.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
+          ProfileAboutService.get($scope.user.url_slug, true)
           security.setCurrentUser(resp.about) // update the current authenticated user.
           UserMessage.set('settings.profile.change.success');
           $scope.home();
@@ -2493,7 +2516,7 @@ angular.module('settings', [
   })
 
 
-  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
+  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading, ProfileAboutService) {
     $scope.onSave = function() {
       var messageKey = "settings.notifications."
         + $scope.user.notification_email_frequency
@@ -2506,6 +2529,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set(messageKey);
           $scope.home();
         }
@@ -2543,7 +2568,7 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
+  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, ProfileAboutService) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -2552,6 +2577,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set('settings.url.change.success');
           $location.path('/' + resp.about.url_slug)
         }
@@ -2578,9 +2605,9 @@ angular.module('settings', [
                                                     UserMessage,
                                                     Loading,
                                                     TiMixpanel,
+                                                    ProfileAboutService,
                                                     UsersSubscription) {
 
-    console.log("subscriptionSettingsCtrl is running.")
 
     // important! this is how we get stuff out of the form from here
     $scope.subscribeForm = {
@@ -2620,6 +2647,8 @@ angular.module('settings', [
         function(resp){
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set("settings.subscription.delete.success")
 
           // @todo refresh the page
@@ -2642,6 +2671,8 @@ angular.module('settings', [
         function(resp){
           console.log("we subscribed a user, huzzah!", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           window.scrollTo(0,0)
           UserMessage.set("settings.subscription.subscribe.success")
           Loading.finish("subscribe")
@@ -2684,7 +2715,7 @@ angular.module('settings', [
   })
 
 
-  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
+  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, ProfileAboutService) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -2693,6 +2724,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set(
             'settings.email.change.success',
             true,
@@ -4260,41 +4293,60 @@ angular.module("services.page")
       "/signup",
       "/about",
       "/advisors",
-//      "/settings", // sort of a profile page
       "/spread-the-word"
     ]
 
-
     $rootScope.$on('$routeChangeSuccess', function () {
-      isInfopage = false
-      pageName = null
+      isInfopage = false // init...it's being set elsewhere
+      pageName = null // init...it's being set elsewhere
+
       profileSlug = findProfileSlug()
-      if (profileSlug){
 
-        if (ProfileAboutService.getUrlSlug() != profileSlug){
-          ProfileAboutService.clear()
-          ProfileAboutService.get(profileSlug, true)
-        }
-
-        if (ProfileService.getUrlSlug() != profileSlug){
-          console.log("in Page, running ProfileService.clear()")
-          ProfileService.clear()
-          ProfileService.get(profileSlug, true)
-        }
-
-        if (PinboardService.getUrlSlug() != profileSlug){
-          console.log("looks like the pinboard slug is different from profile slug:", PinboardService.getUrlSlug(), profileSlug)
-          PinboardService.clear()
-          console.log("supposedly, the pinboard is clear now:", PinboardService.cols, PinboardService.data)
-          PinboardService.get(profileSlug)
-        }
+      if (!profileSlug) {
+        clearProfileData()
       }
-      else {
+
+      handleDeadProfile(ProfileAboutService, profileSlug)
+
+      if (ProfileAboutService.slugIsNew(profileSlug)) {
+        console.log("new user slug; loading new profile.")
+        clearProfileData()
+        ProfileService.get(profileSlug, true)
+        PinboardService.get(profileSlug)
+        ProfileAboutService.get(profileSlug, true).then(function(resp){
+            handleDeadProfile(ProfileAboutService, profileSlug)
+          }
+        )
+
+      }
+    });
+
+
+    function clearProfileData(){
         ProfileAboutService.clear()
         ProfileService.clear()
         PinboardService.clear()
+    }
+
+
+    function handleDeadProfile(ProfileAboutService, profileSlug){
+      if (ProfileAboutService.data.is_live === false){
+        console.log("we've got a dead profile.")
+
+        ProfileService.clear()
+        PinboardService.clear()
+
+        // is this profile's owner here? give em a chance to subscribe.
+        if (security.getCurrentUserSlug() == profileSlug){
+          $location.path("/settings/subscription")
+        }
+
+        // for everyone else, show a Dead Profile page
+        else {
+          $location.path(profileSlug + "/expired")
+        }
       }
-    });
+    }
 
 
     function findProfileSlug(){
@@ -4311,6 +4363,12 @@ angular.module("services.page")
       else {
         return firstPartOfPath.substr(1) // no slash
       }
+    }
+
+    var isSubscriptionPage = function(){
+      var splitPath = $location.path().split("/")
+      return splitPath[1] == "settings" && splitPath[2] == "subscription"
+
     }
 
 
@@ -4439,6 +4497,9 @@ angular.module("services.page")
       getLastScrollPosition: function(path){
         return lastScrollPosition[path]
       },
+
+      findProfileSlug: findProfileSlug,
+
       sendPageloadToSegmentio: function(){
 
         analytics.page(
@@ -4500,25 +4561,19 @@ angular.module('services.pinboardService', [
     function saveState(saveOnlyIfNotEmpty) {
       var current_user_url_slug = security.getCurrentUserSlug()
 
-      console.log("saving pinboard state, current_user_url_slug", current_user_url_slug)
       if (!current_user_url_slug){
         return false
       }
       if (saveOnlyIfNotEmpty && isEmpty()){
-        console.log("aborting this pinboard save because", saveOnlyIfNotEmpty, isEmpty())
         return false
       }
-
-      console.log("making the ProfilePinboard.save() call")
 
       ProfilePinboard.save(
         {id: current_user_url_slug},
         {contents: cols},
         function(resp){
-          console.log("success pushing cols", resp, cols)
         },
         function(resp){
-          console.log("failure pushing cols", resp, cols)
         }
       )
     }
@@ -4529,7 +4584,6 @@ angular.module('services.pinboardService', [
       ProfilePinboard.get(
         {id: id},
         function(resp){
-          console.log("got a response back from cols GET", resp)
           cols.one = resp.one
           cols.two = resp.two
         },
@@ -4541,12 +4595,10 @@ angular.module('services.pinboardService', [
     }
 
     function clear(){
-      console.log("clearing this pinboard data: ", cols, data)
       cols.one = []
       cols.two = []
 
       for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
-      console.log("cleaned out the pinboard data: ", cols, data)
     }
 
     function isEmpty(){
@@ -4596,7 +4648,6 @@ angular.module('services.profileAboutService', [
 
 
     function get(url_slug, getFromServer){
-      console.log("calling ProfileAboutService.get() with ", url_slug)
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }
@@ -4626,8 +4677,6 @@ angular.module('services.profileAboutService', [
 
 
     function upload(){
-      console.log("calling ProfileAboutService.upload() with ", data.url_slug)
-
       Users.patch(
         {id: data.url_slug},
         {about: data},
@@ -4641,6 +4690,10 @@ angular.module('services.profileAboutService', [
 
     }
 
+    function slugIsNew(slug){
+        return slug && data.url_slug !== slug
+    }
+
 
     return {
       get: get,
@@ -4649,7 +4702,8 @@ angular.module('services.profileAboutService', [
       clear: clear,
       getUrlSlug: function(){
         return data.url_slug
-      }
+      },
+      slugIsNew: slugIsNew
     }
 
   })
@@ -4672,8 +4726,6 @@ angular.module('services.profileService', [
 
 
     function get(url_slug, getFromServer, isEmbedded){
-      console.log("calling ProfileService.get() with", url_slug)
-
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }
@@ -5211,7 +5263,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -5387,6 +5439,11 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "\n" +
     "");
+}]);
+
+angular.module("dead-profile/dead-profile.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("dead-profile/dead-profile.tpl.html",
+    "<h1>profile expired</h1>");
 }]);
 
 angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -7743,15 +7800,13 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
     "         <p>By subscribing today, you'll restore your impact profile and\n" +
     "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
-    "         cost of a coffee once a month.</p>\n" +
+    "         Impactstory a sustainable, open-source nonprofit.</p>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"current-plan-status paid\" ng-if=\"isSubscribed() && isLive()\">\n" +
     "      <span class=\"setup\">\n" +
-    "         Your Impactstory subscription has been active\n" +
-    "         since {{ paidSince() }}.\n" +
+    "         Your Impactstory subscription is active.\n" +
     "      </span>\n" +
     "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
@@ -7770,8 +7825,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
     "         <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
     "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit. And all for less than than the\n" +
-    "         cost of a coffee once a month.</p>\n" +
+    "         Impactstory a sustainable, open-source nonprofit. </p>\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
@@ -7941,7 +7995,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "<div class=\"main-sidebar\">\n" +
     "\n" +
     "   <div class=\"profile-sidebar\"\n" +
-    "        ng-show=\"profileAboutService.data.given_name\">\n" +
+    "        ng-show=\"profileAboutService.data.is_live\">\n" +
     "\n" +
     "      <h1>\n" +
     "         <a href=\"/{{ profileAboutService.data.url_slug }}\">\n" +
@@ -7999,7 +8053,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "   <div class=\"infopage-sidebar\"\n" +
-    "        ng-show=\"!profileAboutService.data.given_name\">\n" +
+    "        ng-show=\"!profileAboutService.data.is_live\">\n" +
     "      <h1>\n" +
     "         <a href=\"/\" class=\"logo\">\n" +
     "            <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
