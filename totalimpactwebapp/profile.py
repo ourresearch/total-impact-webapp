@@ -288,10 +288,6 @@ class Profile(db.Model):
         trial_started = max(trial_for_old_free_users_started_on, self.created)
         return datetime.datetime.utcnow() - trial_started
 
-    @cached_property
-    def full_name(self):
-        return self.given_name + " " + self.surname
-
 
     @cached_property
     def awards(self):

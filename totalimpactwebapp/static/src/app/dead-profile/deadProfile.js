@@ -11,6 +11,7 @@ angular.module('deadProfile', []).config(function ($routeProvider) {
 })
 
 
-.controller("DeadProfileCtrl", function(){
+.controller("DeadProfileCtrl", function($scope, security){
     console.log("dead profile ctrl")
+    $scope.showLogin = security.showLogin
   })

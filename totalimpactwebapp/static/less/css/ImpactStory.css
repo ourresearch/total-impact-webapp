@@ -6327,6 +6327,23 @@ div.no-page p {
 div.no-page p span.slug {
   font-weight: bold;
 }
+/* Dead Profile page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#profile-expired {
+  margin-top: 100px;
+  text-align: center;
+}
+#profile-expired div.main div.copy {
+  width: 500px;
+  font-size: 24px;
+  font-weight: 300;
+  margin: 0 auto;
+}
+#profile-expired div.main a.subscribe-btn {
+  margin-top: 100px;
+}
 /* sidebar
 *****************************************************************************
 *****************************************************************************

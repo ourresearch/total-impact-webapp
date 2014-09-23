@@ -696,8 +696,9 @@ angular.module('deadProfile', []).config(function ($routeProvider) {
 })
 
 
-.controller("DeadProfileCtrl", function(){
+.controller("DeadProfileCtrl", function($scope, security){
     console.log("dead profile ctrl")
+    $scope.showLogin = security.showLogin
   })
 angular.module("genrePage", [
   'resources.users',
@@ -5443,7 +5444,22 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
 
 angular.module("dead-profile/dead-profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("dead-profile/dead-profile.tpl.html",
-    "<h1>profile expired</h1>");
+    "<div id=\"profile-expired\">\n" +
+    "   <h1>Profile expired</h1>\n" +
+    "\n" +
+    "   <div class=\"main\">\n" +
+    "      <div class=\"copy\">\n" +
+    "         This profile has been\n" +
+    "         deactivated because its subscription is no longer active.\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <a class=\"subscribe-btn btn btn-xlarge btn-primary\" ng-click=\"showLogin()\">\n" +
+    "         Reactivate\n" +
+    "      </a>\n" +
+    "\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($templateCache) {
