@@ -7851,7 +7851,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "   <form stripe-form=\"handleStripe\"\n" +
     "         name=\"upgradeForm\"\n" +
     "         novalidate\n" +
-    "         ng-if=\"isTrialing() || !isLive()\" \n" +
+    "         ng-if=\"isTrialing() || !isLive()\"\n" +
     "         class=\"form-horizontal upgrade-form\">\n" +
     "\n" +
     "       <div class=\"form-title trial\">\n" +
