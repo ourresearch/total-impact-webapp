@@ -69,15 +69,20 @@ angular.module("services.page")
         ProfileService.clear()
         PinboardService.clear()
 
-        // is this profile's owner here? give em a chance to subscribe.
-        if (security.getCurrentUserSlug() == profileSlug){
-          $location.path("/settings/subscription")
-        }
+        security.currentUserOwnsProfile(profileSlug).then(
+          function(currentUserOwnsProfile){
+            // is this profile's owner here? give em a chance to subscribe.
+            if (currentUserOwnsProfile){
+              $location.path("/settings/subscription")
+            }
 
-        // for everyone else, show a Dead Profile page
-        else {
-          $location.path(profileSlug + "/expired")
-        }
+            // for everyone else, show a Dead Profile page
+            else {
+              $location.path(profileSlug + "/expired")
+            }
+          }
+        )
+
       }
     }
 
