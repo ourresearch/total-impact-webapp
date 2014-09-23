@@ -30,13 +30,15 @@ import hashlib
 import redis
 import csv
 import StringIO
+import arrow
 
 
 logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
 free_trial_timedelta = datetime.timedelta(days=30)
-trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=22)
+trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=21)
+first_users_with_expiry_notice = datetime.datetime(year=2014, month=8, day=13)
 
 
 
@@ -253,35 +255,51 @@ class Profile(db.Model):
 
     @cached_property
     def is_subscribed(self):
-        return bool(self.stripe_id) or self.is_advisor
+        if self.stripe_id or self.is_advisor:
+            return True
+        return False
 
     @cached_property
     def is_paid_subscriber(self):
         if self.stripe_id:
-            stripe_customer = stripe.Customer.retrieve(self.stripe_id)
-            if (("cards" in stripe_customer) and \
-                ("data" in stripe_customer["cards"]) and stripe_customer["cards"]["data"]):
-                return True
+            try:
+                stripe_customer = stripe.Customer.retrieve(self.stripe_id)
+                if (("cards" in stripe_customer) and \
+                    ("data" in stripe_customer["cards"]) and stripe_customer["cards"]["data"]):
+                    return True
+            except InvalidRequestError:
+                logger.debug(u"InvalidRequestError for stripe_id {stripe_id}".format(
+                    stripe_id=self.stripe_id))
+
+                return False
         return False
 
     @cached_property
     def subscription_start_date(self):
         if self.stripe_id:
-            stripe_customer = stripe.Customer.retrieve(self.stripe_id)
-            subscription_start_date = arrow.get(stripe_customer["created"]).isoformat()
-            return subscription_start_date
+            try:
+                stripe_customer = stripe.Customer.retrieve(self.stripe_id)
+                subscription_start_date = arrow.get(stripe_customer["created"])
+                return subscription_start_date.strftime("%B %d %Y")
+            except InvalidRequestError:
+                logger.debug(u"InvalidRequestError for stripe_id {stripe_id}".format(
+                    stripe_id=self.stripe_id))
         elif self.is_advisor:
             return self.created.strftime("%B %d %Y")
         return None
 
     @cached_property
     def is_trialing(self):
-        in_trial_period = self.trial_age_timedelta < free_trial_timedelta
-        return in_trial_period and not self.is_subscribed
+
+        return (self.created > first_users_with_expiry_notice)
+
+        # go back to this method once we are sending automated drop emails
+        # in_trial_period = self.trial_age_timedelta < free_trial_timedelta
+        # return in_trial_period and not self.is_subscribed
 
     @cached_property
     def days_left_in_trial(self):
-        return (free_trial_timedelta - self.trial_age_timedelta).days
+        return max(0, (free_trial_timedelta - self.trial_age_timedelta).days)
 
     @cached_property
     def trial_age_timedelta(self):

@@ -1071,6 +1071,11 @@ def pluralize_genre(genre):
     # this is a dumb way to do it. refactor later.
     genre_plural = genre + u"s"
 
+    if genre_plural.endswith("ys"):
+        genre_plural = genre[:-1] + u"ies"
+    if genre == "thesis":
+        genre_plural = "theses"
+
     if genre_plural.startswith("other"):
         genre_plural = "other products"
     elif genre_plural.startswith("slides"):

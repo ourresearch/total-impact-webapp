@@ -55,7 +55,7 @@
          ng-if="isTrialing() || !isLive()"
          class="form-horizontal upgrade-form">
 
-      <div class="form-title trial">
+       <div class="form-title trial">
          <h3>Continue your subscription</h3>
          <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>
       </div>
@@ -68,18 +68,18 @@
          <div class="col-sm-9" id="plan-options">
             <div class="radio">
                <label>
-                  <input type="radio" name="plan" value="base-monthly" ng-model="subscribeForm.plan">
-                  $5 per month
+                  <input type="radio" name="plan" value="ongoing-monthly" ng-model="subscribeForm.plan">
+                  $10 per month
                </label>
             </div>
             <div class="radio">
                <label>
-                  <input type="radio" name="plan" value="base-yearly" ng-model="subscribeForm.plan">
-                  $45 per year <strong>(saves 25%)</strong>
+                  <input type="radio" name="plan" value="ongoing-yearly" ng-model="subscribeForm.plan">
+                  $60 per year
                </label>
             </div>
          </div>
-      </div>
+      </div> 
 
       <!-- name on card -->
       <div class="form-group">
@@ -177,7 +177,7 @@
                </div>
          </div>
          <div class="col-sm-offset-3 col-sm-9 money-help" ng-hide="loading.is('subscribe')">
-            Trouble affording $5/mo? No worries, we've been through some lean times
+            Trouble affording a subscription? No worries, we've been through some lean times
             ourselves. So we've got a <a ng-click="showFeeWaiverDetails=!showFeeWaiverDetails">no-questions-asked fee waiver for you.</a>
 
             <div class="fee-waiver-details" ng-show="showFeeWaiverDetails">
@@ -189,7 +189,7 @@
 
          </div>
       </div>
-   </form>
+   </form> 
 
    <div class="subscriber-buttons" ng-if="isSubscribed()">
       <button ng-click="editCard()" class="btn btn-primary edit-credit-card">
