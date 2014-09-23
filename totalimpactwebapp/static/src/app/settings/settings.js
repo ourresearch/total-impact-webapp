@@ -178,6 +178,8 @@ angular.module('settings', [
                                                     Loading,
                                                     TiMixpanel,
                                                     ProfileAboutService,
+                                                    ProfileService,
+                                                    PinboardService,
                                                     UsersSubscription) {
 
 
@@ -243,11 +245,17 @@ angular.module('settings', [
         function(resp){
           console.log("we subscribed a user, huzzah!", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug, true).then(
+            function(){
+              ProfileService.get($scope.user.url_slug, true)
+              PinboardService.get($scope.user.url_slug, true)
 
-          window.scrollTo(0,0)
-          UserMessage.set("settings.subscription.subscribe.success")
-          Loading.finish("subscribe")
+              window.scrollTo(0,0)
+              UserMessage.set("settings.subscription.subscribe.success")
+              Loading.finish("subscribe")
+            }
+          )
+
           TiMixpanel.track("User subscribed")
 
 

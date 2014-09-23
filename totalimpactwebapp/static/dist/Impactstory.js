@@ -2607,6 +2607,8 @@ angular.module('settings', [
                                                     Loading,
                                                     TiMixpanel,
                                                     ProfileAboutService,
+                                                    ProfileService,
+                                                    PinboardService,
                                                     UsersSubscription) {
 
 
@@ -2672,11 +2674,17 @@ angular.module('settings', [
         function(resp){
           console.log("we subscribed a user, huzzah!", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug, true).then(
+            function(){
+              ProfileService.get($scope.user.url_slug, true)
+              PinboardService.get($scope.user.url_slug, true)
 
-          window.scrollTo(0,0)
-          UserMessage.set("settings.subscription.subscribe.success")
-          Loading.finish("subscribe")
+              window.scrollTo(0,0)
+              UserMessage.set("settings.subscription.subscribe.success")
+              Loading.finish("subscribe")
+            }
+          )
+
           TiMixpanel.track("User subscribed")
 
 
@@ -8098,11 +8106,11 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "   <div class=\"sidebar-footer\">\n" +
-    "      <a href=\"/\" class=\"logo\" ng-show=\"profileAboutService.data.given_name\">\n" +
+    "      <a href=\"/\" class=\"logo\" ng-show=\"profileAboutService.data.is_live\">\n" +
     "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
     "      </a>\n" +
     "\n" +
-    "      <div ng-show=\"!profileAboutService.data.given_name\"\n" +
+    "      <div ng-show=\"!profileAboutService.data.is_live\"\n" +
     "           class=\"sidebar-funders\">\n" +
     "         <h3>Supported by</h3>\n" +
     "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +
