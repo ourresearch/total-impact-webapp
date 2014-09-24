@@ -516,6 +516,38 @@ def count_news_for_subscribers(url_slug=None, min_url_slug=None):
 
 
 
+
+def send_drip_email(url_slug=None, min_url_slug=None):
+    MIN_AGE_DAYS_FOR_DRIP_EMAIL = 28
+
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+
+        drip_email_create_date = datetime.datetime.utcnow() - datetime.timedelta(days=MIN_AGE_DAYS_FOR_DRIP_EMAIL)
+        logger.info(u"in send_drip_email with drip_email_create_date:{drip_email_create_date}".format(
+            drip_email_create_date=drip_email_create_date))
+
+        # only profiles that have null stripe ids and are at least drip email days old
+        q = db.session.query(Profile) \
+                .filter(Profile.stripe_id==None) \
+                .filter(Profile.created <= drip_email_create_date)
+        if min_url_slug:
+            q = q.filter(Profile.url_slug >= min_url_slug)
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.info(u"in send_drip_email with {url_slug}".format(
+            url_slug=profile.url_slug))
+
+        # if profile.is_trialing and not profile.received_drip_email("last_chance")
+        #         # logger.info(u"add_product_deets_for_everyone: {url_slug}, tiid={tiid}".format(
+        #         #     url_slug=profile.url_slug, tiid=product.tiid))
+        #         drip_log = make_drip_log(profile, "last_chance")  # not delayed
+        #         db.session.add(drip_log)
+        #         db.session.commit()
+
+
+
 def main(function, args):
     if function=="emailreports":
         if "url_slug" in args and args["url_slug"]:
@@ -540,6 +572,11 @@ def main(function, args):
         star_best_products(args["url_slug"], args["min_url_slug"])
     elif function=="count_news":
         count_news_for_subscribers(args["url_slug"], args["min_url_slug"])
+    elif function=="drip_email":
+        send_drip_email(args["url_slug"], args["min_url_slug"])
+
+
+
 
 
 
