@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-23
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-24
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -7828,12 +7828,16 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
+    "\n" +
+    "\n" +
     "   <div class=\"current-plan-status paid\" ng-if=\"isSubscribed() && isLive()\">\n" +
     "      <span class=\"setup\">\n" +
     "         Your Impactstory subscription is active.\n" +
     "      </span>\n" +
     "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "   </div>\n" +
+    "\n" +
+    "\n" +
     "\n" +
     "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing() && isLive()\">\n" +
     "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +

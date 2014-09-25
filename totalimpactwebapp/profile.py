@@ -291,11 +291,12 @@ class Profile(db.Model):
     @cached_property
     def is_trialing(self):
 
-        return (self.created > first_users_with_expiry_notice)
+        in_trial_period = self.created > first_users_with_expiry_notice
 
         # go back to this method once we are sending automated drop emails
         # in_trial_period = self.trial_age_timedelta < free_trial_timedelta
-        # return in_trial_period and not self.is_subscribed
+
+        return in_trial_period and not self.is_subscribed
 
     @cached_property
     def days_left_in_trial(self):
