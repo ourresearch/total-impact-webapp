@@ -5858,96 +5858,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "<div class=\"main infopage\" id=\"faq\"><div class=\"wrapper\">\n" +
     "   <h2 class=\"infopage-heading\">FAQ</h2>\n" +
     "\n" +
-    "   <h3 id=\"what\" class=\"first\">what is Impactstory?</h3>\n" +
     "\n" +
-    "   <p>Impactstory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the Alfred P. Sloan Foundation and incorporated as a nonprofit corporation.\n" +
-    "\n" +
-    "   <p>Impactstory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
-    "   <ul>\n" +
-    "      <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
-    "      <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
-    "      <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles--each genre a first-class citizen, each making its own kind of impact.</li>\n" +
-    "   </ul>\n" +
-    "\n" +
-    "   <h3 id=\"audience\">who is it for?</h3>\n" +
-    "\n" +
-    "   <ul>\n" +
-    "      <li><b>researchers</b> who want to know how many times their work has been downloaded, bookmarked, and blogged\n" +
-    "      <li><b>research groups</b> who want to look at the broad impact of their work and see what has demonstrated interest\n" +
-    "      <li><b>funders</b> who want to see what sort of impact they may be missing when only considering citations to papers\n" +
-    "      <li><b>repositories</b> who want to report on how their research products are being discussed\n" +
-    "      <li><b>all of us</b> who believe that people should be rewarded when their work (no matter what the format) makes a positive impact (no matter what the venue). Aggregating evidence of impact will facilitate appropriate rewards, thereby encouraging additional openness of useful forms of research output.\n" +
-    "   </ul>\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"uses\">how should it be used?</h3>\n" +
-    "\n" +
-    "   <p>Impactstory data can be:</p>\n" +
-    "   <ul>\n" +
-    "      <li>highlighted as indications of the <em>minimum</em> impact a research product has made on the community\n" +
-    "      <li>explored more deeply to see who is citing, bookmarking, and otherwise using your work\n" +
-    "      <li>run to collect usage information for mention in biosketches\n" +
-    "      <li>included as a link in CVs\n" +
-    "      <li>analyzed by downloading detailed metric information\n" +
-    "   </ul>\n" +
-    "\n" +
-    "   <h3 id=\"pooruses\">how <em>shouldn’t</em> it be used?</h3>\n" +
-    "\n" +
-    "   <p>Some of these issues relate to the early-development phase of Impactstory, some reflect our <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">early-understanding of altmetrics</a>, and some are just common sense.  Impactstory reports shouldn't be used:\n" +
-    "\n" +
-    "   <ul>\n" +
-    "      <li><b>as indication of comprehensive impact</b>\n" +
-    "         <p>Impactstory is in early development. See <a href=\"#limitations\">limitations</a> and take it all with a grain of salt.\n" +
-    "\n" +
-    "            <li><b>for serious comparison</b>\n" +
-    "               <p>Impactstory is currently better at collecting comprehensive metrics for some products than others, in ways that are not clear in the report. Extreme care should be taken in comparisons. Numbers should be considered minimums. Even more care should be taken in comparing collections of products, since some Impactstory is currently better at identifying products identified in some ways than others. Finally, some of these metrics can be easily gamed. This is one reason we believe having many metrics is valuable.\n" +
-    "\n" +
-    "                  <li><b>as if we knew exactly what it all means</b>\n" +
-    "                     <p>The meaning of these metrics are not yet well understood; see <a href=\"#meaning\">section</a> below.\n" +
-    "\n" +
-    "                        <li><b>as a substitute for personal judgement of quality</b>\n" +
-    "         <p>Metrics are only one part of the story. Look at the research product for yourself and talk about it with informed colleagues.\n" +
-    "\n" +
-    "   </ul>\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"meaning\">what do these number actually mean?</h3>\n" +
-    "\n" +
-    "   <p>The short answer is: probably something useful, but we’re not sure what. We believe that dismissing the metrics as “buzz” is short-sighted: surely people bookmark and download things for a reason. The long answer, as well as a lot more speculation on the long-term significance of tools like Impactstory, can be found in the nascent scholarly literature on “altmetrics.”\n" +
-    "\n" +
-    "   <p><a href=\"http://altmetrics.org/manifesto/\">The Altmetrics Manifesto</a> is a good, easily-readable introduction to this literature. You can check out the shared <a href=\"http://www.mendeley.com/groups/586171/altmetrics/papers/\">altmetrics library</a> on Mendeley for a growing list of relevant research.\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"you-are-not-geting-all-my-citations\">you're not getting all my citations!</h3>\n" +
-    "   <p>We'd love to display citation information from Google Scholar and Thomson Reuter's Web of Science in Impactstory, but sadly neither Google Scholar nor Web of Science allow us to do this. We're really pleased that Scopus has been more open with their data, allowing us to display their citation data on our website.  PubMed and Crossref are exemplars of open data: we display their citation counts on our website, in Impactstory widgets, and through our API.  As more citation databases open up, we'll include their data as fully as we can.</p>\n" +
-    "\n" +
-    "   <p>Each source of citation data gathers citations in its own ways, with their own strengths and limitations.  Web of Science gets  citation counts by manually gathering citations from a relatively small set of \"core\" journals.  Scopus and Google Scholar crawl a much more expansive set of publisher webpages, and Google also examines papers hosted elsewhere on the web.  PubMed looks at the reference sections of papers in PubMed Central, and CrossRef by looking at the reference lists that they see.  Google Scholar's scraping techniques and citation criteria are the most inclusive; the number of citations found by Google Scholar is typically the highest, though the least curated. A lot of folks have looked into the differences between citation counts from different providers, comparing Google Scholar, Scopus, and Web of Science and finding many differences; if you'd like to learn more, you might start with <a href=\"http://eprints.rclis.org/8605/\">this article.</a></p>\n" +
-    "\n" +
-    "\n" +
-    "   <!--<h3 id=\"whichartifacts\">which identifiers are supported?</h3>\n" +
-    "   <table class=\"permitted-artifact-ids\" border=1>\n" +
-    "           <tr><th>artifact type</th><th>host</th><th>supported<br>ID format</th><th>example (id-type:id)</th><tr>\n" +
-    "           <tr><td>published article</td><td>an article with a DOI</td><td>DOI</td><td><b>doi:</b>10.1371/journal.pcbi.1000361</td></tr>\n" +
-    "           <tr><td>published article</td><td>an article in PubMed</td><td>PMID</td><td><b>pmid:</b>19304878</td></tr>\n" +
-    "           <tr><td>dataset</td><td>Dryad or figshare</td><td>DOI</td><td><b>doi:</b>10.5061/dryad.1295</td></tr>\n" +
-    "           <tr><td>software</td><td>GitHub</td><td>URL</td><td><b>url:</b>https://github.com/egonw/biostar-central</td></tr>\n" +
-    "           <tr><td>slides</td><td>SlideShare</td><td>URL</td><td><b>url:</b>http://www.slideshare.net/phylogenomics/eisenall-hands</td></tr>\n" +
-    "           <tr><td>generic</td><td>A conference paper, website resource, etc.</td><td>URL</td><td><b>url:</b>http://opensciencesummit.com/program/</td></tr>\n" +
-    "   </table>-->\n" +
-    "\n" +
-    "   <h3 id=\"tos\">terms of use</h3>\n" +
-    "   <p>Due to agreements we have made with data providers, you may not scrape this website -- use the embed or download funtionality instead.</p>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"copyright\">copyright</h3>\n" +
-    "   <span class=\"text\">Except where otherwise noted, content on this site is licensed under the\n" +
-    "      <a rel=\"license\" href=\"http://creativecommons.org/licenses/by/2.0/\">CC-BY license</a>.\n" +
-    "   </span>\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"percentiles\">Impactstory reports \"percentiles\" a lot. How are these calculated?</h3>\n" +
-    "   <p>Stay tuned, we're writing this now...</p>\n" +
     "\n" +
     "\n" +
     "\n" +
@@ -5973,58 +5884,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </ul>\n" +
     "\n" +
     "\n" +
-    "   <h3 id=\"whereisif\">where is the journal impact factor?</h3>\n" +
-    "\n" +
-    "   <p>We do not include the Journal Impact Factor (or any similar proxy) on purpose. As has been <a href=\"https://www.zotero.org/groups/impact_factor_problems/items\">repeatedly shown</a>, the Impact Factor is not appropriate for judging the quality of individual research products. Individual article citations reflect much more about how useful papers actually were. Better yet are article-level metrics, as initiated by PLoS, in which we examine traces of impact beyond citation. Impactstory broadens this approach to reflect <b>product-level metrics</b>, by inclusion of preprints, datasets, presentation slides, and other research output formats.\n" +
-    "\n" +
-    "   <h3 id=\"similar\">where is my other favourite metric?</h3>\n" +
-    "\n" +
-    "   <p>We only include open metrics here, and so far only a selection of those. We welcome contributions of plugins. Write your own and tell us about it.\n" +
-    "\n" +
-    "   <p>Not sure Impactstory is your cup of tea?  Check out these similar tools:\n" +
-    "   <ul>\n" +
-    "      <li><a href=\"http://altmetric.com\">altmetric.com</a>\n" +
-    "      <li><a href=\"http://www.plumanalytics.com/\">Plum Analytics</a>\n" +
-    "      <li><a href=\"http://article-level-metrics.plos.org/\">PLoS Article-Level Metrics application</a>\n" +
-    "      <li><a href=\"http://sciencecard.org/\">Science Card</a>\n" +
-    "      <li><a href=\"http://citedin.org/\">CitedIn</a>\n" +
-    "      <li><a href=\"http://readermeter.org/\">ReaderMeter</a>\n" +
-    "   </ul>\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"limitations\">what are the current limitations of the system?</h3>\n" +
-    "\n" +
-    "   <p>Impactstory is in early development and has many limitations. Some of the ones we know about:\n" +
-    "\n" +
-    "   <h4>gathering IDs sometimes misses products</h4>\n" +
-    "   <ul>\n" +
-    "      <li>ORCID and BibTex import sometimes can't parse or locate all objects.\n" +
-    "   </ul>\n" +
-    "\n" +
-    "   <h4>products are sometimes missing metrics</h4>\n" +
-    "   <ul>\n" +
-    "      <li>doesn’t display metrics with a zero value\n" +
-    "      <li>sometimes the products were received without sufficient information to use all metrics. For example, the system sometimes can't figure out all URLs from a DOI.\n" +
-    "   </ul>\n" +
-    "\n" +
-    "   <h4>metrics sometimes have values that are too low</h4>\n" +
-    "   <ul>\n" +
-    "      <li>some sources have multiple records for a given product. Impactstory only identifies one copy and so only reports the impact metrics for that record. It makes no current attempt to aggregate across duplications within a source.\n" +
-    "   </ul>\n" +
-    "\n" +
-    "   <h4>other</h4>\n" +
-    "   <ul>\n" +
-    "      <li>the number of items on a report is currently limited.\n" +
-    "   </ul>\n" +
-    "\n" +
-    "   Tell us about bugs! <a href=\"http://twitter.com/#!/Impactstory\">@Impactstory</a> (or via email to team@impactstory.org)\n" +
-    "\n" +
-    "   <h3 id=\"what-do-i-get\">what do I get for the $10 a month?</h3>\n" +
-    "\n" +
-    "   <p>Currently, your subscription dollars buy you an Impactstory profile (featuring open metrics, with context, for diverse research products) that updates weekly, pulling in your new publications, datasets, slide decks, and other research outputs alongside their updated metrics. You also get notification emails that tell you when new metrics are added to your profile.</p>\n" +
-    "\n" +
-    "   <p>We&rsquo;ll continue to add new and useful features over time, and your subscription will include those features, too.</p>\n" +
-    "\n" +
     "\n" +
     "   <h3 id=\"why-charge\">Impactstory is a non-profit. Why are you charging for profiles?</h3>\n" +
     "\n" +
@@ -6038,10 +5897,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p>Yes. We&rsquo;re big believers in Open Data--it&rsquo;s one of the reasons we decided to make Impactstory non-profit! And unlike most commercial sites for academics, we allow users full control over their data, including the ability to export it in multiple formats. You can <a href=\"http://feedback.impactstory.org/knowledgebase/articles/398552-exporting-your-impactstory-profile-data\">export your data</a>&nbsp;at any time prior to unsubscribing.</p>\n" +
     "   <p>The only catch? We are bound by the terms of service of our data providers. We lobby them hard for the most open terms possible, but some still forbid anyone to download their data.</p>\n" +
     "\n" +
-    "\n" +
-    "   <h3 id=\"waiver\">what if I can&rsquo;t afford $10 a month?</h3>\n" +
-    "\n" +
-    "   <p>We’ve got a no-questions-asked waiver; send us an email to team@impactstory.org showing us how you’re linking to your Impactstory profile in your email signature and we’ll send you a coupon for a free account.</p>\n" +
     "\n" +
     "   <h3 id=\"fee-but-open\">how can profiles still be Open if they cost money?</h3>\n" +
     "\n" +
@@ -6059,49 +5914,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   <p>We’d like to make all of the data displayed by Impactstory available under CC0. Unfortunately, the terms-of-use of most of the data sources don’t allow that. We're trying to figure out how to handle this.\n" +
     "   <p>An option to restrict the displayed reports to Fully Open metrics — those suitable for commercial use — is on the To Do list.\n" +
     "   <p>The Impactstory software itself is fully open source under an MIT license. <a href=\"https://github.com/total-impact\">GitHub</a>\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"who\">who developed Impactstory?</h3>\n" +
-    "\n" +
-    "   <p>Concept originally hacked at the <a href=\"http://beyond-impact.org/\">Beyond Impact Workshop</a>, part of the Beyond Impact project funded by the Open Society Foundations <a href=\"https://github.com/mhahnel/Total-Impact/contributors\">(initial contributors)</a>.  Here's the <a href=\"/about\">current team</a>.\n" +
-    "\n" +
-    "   <h3 id=\"funding\">who funds Impactstory?</h3>\n" +
-    "\n" +
-    "   <p>Early development was done on personal time, plus some discretionary time while funded through <a href=\"http://dataone.org\">DataONE</a> (Heather Piwowar) and a <a href=\"http://gradschool.unc.edu/programs/royster\">UNC Royster Fellowship</a> (Jason Priem).\n" +
-    "\n" +
-    "   <p>In early 2012, Impactstory was given £17,000 through the <a href=\"http://beyond-impact.org/\">Beyond Impact project</a> from the <a href=\"http://www.soros.org/\">Open Society Foundation</a>.  As of May 2012, Impactstory is funded through a $125k grant from the <a href=\"http://sloan.org/\">Alfred P. Sloan Foundation. </a>\n" +
-    "\n" +
-    "   <h3 id=\"learned\">what have you learned?</h3>\n" +
-    "\n" +
-    "   <ul>\n" +
-    "      <li>the multitude of IDs for a given product is a bigger problem than we guessed. Even articles that have DOIs often also have urls, PubMed IDs, PubMed Central IDs, Mendeley IDs, etc. There is no one place to find all synonyms, yet the various APIs often only work with a specific one or two ID types. This makes comprehensive impact-gathering time consuming and error-prone.\n" +
-    "      <li>some data is harder to get than we thought (wordpress stats without requesting consumer key information)\n" +
-    "      <li>some data is easier to get than we thought (vendors willing to work out special agreements, permit web scraping for particular purposes, etc)\n" +
-    "      <li>lack of an author-identifier makes us reliant on user-populated systems like Mendeley for tracking author-based work (we need ORCID and we need it now!)\n" +
-    "      <li>API limits like those on PubMed Central (3 request per second) make their data difficult to incorporate in this sort of application\n" +
-    "   </ul>\n" +
-    "\n" +
-    "   <h3 id=\"howhelp\">how can I help?</h3>\n" +
-    "\n" +
-    "   <ul>\n" +
-    "      <li><b>do you have data?</b> If it is already available in some public format, let us know so we can add it. If it isn’t, either please open it up or contact us to work out some mutually beneficial way we can work together.\n" +
-    "      <li><b>do you have money?</b> We need money :) We need to fund future development of the system and are actively looking for appropriate opportunities.\n" +
-    "      <li><b>do you have ideas?</b> Maybe enhancements to Impactstory would fit in with a grant you are writing, or maybe you want to make it work extra-well for your institution’s research outputs. We’re interested: please get in touch (see bottom).\n" +
-    "      <li><b>do you have energy?</b> We need better “see what it does” documentation, better lists of collections, etc. Make some and tell us, please!\n" +
-    "      <li><b>do you have anger that your favourite data source is missing?</b> After you confirm that its data isn't available for open purposes like this, write to them and ask them to open it up... it might work. If the data is open but isn't included here, let us know to help us prioritize.\n" +
-    "      <li><b>can you email, blog, post, tweet, or walk down the hall to tell a friend?</b> See the <a href=\"#cool\">this is so cool</a> section for your vital role....\n" +
-    "   </ul>\n" +
-    "\n" +
-    "   <h3 id=\"cool\">this is so cool.</h3>\n" +
-    "\n" +
-    "   <p>Thanks! We agree :)\n" +
-    "   <p>You can help us.  Demonstrating the value of Impactstory is key to receiving future funding.\n" +
-    "   <p>Buzz and testimonials will help. Tweet your reports. Blog, send email, and show off Impactstory at your next group meeting to help spread the word.\n" +
-    "   <p>Tell us how cool it is at <a href=\"http://twitter.com/#!/Impactstory\">@Impactstory</a> (or via email to team@impactstory.org) so we can consolidate the feedback.\n" +
-    "\n" +
-    "   <h3 id=\"suggestion\">I have a suggestion!</h3>\n" +
-    "\n" +
-    "   <p><b>We want to hear it.</b> Send it to us at <a href=\"http://twitter.com/#!/Impactstory\">@Impactstory</a> (or via email to team@impactstory.org).\n" +
     "\n" +
     "\n" +
     "</div><!-- end wrapper -->\n" +
