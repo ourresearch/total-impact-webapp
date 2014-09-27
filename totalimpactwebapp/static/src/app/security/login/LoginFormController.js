@@ -14,8 +14,6 @@ angular.module('security.login.form', [
                                             $modalInstance,
                                             $modal,
                                             UserMessage,
-                                            email,
-                                            clearMessages,
                                             Page,
                                             Loading) {
   var reportError = function(status){
@@ -40,9 +38,6 @@ angular.module('security.login.form', [
 
   UserMessage.showOnTop(false)
   $scope.user = {};
-  if (email){
-    $scope.user.email = email
-  }
   $scope.loading = Loading
   $scope.userMessage = UserMessage
 
@@ -56,7 +51,6 @@ angular.module('security.login.form', [
     security.login($scope.user.email, $scope.user.password)
       .success(function(data, status){
         dismissModal()
-        security.redirectToProfile()
       })
       .error(function(data, status){
         console.log("login error!", status)
