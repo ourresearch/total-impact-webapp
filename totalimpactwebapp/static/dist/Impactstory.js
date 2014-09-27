@@ -732,6 +732,34 @@ angular.module("genrePage", [
   }
 })
 
+.factory("SelectedProducts", function(){
+  var tiids = []
+
+  return {
+    add: function(tiid){
+      return tiids.push(tiid)
+    },
+    addFromObjects: function(objects){
+      return tiids = _.pluck(objects, "tiid")
+    },
+    remove: function(tiid){
+      tiids = _.without(tiids, tiid)
+    },
+    empty: function(){
+      return tiids.length = 0
+    },
+    contains: function(tiid){
+      return _.contains(tiids, tiid)
+    },
+    get: function(){
+      return tiids
+    }
+  }
+})
+
+
+
+
 
 
 
@@ -759,10 +787,13 @@ angular.module("genrePage", [
     security,
     ProfileService,
     ProfileAboutService,
+    SelectedProducts,
     PinboardService,
     Page) {
 
     $scope.pinboardService = PinboardService
+
+    $scope.SelectedProducts = SelectedProducts
 
 
     Timer.start("genreViewRender")
@@ -5602,6 +5633,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "         </span>\n" +
     "\n" +
     "      </div>\n" +
+    "\n" +
     "      <div class=\"products\">\n" +
     "         <ul class=\"products-list\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
@@ -5614,11 +5646,16 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "               <!-- users must be logged in -->\n" +
     "               <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
     "                  <span class=\"delete-product-controls\"> <!--needed to style tooltip -->\n" +
-    "                     <a class=\"remove-product\"\n" +
-    "                        tooltip=\"Delete this product\"\n" +
-    "                        ng-click=\"profileService.removeProduct(product)\">\n" +
-    "                        <i class=\"icon-trash icon\"></i>\n" +
-    "                     </a>\n" +
+    "\n" +
+    "                     <i class=\"icon-check-empty\"\n" +
+    "                        ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +
+    "                        ng-click=\"SelectedProducts.add(product.tiid)\"></i>\n" +
+    "\n" +
+    "                     <i class=\"icon-check\"\n" +
+    "                        ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
+    "                        ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
+    "\n" +
+    "\n" +
     "                  </span>\n" +
     "                  <span class=\"feature-product-controls\">\n" +
     "                     <a class=\"feature-product\"\n" +

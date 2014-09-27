@@ -7890,7 +7890,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   text-align: right;
   line-height: 1;
   font-size: 14px;
-  margin-top: 4px;
+  margin: 1px 5px 0 0;
 }
 .product div.product-margin a {
   color: #aaa;
@@ -7906,15 +7906,12 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   display: inline;
   color: #ff4000;
 }
-.product div.product-margin span.delete-product-controls a:hover {
-  color: red;
+.product div.product-margin span.delete-product-controls i {
+  color: #999;
+  vertical-align: -1px;
 }
-.product div.product-margin span.delete-product-controls .tooltip-inner {
-  background: red;
-  width: 100px;
-}
-.product div.product-margin span.delete-product-controls .tooltip-arrow {
-  border-top-color: red;
+.product div.product-margin span.delete-product-controls i.icon-check {
+  color: #666;
 }
 .product-container .biblio {
   float: left;
@@ -9723,69 +9720,4 @@ div.genre-page div.products ul.products-list:after {
 }
 div.genre-page div.products ul.products-list li.product {
   position: relative;
-}
-/*****************************************************
-
-saving this here for later maybe
-
-******************************************************/
-div.products-info {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-div.products-info div.products-done-updating div.last-collected {
-  font-size: 13px;
-  font-weight: 300;
-  display: none;
-}
-div.products-info div.products-done-updating div.products-count-info {
-  font-weight: 300;
-  margin: 0;
-}
-div.products-info div.products-done-updating div.products-count-info span.showing {
-  font-weight: normal;
-  display: none;
-}
-div.products-info div.products-done-updating div.products-count-info span.value {
-  font-weight: bold;
-  margin-right: 3px;
-}
-div.products-info div.products-done-updating div.filters-label {
-  color: #777;
-  font-weight: normal;
-  font-size: 16px;
-  float: left;
-}
-div.products-info div.products-done-updating div.filters {
-  float: left;
-}
-div.products-info div.products-done-updating div.filters i.icon-chevron-right {
-  vertical-align: -2px;
-  color: #aaa;
-}
-div.products-info div.products-done-updating div.filters .filters-label {
-  float: left;
-  font-weight: normal;
-}
-div.products-info div.products-done-updating div.filters .filter {
-  font-size: 15px;
-  float: left;
-  padding-left: 10px;
-}
-div.products-info div.products-done-updating div.filters .filter.active a {
-  font-weight: normal;
-  color: #555;
-  cursor: default;
-}
-div.products-info div.products-done-updating div.filters .filter.active.this-week a {
-  font-weight: 900;
-  color: #ff4000;
-}
-div.products-info div.products-done-updating div.filters .filter a {
-  font-weight: 100;
-  color: #999999;
-}
-div.products-info div.products-done-updating div.filters .filter a span.count {
-  font-size: 80%;
 }

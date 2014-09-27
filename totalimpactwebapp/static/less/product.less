@@ -1,3 +1,6 @@
+@import 'variables';
+
+
 .product {
    float:left;
    clear:both;
@@ -11,7 +14,7 @@
       text-align:right;
       line-height: 1;
       font-size:14px;
-      margin-top: 4px;
+      margin: 1px 5px 0 0;
       a {
          color: #aaa;
          padding: 3px 5px;
@@ -28,17 +31,13 @@
          }
       }
       span.delete-product-controls{
-         a:hover {
-            color: red;
+         i {
+            color: #999;
+            vertical-align: -1px;
+            &.icon-check {
+               color: #666;
+            }
          }
-         .tooltip-inner {
-            background: red;
-            width: 100px;
-         }
-         .tooltip-arrow {
-            border-top-color: red;
-         }
-
       }
    }
 }

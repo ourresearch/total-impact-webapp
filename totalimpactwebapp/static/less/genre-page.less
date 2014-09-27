@@ -1,3 +1,6 @@
+@import 'variables';
+
+
 div.genre-page {
    div.header {
       padding: 20px 10px 10px @contentPaddingLeft;
@@ -115,83 +118,3 @@ div.genre-page {
 
 
 
-
-
-
-
-/*****************************************************
-
-saving this here for later maybe
-
-******************************************************/
-
-   // filters and counts on right side of profile
-   div.products-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      div.products-done-updating {
-
-         div.last-collected {
-            font-size: 13px;
-            font-weight: 300;
-            display:none;
-         }
-
-         div.products-count-info {
-            font-weight: 300;
-            margin: 0;
-            span.showing {
-               font-weight: normal;
-               display:none;
-            }
-            span.value {
-               font-weight: bold;
-               margin-right: 3px;
-            }
-         }
-         div.filters-label {
-            color: #777;
-            font-weight: normal;
-            font-size: 16px;
-            float:left;
-         }
-         div.filters {
-            float:left;
-            i.icon-chevron-right {
-               vertical-align: -2px;
-               color: #aaa;
-            }
-            .filters-label {
-               float:left;
-               font-weight: normal;
-            }
-            .filter {
-               font-size: 15px;
-               &.active {
-                  a {
-                     font-weight: normal;
-                     color: #555;
-                     cursor: default;
-                  }
-                  &.this-week {
-                     a {
-                        font-weight: 900;
-                        color: @linkColor;
-                     }
-                  }
-               }
-               float:left;
-               padding-left: 10px;
-               a {
-                  font-weight: 100;
-                  color: @gray-light;
-                  span.count {
-                     font-size: 80%;
-                  }
-               }
-            }
-
-         }
-      }
-   }

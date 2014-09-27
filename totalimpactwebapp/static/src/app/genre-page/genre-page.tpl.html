@@ -64,6 +64,7 @@
          </span>
 
       </div>
+
       <div class="products">
          <ul class="products-list">
             <li class="product genre-{{ product.genre }}"
@@ -76,11 +77,16 @@
                <!-- users must be logged in -->
                <div class="product-margin" ng-show="security.isLoggedIn(url_slug)">
                   <span class="delete-product-controls"> <!--needed to style tooltip -->
-                     <a class="remove-product"
-                        tooltip="Delete this product"
-                        ng-click="profileService.removeProduct(product)">
-                        <i class="icon-trash icon"></i>
-                     </a>
+
+                     <i class="icon-check-empty"
+                        ng-show="!SelectedProducts.contains(product.tiid)"
+                        ng-click="SelectedProducts.add(product.tiid)"></i>
+
+                     <i class="icon-check"
+                        ng-show="SelectedProducts.contains(product.tiid)"
+                        ng-click="SelectedProducts.remove(product.tiid)"></i>
+
+
                   </span>
                   <span class="feature-product-controls">
                      <a class="feature-product"
