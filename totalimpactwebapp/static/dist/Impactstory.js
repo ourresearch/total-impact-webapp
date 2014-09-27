@@ -7820,208 +7820,221 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "   <p class=\"expl\">Update your payment information.</p>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
-    "\n" +
-    "   <div class=\"current-plan-status cancelled\" ng-if=\"!isLive()\">\n" +
-    "      <span class=\"setup\">Your account is cancelled!</span>\n" +
-    "\n" +
-    "      <div class=\"pitch\">\n" +
-    "         <p>But you can get it back! And you should, because your research is\n" +
-    "            making impacts all the time.\n" +
-    "         And with Impactstory, you can see and share them all&mdash;\n" +
-    "            everything from citations to downloads to tweets\n" +
-    "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
-    "         <p>By subscribing today, you'll restore your impact profile and\n" +
-    "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit.</p>\n" +
-    "      </div>\n" +
+    "<div class=\"logged-out-subscription\" ng-if=\"!security.getCurrentUser()\">\n" +
+    "   <h3>You must be logged in to change your subscription settings.</h3>\n" +
+    "   <div class=\"btn-container\">\n" +
+    "      <a class=\"btn btn-xlarge btn-primary\" ng-click=\"security.showLogin()\">\n" +
+    "         <i class=\"icon-signin\"></i>\n" +
+    "         Log in now\n" +
+    "      </a>\n" +
     "   </div>\n" +
+    "</div>\n" +
     "\n" +
     "\n" +
+    "<div class=\"logged-in\" ng-if=\"security.getCurrentUser()\">\n" +
+    "   <div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
     "\n" +
-    "   <div class=\"current-plan-status paid\" ng-if=\"isSubscribed() && isLive()\">\n" +
-    "      <span class=\"setup\">\n" +
-    "         Your Impactstory subscription is active.\n" +
-    "      </span>\n" +
-    "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
-    "   </div>\n" +
+    "      <div class=\"current-plan-status cancelled\" ng-if=\"!isLive()\">\n" +
+    "         <span class=\"setup\">Your account is cancelled!</span>\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing() && isLive()\">\n" +
-    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
-    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
-    "\n" +
-    "      <div class=\"email-example\">\n" +
-    "         <img src=\"/static/img/card-example.png\" alt=\"Impactstory notification email\"/>\n" +
-    "      </div>\n" +
-    "      <div class=\"pitch\">\n" +
-    "         <p>Your research is making impacts all the time.\n" +
-    "         And with Impactstory, you can see and share them all&mdash;\n" +
-    "            everything from citations to downloads to tweets\n" +
-    "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
-    "         <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
-    "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit. </p>\n" +
-    "      </div>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "   <form stripe-form=\"handleStripe\"\n" +
-    "         name=\"upgradeForm\"\n" +
-    "         novalidate\n" +
-    "         ng-if=\"isTrialing() || !isLive()\"\n" +
-    "         class=\"form-horizontal upgrade-form\">\n" +
-    "\n" +
-    "       <div class=\"form-title trial\">\n" +
-    "         <h3>Continue your subscription</h3>\n" +
-    "         <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "      <!-- plan -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"plan-options\">Billing period</label>\n" +
-    "         <div class=\"col-sm-9\" id=\"plan-options\">\n" +
-    "            <div class=\"radio\">\n" +
-    "               <label>\n" +
-    "                  <input type=\"radio\" name=\"plan\" value=\"ongoing-monthly\" ng-model=\"subscribeForm.plan\">\n" +
-    "                  $10 per month\n" +
-    "               </label>\n" +
-    "            </div>\n" +
-    "            <div class=\"radio\">\n" +
-    "               <label>\n" +
-    "                  <input type=\"radio\" name=\"plan\" value=\"ongoing-yearly\" ng-model=\"subscribeForm.plan\">\n" +
-    "                  $60 per year\n" +
-    "               </label>\n" +
-    "            </div>\n" +
-    "         </div>\n" +
-    "      </div> \n" +
-    "\n" +
-    "      <!-- name on card -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
-    "         <div class=\"col-sm-9\">\n" +
-    "            <input type=\"text\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   name=\"card-holder-name\"\n" +
-    "                   id=\"card-holder-name\"\n" +
-    "                   placeholder=\"Card Holder's Name\">\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <!-- card number -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"card-number\"\n" +
-    "                 id=\"card-number\"\n" +
-    "                 ng-model=\"number\"\n" +
-    "                 payments-validate=\"card\"\n" +
-    "                 payments-format=\"card\"\n" +
-    "                 payments-type-model=\"type\"\n" +
-    "                 ng-class=\"type\"\n" +
-    "                 placeholder=\"Credit Card Number\">\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <!-- expiration date -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
-    "         <div class=\"col-sm-3\">\n" +
-    "            <input type=\"text\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   name=\"card-expiry\"\n" +
-    "                   id=\"card-expiry\"\n" +
-    "                   ng-model=\"expiry\"\n" +
-    "                   payments-validate=\"expiry\"\n" +
-    "                   payments-format=\"expiry\"\n" +
-    "                   placeholder=\"MM/YY\">\n" +
+    "         <div class=\"pitch\">\n" +
+    "            <p>But you can get it back! And you should, because your research is\n" +
+    "               making impacts all the time.\n" +
+    "            And with Impactstory, you can see and share them all&mdash;\n" +
+    "               everything from citations to downloads to tweets\n" +
+    "            and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
+    "            <p>By subscribing today, you'll restore your impact profile and\n" +
+    "               email notifications&mdash;and   you'll be helping to keep\n" +
+    "            Impactstory a sustainable, open-source nonprofit.</p>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
-    "      <!-- CVV -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"cvv\"\n" +
-    "                 id=\"cvv\"\n" +
-    "                 ng-model=\"cvc\"\n" +
-    "                 payments-validate=\"cvc\"\n" +
-    "                 payments-format=\"cvc\"\n" +
-    "                 payments-type-model=\"type\"\n" +
-    "                 placeholder=\"CVV\">\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-2 cvv-graphic\">\n" +
-    "           <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
     "\n" +
-    "      <!-- CVV -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Coupon code</label>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"coupon-code\"\n" +
-    "                 id=\"coupon-code\"\n" +
-    "                 ng-model=\"subscribeForm.coupon\"\n" +
-    "                 placeholder=\"If you have a coupon, it goes here\">\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-2\">\n" +
-    "        </div>\n" +
+    "      <div class=\"current-plan-status paid\" ng-if=\"isSubscribed() && isLive()\">\n" +
+    "         <span class=\"setup\">\n" +
+    "            Your Impactstory subscription is active.\n" +
+    "         </span>\n" +
+    "         <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
     "\n" +
+    "      <div class=\"current-plan-status trial\" ng-if=\"isTrialing() && isLive()\">\n" +
+    "         <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
+    "         <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <div class=\"col-sm-offset-3 col-sm-9\">\n" +
-    "               <button type=\"submit\"\n" +
-    "                       ng-show=\"!loading.is('subscribe')\"\n" +
-    "                       class=\"btn btn-success\">\n" +
-    "                  Subscribe me!\n" +
-    "               </button>\n" +
-    "               <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  <span class=\"text\">Subscribing you to Impactstory&hellip;</span>\n" +
+    "         <div class=\"email-example\">\n" +
+    "            <img src=\"/static/img/card-example.png\" alt=\"Impactstory notification email\"/>\n" +
+    "         </div>\n" +
+    "         <div class=\"pitch\">\n" +
+    "            <p>Your research is making impacts all the time.\n" +
+    "            And with Impactstory, you can see and share them all&mdash;\n" +
+    "               everything from citations to downloads to tweets\n" +
+    "            and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
+    "            <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
+    "               email notifications&mdash;and   you'll be helping to keep\n" +
+    "            Impactstory a sustainable, open-source nonprofit. </p>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      <form stripe-form=\"handleStripe\"\n" +
+    "            name=\"upgradeForm\"\n" +
+    "            novalidate\n" +
+    "            ng-if=\"isTrialing() || !isLive()\"\n" +
+    "            class=\"form-horizontal upgrade-form\">\n" +
+    "\n" +
+    "          <div class=\"form-title trial\">\n" +
+    "            <h3>Continue your subscription</h3>\n" +
+    "            <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "         <!-- plan -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"plan-options\">Billing period</label>\n" +
+    "            <div class=\"col-sm-9\" id=\"plan-options\">\n" +
+    "               <div class=\"radio\">\n" +
+    "                  <label>\n" +
+    "                     <input type=\"radio\" name=\"plan\" value=\"ongoing-monthly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                     $10 per month\n" +
+    "                  </label>\n" +
     "               </div>\n" +
+    "               <div class=\"radio\">\n" +
+    "                  <label>\n" +
+    "                     <input type=\"radio\" name=\"plan\" value=\"ongoing-yearly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                     $60 per year\n" +
+    "                  </label>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
     "         </div>\n" +
-    "         <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
-    "            Trouble affording a subscription? No worries, we've been through some lean times\n" +
-    "            ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
     "\n" +
-    "            <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
-    "               <br>\n" +
-    "               To get your waiver, just <a href=\"mailto:team@impactstory.org\">drop us a line</a> showing us how you’re linking to your Impactstory profile\n" +
-    "               in your email signature and we’ll send you a coupon for a free account.\n" +
+    "         <!-- name on card -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
+    "            <div class=\"col-sm-9\">\n" +
+    "               <input type=\"text\"\n" +
+    "                      class=\"form-control\"\n" +
+    "                      name=\"card-holder-name\"\n" +
+    "                      id=\"card-holder-name\"\n" +
+    "                      placeholder=\"Card Holder's Name\">\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <!-- card number -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "           <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "           <div class=\"col-sm-9\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"card-number\"\n" +
+    "                    id=\"card-number\"\n" +
+    "                    ng-model=\"number\"\n" +
+    "                    payments-validate=\"card\"\n" +
+    "                    payments-format=\"card\"\n" +
+    "                    payments-type-model=\"type\"\n" +
+    "                    ng-class=\"type\"\n" +
+    "                    placeholder=\"Credit Card Number\">\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- expiration date -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "            <div class=\"col-sm-3\">\n" +
+    "               <input type=\"text\"\n" +
+    "                      class=\"form-control\"\n" +
+    "                      name=\"card-expiry\"\n" +
+    "                      id=\"card-expiry\"\n" +
+    "                      ng-model=\"expiry\"\n" +
+    "                      payments-validate=\"expiry\"\n" +
+    "                      payments-format=\"expiry\"\n" +
+    "                      placeholder=\"MM/YY\">\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- CVV -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "           <div class=\"col-sm-3\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"cvv\"\n" +
+    "                    id=\"cvv\"\n" +
+    "                    ng-model=\"cvc\"\n" +
+    "                    payments-validate=\"cvc\"\n" +
+    "                    payments-format=\"cvc\"\n" +
+    "                    payments-type-model=\"type\"\n" +
+    "                    placeholder=\"CVV\">\n" +
+    "           </div>\n" +
+    "           <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "              <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <!-- CVV -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"cvv\">Coupon code</label>\n" +
+    "           <div class=\"col-sm-9\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"coupon-code\"\n" +
+    "                    id=\"coupon-code\"\n" +
+    "                    ng-model=\"subscribeForm.coupon\"\n" +
+    "                    placeholder=\"If you have a coupon, it goes here\">\n" +
+    "           </div>\n" +
+    "           <div class=\"col-sm-2\">\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "                  <button type=\"submit\"\n" +
+    "                          ng-show=\"!loading.is('subscribe')\"\n" +
+    "                          class=\"btn btn-success\">\n" +
+    "                     Subscribe me!\n" +
+    "                  </button>\n" +
+    "                  <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     <span class=\"text\">Subscribing you to Impactstory&hellip;</span>\n" +
+    "                  </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
+    "               Trouble affording a subscription? No worries, we've been through some lean times\n" +
+    "               ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
+    "\n" +
+    "               <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
+    "                  <br>\n" +
+    "                  To get your waiver, just <a href=\"mailto:team@impactstory.org\">drop us a line</a> showing us how you’re linking to your Impactstory profile\n" +
+    "                  in your email signature and we’ll send you a coupon for a free account.\n" +
+    "\n" +
+    "               </div>\n" +
     "\n" +
     "            </div>\n" +
-    "\n" +
     "         </div>\n" +
+    "      </form>\n" +
+    "\n" +
+    "      <div class=\"subscriber-buttons\" ng-if=\"isSubscribed()\">\n" +
+    "         <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
+    "            <i class=\"icon-credit-card left\"></i>\n" +
+    "            Change my credit card info\n" +
+    "         </button>\n" +
+    "         <button ng-click=\"cancelSubscription()\" class=\"btn btn-danger\">\n" +
+    "            <i class=\"icon-warning-sign left\"></i>\n" +
+    "            Cancel subscription\n" +
+    "         </button>\n" +
     "      </div>\n" +
-    "   </form> \n" +
     "\n" +
-    "   <div class=\"subscriber-buttons\" ng-if=\"isSubscribed()\">\n" +
-    "      <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
-    "         <i class=\"icon-credit-card left\"></i>\n" +
-    "         Change my credit card info\n" +
-    "      </button>\n" +
-    "      <button ng-click=\"cancelSubscription()\" class=\"btn btn-danger\">\n" +
-    "         <i class=\"icon-warning-sign left\"></i>\n" +
-    "         Cancel subscription\n" +
-    "      </button>\n" +
     "   </div>\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "");

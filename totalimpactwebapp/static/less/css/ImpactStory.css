@@ -8813,6 +8813,19 @@ div.settings div.settings-nav ul li a:hover {
   text-decoration: none;
   color: #000;
 }
+div.settings div.logged-out-subscription {
+  width: 466px;
+}
+div.settings div.logged-out-subscription h3 {
+  font-weight: 300;
+  font-size: 40px;
+  margin-bottom: 50px;
+  margin-top: 100px;
+}
+div.settings div.logged-out-subscription div.btn-container {
+  padding-left: 10px;
+  text-align: center;
+}
 div.settings div.settings-input {
   margin: 20px 0 0 200px;
 }

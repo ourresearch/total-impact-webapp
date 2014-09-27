@@ -4,207 +4,220 @@
    <p class="expl">Update your payment information.</p>
 </div>
 
-<div class="upgrade-form-container"  ng-controller="subscriptionSettingsCtrl">
-
-   <div class="current-plan-status cancelled" ng-if="!isLive()">
-      <span class="setup">Your account is cancelled!</span>
-
-      <div class="pitch">
-         <p>But you can get it back! And you should, because your research is
-            making impacts all the time.
-         And with Impactstory, you can see and share them all&mdash;
-            everything from citations to downloads to tweets
-         and more&mdash;on your profile and delivered straight to your inbox. </p>
-         <p>By subscribing today, you'll restore your impact profile and
-            email notifications&mdash;and   you'll be helping to keep
-         Impactstory a sustainable, open-source nonprofit.</p>
-      </div>
+<div class="logged-out-subscription" ng-if="!security.getCurrentUser()">
+   <h3>You must be logged in to change your subscription settings.</h3>
+   <div class="btn-container">
+      <a class="btn btn-xlarge btn-primary" ng-click="security.showLogin()">
+         <i class="icon-signin"></i>
+         Log in now
+      </a>
    </div>
+</div>
 
 
+<div class="logged-in" ng-if="security.getCurrentUser()">
+   <div class="upgrade-form-container"  ng-controller="subscriptionSettingsCtrl">
 
-   <div class="current-plan-status paid" ng-if="isSubscribed() && isLive()">
-      <span class="setup">
-         Your Impactstory subscription is active.
-      </span>
-      <span class="thanks">Thanks for helping to keep Impactstory nonprofit and open source!</span>
-   </div>
+      <div class="current-plan-status cancelled" ng-if="!isLive()">
+         <span class="setup">Your account is cancelled!</span>
 
-
-
-   <div class="current-plan-status trial" ng-if="isTrialing() && isLive()">
-      <span class="setup" ng-if="daysLeftInTrial()>0">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>
-      <span class="setup" ng-if="daysLeftInTrial()==0">Your Impactstory trial ends today!</span>
-
-      <div class="email-example">
-         <img src="/static/img/card-example.png" alt="Impactstory notification email"/>
-      </div>
-      <div class="pitch">
-         <p>Your research is making impacts all the time.
-         And with Impactstory, you can see and share them all&mdash;
-            everything from citations to downloads to tweets
-         and more&mdash;on your profile and delivered straight to your inbox. </p>
-         <p>By extending your free trial today, you'll keep benefiting from your impact profile and
-            email notifications&mdash;and   you'll be helping to keep
-         Impactstory a sustainable, open-source nonprofit. </p>
-      </div>
-
-   </div>
-
-
-
-   <form stripe-form="handleStripe"
-         name="upgradeForm"
-         novalidate
-         ng-if="isTrialing() || !isLive()"
-         class="form-horizontal upgrade-form">
-
-       <div class="form-title trial">
-         <h3>Continue your subscription</h3>
-         <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>
-      </div>
-
-
-
-      <!-- plan -->
-      <div class="form-group">
-         <label class="col-sm-3 control-label" for="plan-options">Billing period</label>
-         <div class="col-sm-9" id="plan-options">
-            <div class="radio">
-               <label>
-                  <input type="radio" name="plan" value="ongoing-monthly" ng-model="subscribeForm.plan">
-                  $10 per month
-               </label>
-            </div>
-            <div class="radio">
-               <label>
-                  <input type="radio" name="plan" value="ongoing-yearly" ng-model="subscribeForm.plan">
-                  $60 per year
-               </label>
-            </div>
-         </div>
-      </div> 
-
-      <!-- name on card -->
-      <div class="form-group">
-         <label class="col-sm-3 control-label" for="card-holder-name">Name</label>
-         <div class="col-sm-9">
-            <input type="text"
-                   class="form-control"
-                   name="card-holder-name"
-                   id="card-holder-name"
-                   placeholder="Card Holder's Name">
-         </div>
-      </div>
-
-      <!-- card number -->
-      <div class="form-group">
-        <label class="col-sm-3 control-label" for="card-number">Card Number</label>
-        <div class="col-sm-9">
-          <input type="text"
-                 class="form-control"
-                 name="card-number"
-                 id="card-number"
-                 ng-model="number"
-                 payments-validate="card"
-                 payments-format="card"
-                 payments-type-model="type"
-                 ng-class="type"
-                 placeholder="Credit Card Number">
-        </div>
-      </div>
-
-
-      <!-- expiration date -->
-      <div class="form-group">
-         <label class="col-sm-3 control-label" for="card-expiry">Expiration</label>
-         <div class="col-sm-3">
-            <input type="text"
-                   class="form-control"
-                   name="card-expiry"
-                   id="card-expiry"
-                   ng-model="expiry"
-                   payments-validate="expiry"
-                   payments-format="expiry"
-                   placeholder="MM/YY">
+         <div class="pitch">
+            <p>But you can get it back! And you should, because your research is
+               making impacts all the time.
+            And with Impactstory, you can see and share them all&mdash;
+               everything from citations to downloads to tweets
+            and more&mdash;on your profile and delivered straight to your inbox. </p>
+            <p>By subscribing today, you'll restore your impact profile and
+               email notifications&mdash;and   you'll be helping to keep
+            Impactstory a sustainable, open-source nonprofit.</p>
          </div>
       </div>
 
 
-      <!-- CVV -->
-      <div class="form-group">
-         <label class="col-sm-3 control-label" for="cvv">Security code</label>
-        <div class="col-sm-3">
-          <input type="text"
-                 class="form-control"
-                 name="cvv"
-                 id="cvv"
-                 ng-model="cvc"
-                 payments-validate="cvc"
-                 payments-format="cvc"
-                 payments-type-model="type"
-                 placeholder="CVV">
-        </div>
-        <div class="col-sm-2 cvv-graphic">
-           <img src="static/img/cvv-graphic.png" alt="cvv graphic"/>
-        </div>
-      </div>
 
-      <!-- CVV -->
-      <div class="form-group">
-         <label class="col-sm-3 control-label" for="cvv">Coupon code</label>
-        <div class="col-sm-9">
-          <input type="text"
-                 class="form-control"
-                 name="coupon-code"
-                 id="coupon-code"
-                 ng-model="subscribeForm.coupon"
-                 placeholder="If you have a coupon, it goes here">
-        </div>
-        <div class="col-sm-2">
-        </div>
+      <div class="current-plan-status paid" ng-if="isSubscribed() && isLive()">
+         <span class="setup">
+            Your Impactstory subscription is active.
+         </span>
+         <span class="thanks">Thanks for helping to keep Impactstory nonprofit and open source!</span>
       </div>
 
 
 
+      <div class="current-plan-status trial" ng-if="isTrialing() && isLive()">
+         <span class="setup" ng-if="daysLeftInTrial()>0">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>
+         <span class="setup" ng-if="daysLeftInTrial()==0">Your Impactstory trial ends today!</span>
 
-      <div class="form-group">
-         <div class="col-sm-offset-3 col-sm-9">
-               <button type="submit"
-                       ng-show="!loading.is('subscribe')"
-                       class="btn btn-success">
-                  Subscribe me!
-               </button>
-               <div class="working" ng-show="loading.is('subscribe')">
-                  <i class="icon-refresh icon-spin"></i>
-                  <span class="text">Subscribing you to Impactstory&hellip;</span>
+         <div class="email-example">
+            <img src="/static/img/card-example.png" alt="Impactstory notification email"/>
+         </div>
+         <div class="pitch">
+            <p>Your research is making impacts all the time.
+            And with Impactstory, you can see and share them all&mdash;
+               everything from citations to downloads to tweets
+            and more&mdash;on your profile and delivered straight to your inbox. </p>
+            <p>By extending your free trial today, you'll keep benefiting from your impact profile and
+               email notifications&mdash;and   you'll be helping to keep
+            Impactstory a sustainable, open-source nonprofit. </p>
+         </div>
+
+      </div>
+
+
+
+      <form stripe-form="handleStripe"
+            name="upgradeForm"
+            novalidate
+            ng-if="isTrialing() || !isLive()"
+            class="form-horizontal upgrade-form">
+
+          <div class="form-title trial">
+            <h3>Continue your subscription</h3>
+            <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>
+         </div>
+
+
+
+         <!-- plan -->
+         <div class="form-group">
+            <label class="col-sm-3 control-label" for="plan-options">Billing period</label>
+            <div class="col-sm-9" id="plan-options">
+               <div class="radio">
+                  <label>
+                     <input type="radio" name="plan" value="ongoing-monthly" ng-model="subscribeForm.plan">
+                     $10 per month
+                  </label>
                </div>
+               <div class="radio">
+                  <label>
+                     <input type="radio" name="plan" value="ongoing-yearly" ng-model="subscribeForm.plan">
+                     $60 per year
+                  </label>
+               </div>
+            </div>
          </div>
-         <div class="col-sm-offset-3 col-sm-9 money-help" ng-hide="loading.is('subscribe')">
-            Trouble affording a subscription? No worries, we've been through some lean times
-            ourselves. So we've got a <a ng-click="showFeeWaiverDetails=!showFeeWaiverDetails">no-questions-asked fee waiver for you.</a>
 
-            <div class="fee-waiver-details" ng-show="showFeeWaiverDetails">
-               <br>
-               To get your waiver, just <a href="mailto:team@impactstory.org">drop us a line</a> showing us how you’re linking to your Impactstory profile
-               in your email signature and we’ll send you a coupon for a free account.
+         <!-- name on card -->
+         <div class="form-group">
+            <label class="col-sm-3 control-label" for="card-holder-name">Name</label>
+            <div class="col-sm-9">
+               <input type="text"
+                      class="form-control"
+                      name="card-holder-name"
+                      id="card-holder-name"
+                      placeholder="Card Holder's Name">
+            </div>
+         </div>
+
+         <!-- card number -->
+         <div class="form-group">
+           <label class="col-sm-3 control-label" for="card-number">Card Number</label>
+           <div class="col-sm-9">
+             <input type="text"
+                    class="form-control"
+                    name="card-number"
+                    id="card-number"
+                    ng-model="number"
+                    payments-validate="card"
+                    payments-format="card"
+                    payments-type-model="type"
+                    ng-class="type"
+                    placeholder="Credit Card Number">
+           </div>
+         </div>
+
+
+         <!-- expiration date -->
+         <div class="form-group">
+            <label class="col-sm-3 control-label" for="card-expiry">Expiration</label>
+            <div class="col-sm-3">
+               <input type="text"
+                      class="form-control"
+                      name="card-expiry"
+                      id="card-expiry"
+                      ng-model="expiry"
+                      payments-validate="expiry"
+                      payments-format="expiry"
+                      placeholder="MM/YY">
+            </div>
+         </div>
+
+
+         <!-- CVV -->
+         <div class="form-group">
+            <label class="col-sm-3 control-label" for="cvv">Security code</label>
+           <div class="col-sm-3">
+             <input type="text"
+                    class="form-control"
+                    name="cvv"
+                    id="cvv"
+                    ng-model="cvc"
+                    payments-validate="cvc"
+                    payments-format="cvc"
+                    payments-type-model="type"
+                    placeholder="CVV">
+           </div>
+           <div class="col-sm-2 cvv-graphic">
+              <img src="static/img/cvv-graphic.png" alt="cvv graphic"/>
+           </div>
+         </div>
+
+         <!-- CVV -->
+         <div class="form-group">
+            <label class="col-sm-3 control-label" for="cvv">Coupon code</label>
+           <div class="col-sm-9">
+             <input type="text"
+                    class="form-control"
+                    name="coupon-code"
+                    id="coupon-code"
+                    ng-model="subscribeForm.coupon"
+                    placeholder="If you have a coupon, it goes here">
+           </div>
+           <div class="col-sm-2">
+           </div>
+         </div>
+
+
+
+
+         <div class="form-group">
+            <div class="col-sm-offset-3 col-sm-9">
+                  <button type="submit"
+                          ng-show="!loading.is('subscribe')"
+                          class="btn btn-success">
+                     Subscribe me!
+                  </button>
+                  <div class="working" ng-show="loading.is('subscribe')">
+                     <i class="icon-refresh icon-spin"></i>
+                     <span class="text">Subscribing you to Impactstory&hellip;</span>
+                  </div>
+            </div>
+            <div class="col-sm-offset-3 col-sm-9 money-help" ng-hide="loading.is('subscribe')">
+               Trouble affording a subscription? No worries, we've been through some lean times
+               ourselves. So we've got a <a ng-click="showFeeWaiverDetails=!showFeeWaiverDetails">no-questions-asked fee waiver for you.</a>
+
+               <div class="fee-waiver-details" ng-show="showFeeWaiverDetails">
+                  <br>
+                  To get your waiver, just <a href="mailto:team@impactstory.org">drop us a line</a> showing us how you’re linking to your Impactstory profile
+                  in your email signature and we’ll send you a coupon for a free account.
+
+               </div>
 
             </div>
-
          </div>
+      </form>
+
+      <div class="subscriber-buttons" ng-if="isSubscribed()">
+         <button ng-click="editCard()" class="btn btn-primary edit-credit-card">
+            <i class="icon-credit-card left"></i>
+            Change my credit card info
+         </button>
+         <button ng-click="cancelSubscription()" class="btn btn-danger">
+            <i class="icon-warning-sign left"></i>
+            Cancel subscription
+         </button>
       </div>
-   </form> 
 
-   <div class="subscriber-buttons" ng-if="isSubscribed()">
-      <button ng-click="editCard()" class="btn btn-primary edit-credit-card">
-         <i class="icon-credit-card left"></i>
-         Change my credit card info
-      </button>
-      <button ng-click="cancelSubscription()" class="btn btn-danger">
-         <i class="icon-warning-sign left"></i>
-         Cancel subscription
-      </button>
    </div>
-
 </div>
 
