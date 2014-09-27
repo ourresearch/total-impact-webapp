@@ -17,11 +17,10 @@ angular.module('settings', [
         templateUrl:'settings/settings.tpl.html',
         controller: "settingsCtrl",
         resolve:{
-          authenticatedUser:function (security) {
-            return security.requestCurrentUser();
-          },
-          allowed: function(security){
-            return security.testUserAuthenticationLevel("loggedIn")
+          currentUser:function (security) {
+            var currentUser = security.requestCurrentUser()
+            console.log("checking the current user in /settings/:page resolve", currentUser)
+            return currentUser
           }
         }
       }
@@ -30,7 +29,7 @@ angular.module('settings', [
 
   .controller('settingsCtrl', function ($scope,
                                         $location,
-                                        authenticatedUser,
+                                        currentUser,
                                         SettingsPageDescriptions,
                                         ProfileAboutService,
                                         ProfileService,
@@ -38,14 +37,25 @@ angular.module('settings', [
                                         Page,
                                         Loading) {
 
+    if (currentUser || $routeParams.page === "subscription"){
+      var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
+      $scope.include =  currentPageDescr.templatePath;
+    }
+    else {
+      console.log("there ain't no current user; redirecting to landing page.")
+      $location.path("/")
+    }
+
+    $scope.authenticatedUser = currentUser;
+    $scope.pageDescriptions = SettingsPageDescriptions.get();
 
     Page.setName("settings")
     $scope.resetUser = function(){
-      $scope.user = angular.copy(authenticatedUser)
+      $scope.user = angular.copy(currentUser)
     }
     $scope.loading = Loading
     $scope.home = function(){
-      $location.path('/' + authenticatedUser.url_slug);
+      $location.path('/' + currentUser.url_slug);
     }
     $scope.isCurrentPath = function(path) {
       return path == $location.path();
@@ -60,13 +70,12 @@ angular.module('settings', [
       formCtrl.$setPristine()
     }
 
-    var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
-
     $scope.resetUser()
     Loading.finish()
-    $scope.include =  currentPageDescr.templatePath;
-    $scope.authenticatedUser = authenticatedUser;
-    $scope.pageDescriptions = SettingsPageDescriptions.get();
+
+
+
+
 
   })
 
