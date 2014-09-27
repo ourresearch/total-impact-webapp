@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-22
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-26
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -509,6 +509,7 @@ angular.module('app', [
   'services.profileAboutService',
   'profileSidebar',
   'ui.sortable',
+  'deadProfile',
   'services.pinboardService',
   'settings',
   'xeditable'
@@ -656,7 +657,6 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $scope.$on('$locationChangeStart', function(event, next, current){
     Page.setProfileUrl(false)
-    Breadcrumbs.clear()
     Loading.clear()
   })
 
@@ -683,6 +683,23 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   };
 }]);
 
+
+angular.module('deadProfile', []).config(function ($routeProvider) {
+
+
+    $routeProvider.when("/:url_slug/expired", {
+      templateUrl: "dead-profile/dead-profile.tpl.html",
+      controller: "DeadProfileCtrl"
+    })
+
+
+})
+
+
+.controller("DeadProfileCtrl", function($scope, security){
+    console.log("dead profile ctrl")
+    $scope.showLogin = security.showLogin
+  })
 angular.module("genrePage", [
   'resources.users',
   'services.page',
@@ -1870,9 +1887,14 @@ angular.module("profile", [
     ProfileService.get(url_slug).then(
       function(resp){
         // put our stuff in the scope
-        console.log("putting resp in profile from controller", resp)
+
+        // hack. profile service was cleared because profile is dead.
+        if (_.isEmpty(resp)){
+          return false
+        }
+
         $scope.profile = resp
-        Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+        Page.setTitle(resp.about.full_name)
         security.isLoggedInPromise(url_slug).then(
           function(){
             var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
@@ -1943,8 +1965,6 @@ angular.module('security.login.form', [
                                             $modalInstance,
                                             $modal,
                                             UserMessage,
-                                            email,
-                                            clearMessages,
                                             Page,
                                             Loading) {
   var reportError = function(status){
@@ -1969,9 +1989,6 @@ angular.module('security.login.form', [
 
   UserMessage.showOnTop(false)
   $scope.user = {};
-  if (email){
-    $scope.user.email = email
-  }
   $scope.loading = Loading
   $scope.userMessage = UserMessage
 
@@ -1985,7 +2002,6 @@ angular.module('security.login.form', [
     security.login($scope.user.email, $scope.user.password)
       .success(function(data, status){
         dismissModal()
-        security.redirectToProfile()
       })
       .error(function(data, status){
         console.log("login error!", status)
@@ -2128,16 +2144,12 @@ angular.module('security.service', [
 
     // Login form dialog stuff
     var loginDialog = null;
-    function openLoginDialog(email, clearMessages) {
+    function openLoginDialog(redirectTo) {
       console.log("openLoginDialog() fired.")
       loginDialog = $modal.open({
         templateUrl: "security/login/form.tpl.html",
         controller: "LoginFormController",
-        windowClass: "creds",
-        resolve: {
-          email: function(){return email},
-          clearMessages: function(){return clearMessages}
-        }
+        windowClass: "creds"
       });
       loginDialog.result.then();
     }
@@ -2155,8 +2167,8 @@ angular.module('security.service', [
     // The public API of the service
     var service = {
 
-      showLogin: function(email, clearMessages) {
-        openLoginDialog(email, clearMessages);
+      showLogin: function() {
+        openLoginDialog();
       },
 
       login: function(email, password) {
@@ -2424,11 +2436,10 @@ angular.module('settings', [
         templateUrl:'settings/settings.tpl.html',
         controller: "settingsCtrl",
         resolve:{
-          authenticatedUser:function (security) {
-            return security.requestCurrentUser();
-          },
-          allowed: function(security){
-            return security.testUserAuthenticationLevel("loggedIn")
+          currentUser:function (security) {
+            var currentUser = security.requestCurrentUser()
+            console.log("checking the current user in /settings/:page resolve", currentUser)
+            return currentUser
           }
         }
       }
@@ -2437,7 +2448,7 @@ angular.module('settings', [
 
   .controller('settingsCtrl', function ($scope,
                                         $location,
-                                        authenticatedUser,
+                                        currentUser,
                                         SettingsPageDescriptions,
                                         ProfileAboutService,
                                         ProfileService,
@@ -2445,14 +2456,25 @@ angular.module('settings', [
                                         Page,
                                         Loading) {
 
+    if (currentUser || $routeParams.page === "subscription"){
+      var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
+      $scope.include =  currentPageDescr.templatePath;
+    }
+    else {
+      console.log("there ain't no current user; redirecting to landing page.")
+      $location.path("/")
+    }
+
+    $scope.authenticatedUser = currentUser;
+    $scope.pageDescriptions = SettingsPageDescriptions.get();
 
     Page.setName("settings")
     $scope.resetUser = function(){
-      $scope.user = angular.copy(authenticatedUser)
+      $scope.user = angular.copy(currentUser)
     }
     $scope.loading = Loading
     $scope.home = function(){
-      $location.path('/' + authenticatedUser.url_slug);
+      $location.path('/' + currentUser.url_slug);
     }
     $scope.isCurrentPath = function(path) {
       return path == $location.path();
@@ -2467,23 +2489,24 @@ angular.module('settings', [
       formCtrl.$setPristine()
     }
 
-    var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
-
     $scope.resetUser()
     Loading.finish()
-    $scope.include =  currentPageDescr.templatePath;
-    $scope.authenticatedUser = authenticatedUser;
-    $scope.pageDescriptions = SettingsPageDescriptions.get();
+
+
+
+
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
+  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading, ProfileAboutService) {
     $scope.onSave = function() {
+
       Loading.start('saveButton')
       Users.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
+          ProfileAboutService.get($scope.user.url_slug, true)
           security.setCurrentUser(resp.about) // update the current authenticated user.
           UserMessage.set('settings.profile.change.success');
           $scope.home();
@@ -2493,7 +2516,7 @@ angular.module('settings', [
   })
 
 
-  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
+  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading, ProfileAboutService) {
     $scope.onSave = function() {
       var messageKey = "settings.notifications."
         + $scope.user.notification_email_frequency
@@ -2506,6 +2529,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set(messageKey);
           $scope.home();
         }
@@ -2543,7 +2568,7 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
+  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, ProfileAboutService) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -2552,6 +2577,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set('settings.url.change.success');
           $location.path('/' + resp.about.url_slug)
         }
@@ -2578,9 +2605,11 @@ angular.module('settings', [
                                                     UserMessage,
                                                     Loading,
                                                     TiMixpanel,
+                                                    ProfileAboutService,
+                                                    ProfileService,
+                                                    PinboardService,
                                                     UsersSubscription) {
 
-    console.log("subscriptionSettingsCtrl is running.")
 
     // important! this is how we get stuff out of the form from here
     $scope.subscribeForm = {
@@ -2594,6 +2623,10 @@ angular.module('settings', [
 
     $scope.isSubscribed = function(){
       return security.getCurrentUser("is_subscribed")
+    }
+
+    $scope.isLive = function(){
+      return security.getCurrentUser("is_live")
     }
 
 
@@ -2616,6 +2649,8 @@ angular.module('settings', [
         function(resp){
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set("settings.subscription.delete.success")
 
           // @todo refresh the page
@@ -2638,9 +2673,17 @@ angular.module('settings', [
         function(resp){
           console.log("we subscribed a user, huzzah!", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          window.scrollTo(0,0)
-          UserMessage.set("settings.subscription.subscribe.success")
-          Loading.finish("subscribe")
+          ProfileAboutService.get($scope.user.url_slug, true).then(
+            function(){
+              ProfileService.get($scope.user.url_slug, true)
+              PinboardService.get($scope.user.url_slug, true)
+
+              window.scrollTo(0,0)
+              UserMessage.set("settings.subscription.subscribe.success")
+              Loading.finish("subscribe")
+            }
+          )
+
           TiMixpanel.track("User subscribed")
 
 
@@ -2680,7 +2723,7 @@ angular.module('settings', [
   })
 
 
-  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
+  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, ProfileAboutService) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -2689,6 +2732,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set(
             'settings.email.change.success',
             true,
@@ -3649,7 +3694,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4229,7 +4273,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4258,41 +4301,60 @@ angular.module("services.page")
       "/signup",
       "/about",
       "/advisors",
-//      "/settings", // sort of a profile page
       "/spread-the-word"
     ]
 
-
     $rootScope.$on('$routeChangeSuccess', function () {
-      isInfopage = false
-      pageName = null
+      isInfopage = false // init...it's being set elsewhere
+      pageName = null // init...it's being set elsewhere
+
       profileSlug = findProfileSlug()
-      if (profileSlug){
 
-        if (ProfileAboutService.getUrlSlug() != profileSlug){
-          ProfileAboutService.clear()
-          ProfileAboutService.get(profileSlug, true)
-        }
-
-        if (ProfileService.getUrlSlug() != profileSlug){
-          console.log("in Page, running ProfileService.clear()")
-          ProfileService.clear()
-          ProfileService.get(profileSlug, true)
-        }
-
-        if (PinboardService.getUrlSlug() != profileSlug){
-          console.log("looks like the pinboard slug is different from profile slug:", PinboardService.getUrlSlug(), profileSlug)
-          PinboardService.clear()
-          console.log("supposedly, the pinboard is clear now:", PinboardService.cols, PinboardService.data)
-          PinboardService.get(profileSlug)
-        }
+      if (!profileSlug) {
+        clearProfileData()
       }
-      else {
+
+      handleDeadProfile(ProfileAboutService, profileSlug)
+
+      if (ProfileAboutService.slugIsNew(profileSlug)) {
+        console.log("new user slug; loading new profile.")
+        clearProfileData()
+        ProfileService.get(profileSlug, true)
+        PinboardService.get(profileSlug)
+        ProfileAboutService.get(profileSlug, true).then(function(resp){
+            handleDeadProfile(ProfileAboutService, profileSlug)
+          }
+        )
+
+      }
+    });
+
+
+    function clearProfileData(){
         ProfileAboutService.clear()
         ProfileService.clear()
         PinboardService.clear()
+    }
+
+
+    function handleDeadProfile(ProfileAboutService, profileSlug){
+      if (ProfileAboutService.data.is_live === false){
+        console.log("we've got a dead profile.")
+
+        ProfileService.clear()
+        PinboardService.clear()
+
+        // is this profile's owner here? give em a chance to subscribe.
+        if (security.getCurrentUserSlug() == profileSlug){
+          $location.path("/settings/subscription")
+        }
+
+        // for everyone else, show a Dead Profile page
+        else {
+          $location.path(profileSlug + "/expired")
+        }
       }
-    });
+    }
 
 
     function findProfileSlug(){
@@ -4309,6 +4371,12 @@ angular.module("services.page")
       else {
         return firstPartOfPath.substr(1) // no slash
       }
+    }
+
+    var isSubscriptionPage = function(){
+      var splitPath = $location.path().split("/")
+      return splitPath[1] == "settings" && splitPath[2] == "subscription"
+
     }
 
 
@@ -4437,6 +4505,9 @@ angular.module("services.page")
       getLastScrollPosition: function(path){
         return lastScrollPosition[path]
       },
+
+      findProfileSlug: findProfileSlug,
+
       sendPageloadToSegmentio: function(){
 
         analytics.page(
@@ -4498,25 +4569,19 @@ angular.module('services.pinboardService', [
     function saveState(saveOnlyIfNotEmpty) {
       var current_user_url_slug = security.getCurrentUserSlug()
 
-      console.log("saving pinboard state, current_user_url_slug", current_user_url_slug)
       if (!current_user_url_slug){
         return false
       }
       if (saveOnlyIfNotEmpty && isEmpty()){
-        console.log("aborting this pinboard save because", saveOnlyIfNotEmpty, isEmpty())
         return false
       }
-
-      console.log("making the ProfilePinboard.save() call")
 
       ProfilePinboard.save(
         {id: current_user_url_slug},
         {contents: cols},
         function(resp){
-          console.log("success pushing cols", resp, cols)
         },
         function(resp){
-          console.log("failure pushing cols", resp, cols)
         }
       )
     }
@@ -4527,7 +4592,6 @@ angular.module('services.pinboardService', [
       ProfilePinboard.get(
         {id: id},
         function(resp){
-          console.log("got a response back from cols GET", resp)
           cols.one = resp.one
           cols.two = resp.two
         },
@@ -4539,12 +4603,10 @@ angular.module('services.pinboardService', [
     }
 
     function clear(){
-      console.log("clearing this pinboard data: ", cols, data)
       cols.one = []
       cols.two = []
 
       for (var prop in data) { if (data.hasOwnProperty(prop)) { delete data[prop]; } }
-      console.log("cleaned out the pinboard data: ", cols, data)
     }
 
     function isEmpty(){
@@ -4594,7 +4656,6 @@ angular.module('services.profileAboutService', [
 
 
     function get(url_slug, getFromServer){
-      console.log("calling ProfileAboutService.get() with ", url_slug)
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }
@@ -4624,8 +4685,6 @@ angular.module('services.profileAboutService', [
 
 
     function upload(){
-      console.log("calling ProfileAboutService.upload() with ", data.url_slug)
-
       Users.patch(
         {id: data.url_slug},
         {about: data},
@@ -4639,6 +4698,10 @@ angular.module('services.profileAboutService', [
 
     }
 
+    function slugIsNew(slug){
+        return slug && data.url_slug !== slug
+    }
+
 
     return {
       get: get,
@@ -4647,7 +4710,8 @@ angular.module('services.profileAboutService', [
       clear: clear,
       getUrlSlug: function(){
         return data.url_slug
-      }
+      },
+      slugIsNew: slugIsNew
     }
 
   })
@@ -4670,8 +4734,6 @@ angular.module('services.profileService', [
 
 
     function get(url_slug, getFromServer, isEmbedded){
-      console.log("calling ProfileService.get() with", url_slug)
-
       if (data && !getFromServer && !loading){
         return $q.when(data)
       }
@@ -5209,7 +5271,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -5384,6 +5446,26 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("dead-profile/dead-profile.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("dead-profile/dead-profile.tpl.html",
+    "<div id=\"profile-expired\">\n" +
+    "   <h1>Profile expired</h1>\n" +
+    "\n" +
+    "   <div class=\"main\">\n" +
+    "      <div class=\"copy\">\n" +
+    "         This profile has been\n" +
+    "         deactivated because its subscription is no longer active.\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <a class=\"subscribe-btn btn btn-xlarge btn-primary\" ng-click=\"showLogin()\">\n" +
+    "         Reactivate\n" +
+    "      </a>\n" +
+    "\n" +
+    "   </div>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -7728,192 +7810,221 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "   <p class=\"expl\">Update your payment information.</p>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
-    "\n" +
-    "   <div class=\"cancelled\" ng-if=\"planStatus('cancelled')\">\n" +
-    "      <h1>Your account is cancelled!</h1>\n" +
+    "<div class=\"logged-out-subscription\" ng-if=\"!security.getCurrentUser()\">\n" +
+    "   <h3>You must be logged in to change your subscription settings.</h3>\n" +
+    "   <div class=\"btn-container\">\n" +
+    "      <a class=\"btn btn-xlarge btn-primary\" ng-click=\"security.showLogin()\">\n" +
+    "         <i class=\"icon-signin\"></i>\n" +
+    "         Log in now\n" +
+    "      </a>\n" +
     "   </div>\n" +
-    "\n" +
-    "   <div class=\"current-plan-status paid\" ng-if=\"isSubscribed()\">\n" +
-    "      <span class=\"setup\">\n" +
-    "         Your Impactstory subscription is active.\n" +
-    "      </span>\n" +
-    "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"current-plan-status trial\" ng-if=\"!isSubscribed()\">\n" +
-    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
-    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
-    "\n" +
-    "      <div class=\"email-example\">\n" +
-    "         <img src=\"/static/img/card-example.png\" alt=\"Impactstory notification email\"/>\n" +
-    "      </div>\n" +
-    "      <div class=\"pitch\">\n" +
-    "         <p>Your research is making impacts all the time.\n" +
-    "         And with Impactstory, you can see and share them all&mdash;\n" +
-    "            everything from citations to downloads to tweets\n" +
-    "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
-    "         <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
-    "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit.</p>\n" +
-    "      </div>\n" +
-    "\n" +
-    "   </div>\n" +
+    "</div>\n" +
     "\n" +
     "\n" +
-    "   <form stripe-form=\"handleStripe\"\n" +
-    "         name=\"upgradeForm\"\n" +
-    "         novalidate\n" +
-    "         ng-if=\"!isSubscribed()\"\n" +
-    "         class=\"form-horizontal upgrade-form\">\n" +
+    "<div class=\"logged-in\" ng-if=\"security.getCurrentUser()\">\n" +
+    "   <div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
     "\n" +
-    "       <div class=\"form-title trial\">\n" +
-    "         <h3>Continue your subscription</h3>\n" +
-    "         <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>\n" +
-    "      </div>\n" +
+    "      <div class=\"current-plan-status cancelled\" ng-if=\"!isLive()\">\n" +
+    "         <span class=\"setup\">Your account is cancelled!</span>\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "      <!-- plan -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"plan-options\">Billing period</label>\n" +
-    "         <div class=\"col-sm-9\" id=\"plan-options\">\n" +
-    "            <div class=\"radio\">\n" +
-    "               <label>\n" +
-    "                  <input type=\"radio\" name=\"plan\" value=\"ongoing-monthly\" ng-model=\"subscribeForm.plan\">\n" +
-    "                  $10 per month\n" +
-    "               </label>\n" +
-    "            </div>\n" +
-    "            <div class=\"radio\">\n" +
-    "               <label>\n" +
-    "                  <input type=\"radio\" name=\"plan\" value=\"ongoing-yearly\" ng-model=\"subscribeForm.plan\">\n" +
-    "                  $60 per year\n" +
-    "               </label>\n" +
-    "            </div>\n" +
-    "         </div>\n" +
-    "      </div> \n" +
-    "\n" +
-    "      <!-- name on card -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
-    "         <div class=\"col-sm-9\">\n" +
-    "            <input type=\"text\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   name=\"card-holder-name\"\n" +
-    "                   id=\"card-holder-name\"\n" +
-    "                   placeholder=\"Card Holder's Name\">\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <!-- card number -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"card-number\"\n" +
-    "                 id=\"card-number\"\n" +
-    "                 ng-model=\"number\"\n" +
-    "                 payments-validate=\"card\"\n" +
-    "                 payments-format=\"card\"\n" +
-    "                 payments-type-model=\"type\"\n" +
-    "                 ng-class=\"type\"\n" +
-    "                 placeholder=\"Credit Card Number\">\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <!-- expiration date -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
-    "         <div class=\"col-sm-3\">\n" +
-    "            <input type=\"text\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   name=\"card-expiry\"\n" +
-    "                   id=\"card-expiry\"\n" +
-    "                   ng-model=\"expiry\"\n" +
-    "                   payments-validate=\"expiry\"\n" +
-    "                   payments-format=\"expiry\"\n" +
-    "                   placeholder=\"MM/YY\">\n" +
+    "         <div class=\"pitch\">\n" +
+    "            <p>But you can get it back! And you should, because your research is\n" +
+    "               making impacts all the time.\n" +
+    "            And with Impactstory, you can see and share them all&mdash;\n" +
+    "               everything from citations to downloads to tweets\n" +
+    "            and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
+    "            <p>By subscribing today, you'll restore your impact profile and\n" +
+    "               email notifications&mdash;and   you'll be helping to keep\n" +
+    "            Impactstory a sustainable, open-source nonprofit.</p>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
-    "      <!-- CVV -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"cvv\"\n" +
-    "                 id=\"cvv\"\n" +
-    "                 ng-model=\"cvc\"\n" +
-    "                 payments-validate=\"cvc\"\n" +
-    "                 payments-format=\"cvc\"\n" +
-    "                 payments-type-model=\"type\"\n" +
-    "                 placeholder=\"CVV\">\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-2 cvv-graphic\">\n" +
-    "           <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
     "\n" +
-    "      <!-- CVV -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Coupon code</label>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"coupon-code\"\n" +
-    "                 id=\"coupon-code\"\n" +
-    "                 ng-model=\"subscribeForm.coupon\"\n" +
-    "                 placeholder=\"If you have a coupon, it goes here\">\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-2\">\n" +
-    "        </div>\n" +
+    "      <div class=\"current-plan-status paid\" ng-if=\"isSubscribed() && isLive()\">\n" +
+    "         <span class=\"setup\">\n" +
+    "            Your Impactstory subscription is active.\n" +
+    "         </span>\n" +
+    "         <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
     "\n" +
+    "      <div class=\"current-plan-status trial\" ng-if=\"isTrialing() && isLive()\">\n" +
+    "         <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
+    "         <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <div class=\"col-sm-offset-3 col-sm-9\">\n" +
-    "               <button type=\"submit\"\n" +
-    "                       ng-show=\"!loading.is('subscribe')\"\n" +
-    "                       class=\"btn btn-success\">\n" +
-    "                  Subscribe me!\n" +
-    "               </button>\n" +
-    "               <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  <span class=\"text\">Subscribing you to Impactstory&hellip;</span>\n" +
+    "         <div class=\"email-example\">\n" +
+    "            <img src=\"/static/img/card-example.png\" alt=\"Impactstory notification email\"/>\n" +
+    "         </div>\n" +
+    "         <div class=\"pitch\">\n" +
+    "            <p>Your research is making impacts all the time.\n" +
+    "            And with Impactstory, you can see and share them all&mdash;\n" +
+    "               everything from citations to downloads to tweets\n" +
+    "            and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
+    "            <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
+    "               email notifications&mdash;and   you'll be helping to keep\n" +
+    "            Impactstory a sustainable, open-source nonprofit. </p>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      <form stripe-form=\"handleStripe\"\n" +
+    "            name=\"upgradeForm\"\n" +
+    "            novalidate\n" +
+    "            ng-if=\"isTrialing() || !isLive()\"\n" +
+    "            class=\"form-horizontal upgrade-form\">\n" +
+    "\n" +
+    "          <div class=\"form-title trial\">\n" +
+    "            <h3>Continue your subscription</h3>\n" +
+    "            <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "         <!-- plan -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"plan-options\">Billing period</label>\n" +
+    "            <div class=\"col-sm-9\" id=\"plan-options\">\n" +
+    "               <div class=\"radio\">\n" +
+    "                  <label>\n" +
+    "                     <input type=\"radio\" name=\"plan\" value=\"ongoing-monthly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                     $10 per month\n" +
+    "                  </label>\n" +
     "               </div>\n" +
+    "               <div class=\"radio\">\n" +
+    "                  <label>\n" +
+    "                     <input type=\"radio\" name=\"plan\" value=\"ongoing-yearly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                     $60 per year\n" +
+    "                  </label>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
     "         </div>\n" +
-    "         <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
-    "            Trouble affording the subscription? No worries, we've been through some lean times\n" +
-    "            ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
     "\n" +
-    "            <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
-    "               <br>\n" +
-    "               To get your waiver, just <a href=\"mailto:team@impactstory.org\">drop us a line</a> showing us how you’re linking to your Impactstory profile\n" +
-    "               in your email signature and we’ll send you a coupon for a free account.\n" +
+    "         <!-- name on card -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
+    "            <div class=\"col-sm-9\">\n" +
+    "               <input type=\"text\"\n" +
+    "                      class=\"form-control\"\n" +
+    "                      name=\"card-holder-name\"\n" +
+    "                      id=\"card-holder-name\"\n" +
+    "                      placeholder=\"Card Holder's Name\">\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <!-- card number -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "           <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "           <div class=\"col-sm-9\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"card-number\"\n" +
+    "                    id=\"card-number\"\n" +
+    "                    ng-model=\"number\"\n" +
+    "                    payments-validate=\"card\"\n" +
+    "                    payments-format=\"card\"\n" +
+    "                    payments-type-model=\"type\"\n" +
+    "                    ng-class=\"type\"\n" +
+    "                    placeholder=\"Credit Card Number\">\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- expiration date -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "            <div class=\"col-sm-3\">\n" +
+    "               <input type=\"text\"\n" +
+    "                      class=\"form-control\"\n" +
+    "                      name=\"card-expiry\"\n" +
+    "                      id=\"card-expiry\"\n" +
+    "                      ng-model=\"expiry\"\n" +
+    "                      payments-validate=\"expiry\"\n" +
+    "                      payments-format=\"expiry\"\n" +
+    "                      placeholder=\"MM/YY\">\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- CVV -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "           <div class=\"col-sm-3\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"cvv\"\n" +
+    "                    id=\"cvv\"\n" +
+    "                    ng-model=\"cvc\"\n" +
+    "                    payments-validate=\"cvc\"\n" +
+    "                    payments-format=\"cvc\"\n" +
+    "                    payments-type-model=\"type\"\n" +
+    "                    placeholder=\"CVV\">\n" +
+    "           </div>\n" +
+    "           <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "              <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <!-- CVV -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"cvv\">Coupon code</label>\n" +
+    "           <div class=\"col-sm-9\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"coupon-code\"\n" +
+    "                    id=\"coupon-code\"\n" +
+    "                    ng-model=\"subscribeForm.coupon\"\n" +
+    "                    placeholder=\"If you have a coupon, it goes here\">\n" +
+    "           </div>\n" +
+    "           <div class=\"col-sm-2\">\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "                  <button type=\"submit\"\n" +
+    "                          ng-show=\"!loading.is('subscribe')\"\n" +
+    "                          class=\"btn btn-success\">\n" +
+    "                     Subscribe me!\n" +
+    "                  </button>\n" +
+    "                  <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     <span class=\"text\">Subscribing you to Impactstory&hellip;</span>\n" +
+    "                  </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
+    "               Trouble affording a subscription? No worries, we've been through some lean times\n" +
+    "               ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
+    "\n" +
+    "               <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
+    "                  <br>\n" +
+    "                  To get your waiver, just <a href=\"mailto:team@impactstory.org\">drop us a line</a> showing us how you’re linking to your Impactstory profile\n" +
+    "                  in your email signature and we’ll send you a coupon for a free account.\n" +
+    "\n" +
+    "               </div>\n" +
     "\n" +
     "            </div>\n" +
-    "\n" +
     "         </div>\n" +
+    "      </form>\n" +
+    "\n" +
+    "      <div class=\"subscriber-buttons\" ng-if=\"isSubscribed()\">\n" +
+    "         <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
+    "            <i class=\"icon-credit-card left\"></i>\n" +
+    "            Change my credit card info\n" +
+    "         </button>\n" +
+    "         <button ng-click=\"cancelSubscription()\" class=\"btn btn-danger\">\n" +
+    "            <i class=\"icon-warning-sign left\"></i>\n" +
+    "            Cancel subscription\n" +
+    "         </button>\n" +
     "      </div>\n" +
-    "   </form> \n" +
     "\n" +
-    "   <div class=\"subscriber-buttons\" ng-if=\"isSubscribed()\">\n" +
-    "      <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
-    "         <i class=\"icon-credit-card left\"></i>\n" +
-    "         Change my credit card info\n" +
-    "      </button>\n" +
-    "      <button ng-click=\"cancelSubscription()\" class=\"btn btn-danger\">\n" +
-    "         <i class=\"icon-warning-sign left\"></i>\n" +
-    "         Cancel subscription\n" +
-    "      </button>\n" +
     "   </div>\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "");
@@ -7924,7 +8035,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "<div class=\"main-sidebar\">\n" +
     "\n" +
     "   <div class=\"profile-sidebar\"\n" +
-    "        ng-show=\"profileAboutService.data.given_name\">\n" +
+    "        ng-show=\"profileAboutService.data.is_live\">\n" +
     "\n" +
     "      <h1>\n" +
     "         <a href=\"/{{ profileAboutService.data.url_slug }}\">\n" +
@@ -7982,7 +8093,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "   <div class=\"infopage-sidebar\"\n" +
-    "        ng-show=\"!profileAboutService.data.given_name\">\n" +
+    "        ng-show=\"!profileAboutService.data.is_live\">\n" +
     "      <h1>\n" +
     "         <a href=\"/\" class=\"logo\">\n" +
     "            <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
@@ -8011,11 +8122,11 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "   <div class=\"sidebar-footer\">\n" +
-    "      <a href=\"/\" class=\"logo\" ng-show=\"profileAboutService.data.given_name\">\n" +
+    "      <a href=\"/\" class=\"logo\" ng-show=\"profileAboutService.data.is_live\">\n" +
     "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
     "      </a>\n" +
     "\n" +
-    "      <div ng-show=\"!profileAboutService.data.given_name\"\n" +
+    "      <div ng-show=\"!profileAboutService.data.is_live\"\n" +
     "           class=\"sidebar-funders\">\n" +
     "         <h3>Supported by</h3>\n" +
     "         <a href=\"http://nsf.gov\" id=\"footer-nsf-link\">\n" +

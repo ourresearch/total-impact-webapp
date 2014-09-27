@@ -6327,6 +6327,23 @@ div.no-page p {
 div.no-page p span.slug {
   font-weight: bold;
 }
+/* Dead Profile page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#profile-expired {
+  margin-top: 100px;
+  text-align: center;
+}
+#profile-expired div.main div.copy {
+  width: 500px;
+  font-size: 24px;
+  font-weight: 300;
+  margin: 0 auto;
+}
+#profile-expired div.main a.subscribe-btn {
+  margin-top: 100px;
+}
 /* sidebar
 *****************************************************************************
 *****************************************************************************
@@ -8771,7 +8788,7 @@ div.settings div.settings-nav {
   top: 0;
   left: 50%;
   background: #fafafa;
-  z-index: 98;
+  z-index: 1000 ;
   margin-left: -350px;
   bottom: 0;
   width: 200px;
@@ -8795,6 +8812,19 @@ div.settings div.settings-nav ul li a.selected {
 div.settings div.settings-nav ul li a:hover {
   text-decoration: none;
   color: #000;
+}
+div.settings div.logged-out-subscription {
+  width: 466px;
+}
+div.settings div.logged-out-subscription h3 {
+  font-weight: 300;
+  font-size: 40px;
+  margin-bottom: 50px;
+  margin-top: 100px;
+}
+div.settings div.logged-out-subscription div.btn-container {
+  padding-left: 10px;
+  text-align: center;
 }
 div.settings div.settings-input {
   margin: 20px 0 0 200px;

@@ -1,3 +1,6 @@
+@import "variables";
+@import "elements";
+
 div.settings {
    div.settings-header {
       margin: 0 0 50px 0;
@@ -25,7 +28,7 @@ div.settings {
       top:0;
       left:50%;
       background: #fafafa;
-      z-index: 98;
+      z-index:1000 ;
       margin-left: -(@wrapperWidth / 2) + @sidebarWidth;
       bottom: 0;
       width: 200px;
@@ -53,6 +56,22 @@ div.settings {
             }
          }
       }
+   }
+
+   div.logged-out-subscription {
+//      text-align: center;
+      width: 466px;
+      h3 {
+         font-weight: 300;
+         font-size: 40px;
+         margin-bottom: 50px;
+         margin-top: 100px;
+      }
+      div.btn-container {
+         padding-left: 10px;
+         text-align: center;
+      }
+
    }
 
    div.settings-input {
@@ -110,7 +129,7 @@ div.settings {
       div.upgrade-form-container {
          div.current-plan-status {
             margin-bottom: 90px;
-            .clearfix;
+            .clearfix();
 
             .setup {
                color: #555;
@@ -132,17 +151,10 @@ div.settings {
             }
 
 
-            &.paid {
+            &.cancelled {
 
             }
 
-            &.trial {
-
-            }
-
-            &.free {
-
-            }
 
 
          }

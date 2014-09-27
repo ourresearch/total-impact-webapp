@@ -1,7 +1,7 @@
 <div class="main-sidebar">
 
    <div class="profile-sidebar"
-        ng-show="profileAboutService.data.given_name">
+        ng-show="profileAboutService.data.is_live">
 
       <h1>
          <a href="/{{ profileAboutService.data.url_slug }}">
@@ -59,7 +59,7 @@
 
 
    <div class="infopage-sidebar"
-        ng-show="!profileAboutService.data.given_name">
+        ng-show="!profileAboutService.data.is_live">
       <h1>
          <a href="/" class="logo">
             <img src="static/img/impactstory-logo-sideways.png" alt=""/>
@@ -88,11 +88,11 @@
 
 
    <div class="sidebar-footer">
-      <a href="/" class="logo" ng-show="profileAboutService.data.given_name">
+      <a href="/" class="logo" ng-show="profileAboutService.data.is_live">
          <img src="static/img/impactstory-logo-sideways.png" alt=""/>
       </a>
 
-      <div ng-show="!profileAboutService.data.given_name"
+      <div ng-show="!profileAboutService.data.is_live"
            class="sidebar-funders">
          <h3>Supported by</h3>
          <a href="http://nsf.gov" id="footer-nsf-link">

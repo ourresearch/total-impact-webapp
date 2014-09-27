@@ -205,9 +205,14 @@ angular.module("profile", [
     ProfileService.get(url_slug).then(
       function(resp){
         // put our stuff in the scope
-        console.log("putting resp in profile from controller", resp)
+
+        // hack. profile service was cleared because profile is dead.
+        if (_.isEmpty(resp)){
+          return false
+        }
+
         $scope.profile = resp
-        Page.setTitle(resp.about.given_name + " " + resp.about.surname)
+        Page.setTitle(resp.about.full_name)
         security.isLoggedInPromise(url_slug).then(
           function(){
             var numTrueProducts = _.where(resp.products, {is_true_product: true}).length

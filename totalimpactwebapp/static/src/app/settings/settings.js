@@ -17,11 +17,10 @@ angular.module('settings', [
         templateUrl:'settings/settings.tpl.html',
         controller: "settingsCtrl",
         resolve:{
-          authenticatedUser:function (security) {
-            return security.requestCurrentUser();
-          },
-          allowed: function(security){
-            return security.testUserAuthenticationLevel("loggedIn")
+          currentUser:function (security) {
+            var currentUser = security.requestCurrentUser()
+            console.log("checking the current user in /settings/:page resolve", currentUser)
+            return currentUser
           }
         }
       }
@@ -30,7 +29,7 @@ angular.module('settings', [
 
   .controller('settingsCtrl', function ($scope,
                                         $location,
-                                        authenticatedUser,
+                                        currentUser,
                                         SettingsPageDescriptions,
                                         ProfileAboutService,
                                         ProfileService,
@@ -38,14 +37,25 @@ angular.module('settings', [
                                         Page,
                                         Loading) {
 
+    if (currentUser || $routeParams.page === "subscription"){
+      var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
+      $scope.include =  currentPageDescr.templatePath;
+    }
+    else {
+      console.log("there ain't no current user; redirecting to landing page.")
+      $location.path("/")
+    }
+
+    $scope.authenticatedUser = currentUser;
+    $scope.pageDescriptions = SettingsPageDescriptions.get();
 
     Page.setName("settings")
     $scope.resetUser = function(){
-      $scope.user = angular.copy(authenticatedUser)
+      $scope.user = angular.copy(currentUser)
     }
     $scope.loading = Loading
     $scope.home = function(){
-      $location.path('/' + authenticatedUser.url_slug);
+      $location.path('/' + currentUser.url_slug);
     }
     $scope.isCurrentPath = function(path) {
       return path == $location.path();
@@ -60,23 +70,24 @@ angular.module('settings', [
       formCtrl.$setPristine()
     }
 
-    var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
-
     $scope.resetUser()
     Loading.finish()
-    $scope.include =  currentPageDescr.templatePath;
-    $scope.authenticatedUser = authenticatedUser;
-    $scope.pageDescriptions = SettingsPageDescriptions.get();
+
+
+
+
 
   })
 
-  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
+  .controller('profileSettingsCtrl', function ($scope, Users, security, UserMessage, Loading, ProfileAboutService) {
     $scope.onSave = function() {
+
       Loading.start('saveButton')
       Users.patch(
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
+          ProfileAboutService.get($scope.user.url_slug, true)
           security.setCurrentUser(resp.about) // update the current authenticated user.
           UserMessage.set('settings.profile.change.success');
           $scope.home();
@@ -86,7 +97,7 @@ angular.module('settings', [
   })
 
 
-  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading) {
+  .controller('NotificationsSettingsCtrl', function ($scope, Users, security, UserMessage, Loading, ProfileAboutService) {
     $scope.onSave = function() {
       var messageKey = "settings.notifications."
         + $scope.user.notification_email_frequency
@@ -99,6 +110,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set(messageKey);
           $scope.home();
         }
@@ -136,7 +149,7 @@ angular.module('settings', [
 
 
 
-  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
+  .controller('urlSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, ProfileAboutService) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -145,6 +158,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set('settings.url.change.success');
           $location.path('/' + resp.about.url_slug)
         }
@@ -171,9 +186,11 @@ angular.module('settings', [
                                                     UserMessage,
                                                     Loading,
                                                     TiMixpanel,
+                                                    ProfileAboutService,
+                                                    ProfileService,
+                                                    PinboardService,
                                                     UsersSubscription) {
 
-    console.log("subscriptionSettingsCtrl is running.")
 
     // important! this is how we get stuff out of the form from here
     $scope.subscribeForm = {
@@ -187,6 +204,10 @@ angular.module('settings', [
 
     $scope.isSubscribed = function(){
       return security.getCurrentUser("is_subscribed")
+    }
+
+    $scope.isLive = function(){
+      return security.getCurrentUser("is_live")
     }
 
 
@@ -209,6 +230,8 @@ angular.module('settings', [
         function(resp){
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set("settings.subscription.delete.success")
 
           // @todo refresh the page
@@ -231,9 +254,17 @@ angular.module('settings', [
         function(resp){
           console.log("we subscribed a user, huzzah!", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          window.scrollTo(0,0)
-          UserMessage.set("settings.subscription.subscribe.success")
-          Loading.finish("subscribe")
+          ProfileAboutService.get($scope.user.url_slug, true).then(
+            function(){
+              ProfileService.get($scope.user.url_slug, true)
+              PinboardService.get($scope.user.url_slug, true)
+
+              window.scrollTo(0,0)
+              UserMessage.set("settings.subscription.subscribe.success")
+              Loading.finish("subscribe")
+            }
+          )
+
           TiMixpanel.track("User subscribed")
 
 
@@ -273,7 +304,7 @@ angular.module('settings', [
   })
 
 
-  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading) {
+  .controller('emailSettingsCtrl', function ($scope, Users, security, $location, UserMessage, Loading, ProfileAboutService) {
 
      $scope.onSave = function() {
       Loading.start('saveButton')
@@ -282,6 +313,8 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
+          ProfileAboutService.get($scope.user.url_slug, true)
+
           UserMessage.set(
             'settings.email.change.success',
             true,
