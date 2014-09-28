@@ -128,7 +128,7 @@
              ng-if="security.isLoggedIn(url_slug)"
              ui-sortable="sortableOptions"
              ng-model="pinboardService.cols.two">
-            <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two">
+            <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two" ng-if="profileService.getFromPinId(pinId).current_value">
                <div class="pin-header">
                   <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
                      <i class="icon-remove"></i>
@@ -162,7 +162,7 @@
 
          <!-- LOGGED-OUT version -->
          <ul class="col-two pinboard-list logged-out" ng-if="!security.isLoggedIn(url_slug)">
-            <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two">
+            <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two" ng-if="profileService.getFromPinId(pinId).current_value">
                <div class="pin-header">
                   <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
                      <i class="icon-remove"></i>

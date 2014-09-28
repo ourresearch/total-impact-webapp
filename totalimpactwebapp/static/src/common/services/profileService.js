@@ -143,6 +143,11 @@ angular.module('services.profileService', [
 
       var flatCards = _.flatten(cards)
       var pinnedCard = _.findWhere(flatCards, {genre_card_address: pinId})
+
+      if (!pinnedCard){
+        return false
+      }
+      
       var myGenreObj = _.findWhere(data.genres, {name: pinnedCard.genre})
 
       var extraData = {
