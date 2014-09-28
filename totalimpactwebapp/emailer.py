@@ -20,9 +20,9 @@ def send(address, subject, template_name, context):
 
     mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
 
-    adressee = {"email": address}
+    addressee = {"email": address}
     try:
-        adressee["name"] = context["name"]
+        addressee["name"] = context["name"]
     except KeyError:
         pass
 
@@ -32,7 +32,7 @@ def send(address, subject, template_name, context):
         "subject": subject,
         "from_email": "team@impactstory.org",
         "from_name": "The Impactstory team",
-        "to": [adressee],  # must be a list
+        "to": [addressee],  # must be a list
         "track_opens": True,
         "track_clicks": True
     }
