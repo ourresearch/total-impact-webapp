@@ -537,16 +537,16 @@ def send_drip_emails(url_slug=None, min_url_slug=None):
             q = q.filter(Profile.url_slug >= min_url_slug)
 
     for profile in windowed_query(q, Profile.url_slug, 25):
-        logger.info(u"in send_drip_emails with {url_slug}".format(
-            url_slug=profile.url_slug))
+        # logger.info(u"in send_drip_emails with {url_slug}".format(
+        #     url_slug=profile.url_slug))
 
         if profile.is_trialing and not profile.received_drip_email(DRIP_MILESTONE):
             logger.info(u"in send_drip_emails, sending email to: {url_slug}".format(
                 url_slug=profile.url_slug))
-            # tasks.send_drip_email(profile, DRIP_MILESTONE)
-            # drip_log = log_drip_email(profile, DRIP_MILESTONE)
-            # logger.info(u"in send_drip_emails, SENT EMAIL to: {url_slug}".format(
-            #     url_slug=profile.url_slug))
+            tasks.send_drip_email(profile, DRIP_MILESTONE)
+            drip_log = log_drip_email(profile, DRIP_MILESTONE)
+            logger.info(u"in send_drip_emails, SENT EMAIL to: {url_slug}".format(
+                url_slug=profile.url_slug))
         else:
             logger.info(u"in send_drip_emails, but NOT sending email to: {url_slug}".format(
                 url_slug=profile.url_slug))
