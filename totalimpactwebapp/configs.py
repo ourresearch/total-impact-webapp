@@ -1050,17 +1050,22 @@ def metrics(this_key_only=None):
 
 genre_icons = {
     'article': "icon-file-text-alt",
-    'blog': "icon-comments",
+    #'blog': "icon-comments",
     'dataset': "icon-table",
     'figure': "icon-bar-chart",
     'poster': "icon-picture",
     'slides': "icon-desktop",
     'software': "icon-save",
-    'twitter': "icon-twitter",
+    #'twitter': "icon-twitter",
     'video': "icon-facetime-video",
     'webpage': "icon-globe",
     'other': "icon-file-alt",
-    'unknown': "icon-file-alt"
+    'unknown': "icon-file-alt",
+    "conference paper": "icon-list-alt",  # conference proceeding
+    "book": "icon-book",
+    "book chapter": "icon-bookmark-empty",  # chapter anthology
+    "thesis": "icon-align-center",  # dissertation
+
 }
 
 

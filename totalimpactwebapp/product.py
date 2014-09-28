@@ -156,6 +156,12 @@ class Product(db.Model):
 
         if "article" in genre:
             genre = "article"  #disregard whether journal article or conference article for now
+        elif "conference" in genre:
+            genre = "conference paper"
+        elif "chapter" in genre:
+            genre = "book chapter"
+        elif "dissertation" == genre:
+            genre = "thesis"
 
         return genre
 

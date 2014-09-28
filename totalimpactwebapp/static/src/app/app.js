@@ -26,6 +26,7 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'genrePage',
+  'services.genreConfigs',
   'accountPage',
   'services.profileService',
   'services.profileAboutService',
@@ -98,6 +99,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      Breadcrumbs,
+                                                     GenreConfigs,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
@@ -115,11 +117,10 @@ angular.module('app').controller('AppCtrl', function($scope,
 //    $location.host()
 //  ))
 
-  $http.get("/configs/genres")
-    .success(function(resp){
-      $rootScope.genreConfigs = resp
-    })
 
+  // init the genre configs service
+  GenreConfigs.load()
+  $scope.GenreConfigs = GenreConfigs
 
   security.requestCurrentUser().then(function(currentUser){
 

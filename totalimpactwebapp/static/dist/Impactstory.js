@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-26
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-27
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -504,6 +504,7 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'genrePage',
+  'services.genreConfigs',
   'accountPage',
   'services.profileService',
   'services.profileAboutService',
@@ -576,6 +577,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      Breadcrumbs,
+                                                     GenreConfigs,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
@@ -593,11 +595,10 @@ angular.module('app').controller('AppCtrl', function($scope,
 //    $location.host()
 //  ))
 
-  $http.get("/configs/genres")
-    .success(function(resp){
-      $rootScope.genreConfigs = resp
-    })
 
+  // init the genre configs service
+  GenreConfigs.load()
+  $scope.GenreConfigs = GenreConfigs
 
   security.requestCurrentUser().then(function(currentUser){
 
@@ -745,14 +746,20 @@ angular.module("genrePage", [
     remove: function(tiid){
       tiids = _.without(tiids, tiid)
     },
-    empty: function(){
+    removeAll: function(){
       return tiids.length = 0
     },
     contains: function(tiid){
       return _.contains(tiids, tiid)
     },
+    containsAny: function(){
+      return tiids.length > 0
+    },
     get: function(){
       return tiids
+    },
+    count: function(){
+      return tiids.length
     }
   }
 })
@@ -4249,6 +4256,30 @@ angular.module('services.exceptionHandler').config(['$provide', function($provid
   }]);
 }]);
 
+angular.module("services.genreConfigs", [])
+.factory("GenreConfigs", function($http){
+    var configs = []
+
+    var load = function(){
+      $http.get("/configs/genres")
+        .success(function(resp){
+          configs = resp
+        })
+    }
+
+
+
+    return {
+      load: load,
+      get: function(){
+        return configs
+      },
+      getByName: function(genreName){
+        return _.findWhere(configs, {name: genreName})
+      }
+    }
+
+  })
 angular.module('services.httpRequestTracker', []);
 angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$http', function($http){
 
@@ -5574,64 +5605,142 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
     "\n" +
     "      <div class=\"header\">\n" +
-    "         <h2>\n" +
-    "            <span class=\"count\">\n" +
-    "               {{ profileService.productsByGenre(genre_name).length }}\n" +
-    "            </span>\n" +
-    "            <span class=\"text\">\n" +
-    "               {{ genre.plural_name }}\n" +
-    "            </span>\n" +
-    "         </h2>\n" +
-    "         <div class=\"genre-summary\">\n" +
-    "            <div class=\"genre-summary-top\">\n" +
-    "               <ul class=\"genre-cards-best\">\n" +
-    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
+    "         <div class=\"header-content\">\n" +
     "\n" +
-    "                     <span class=\"data\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           tooltip=\"{{ card.tooltip }}\">\n" +
-    "                        <span class=\"img-and-value\">\n" +
-    "                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
-    "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
+    "            <h2>\n" +
+    "               <span class=\"count\">\n" +
+    "                  {{ profileService.productsByGenre(genre_name).length }}\n" +
+    "               </span>\n" +
+    "               <span class=\"text\">\n" +
+    "                  {{ genre.plural_name }}\n" +
+    "               </span>\n" +
+    "            </h2>\n" +
+    "            <div class=\"genre-summary\">\n" +
+    "               <div class=\"genre-summary-top\">\n" +
+    "                  <ul class=\"genre-cards-best\">\n" +
+    "                     <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
+    "\n" +
+    "                        <span class=\"data\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              tooltip=\"{{ card.tooltip }}\">\n" +
+    "                           <span class=\"img-and-value\">\n" +
+    "                              <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
+    "                              <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
+    "                           </span>\n" +
+    "\n" +
+    "                           <span class=\"key\">\n" +
+    "                              <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                           </span>\n" +
     "                        </span>\n" +
     "\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                        <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "\n" +
+    "                           <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
+    "                              ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                              tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              class=\"feature-this\">\n" +
+    "                              <i class=\"icon-star-empty\"></i>\n" +
+    "                           </a>\n" +
+    "\n" +
+    "                           <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
+    "                              ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                              tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              class=\"unfeature-this\">\n" +
+    "                              <i class=\"icon-star\"></i>\n" +
+    "                           </a>\n" +
+    "\n" +
     "                        </span>\n" +
-    "                     </span>\n" +
     "\n" +
-    "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                     </li>\n" +
+    "                  </ul>\n" +
+    "                  <div class=\"clearfix\"></div>\n" +
+    "               </div>\n" +
+    "               <div class=\"genre-summary-more\">\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"feature-this\">\n" +
-    "                           <i class=\"icon-star-empty\"></i>\n" +
-    "                        </a>\n" +
-    "\n" +
-    "                        <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"unfeature-this\">\n" +
-    "                           <i class=\"icon-star\"></i>\n" +
-    "                        </a>\n" +
-    "\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                  </li>\n" +
-    "               </ul>\n" +
-    "               <div class=\"clearfix\"></div>\n" +
-    "            </div>\n" +
-    "            <div class=\"genre-summary-more\">\n" +
-    "\n" +
+    "               </div>\n" +
     "            </div>\n" +
     "         </div>\n" +
-    "         <span class=\"more-button\">\n" +
-    "            <span class=\"more\"><i class=\"icon-caret-down left\"></i>more stats</span>\n" +
-    "         </span>\n" +
     "\n" +
+    "\n" +
+    "         <div class=\"header-controls\">\n" +
+    "            <div class=\"edit-controls\">\n" +
+    "\n" +
+    "               <!-- no products are selected. allow user to select all -->\n" +
+    "\n" +
+    "               <span class=\"global-selection-control\">\n" +
+    "                  <i class=\"icon-check-empty\"\n" +
+    "                     tooltip=\"Select all\"\n" +
+    "                     ng-show=\"SelectedProducts.count() == 0\"\n" +
+    "                     ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre_name))\"></i>\n" +
+    "\n" +
+    "\n" +
+    "               <!-- between zero and all products are selected. allow user to select all -->\n" +
+    "               <i class=\"icon-check-minus\"\n" +
+    "                  tooltip=\"Select all\"\n" +
+    "                  ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre_name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre_name))\"></i>\n" +
+    "\n" +
+    "               <!-- everything is selected. allow user to unselect all -->\n" +
+    "               <i class=\"icon-check\"\n" +
+    "                  tooltip=\"Unselect all\"\n" +
+    "                  ng-show=\"SelectedProducts.count() == profileService.productsByGenre(genre_name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
+    "            </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "               <span class=\"actions has-selected-products-{{ !!SelectedProducts.count() }}\">\n" +
+    "\n" +
+    "                  <span class=\"action\">\n" +
+    "                     <button type=\"button\"\n" +
+    "                             tooltip=\"Delete selected items.\"\n" +
+    "                             class=\"btn btn-default btn-xs\">\n" +
+    "                        <i class=\"icon-trash\"></i>\n" +
+    "                     </button>\n" +
+    "\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"action\">\n" +
+    "                     <div class=\"btn-group genre-select-group\" dropdown is-open=\"status.isopen\">\n" +
+    "                        <button type=\"button\"\n" +
+    "                                tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
+    "                                class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
+    "                           <i class=\"icon-folder-close-alt\"></i>\n" +
+    "                           <span class=\"caret\"></span>\n" +
+    "                        </button>\n" +
+    "                        <ul class=\"dropdown-menu\">\n" +
+    "                           <li class=\"instr\">Move to:</li>\n" +
+    "                           <li class=\"divider\"></li>\n" +
+    "                           <li ng-repeat=\"genre in GenreConfigs.get() | orderBy: ['name']\">\n" +
+    "                              <a>\n" +
+    "                                 <i class=\"{{ genre.icon }} left\"></i>\n" +
+    "                                 {{ genre.plural_name }}\n" +
+    "                              </a>\n" +
+    "                           </li>\n" +
+    "                        </ul>\n" +
+    "                     </div>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "\n" +
+    "               </span>\n" +
+    "\n" +
+    "               <span class=\"num-selected\" ng-show=\"SelectedProducts.count() > 0\">\n" +
+    "                  <span class=\"val\">{{ SelectedProducts.count() }}</span>\n" +
+    "                  <span class=\"text\">selected</span>\n" +
+    "               </span>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"sort-controls\">\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"products\">\n" +
@@ -5645,7 +5754,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "\n" +
     "               <!-- users must be logged in -->\n" +
     "               <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
-    "                  <span class=\"delete-product-controls\"> <!--needed to style tooltip -->\n" +
+    "                  <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
     "\n" +
     "                     <i class=\"icon-check-empty\"\n" +
     "                        ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +

@@ -43,14 +43,20 @@ angular.module("genrePage", [
     remove: function(tiid){
       tiids = _.without(tiids, tiid)
     },
-    empty: function(){
+    removeAll: function(){
       return tiids.length = 0
     },
     contains: function(tiid){
       return _.contains(tiids, tiid)
     },
+    containsAny: function(){
+      return tiids.length > 0
+    },
     get: function(){
       return tiids
+    },
+    count: function(){
+      return tiids.length
     }
   }
 })
