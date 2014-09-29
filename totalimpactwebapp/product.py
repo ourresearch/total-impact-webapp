@@ -2,7 +2,7 @@ import logging
 import arrow
 import datetime
 import os
-import re
+import json
 import boto
 import requests
 from collections import Counter
@@ -501,8 +501,23 @@ class Product(db.Model):
 
 
 
+def patch_biblio(tiid, patch_dict):
+    pass
+    query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
+        core_api_root=os.getenv("API_ROOT"),
+        tiid=tiid,
+        api_admin_key=os.getenv("API_ADMIN_KEY")
+    )
+    r = requests.patch(
+        query,
+        data=json.dumps(patch_dict),
+        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
+    )
 
+    if "free_fulltext_url" in patch_dict.keys():
+        add_product_embed_markup(tiid)
 
+    return r
 
 
 

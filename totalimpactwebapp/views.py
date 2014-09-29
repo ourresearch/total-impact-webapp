@@ -38,9 +38,11 @@ from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.profile import build_profile_dict
+
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import upload_file_and_commit
-from totalimpactwebapp.product import add_product_embed_markup
+from totalimpactwebapp.product import patch_biblio
+
 from totalimpactwebapp.pinboard import Pinboard
 from totalimpactwebapp.pinboard import write_to_pinboard
 
@@ -179,6 +181,13 @@ def current_user_owns_tiid(tiid):
     except AttributeError:  #Anonymous
         return False
 
+
+def current_user_must_own_tiid(tiid):
+    try:
+        if not current_user_owns_tiid(tiid):
+            abort_json(401, "You have to own this product to modify it.")
+    except AttributeError:
+        abort_json(405, "You must be logged in to modify products.")
 
 
 
@@ -463,10 +472,7 @@ def pinboard(profile_id):
         contents = request.json["contents"]
         product_pins = contents["one"]
         for (product_lable, tiid) in product_pins:
-            if not current_user_owns_tiid(tiid):
-                logger.error(u"user {url_slug} doesn't own tiid {tiid}".format(
-                    url_slug=profile.url_slug, tiid=tiid))
-                return abort_json(400, "user doesn't own these tiids")
+            current_user_must_own_tiid(tiid)
         resp = write_to_pinboard(profile.id, request.json["contents"])
 
     return json_resp_from_thing(resp)
@@ -548,13 +554,16 @@ def profile_products_modify(id):
             resp = {"products": added_products}
 
         elif request.method == "DELETE":
-            tiids_to_delete = request.args.get("tiids", [])
+            tiids_to_delete = request.args.get("tiids", []).split(",")
             resp = delete_products_from_profile(profile, tiids_to_delete)
 
         else:
             abort(405)  # method not supported.  We shouldn't get here.
 
     return json_resp_from_thing(resp)
+
+
+
 
 
 @app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
@@ -672,12 +681,7 @@ def product_file(tiid):
 
 
     elif request.method == "POST":
-        try:
-            if not current_user_owns_tiid(tiid):
-                abort_json(401, "You have to own this product to add files.")
-        except AttributeError:
-            abort_json(405, "You must be logged in to upload files.")
-
+        current_user_must_own_tiid(tiid)
         file_to_upload = request.files['file'].stream
         product = get_product(tiid)      
         resp = upload_file_and_commit(product, file_to_upload, db)
@@ -709,29 +713,25 @@ def product_biblio_modify(tiid):
     # and it should return the newly-modified product, instead of the
     # part-product it gets from core now.
 
-    try:
-        if not current_user_owns_tiid(tiid):
-            abort_json(401, "You have to own this product to modify it.")
-    except AttributeError:
-        abort_json(405, "You musts be logged in to modify products.")
-
-    query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        tiid=tiid,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    data_dict = json.loads(request.data)
-    r = requests.patch(
-        query,
-        data=json.dumps(data_dict),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
-
-    # has to be after database call above
-    add_product_embed_markup(tiid)
+    current_user_must_own_tiid(tiid)
+    resp = patch_biblio(tiid, request.data)
     local_sleep(1)
 
-    return json_resp_from_thing(r.json())
+    return json_resp_from_thing(resp)
+
+
+
+
+@app.route("/products/<comma_separated_tiids>/biblio", methods=["PATCH"])
+@app.route("/products/<comma_separated_tiids>/biblio.json", methods=["PATCH"])
+def products_biblio_modify_multi(comma_separated_tiids):
+    resp = []
+    for tiid in comma_separated_tiids.split(","):
+        current_user_must_own_tiid()
+        resp.append(patch_biblio(tiid, request.data))
+        local_sleep(1)
+
+    return json_resp_from_thing(resp)
 
 
 
