@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-28
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -800,11 +800,11 @@ angular.module("genrePage", [
 
     $scope.pinboardService = PinboardService
 
+    SelectedProducts.removeAll()
     $scope.SelectedProducts = SelectedProducts
 
 
     Timer.start("genreViewRender")
-    Timer.start("genreViewRender.load")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
     $scope.genre_name = $routeParams.genre_name
@@ -816,11 +816,8 @@ angular.module("genrePage", [
     }
     ProfileService.get($routeParams.url_slug).then(
       function(resp){
-        console.log("genre page loaded products", resp)
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.about = resp.about
-        $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
         $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
@@ -829,9 +826,6 @@ angular.module("genrePage", [
           var lastScrollPos = Page.getLastScrollPosition($location.path())
           $window.scrollTo(0, lastScrollPos)
         }, 0)
-      },
-      function(resp){
-        console.log("ProfileService failed in genrePage.js...", resp)
       }
     )
 
@@ -850,6 +844,12 @@ angular.module("genrePage", [
       var sorted = _.sortBy(cards, "sort_by")
       var reversed = sorted.concat([]).reverse()
       return reversed.slice(startIndex, endIndex)
+    }
+
+    $scope.removeSelectedProducts = function(){
+      console.log("removing products: ", SelectedProducts.get())
+      ProfileService.removeProducts(SelectedProducts.get())
+      SelectedProducts.removeAll()
     }
 
 
@@ -4858,6 +4858,28 @@ angular.module('services.profileService', [
       )
     }
 
+    function removeProducts(tiids){
+      console.log("in ProfileService, removing these tiids:", tiids)
+
+      _.each(tiids, function(tiid){
+        var tiidIndex = getProductIndexFromTiid(tiid)
+        console.log("the tiid to remove is at this index: ", tiid, tiidIndex)
+        data.products.splice(tiidIndex, 1)
+      })
+
+      console.log("removed the tiids.")
+    }
+
+    function getProductIndexFromTiid(tiid){
+      for (var i=0; i<data.products.length; i++ ){
+        if (data.products[i].tiid == tiid) {
+          return i
+        }
+      }
+      return -1
+    }
+
+
 
     function isLoading(){
       return loading
@@ -4945,6 +4967,7 @@ angular.module('services.profileService', [
       genreLookup: genreLookup,
       productByTiid: productByTiid,
       removeProduct: removeProduct,
+      removeProducts: removeProducts,
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId,
       clear: clear,
@@ -5698,6 +5721,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "\n" +
     "                  <span class=\"action\">\n" +
     "                     <button type=\"button\"\n" +
+    "                             ng-click=\"removeSelectedProducts()\"\n" +
     "                             tooltip=\"Delete selected items.\"\n" +
     "                             class=\"btn btn-default btn-xs\">\n" +
     "                        <i class=\"icon-trash\"></i>\n" +

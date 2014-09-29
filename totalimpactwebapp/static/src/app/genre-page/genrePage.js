@@ -97,11 +97,11 @@ angular.module("genrePage", [
 
     $scope.pinboardService = PinboardService
 
+    SelectedProducts.removeAll()
     $scope.SelectedProducts = SelectedProducts
 
 
     Timer.start("genreViewRender")
-    Timer.start("genreViewRender.load")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
     $scope.genre_name = $routeParams.genre_name
@@ -113,11 +113,8 @@ angular.module("genrePage", [
     }
     ProfileService.get($routeParams.url_slug).then(
       function(resp){
-        console.log("genre page loaded products", resp)
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.about = resp.about
-        $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
         $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
@@ -126,9 +123,6 @@ angular.module("genrePage", [
           var lastScrollPos = Page.getLastScrollPosition($location.path())
           $window.scrollTo(0, lastScrollPos)
         }, 0)
-      },
-      function(resp){
-        console.log("ProfileService failed in genrePage.js...", resp)
       }
     )
 
@@ -147,6 +141,12 @@ angular.module("genrePage", [
       var sorted = _.sortBy(cards, "sort_by")
       var reversed = sorted.concat([]).reverse()
       return reversed.slice(startIndex, endIndex)
+    }
+
+    $scope.removeSelectedProducts = function(){
+      console.log("removing products: ", SelectedProducts.get())
+      ProfileService.removeProducts(SelectedProducts.get())
+      SelectedProducts.removeAll()
     }
 
 

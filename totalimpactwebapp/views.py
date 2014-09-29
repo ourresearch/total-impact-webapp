@@ -517,35 +517,39 @@ def refresh_status(profile_id):
 ###############################################################################
 
 
-@app.route("/profile/<id>/products", methods=["POST", "PATCH"])
-@app.route("/profile/<id>/products.json", methods=["POST", "PATCH"])
-def user_products_modify(id):
+@app.route("/profile/<id>/products", methods=["POST", "PATCH", "DELETE"])
+@app.route("/profile/<id>/products.json", methods=["POST", "PATCH", "DELETE"])
+def profile_products_modify(id):
 
     action = request.args.get("action", "refresh")
-    user = get_user_for_response(id, request)
+    profile = get_user_for_response(id, request)
     # logger.debug(u"got user {user}".format(
     #     user=user))
 
     source = request.args.get("source", "webapp")
 
     if request.method == "POST" and action == "deduplicate":
-        deleted_tiids = remove_duplicates_from_profile(user.id)
+        deleted_tiids = remove_duplicates_from_profile(profile.id)
         resp = {"deleted_tiids": deleted_tiids}
         local_sleep(30)
 
     elif request.method == "POST" and (action == "refresh"):
-        tiids_being_refreshed = user.refresh_products(source)
+        tiids_being_refreshed = profile.refresh_products(source)
         resp = {"products": tiids_being_refreshed}
 
     else:
 
         # Actions that require authentication
-        abort_if_user_not_logged_in(user)
+        abort_if_user_not_logged_in(profile)
+        local_sleep(2)
 
         if request.method == "PATCH":
-            local_sleep(2)
-            added_products = user.add_products(request.json)
+            added_products = profile.add_products(request.json)
             resp = {"products": added_products}
+
+        elif request.method == "DELETE":
+            tiids_to_delete = request.json.get("tiids", [])
+            resp = delete_products_from_profile(profile, tiids_to_delete)
 
         else:
             abort(405)  # method not supported.  We shouldn't get here.
@@ -576,6 +580,10 @@ def user_product(user_id, tiid):
         resp = delete_products_from_profile(profile, [tiid])
 
     return json_resp_from_thing(resp)
+
+
+
+
 
 
 @app.route("/product/<tiid>/pdf", methods=['GET'])

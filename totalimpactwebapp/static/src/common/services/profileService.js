@@ -79,6 +79,28 @@ angular.module('services.profileService', [
       )
     }
 
+    function removeProducts(tiids){
+      console.log("in ProfileService, removing these tiids:", tiids)
+
+      _.each(tiids, function(tiid){
+        var tiidIndex = getProductIndexFromTiid(tiid)
+        console.log("the tiid to remove is at this index: ", tiid, tiidIndex)
+        data.products.splice(tiidIndex, 1)
+      })
+
+      console.log("removed the tiids.")
+    }
+
+    function getProductIndexFromTiid(tiid){
+      for (var i=0; i<data.products.length; i++ ){
+        if (data.products[i].tiid == tiid) {
+          return i
+        }
+      }
+      return -1
+    }
+
+
 
     function isLoading(){
       return loading
@@ -166,6 +188,7 @@ angular.module('services.profileService', [
       genreLookup: genreLookup,
       productByTiid: productByTiid,
       removeProduct: removeProduct,
+      removeProducts: removeProducts,
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId,
       clear: clear,
