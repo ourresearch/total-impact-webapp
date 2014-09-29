@@ -9,6 +9,7 @@ angular.module('services.profileService', [
                                       Product,
                                       PinboardService,
                                       ProfileAboutService,
+                                      UsersProducts,
                                       SelfCancellingProfileResource,
                                       Users){
 
@@ -80,15 +81,18 @@ angular.module('services.profileService', [
     }
 
     function removeProducts(tiids){
-      console.log("in ProfileService, removing these tiids:", tiids)
-
       _.each(tiids, function(tiid){
         var tiidIndex = getProductIndexFromTiid(tiid)
-        console.log("the tiid to remove is at this index: ", tiid, tiidIndex)
         data.products.splice(tiidIndex, 1)
       })
 
-      console.log("removed the tiids.")
+      UsersProducts.delete(
+        {id: data.about.url_slug, tiids: tiids.join(",")},
+        function(resp){
+          console.log("finished deleting", tiids)
+
+        }
+      )
     }
 
     function getProductIndexFromTiid(tiid){

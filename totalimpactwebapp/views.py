@@ -548,7 +548,7 @@ def profile_products_modify(id):
             resp = {"products": added_products}
 
         elif request.method == "DELETE":
-            tiids_to_delete = request.json.get("tiids", [])
+            tiids_to_delete = request.args.get("tiids", [])
             resp = delete_products_from_profile(profile, tiids_to_delete)
 
         else:
