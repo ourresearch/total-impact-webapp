@@ -105,7 +105,9 @@ angular.module("genrePage", [
     Timer.start("genreViewRender")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
-    $scope.genre = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+
+    var genreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    $scope.genre = genreConfig
 
     $scope.genreChangeDropdown = {}
 
@@ -150,14 +152,27 @@ angular.module("genrePage", [
       console.log("removing products: ", SelectedProducts.get())
       ProfileService.removeProducts(SelectedProducts.get())
       SelectedProducts.removeAll()
+
+      // handle removing the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        $location.path($routeParams.url_slug)
+      }
     }
 
     $scope.changeProductsGenre = function(newGenre){
       console.log("changing products genres: ", SelectedProducts.get())
-      ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
-      SelectedProducts.removeAll()
       $scope.genreChangeDropdown.isOpen = false
 
+      ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+      SelectedProducts.removeAll()
+
+      // handle moving the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
+        $location.path($routeParams.url_slug + "/products/" + newGenreUrlRepresentation)
+      }
     }
 
 

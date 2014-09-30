@@ -28,6 +28,15 @@ angular.module("services.genreConfigs", [])
 
     return {
       get: get,
+      getForMove: function(){
+        var removeConfigs = [
+          "unknown",
+          "other"
+        ]
+        return _.filter(configs, function(myConfig){
+          return !_.contains(removeConfigs, myConfig.name)
+        })
+      },
 
       getConfigFromUrlRepresentation: function(urlRepresentation){
         var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})

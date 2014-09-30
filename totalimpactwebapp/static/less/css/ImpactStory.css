@@ -9710,7 +9710,22 @@ div.genre-page div.header div.header-content div.genre-summary div.genre-summary
 div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this:hover {
   color: #000;
 }
-div.genre-page div.header div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data {
+div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner {
+  font-size: 14px;
+  text-align: left;
+}
+div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li {
+  font-size: 14px;
+  list-style-type: disc;
+  margin-left: 25px;
+}
+div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .twitter-handle {
+  font-weight: bold;
+}
+div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .followers {
+  font-size: 10px;
+}
+div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data {
   cursor: default;
 }
 div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data img.icon {

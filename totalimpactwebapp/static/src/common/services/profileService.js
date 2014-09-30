@@ -107,7 +107,6 @@ angular.module('services.profileService', [
         }
       )
 
-
     }
 
     function getProductIndexFromTiid(tiid){
