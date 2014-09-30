@@ -58,6 +58,10 @@ angular.module('services.profileService', [
 
 
     function removeProducts(tiids){
+      if (!tiids.length){
+        return false
+      }
+
       _.each(tiids, function(tiid){
         var tiidIndex = getProductIndexFromTiid(tiid)
         data.products.splice(tiidIndex, 1)
@@ -76,6 +80,10 @@ angular.module('services.profileService', [
     }
 
     function changeProductsGenre(tiids, newGenre){
+      if (!tiids.length){
+        return false
+      }
+
       _.each(tiids, function(tiid){
         var productToChange = getProductFromTiid(tiid)
         if (productToChange){

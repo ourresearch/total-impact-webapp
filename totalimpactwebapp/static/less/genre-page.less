@@ -116,6 +116,7 @@ div.genre-page {
             margin-left: 5px;
             button {
                padding: 5px 10px;
+               opacity: .4;
             }
             span.global-selection-control {
                width: 24px;
@@ -129,6 +130,11 @@ div.genre-page {
 
 
             span.actions {
+               &.has-selected-products-true {
+                  button {
+                     opacity: 1;
+                  }
+               }
                span.action {
                   margin-left: 10px;
                }

@@ -9727,6 +9727,7 @@ div.genre-page div.header div.header-controls div.edit-controls {
 }
 div.genre-page div.header div.header-controls div.edit-controls button {
   padding: 5px 10px;
+  opacity: .4;
 }
 div.genre-page div.header div.header-controls div.edit-controls span.global-selection-control {
   width: 24px;
@@ -9736,6 +9737,9 @@ div.genre-page div.header div.header-controls div.edit-controls span.global-sele
   font-size: 18px;
   color: #777;
   vertical-align: -2px;
+}
+div.genre-page div.header div.header-controls div.edit-controls span.actions.has-selected-products-true button {
+  opacity: 1;
 }
 div.genre-page div.header div.header-controls div.edit-controls span.actions span.action {
   margin-left: 10px;
