@@ -53,7 +53,6 @@ angular.module('services.userMessage', [])
       set: function(key, persist, interpolateParams){
         if (!persist){
           $timeout(function(){
-            console.log("removing the user message")
             clear()
           }, 2000)
         }
@@ -68,7 +67,6 @@ angular.module('services.userMessage', [])
       setStr: function(msg, type, persist){
         if (!persist){
           $timeout(function(){
-            console.log("removing the user message")
             clear()
           }, 2000)
         }

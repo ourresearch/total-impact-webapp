@@ -40,9 +40,6 @@ angular.module("services.genreConfigs", [])
 
       getConfigFromUrlRepresentation: function(urlRepresentation){
         var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})
-
-        console.log("getting genre config from this url repr", urlRepresentation, myConfig, configs)
-
         return myConfig
       },
 

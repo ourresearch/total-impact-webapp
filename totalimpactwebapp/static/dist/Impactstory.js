@@ -4001,7 +4001,6 @@ angular.module('services.userMessage', [])
       set: function(key, persist, interpolateParams){
         if (!persist){
           $timeout(function(){
-            console.log("removing the user message")
             clear()
           }, 2000)
         }
@@ -4016,7 +4015,6 @@ angular.module('services.userMessage', [])
       setStr: function(msg, type, persist){
         if (!persist){
           $timeout(function(){
-            console.log("removing the user message")
             clear()
           }, 2000)
         }
@@ -4357,9 +4355,6 @@ angular.module("services.genreConfigs", [])
 
       getConfigFromUrlRepresentation: function(urlRepresentation){
         var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})
-
-        console.log("getting genre config from this url repr", urlRepresentation, myConfig, configs)
-
         return myConfig
       },
 
