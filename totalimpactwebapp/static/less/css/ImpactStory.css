@@ -9727,10 +9727,10 @@ div.genre-page div.header div.header-controls div.edit-controls {
 }
 div.genre-page div.header div.header-controls div.edit-controls button {
   padding: 5px 10px;
-  opacity: .4;
+  opacity: .5;
 }
 div.genre-page div.header div.header-controls div.edit-controls span.global-selection-control {
-  width: 24px;
+  width: 25px;
   display: inline-block;
 }
 div.genre-page div.header div.header-controls div.edit-controls span.global-selection-control i {
@@ -9742,7 +9742,7 @@ div.genre-page div.header div.header-controls div.edit-controls span.actions.has
   opacity: 1;
 }
 div.genre-page div.header div.header-controls div.edit-controls span.actions span.action {
-  margin-left: 10px;
+  margin-left: 1px;
 }
 div.genre-page div.header div.header-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li {
   font-size: 16px;
