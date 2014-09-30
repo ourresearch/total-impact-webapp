@@ -5,6 +5,7 @@ from totalimpactwebapp.pinboard import Pinboard
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
+from totalimpactwebapp.drip_email import log_drip_email
 from totalimpactwebapp.util import commit
 from totalimpactwebapp import db
 import tasks
@@ -516,6 +517,41 @@ def count_news_for_subscribers(url_slug=None, min_url_slug=None):
 
 
 
+
+def send_drip_emails(url_slug=None, min_url_slug=None):
+    MIN_AGE_DAYS_FOR_DRIP_EMAIL = 28
+    DRIP_MILESTONE = "last-chance"
+
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        drip_email_create_date = datetime.datetime.utcnow() - datetime.timedelta(days=MIN_AGE_DAYS_FOR_DRIP_EMAIL)
+        logger.info(u"in send_drip_emails with drip_email_create_date:{drip_email_create_date}".format(
+            drip_email_create_date=drip_email_create_date))
+
+        # only profiles that have null stripe ids and are at least drip email days old
+        q = db.session.query(Profile) \
+                .filter(Profile.stripe_id==None) \
+                .filter(Profile.created <= drip_email_create_date)
+        if min_url_slug:
+            q = q.filter(Profile.url_slug >= min_url_slug)
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        # logger.info(u"in send_drip_emails with {url_slug}".format(
+        #     url_slug=profile.url_slug))
+
+        if profile.is_trialing and not profile.received_drip_email(DRIP_MILESTONE):
+            logger.info(u"in send_drip_emails, sending email to: {url_slug}".format(
+                url_slug=profile.url_slug))
+            tasks.send_drip_email(profile, DRIP_MILESTONE)
+            drip_log = log_drip_email(profile, DRIP_MILESTONE)
+            logger.info(u"in send_drip_emails, SENT EMAIL to: {url_slug}".format(
+                url_slug=profile.url_slug))
+        else:
+            logger.info(u"in send_drip_emails, but NOT sending email to: {url_slug}".format(
+                url_slug=profile.url_slug))
+
+
 def main(function, args):
     if function=="emailreports":
         if "url_slug" in args and args["url_slug"]:
@@ -540,6 +576,11 @@ def main(function, args):
         star_best_products(args["url_slug"], args["min_url_slug"])
     elif function=="count_news":
         count_news_for_subscribers(args["url_slug"], args["min_url_slug"])
+    elif function=="drip_email":
+        send_drip_emails(args["url_slug"], args["min_url_slug"])
+
+
+
 
 
 

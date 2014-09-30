@@ -57,6 +57,7 @@ from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
 from totalimpactwebapp import notification_report
+from totalimpactwebapp.drip_email import drip_email_context
 
 from totalimpactwebapp.reference_set import RefsetBuilder
 
@@ -1014,6 +1015,14 @@ def render_notification_report(profile_id, format="html"):
     return render_template("report.html", **report_context)
 
 
+@app.route("/<profile_id>/drip/<drip_milestone>")
+def render_drip_email(profile_id, drip_milestone, format="html"):
+    user = get_user_for_response(
+        profile_id,
+        request
+    )
+    email_context = drip_email_context(user, drip_milestone)
+    return render_template(email_context["template"] + ".html", **email_context)
 
 
 @app.route("/test/email")

@@ -6,6 +6,7 @@ from totalimpactwebapp.account import account_factory
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
 from totalimpactwebapp.genre import make_genres_list
+from totalimpactwebapp.drip_email import DripEmail
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
 
@@ -140,6 +141,13 @@ class Profile(db.Model):
         backref=db.backref("profile", lazy="subquery")
     )
 
+    drip_emails = db.relationship(
+        'DripEmail',
+        lazy='subquery',
+        cascade='all, delete-orphan',
+        backref=db.backref("profile", lazy="subquery")
+    )    
+
     def __init__(self, **kwargs):
         super(Profile, self).__init__(**kwargs)
         self.created = now_in_utc()
@@ -222,6 +230,11 @@ class Profile(db.Model):
 
         return accounts_to_return
 
+    def received_drip_email(self, drip_milestone):
+        for drip_log in self.drip_emails:
+            if drip_log.drip_milestone==drip_milestone:
+                return True
+        return False
 
     @cached_property
     def tiids(self):
@@ -613,6 +626,7 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["genres"] = profile.genres
     profile_dict["account_products"] = profile.account_products
     profile_dict["account_products_dict"] = profile.account_products_dict
+    profile_dict["drip_emails"] = profile.drip_emails
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)

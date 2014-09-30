@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-30
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-26
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -3760,6 +3760,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4401,6 +4402,9 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.pinboardService",["resources.users"]).factory("PinboardService",function(n,o){function t(n){return g[e(n)]}function e(n){return"product"==n[0]?"one":"two"}function r(n){console.log("pinning this id: ",n),t(n).push(n),i()}function i(t){var e=o.getCurrentUserSlug();return e?t&&l()?!1:void n.save({id:e},{contents:g},function(n){},function(n){}):!1}function u(o){console.log("calling ProfilePinboard.get("+o+")",g,a),a.url_slug=o,n.get({id:o},function(n){g.one=n.one,g.two=n.two},function(n){console.log("no pinboard set yet."),c()})}function c(){g.one=[],g.two=[];for(var n in a)a.hasOwnProperty(n)&&delete a[n]}function l(){return!g.one.length&&!g.two.length}function s(n){return console.log("unpin this!",n),g[e(n)]=_.filter(t(n),function(o){return!_.isEqual(n,o)}),i(),!0}function f(n){return!!_.find(t(n),function(o){return _.isEqual(n,o)})}var a={},g={one:[],two:[]};return{cols:g,pin:r,unPin:s,isPinned:f,get:u,saveState:i,getUrlSlug:function(){return a.url_slug},clear:c}});
+angular.module("services.profileService",["resources.users"]).factory("ProfileService",function(e,r,n,o,t,i,u,c,d,s){function l(r,o,t){return!S||o||P?(P=!0,d.createResource().get({id:r,embedded:t},function(e){console.log("ProfileService got a response",e),_.each(S,function(e,r){delete S[r]}),angular.extend(S,e),P=!1,n.showUpdateModal(r,e.is_refreshing).then(function(e){console.log("updater (resolved):",e),l(r,!0)},function(e){})},function(e){console.log("ProfileService got a failure response",e),P=!1}).$promise):e.when(S)}function a(e){console.log("removing product in profileService",e),S.products.splice(S.products.indexOf(e),1),o.set("profile.removeProduct.success",!1,{title:e.display_title}),i.delete({user_id:S.about.url_slug,tiid:e.tiid},function(){console.log("finished deleting",e.display_title),l(S.about.url_slug,!0),t.track("delete product",{tiid:e.tiid,title:e.display_title})})}function f(){return P}function g(e){if("undefined"==typeof S.genres)return void 0;var r=_.findWhere(S.genres,{url_representation:e});return r}function p(e){if("undefined"==typeof S.products)return void 0;var r=g(e).name,n=_.where(S.products,{genre:r});return n}function v(e){return _.findWhere(S.products,{tiid:e})}function m(){for(var e in S)S.hasOwnProperty(e)&&delete S[e]}function h(e){return console.log("calling getAccountProducts"),"undefined"==typeof S.account_products?void 0:(console.log("account_products",S.account_products),_.findWhere(S.account_products,{index_name:e}))}function y(e){if(!S.genres)return!1;var r=[];_.each(S.genres,function(e){r.push(e.cards)});var n=_.flatten(r),o=_.findWhere(n,{genre_card_address:e});if(!o)return!1;var t=_.findWhere(S.genres,{name:o.genre}),i={genre_num_products:t.num_products,genre_icon:t.icon,genre_plural_name:t.plural_name,genre_url_representation:t.url_representation};return _.extend(o,i)}var P=!0,S={};return{data:S,loading:P,isLoading:f,get:l,productsByGenre:p,genreLookup:g,productByTiid:v,removeProduct:a,getAccountProduct:h,getFromPinId:y,clear:m,getUrlSlug:function(){return S&&S.about?S.about.url_slug:void 0}}}).factory("SelfCancellingProfileResource",["$resource","$q",function(e,r){var n=r.defer(),o=function(){n.resolve(),n=r.defer()},t=function(){return o(),e("/profile/:id",{},{get:{method:"GET",timeout:n.promise}})};return{createResource:t,cancelResource:o}}]);
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -5057,6 +5061,11 @@ angular.module('services.profileService', [
 
       var flatCards = _.flatten(cards)
       var pinnedCard = _.findWhere(flatCards, {genre_card_address: pinId})
+
+      if (!pinnedCard){
+        return false
+      }
+      
       var myGenreObj = _.findWhere(data.genres, {name: pinnedCard.genre})
 
       var extraData = {
@@ -5757,13 +5766,13 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  <ul class=\"genre-cards-best\">\n" +
     "                     <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genreCards, 0, 3).slice().reverse()\">\n" +
     "\n" +
-    "                        <span class=\"data\"\n" +
-    "                              tooltip-placement=\"bottom\"\n" +
-    "                              tooltip=\"{{ card.tooltip }}\">\n" +
-    "                           <span class=\"img-and-value\">\n" +
-    "                              <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
-    "                              <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
-    "                           </span>\n" +
+    "                     <span class=\"data\"\n" +
+    "                           tooltip-placement=\"bottom\"\n" +
+    "                           tooltip=\"{{ card.tooltip }}\">\n" +
+    "                        <span class=\"img-and-value\">\n" +
+    "                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
+    "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
+    "                        </span>\n" +
     "\n" +
     "                           <span class=\"key\">\n" +
     "                              <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
@@ -7392,7 +7401,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             ng-if=\"security.isLoggedIn(url_slug)\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
     "             ng-model=\"pinboardService.cols.two\">\n" +
-    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
+    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\" ng-if=\"profileService.getFromPinId(pinId).current_value\">\n" +
     "               <div class=\"pin-header\">\n" +
     "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
     "                     <i class=\"icon-remove\"></i>\n" +
@@ -7401,7 +7410,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <div class=\"pin-body genre-card-pin-body\">\n" +
     "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "                  <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
     "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
     "                     <span class=\"my-label\">\n" +
     "                        <span class=\"things-we-are-counting\">\n" +
@@ -7426,7 +7435,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "         <!-- LOGGED-OUT version -->\n" +
     "         <ul class=\"col-two pinboard-list logged-out\" ng-if=\"!security.isLoggedIn(url_slug)\">\n" +
-    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
+    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\" ng-if=\"profileService.getFromPinId(pinId).current_value\">\n" +
     "               <div class=\"pin-header\">\n" +
     "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
     "                     <i class=\"icon-remove\"></i>\n" +
@@ -7435,7 +7444,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <div class=\"pin-body genre-card-pin-body\">\n" +
     "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "                  <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
     "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
     "                     <span class=\"my-label\">\n" +
     "                        <span class=\"things-we-are-counting\">\n" +

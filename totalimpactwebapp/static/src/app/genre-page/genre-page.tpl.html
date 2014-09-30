@@ -20,13 +20,13 @@
                   <ul class="genre-cards-best">
                      <li class="genre-card" ng-repeat="card in sliceSortedCards(genreCards, 0, 3).slice().reverse()">
 
-                        <span class="data"
-                              tooltip-placement="bottom"
-                              tooltip="{{ card.tooltip }}">
-                           <span class="img-and-value">
-                              <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >
-                              <span class="value">{{ nFormat(card.current_value) }}</span>
-                           </span>
+                     <span class="data"
+                           tooltip-placement="bottom"
+                           tooltip-html-unsafe="{{ card.tooltip }}">
+                        <span class="img-and-value">
+                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >
+                           <span class="value">{{ nFormat(card.current_value) }}</span>
+                        </span>
 
                            <span class="key">
                               <span class="interaction">{{ card.display_things_we_are_counting }}</span>
