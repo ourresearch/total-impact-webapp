@@ -69,6 +69,7 @@ angular.module('services.profileService', [
         {id: data.about.url_slug, tiids: tiids.join(",")},
         function(resp){
           console.log("finished deleting", tiids)
+          get(data.about.url_slug, true)
 
         }
       )
@@ -91,6 +92,7 @@ angular.module('services.profileService', [
         {genre: newGenre},
         function(resp){
           console.log("ProfileService.changeProductsGenre() successful.", resp)
+          get(data.about.url_slug, true)
         },
         function(resp){
           console.log("ProfileService.changeProductsGenre() FAILED.", resp)
