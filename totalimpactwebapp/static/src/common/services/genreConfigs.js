@@ -4,8 +4,7 @@ angular.module("services.genreConfigs", [])
 .factory("GenreConfigs", function($http){
     var configs = globalGenreConfigs
 
-    return {
-      get: function(name, configKey){
+    var get = function(name, configKey){
 
         if (!configs.length){
           return false
@@ -25,7 +24,10 @@ angular.module("services.genreConfigs", [])
           ret = configs
         }
         return ret
-      },
+    }
+
+    return {
+      get: get,
 
       getConfigFromUrlRepresentation: function(urlRepresentation){
         var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})

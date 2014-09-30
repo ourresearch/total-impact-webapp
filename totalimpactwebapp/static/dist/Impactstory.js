@@ -4306,8 +4306,7 @@ angular.module("services.genreConfigs", [])
 .factory("GenreConfigs", function($http){
     var configs = globalGenreConfigs
 
-    return {
-      get: function(name, configKey){
+    var get = function(name, configKey){
 
         if (!configs.length){
           return false
@@ -4327,7 +4326,10 @@ angular.module("services.genreConfigs", [])
           ret = configs
         }
         return ret
-      },
+    }
+
+    return {
+      get: get,
 
       getConfigFromUrlRepresentation: function(urlRepresentation){
         var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})
@@ -5852,7 +5854,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                        <ul class=\"dropdown-menu\">\n" +
     "                           <li class=\"instr\">Move to:</li>\n" +
     "                           <li class=\"divider\"></li>\n" +
-    "                           <li ng-repeat=\"genreConfigForList in GenreConfigs.get() | orderBy: ['name']\">\n" +
+    "                           <li ng-repeat=\"genreConfigForList in GenreConfigs.get() | orderBy: ['name'] | filter: { name: '!unknown' }\"\">\n" +
     "                              <a ng-click=\"changeProductsGenre(genreConfigForList.name)\">\n" +
     "                                 <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
     "                                 {{ genreConfigForList.plural_name }}\n" +

@@ -117,7 +117,7 @@
                         <ul class="dropdown-menu">
                            <li class="instr">Move to:</li>
                            <li class="divider"></li>
-                           <li ng-repeat="genreConfigForList in GenreConfigs.get() | orderBy: ['name']">
+                           <li ng-repeat="genreConfigForList in GenreConfigs.get() | orderBy: ['name'] | filter: { name: '!unknown' }"">
                               <a ng-click="changeProductsGenre(genreConfigForList.name)">
                                  <i class="{{ genreConfigForList.icon }} left"></i>
                                  {{ genreConfigForList.plural_name }}
