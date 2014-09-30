@@ -727,11 +727,11 @@ def product_biblio_modify(tiid):
 def products_biblio_modify_multi(comma_separated_tiids):
     resp = []
     for tiid in comma_separated_tiids.split(","):
-        current_user_must_own_tiid()
-        resp.append(patch_biblio(tiid, request.data))
+        current_user_must_own_tiid(tiid)
+        resp.append(patch_biblio(tiid, request.json))
         local_sleep(1)
 
-    return json_resp_from_thing(resp)
+    return json_resp_from_thing({"msg": resp})  # angular needs obj not array.
 
 
 
@@ -953,7 +953,8 @@ def get_js_top():
         mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
         stripe_publishable_key=os.getenv("STRIPE_PUBLISHABLE_KEY"),
         newrelic_header=newrelic_header,
-        current_user=current_user_dict
+        current_user=current_user_dict,
+        genre_configs=configs.genre_configs()
     )
 
 

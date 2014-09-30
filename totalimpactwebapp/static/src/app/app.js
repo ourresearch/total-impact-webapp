@@ -119,7 +119,6 @@ angular.module('app').controller('AppCtrl', function($scope,
 
 
   // init the genre configs service
-  GenreConfigs.load()
   $scope.GenreConfigs = GenreConfigs
 
   security.requestCurrentUser().then(function(currentUser){

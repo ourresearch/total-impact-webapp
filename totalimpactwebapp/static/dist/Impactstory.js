@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-29
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-30
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -597,7 +597,6 @@ angular.module('app').controller('AppCtrl', function($scope,
 
 
   // init the genre configs service
-  GenreConfigs.load()
   $scope.GenreConfigs = GenreConfigs
 
   security.requestCurrentUser().then(function(currentUser){
@@ -792,6 +791,7 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
+    GenreConfigs,
     ProfileService,
     ProfileAboutService,
     SelectedProducts,
@@ -807,7 +807,9 @@ angular.module("genrePage", [
     Timer.start("genreViewRender")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
-    $scope.genre_name = $routeParams.genre_name
+    $scope.genre = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+
+    $scope.genreChangeDropdown = {}
 
     var rendering = true
 
@@ -818,7 +820,7 @@ angular.module("genrePage", [
       function(resp){
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
+        $scope.genreCards = ProfileService.genreCards($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.
@@ -850,6 +852,14 @@ angular.module("genrePage", [
       console.log("removing products: ", SelectedProducts.get())
       ProfileService.removeProducts(SelectedProducts.get())
       SelectedProducts.removeAll()
+    }
+
+    $scope.changeProductsGenre = function(newGenre){
+      console.log("changing products genres: ", SelectedProducts.get())
+      ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+      SelectedProducts.removeAll()
+      $scope.genreChangeDropdown.isOpen = false
+
     }
 
 
@@ -2791,7 +2801,11 @@ angular.module('profileSidebar', [
     'resources.users',
     'services.profileService'
 ])
-  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
+  .controller("profileSidebarCtrl", function($scope,
+                                             GenreConfigs,
+                                             ProfileService,
+                                             Page,
+                                             security){
 
   })
 
@@ -3684,6 +3698,20 @@ angular.module('resources.products',['ngResource'])
   )
 })
 
+.factory('ProductsBiblio', function ($resource) {
+
+  return $resource(
+   "/products/:commaSeparatedTiids/biblio",
+   {},
+    {
+      patch:{
+        method: "POST",
+        headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
+      }
+    }
+  )
+})
+
 .factory('ProductBiblio', function ($resource) {
 
   return $resource(
@@ -4256,24 +4284,44 @@ angular.module('services.exceptionHandler').config(['$provide', function($provid
   }]);
 }]);
 
+globalGenreConfigs = globalGenreConfigs || []
+
 angular.module("services.genreConfigs", [])
 .factory("GenreConfigs", function($http){
-    var configs = []
-
-    var load = function(){
-      $http.get("/configs/genres")
-        .success(function(resp){
-          configs = resp
-        })
-    }
-
-
+    var configs = globalGenreConfigs
 
     return {
-      load: load,
-      get: function(){
-        return configs
+      get: function(name, configKey){
+
+        if (!configs.length){
+          return false
+        }
+
+        var ret
+        if (name){
+          var myConfig = _.findWhere(configs, {name: name})
+          if (configKey){
+            ret = myConfig[configKey]
+          }
+          else {
+            ret = myConfig
+          }
+        }
+        else {
+          ret = configs
+        }
+        return ret
       },
+
+      getConfigFromUrlRepresentation: function(urlRepresentation){
+        var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})
+
+        console.log("getting genre config from this url repr", urlRepresentation, myConfig, configs)
+
+        return myConfig
+      },
+
+
       getByName: function(genreName){
         return _.findWhere(configs, {name: genreName})
       }
@@ -4788,7 +4836,9 @@ angular.module('services.profileService', [
                                       Product,
                                       PinboardService,
                                       ProfileAboutService,
+                                      GenreConfigs,
                                       UsersProducts,
+                                      ProductsBiblio,
                                       SelfCancellingProfileResource,
                                       Users){
 
@@ -4833,31 +4883,6 @@ angular.module('services.profileService', [
       ).$promise
     }
 
-    function removeProduct(product){
-      console.log("removing product in profileService", product)
-      data.products.splice(data.products.indexOf(product),1)
-
-
-      UserMessage.set(
-        "profile.removeProduct.success",
-        false,
-        {title: product.display_title}
-      )
-
-      // do the deletion in the background, without a progress spinner...
-      Product.delete(
-        {user_id: data.about.url_slug, tiid: product.tiid},
-        function(){
-          console.log("finished deleting", product.display_title)
-          get(data.about.url_slug, true) // go back to the server to get new data
-
-          TiMixpanel.track("delete product", {
-            tiid: product.tiid,
-            title: product.display_title
-          })
-        }
-      )
-    }
 
     function removeProducts(tiids){
       _.each(tiids, function(tiid){
@@ -4874,6 +4899,29 @@ angular.module('services.profileService', [
       )
     }
 
+    function changeProductsGenre(tiids, newGenre){
+      _.each(tiids, function(tiid){
+        var productToChange = getProductFromTiid(tiid)
+        if (productToChange){
+          productToChange.genre = newGenre
+        }
+      })
+
+      // save the new genre info on the server here...
+      ProductsBiblio.patch(
+        {commaSeparatedTiids: tiids.join(",")},
+        {genre: newGenre},
+        function(resp){
+          console.log("ProfileService.changeProductsGenre() successful.", resp)
+        },
+        function(resp){
+          console.log("ProfileService.changeProductsGenre() FAILED.", resp)
+        }
+      )
+
+
+    }
+
     function getProductIndexFromTiid(tiid){
       for (var i=0; i<data.products.length; i++ ){
         if (data.products[i].tiid == tiid) {
@@ -4883,10 +4931,31 @@ angular.module('services.profileService', [
       return -1
     }
 
+    function getProductFromTiid(tiid){
+      var tiidIndex = getProductIndexFromTiid(tiid)
+      if (tiidIndex > -1){
+        return data.products[tiidIndex]
+      }
+      else {
+        return null
+      }
+
+    }
+
 
 
     function isLoading(){
       return loading
+    }
+
+    function genreCards(url_representation){
+      if (typeof data.genres == "undefined"){
+        return []
+      }
+      else {
+        var myGenre = _.findWhere(data.genres, {url_representation: url_representation})
+        return myGenre.cards
+      }
     }
 
     function genreLookup(url_representation){
@@ -4899,15 +4968,22 @@ angular.module('services.profileService', [
       }
     }
 
-    function productsByGenre(url_representation){
+    function productsByGenre(genreName){
       if (typeof data.products == "undefined"){
         return undefined
       }
       else {
-        var genreCanonicalName = genreLookup(url_representation).name
-        var res = _.where(data.products, {genre: genreCanonicalName})
+        var res = _.where(data.products, {genre: genreName})
         return res
       }
+    }
+
+    function getGenreCounts(){
+      var counts = _.countBy(data.products, function(product){
+        return product.genre
+      })
+      return counts
+
     }
 
     function productByTiid(tiid){
@@ -4968,12 +5044,13 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       productsByGenre: productsByGenre,
-      genreLookup: genreLookup,
+      genreCards: genreCards,
       productByTiid: productByTiid,
-      removeProduct: removeProduct,
       removeProducts: removeProducts,
+      changeProductsGenre: changeProductsGenre,
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId,
+      getGenreCounts: getGenreCounts,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {
@@ -5636,7 +5713,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "\n" +
     "            <h2>\n" +
     "               <span class=\"count\">\n" +
-    "                  {{ profileService.productsByGenre(genre_name).length }}\n" +
+    "                  {{ profileService.productsByGenre(genre.name).length }}\n" +
     "               </span>\n" +
     "               <span class=\"text\">\n" +
     "                  {{ genre.plural_name }}\n" +
@@ -5645,7 +5722,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "            <div class=\"genre-summary\">\n" +
     "               <div class=\"genre-summary-top\">\n" +
     "                  <ul class=\"genre-cards-best\">\n" +
-    "                     <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
+    "                     <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genreCards, 0, 3).slice().reverse()\">\n" +
     "\n" +
     "                        <span class=\"data\"\n" +
     "                              tooltip-placement=\"bottom\"\n" +
@@ -5700,19 +5777,19 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  <i class=\"icon-check-empty\"\n" +
     "                     tooltip=\"Select all\"\n" +
     "                     ng-show=\"SelectedProducts.count() == 0\"\n" +
-    "                     ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre_name))\"></i>\n" +
+    "                     ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))\"></i>\n" +
     "\n" +
     "\n" +
     "               <!-- between zero and all products are selected. allow user to select all -->\n" +
     "               <i class=\"icon-check-minus\"\n" +
     "                  tooltip=\"Select all\"\n" +
-    "                  ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre_name).length\"\n" +
-    "                  ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre_name))\"></i>\n" +
+    "                  ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre.name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))\"></i>\n" +
     "\n" +
     "               <!-- everything is selected. allow user to unselect all -->\n" +
     "               <i class=\"icon-check\"\n" +
     "                  tooltip=\"Unselect all\"\n" +
-    "                  ng-show=\"SelectedProducts.count() == profileService.productsByGenre(genre_name).length\"\n" +
+    "                  ng-show=\"SelectedProducts.count() == profileService.productsByGenre(genre.name).length\"\n" +
     "                  ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
     "            </span>\n" +
     "\n" +
@@ -5734,7 +5811,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  </span>\n" +
     "\n" +
     "                  <span class=\"action\">\n" +
-    "                     <div class=\"btn-group genre-select-group\" dropdown is-open=\"status.isopen\">\n" +
+    "                     <div class=\"btn-group genre-select-group\" dropdown is-open=\"genreChangeDropdown.isOpen\">\n" +
     "                        <button type=\"button\"\n" +
     "                                tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
     "                                class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
@@ -5744,10 +5821,10 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                        <ul class=\"dropdown-menu\">\n" +
     "                           <li class=\"instr\">Move to:</li>\n" +
     "                           <li class=\"divider\"></li>\n" +
-    "                           <li ng-repeat=\"genre in GenreConfigs.get() | orderBy: ['name']\">\n" +
-    "                              <a>\n" +
-    "                                 <i class=\"{{ genre.icon }} left\"></i>\n" +
-    "                                 {{ genre.plural_name }}\n" +
+    "                           <li ng-repeat=\"genreConfigForList in GenreConfigs.get() | orderBy: ['name']\">\n" +
+    "                              <a ng-click=\"changeProductsGenre(genreConfigForList.name)\">\n" +
+    "                                 <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
+    "                                 {{ genreConfigForList.plural_name }}\n" +
     "                              </a>\n" +
     "                           </li>\n" +
     "                        </ul>\n" +
@@ -5775,7 +5852,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "         <ul class=\"products-list\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
     "                ng-class=\"{first: $first}\"\n" +
-    "                ng-repeat=\"product in profileService.productsByGenre(genre_name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
+    "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
     "                id=\"{{ product.tiid }}\"\n" +
     "                on-repeat-finished>\n" +
     "\n" +
@@ -5791,7 +5868,6 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                     <i class=\"icon-check\"\n" +
     "                        ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
     "                        ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
-    "\n" +
     "\n" +
     "                  </span>\n" +
     "                  <span class=\"feature-product-controls\">\n" +
@@ -8229,15 +8305,15 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "         </a>\n" +
     "         <div class=\"nav-group genres\">\n" +
     "            <ul>\n" +
-    "               <li ng-repeat=\"genre in profileService.data.genres | orderBy: 'name'\">\n" +
-    "                  <a href=\"/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}\"\n" +
-    "                     ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
-    "                     <i class=\"{{ genre.icon }} left\"></i>\n" +
+    "               <li ng-repeat=\"(genreName, genreCount) in profileService.getGenreCounts() | orderBy: 'genreName'\">\n" +
+    "                  <a ng-href=\"/{{ profileAboutService.data.url_slug }}/products/{{ GenreConfigs.get(genreName, 'url_representation') }}\"\n" +
+    "                     ng-class=\"{active: page.isNamed(GenreConfigs.get(genreName, 'url_representation'))}\">\n" +
+    "                     <i class=\"{{ GenreConfigs.get(genreName, 'icon') }} left\"></i>\n" +
     "                     <span class=\"text\">\n" +
-    "                        {{ genre.plural_name }}\n" +
+    "                        {{  GenreConfigs.get(genreName, \"plural_name\") }}\n" +
     "                     </span>\n" +
     "                     <span class=\"count value\">\n" +
-    "                        ({{ genre.num_products }})\n" +
+    "                        ({{ genreCount }})\n" +
     "                     </span>\n" +
     "                  </a>\n" +
     "               </li>\n" +

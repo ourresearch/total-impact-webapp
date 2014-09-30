@@ -3,7 +3,11 @@ angular.module('profileSidebar', [
     'resources.users',
     'services.profileService'
 ])
-  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
+  .controller("profileSidebarCtrl", function($scope,
+                                             GenreConfigs,
+                                             ProfileService,
+                                             Page,
+                                             security){
 
   })
 

@@ -89,6 +89,7 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
+    GenreConfigs,
     ProfileService,
     ProfileAboutService,
     SelectedProducts,
@@ -104,7 +105,9 @@ angular.module("genrePage", [
     Timer.start("genreViewRender")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
-    $scope.genre_name = $routeParams.genre_name
+    $scope.genre = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+
+    $scope.genreChangeDropdown = {}
 
     var rendering = true
 
@@ -115,7 +118,7 @@ angular.module("genrePage", [
       function(resp){
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
+        $scope.genreCards = ProfileService.genreCards($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.
@@ -147,6 +150,14 @@ angular.module("genrePage", [
       console.log("removing products: ", SelectedProducts.get())
       ProfileService.removeProducts(SelectedProducts.get())
       SelectedProducts.removeAll()
+    }
+
+    $scope.changeProductsGenre = function(newGenre){
+      console.log("changing products genres: ", SelectedProducts.get())
+      ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+      SelectedProducts.removeAll()
+      $scope.genreChangeDropdown.isOpen = false
+
     }
 
 

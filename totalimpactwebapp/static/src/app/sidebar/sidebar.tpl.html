@@ -21,15 +21,15 @@
          </a>
          <div class="nav-group genres">
             <ul>
-               <li ng-repeat="genre in profileService.data.genres | orderBy: 'name'">
-                  <a href="/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}"
-                     ng-class="{active: page.isNamed(genre.url_representation)}">
-                     <i class="{{ genre.icon }} left"></i>
+               <li ng-repeat="(genreName, genreCount) in profileService.getGenreCounts() | orderBy: 'genreName'">
+                  <a ng-href="/{{ profileAboutService.data.url_slug }}/products/{{ GenreConfigs.get(genreName, 'url_representation') }}"
+                     ng-class="{active: page.isNamed(GenreConfigs.get(genreName, 'url_representation'))}">
+                     <i class="{{ GenreConfigs.get(genreName, 'icon') }} left"></i>
                      <span class="text">
-                        {{ genre.plural_name }}
+                        {{  GenreConfigs.get(genreName, "plural_name") }}
                      </span>
                      <span class="count value">
-                        ({{ genre.num_products }})
+                        ({{ genreCount }})
                      </span>
                   </a>
                </li>

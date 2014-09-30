@@ -9,7 +9,7 @@
 
             <h2>
                <span class="count">
-                  {{ profileService.productsByGenre(genre_name).length }}
+                  {{ profileService.productsByGenre(genre.name).length }}
                </span>
                <span class="text">
                   {{ genre.plural_name }}
@@ -18,7 +18,7 @@
             <div class="genre-summary">
                <div class="genre-summary-top">
                   <ul class="genre-cards-best">
-                     <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()">
+                     <li class="genre-card" ng-repeat="card in sliceSortedCards(genreCards, 0, 3).slice().reverse()">
 
                         <span class="data"
                               tooltip-placement="bottom"
@@ -73,19 +73,19 @@
                   <i class="icon-check-empty"
                      tooltip="Select all"
                      ng-show="SelectedProducts.count() == 0"
-                     ng-click="SelectedProducts.addFromObjects(profileService.productsByGenre(genre_name))"></i>
+                     ng-click="SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))"></i>
 
 
                <!-- between zero and all products are selected. allow user to select all -->
                <i class="icon-check-minus"
                   tooltip="Select all"
-                  ng-show="SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre_name).length"
-                  ng-click="SelectedProducts.addFromObjects(profileService.productsByGenre(genre_name))"></i>
+                  ng-show="SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre.name).length"
+                  ng-click="SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))"></i>
 
                <!-- everything is selected. allow user to unselect all -->
                <i class="icon-check"
                   tooltip="Unselect all"
-                  ng-show="SelectedProducts.count() == profileService.productsByGenre(genre_name).length"
+                  ng-show="SelectedProducts.count() == profileService.productsByGenre(genre.name).length"
                   ng-click="SelectedProducts.removeAll()"></i>
             </span>
 
@@ -107,7 +107,7 @@
                   </span>
 
                   <span class="action">
-                     <div class="btn-group genre-select-group" dropdown is-open="status.isopen">
+                     <div class="btn-group genre-select-group" dropdown is-open="genreChangeDropdown.isOpen">
                         <button type="button"
                                 tooltip-html-unsafe="Recategorize selected&nbsp;items"
                                 class="btn btn-default btn-xs dropdown-toggle">
@@ -117,10 +117,10 @@
                         <ul class="dropdown-menu">
                            <li class="instr">Move to:</li>
                            <li class="divider"></li>
-                           <li ng-repeat="genre in GenreConfigs.get() | orderBy: ['name']">
-                              <a>
-                                 <i class="{{ genre.icon }} left"></i>
-                                 {{ genre.plural_name }}
+                           <li ng-repeat="genreConfigForList in GenreConfigs.get() | orderBy: ['name']">
+                              <a ng-click="changeProductsGenre(genreConfigForList.name)">
+                                 <i class="{{ genreConfigForList.icon }} left"></i>
+                                 {{ genreConfigForList.plural_name }}
                               </a>
                            </li>
                         </ul>
@@ -148,7 +148,7 @@
          <ul class="products-list">
             <li class="product genre-{{ product.genre }}"
                 ng-class="{first: $first}"
-                ng-repeat="product in profileService.productsByGenre(genre_name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']"
+                ng-repeat="product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']"
                 id="{{ product.tiid }}"
                 on-repeat-finished>
 
@@ -164,7 +164,6 @@
                      <i class="icon-check"
                         ng-show="SelectedProducts.contains(product.tiid)"
                         ng-click="SelectedProducts.remove(product.tiid)"></i>
-
 
                   </span>
                   <span class="feature-product-controls">

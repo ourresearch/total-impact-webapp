@@ -9,7 +9,9 @@ angular.module('services.profileService', [
                                       Product,
                                       PinboardService,
                                       ProfileAboutService,
+                                      GenreConfigs,
                                       UsersProducts,
+                                      ProductsBiblio,
                                       SelfCancellingProfileResource,
                                       Users){
 
@@ -54,31 +56,6 @@ angular.module('services.profileService', [
       ).$promise
     }
 
-    function removeProduct(product){
-      console.log("removing product in profileService", product)
-      data.products.splice(data.products.indexOf(product),1)
-
-
-      UserMessage.set(
-        "profile.removeProduct.success",
-        false,
-        {title: product.display_title}
-      )
-
-      // do the deletion in the background, without a progress spinner...
-      Product.delete(
-        {user_id: data.about.url_slug, tiid: product.tiid},
-        function(){
-          console.log("finished deleting", product.display_title)
-          get(data.about.url_slug, true) // go back to the server to get new data
-
-          TiMixpanel.track("delete product", {
-            tiid: product.tiid,
-            title: product.display_title
-          })
-        }
-      )
-    }
 
     function removeProducts(tiids){
       _.each(tiids, function(tiid){
@@ -95,6 +72,29 @@ angular.module('services.profileService', [
       )
     }
 
+    function changeProductsGenre(tiids, newGenre){
+      _.each(tiids, function(tiid){
+        var productToChange = getProductFromTiid(tiid)
+        if (productToChange){
+          productToChange.genre = newGenre
+        }
+      })
+
+      // save the new genre info on the server here...
+      ProductsBiblio.patch(
+        {commaSeparatedTiids: tiids.join(",")},
+        {genre: newGenre},
+        function(resp){
+          console.log("ProfileService.changeProductsGenre() successful.", resp)
+        },
+        function(resp){
+          console.log("ProfileService.changeProductsGenre() FAILED.", resp)
+        }
+      )
+
+
+    }
+
     function getProductIndexFromTiid(tiid){
       for (var i=0; i<data.products.length; i++ ){
         if (data.products[i].tiid == tiid) {
@@ -104,10 +104,31 @@ angular.module('services.profileService', [
       return -1
     }
 
+    function getProductFromTiid(tiid){
+      var tiidIndex = getProductIndexFromTiid(tiid)
+      if (tiidIndex > -1){
+        return data.products[tiidIndex]
+      }
+      else {
+        return null
+      }
+
+    }
+
 
 
     function isLoading(){
       return loading
+    }
+
+    function genreCards(url_representation){
+      if (typeof data.genres == "undefined"){
+        return []
+      }
+      else {
+        var myGenre = _.findWhere(data.genres, {url_representation: url_representation})
+        return myGenre.cards
+      }
     }
 
     function genreLookup(url_representation){
@@ -120,15 +141,22 @@ angular.module('services.profileService', [
       }
     }
 
-    function productsByGenre(url_representation){
+    function productsByGenre(genreName){
       if (typeof data.products == "undefined"){
         return undefined
       }
       else {
-        var genreCanonicalName = genreLookup(url_representation).name
-        var res = _.where(data.products, {genre: genreCanonicalName})
+        var res = _.where(data.products, {genre: genreName})
         return res
       }
+    }
+
+    function getGenreCounts(){
+      var counts = _.countBy(data.products, function(product){
+        return product.genre
+      })
+      return counts
+
     }
 
     function productByTiid(tiid){
@@ -189,12 +217,13 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       productsByGenre: productsByGenre,
-      genreLookup: genreLookup,
+      genreCards: genreCards,
       productByTiid: productByTiid,
-      removeProduct: removeProduct,
       removeProducts: removeProducts,
+      changeProductsGenre: changeProductsGenre,
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId,
+      getGenreCounts: getGenreCounts,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {

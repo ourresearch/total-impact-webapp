@@ -1097,7 +1097,8 @@ def genre_configs():
         my_config_dict = {
             "name": name,
             "icon": icon,
-            "plural_name": my_plural
+            "plural_name": my_plural,
+            "url_representation": my_plural.replace(" ", "-")
         }
         ret.append(my_config_dict)
 
