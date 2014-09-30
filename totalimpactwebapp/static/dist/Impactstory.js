@@ -3965,7 +3965,10 @@ angular.module('services.userMessage', [])
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info'],
 
-      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info']
+      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info'],
+
+
+      'genrePage.changeGenre.success': ["Moved {{numProducts}} products to {{newGenre}}.", 'success']
     };
 
     var clear = function(){
@@ -3992,6 +3995,19 @@ angular.module('services.userMessage', [])
         currentMessageObject = {
           message: $interpolate(msg[0])(interpolateParams),
           type: msg[1]
+        }
+      },
+
+      setStr: function(msg, type, persist){
+        if (!persist){
+          $timeout(function(){
+            console.log("removing the user message")
+            clear()
+          }, 2000)
+        }
+        currentMessageObject = {
+          message: msg,
+          type: type || "info"
         }
       },
 
@@ -4890,6 +4906,8 @@ angular.module('services.profileService', [
         data.products.splice(tiidIndex, 1)
       })
 
+      UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
+
       UsersProducts.delete(
         {id: data.about.url_slug, tiids: tiids.join(",")},
         function(resp){
@@ -4906,6 +4924,9 @@ angular.module('services.profileService', [
           productToChange.genre = newGenre
         }
       })
+
+      // assume it worked...
+      UserMessage.setStr("Moved "+ tiids.length +" items to " + GenreConfigs.get(newGenre, "plural_name") + ".", "success" )
 
       // save the new genre info on the server here...
       ProductsBiblio.patch(

@@ -63,6 +63,8 @@ angular.module('services.profileService', [
         data.products.splice(tiidIndex, 1)
       })
 
+      UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
+
       UsersProducts.delete(
         {id: data.about.url_slug, tiids: tiids.join(",")},
         function(resp){
@@ -79,6 +81,9 @@ angular.module('services.profileService', [
           productToChange.genre = newGenre
         }
       })
+
+      // assume it worked...
+      UserMessage.setStr("Moved "+ tiids.length +" items to " + GenreConfigs.get(newGenre, "plural_name") + ".", "success" )
 
       // save the new genre info on the server here...
       ProductsBiblio.patch(
