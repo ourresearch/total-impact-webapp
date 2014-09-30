@@ -20,7 +20,7 @@
 
                      <span class="data"
                            tooltip-placement="bottom"
-                           tooltip="{{ card.tooltip }}">
+                           tooltip-html-unsafe="{{ card.tooltip }}">
                         <span class="img-and-value">
                            <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >
                            <span class="value">{{ nFormat(card.current_value) }}</span>

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-29
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5567,7 +5567,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "\n" +
     "                     <span class=\"data\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
-    "                           tooltip=\"{{ card.tooltip }}\">\n" +
+    "                           tooltip-html-unsafe=\"{{ card.tooltip }}\">\n" +
     "                        <span class=\"img-and-value\">\n" +
     "                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
     "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
@@ -7127,7 +7127,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <div class=\"pin-body genre-card-pin-body\">\n" +
     "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "                  <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
     "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
     "                     <span class=\"my-label\">\n" +
     "                        <span class=\"things-we-are-counting\">\n" +
@@ -7161,7 +7161,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <div class=\"pin-body genre-card-pin-body\">\n" +
     "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "                  <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
     "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
     "                     <span class=\"my-label\">\n" +
     "                        <span class=\"things-we-are-counting\">\n" +

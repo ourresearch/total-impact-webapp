@@ -4,7 +4,12 @@ import configs
 import datetime
 import jinja2
 import numpy
+import logging
 from collections import defaultdict
+from collections import Counter
+
+logger = logging.getLogger("tiwebapp.card")
+
 
 def get_metrics_by_name(products, provider, interaction):
     matching_metrics = []
@@ -27,6 +32,18 @@ def get_metrics_by_engagement(products, engagement):
                 if metric:
                     matching_metrics.append(metric)
     return matching_metrics
+
+def get_tweeter_followers(products):
+    tweeter_followers = Counter()
+    for product in products:
+        product_follower_metric = product.get_metric_by_name("altmetric_com", "tweeter_followers")
+        if product_follower_metric:
+            for follower in product_follower_metric.most_recent_snap.raw_value:
+                twitter_handle, followers = tuple(follower)
+                tweeter_followers[twitter_handle.lower()] = followers
+        # except (AttributeError, TypeError):
+        #     logger.error("error counting twitter_followers")
+    return tweeter_followers
 
 
 class Card(object):
@@ -322,15 +339,37 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
         return u"{provider}_{interaction}.ico".format(
             provider=self.provider, interaction=self.interaction)
 
+
     @property
     def tooltip(self):
-        try:
-            return u"{num} {provider} {interaction}".format(
-                num=self.current_value, 
-                provider=self.exemplar_metric.display_provider,
-                interaction=self.display_things_we_are_counting)
-        except KeyError:
-            return "" 
+        if self.interaction == "impressions":
+            tweet_metrics = get_metrics_by_name(self.products, "altmetric_com", "tweets")
+            total_tweets = sum([m.diff_window_end_value for m in tweet_metrics 
+                                    if m.diff_window_end_value])
+
+            tweeter_followers = get_tweeter_followers(self.products)
+            tooltip = u"{current_value} Twitter impressions based on {total_tweets} tweets, from<ul>".format(
+                current_value=self.current_value,
+                total_tweets=total_tweets)
+            top_tweeter_followers = tweeter_followers.most_common(3)
+            for tweeter_follower in top_tweeter_followers:
+                twitter_handle, followers = tweeter_follower
+                tooltip += u"<li><span class='twitter-handle'>@{twitter_handle}</span> <div class='followers'>({followers}&nbsp;followers)</span></li>".format(
+                    twitter_handle=twitter_handle, followers=followers)
+            tooltip += u"</ul>"
+            number_of_other_tweeters = len(tweeter_followers) - len(top_tweeter_followers)
+            if number_of_other_tweeters:
+                tooltip += u"and {number_of_other_tweeters} others.".format(
+                    number_of_other_tweeters=number_of_other_tweeters)
+            return tooltip
+        else:            
+            try:
+                return u"{num} {provider} {interaction}".format(
+                    num=self.current_value, 
+                    provider=self.exemplar_metric.display_provider,
+                    interaction=self.display_things_we_are_counting)
+            except KeyError:
+                return "" 
 
     @property
     def sort_by(self):
@@ -449,10 +488,14 @@ class GenreEngagementSumCard(Card):
 
     @property
     def tooltip(self):
-        try:
-            return self.engagement_accumulations(self.products, self.engagement)["accumulated_string"]
-        except KeyError:
-            return None 
+        accumulation_string = self.engagement_accumulations(self.products, self.engagement)["accumulated_string"]
+        tooltip = u"{current_value} {display_things_we_are_counting}, including: {accumulation_string}".format(
+            current_value=self.current_value, 
+            display_things_we_are_counting=self.display_things_we_are_counting,
+            accumulation_string=accumulation_string)
+        return tooltip
+        # except KeyError:
+        #     return None 
 
     @classmethod
     #override with a version that returns all cards, not just ones that freshly pass milestones
@@ -477,8 +520,9 @@ class GenreEngagementSumCard(Card):
 
         sorted_accumulated_list = sorted(accumulated_dict.iteritems(), key=lambda (k,v): (v,k), reverse=True)
 
-        accumulated_list = [u"{v} {k}".format(k=k, v=v) for (k, v) in sorted_accumulated_list]
-        accumulated_string = ", ".join(accumulated_list)
+        accumulated_list = [u"<li>{v} {k}</li>".format(k=k, v=v) for (k, v) in sorted_accumulated_list]
+        accumulated_string = u"<ul>{li_list}</ul>".format(
+            li_list="".join(accumulated_list))
 
         if not accumulated_diff_end_value:
             return None
