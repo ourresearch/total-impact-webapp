@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-30
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-01
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1058,7 +1058,11 @@ angular.module( 'infopages', [
       })
       .when('/faq', {
         templateUrl: 'infopages/faq.tpl.html',
-        controller: 'faqPageCtrl',
+        controller: 'faqPageCtrl'
+      })
+      .when('/metrics', {
+        templateUrl: 'infopages/metrics.tpl.html',
+        controller: 'metricsPageCtrl',
         resolve: {
           providersInfo: function(InfoPages){
             return InfoPages.getProvidersInfo()
@@ -1117,11 +1121,16 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
-  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
+  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page) {
     Page.setTitle("FAQ")
     Page.setInfopage(true)
+  })
+
+  .controller( 'metricsPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
+    Page.setTitle("Metrics")
+    Page.setInfopage(true)
     $scope.providers = providersInfo
-    console.log("faq page controller running")
+    console.log("metrics page controller running")
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
@@ -5493,7 +5502,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -5705,6 +5714,7 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "            <h3>About</h3>\n" +
     "            <ul>\n" +
     "               <li><a href=\"/about\">About us</a></li>\n" +
+    "               <li><a href=\"/metrics\">Our metrics</a></li>\n" +
     "               <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
     "               <li><a href=\"/faq#copyright\" target=\"_self\">Copyright</a></li>\n" +
     "               <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
@@ -6176,31 +6186,6 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"whichmetrics\">which metrics are measured?</h3>\n" +
-    "\n" +
-    "   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>\n" +
-    "\n" +
-    "   <ul id=\"providers-metadata\">\n" +
-    "      <!-- the provider -->\n" +
-    "      <li ng-repeat=\"provider in providers | orderBy: ['name']\">\n" +
-    "         <a href=\"{{ provider.url }}\" class=\"provider-name\">{{ provider.name }}:</a> <span class=\"descr\">{{ provider.descr }}</span>\n" +
-    "\n" +
-    "         <ul>\n" +
-    "            <!-- a metric supplied by this provider -->\n" +
-    "            <li ng-repeat=\"(metric_name, metric) in provider.metrics\" class=\"metric\">\n" +
-    "               <img ng-src=\"/static/img/favicons/{{ provider.name }}_{{ metric_name }}.ico\" width=\"16\" height=\"16\" />\n" +
-    "               <strong>{{ metric.display_name }}</strong>\n" +
-    "               <span class=\"metric-descr\">{{ metric.description }}</span>\n" +
-    "               <span class=\"csv-name\">({{ provider.name }}:{{ metric_name }})</span>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
-    "      </li>\n" +
-    "   </ul>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "   <h3 id=\"why-charge\">Impactstory is a non-profit. Why are you charging for profiles?</h3>\n" +
     "\n" +
     "   <p>Impactstory is the best place in the world to learn and share your scholarly impact. With our new subscription model, we&rsquo;re able to offer you a profile not built on selling your personal data, or cramming your page with ads, or our ability to hustle up more funding, or on a hope Elsevier acquires us someday.</p>\n" +
@@ -6350,6 +6335,49 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "</div>\n" +
     "\n" +
     "");
+}]);
+
+angular.module("infopages/metrics.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("infopages/metrics.tpl.html",
+    "<div class=\"main infopage\" id=\"metrics-about\"><div class=\"wrapper\">\n" +
+    "   <h2 class=\"infopage-heading\">Our metrics</h2>\n" +
+    "\n" +
+    "   <p class=\"intro\">\n" +
+    "      Our goal is to uncover and share every of impact from every research product of every scientist.\n" +
+    "      We're not there yet, of course, but we are adding new metrics all the time.\n" +
+    "      Here's a snapshot of the impact metrics we're gathering right now. Got an idea for another\n" +
+    "      measure of impact that you'd like to see here? Great,\n" +
+    "      <a class=\"help control\"\n" +
+    "         href=\"javascript:void(0)\"\n" +
+    "         data-uv-lightbox=\"classic_widget\"\n" +
+    "         data-uv-trigger\n" +
+    "         data-uv-mode=\"full\"\n" +
+    "         data-uv-primary-color=\"#cc6d00\"\n" +
+    "         data-uv-link-color=\"#007dbf\"\n" +
+    "         data-uv-default-mode=\"support\"\n" +
+    "         data-uv-forum-id=\"166950\">\n" +
+    "            we'd love to hear from you!\n" +
+    "      </a>\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <ul id=\"providers-metadata\">\n" +
+    "      <!-- the provider -->\n" +
+    "      <li ng-repeat=\"provider in providers | orderBy: ['name']\">\n" +
+    "         <a href=\"{{ provider.url }}\" class=\"provider-name\">{{ provider.name }}:</a> <q class=\"descr\">{{ provider.descr }}</q>\n" +
+    "\n" +
+    "         <ul>\n" +
+    "            <!-- a metric supplied by this provider -->\n" +
+    "            <li ng-repeat=\"(metric_name, metric) in provider.metrics\" class=\"metric\">\n" +
+    "               <img ng-src=\"/static/img/favicons/{{ provider.name }}_{{ metric_name }}.ico\" width=\"16\" height=\"16\" />\n" +
+    "               <strong>{{ metric.display_name }}</strong>\n" +
+    "               <span class=\"metric-descr\">{{ metric.description }}</span>\n" +
+    "               <span class=\"csv-name\">({{ provider.name }}:{{ metric_name }})</span>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "      </li>\n" +
+    "   </ul>\n" +
+    "\n" +
+    "</div>");
 }]);
 
 angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", function($templateCache) {

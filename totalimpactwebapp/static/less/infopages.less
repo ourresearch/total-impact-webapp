@@ -7,7 +7,10 @@
 
 div.infopage {
    h2.infopage-heading {
-      font-size:  50px;
+      font-size: 35px;
+      font-weight: 300;
+      color: #0053b0;
+      margin-bottom: 71px;
    }
    h3 {
       margin-top: 90px;
@@ -321,7 +324,19 @@ div#sources {
       list-style-type: disc;
       margin-left:20px;
    }
+}
 
+
+
+/* "metric-about" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#metrics-about {
+
+   p.intro {
+      margin-bottom: 50px;
+   }
 
    ul#providers-metadata {
       span {
@@ -329,7 +344,11 @@ div#sources {
       }
 
       li {
-         margin-bottom: 30px;
+         margin-bottom: 50px;
+         q.descr {
+            font-size: 16px;
+            color: #555;
+         }
          a.provider-name {
             font-weight: bold;
          }
@@ -339,6 +358,7 @@ div#sources {
          ul {
             li.metric {
                list-style-type: none;
+               margin-left: 10px;
                margin-bottom: 5px;
                span.metric-descr {
                   font-size: 80%;

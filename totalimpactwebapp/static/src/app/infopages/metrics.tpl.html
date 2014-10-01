@@ -1,0 +1,39 @@
+<div class="main infopage" id="metrics-about"><div class="wrapper">
+   <h2 class="infopage-heading">Our metrics</h2>
+
+   <p class="intro">
+      Our goal is to uncover and share every of impact from every research product of every scientist.
+      We're not there yet, of course, but we are adding new metrics all the time.
+      Here's a snapshot of the impact metrics we're gathering right now. Got an idea for another
+      measure of impact that you'd like to see here? Great,
+      <a class="help control"
+         href="javascript:void(0)"
+         data-uv-lightbox="classic_widget"
+         data-uv-trigger
+         data-uv-mode="full"
+         data-uv-primary-color="#cc6d00"
+         data-uv-link-color="#007dbf"
+         data-uv-default-mode="support"
+         data-uv-forum-id="166950">
+            we'd love to hear from you!
+      </a>
+   </p>
+
+   <ul id="providers-metadata">
+      <!-- the provider -->
+      <li ng-repeat="provider in providers | orderBy: ['name']">
+         <a href="{{ provider.url }}" class="provider-name">{{ provider.name }}:</a> <q class="descr">{{ provider.descr }}</q>
+
+         <ul>
+            <!-- a metric supplied by this provider -->
+            <li ng-repeat="(metric_name, metric) in provider.metrics" class="metric">
+               <img ng-src="/static/img/favicons/{{ provider.name }}_{{ metric_name }}.ico" width="16" height="16" />
+               <strong>{{ metric.display_name }}</strong>
+               <span class="metric-descr">{{ metric.description }}</span>
+               <span class="csv-name">({{ provider.name }}:{{ metric_name }})</span>
+            </li>
+         </ul>
+      </li>
+   </ul>
+
+</div>

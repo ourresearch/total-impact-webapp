@@ -6836,7 +6836,10 @@ div.infopage {
   margin-bottom: 200px;
 }
 div.infopage h2.infopage-heading {
-  font-size: 50px;
+  font-size: 35px;
+  font-weight: 300;
+  color: #0053b0;
+  margin-bottom: 71px;
 }
 div.infopage h3 {
   margin-top: 90px;
@@ -7127,26 +7130,38 @@ div#sources ul#source-logos li img {
   list-style-type: disc;
   margin-left: 20px;
 }
-#faq ul#providers-metadata span {
+/* "metric-about" page
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#metrics-about p.intro {
+  margin-bottom: 50px;
+}
+#metrics-about ul#providers-metadata span {
   margin-left: .5em;
 }
-#faq ul#providers-metadata li {
-  margin-bottom: 30px;
+#metrics-about ul#providers-metadata li {
+  margin-bottom: 50px;
 }
-#faq ul#providers-metadata li a.provider-name {
+#metrics-about ul#providers-metadata li q.descr {
+  font-size: 16px;
+  color: #555;
+}
+#metrics-about ul#providers-metadata li a.provider-name {
   font-weight: bold;
 }
-#faq ul#providers-metadata li img {
+#metrics-about ul#providers-metadata li img {
   margin-right: 5px;
 }
-#faq ul#providers-metadata li ul li.metric {
+#metrics-about ul#providers-metadata li ul li.metric {
   list-style-type: none;
+  margin-left: 10px;
   margin-bottom: 5px;
 }
-#faq ul#providers-metadata li ul li.metric span.metric-descr {
+#metrics-about ul#providers-metadata li ul li.metric span.metric-descr {
   font-size: 80%;
 }
-#faq ul#providers-metadata li ul li.metric span.csv-name {
+#metrics-about ul#providers-metadata li ul li.metric span.csv-name {
   font-family: monaco, consolas, monospace;
   color: #999;
   font-size: 80%;

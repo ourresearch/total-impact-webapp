@@ -3,31 +3,6 @@
 
 
 
-
-
-   <h3 id="whichmetrics">which metrics are measured?</h3>
-
-   <p>Metrics are computed based on the following data sources (column names for CSV export are in parentheses):</p>
-
-   <ul id="providers-metadata">
-      <!-- the provider -->
-      <li ng-repeat="provider in providers | orderBy: ['name']">
-         <a href="{{ provider.url }}" class="provider-name">{{ provider.name }}:</a> <span class="descr">{{ provider.descr }}</span>
-
-         <ul>
-            <!-- a metric supplied by this provider -->
-            <li ng-repeat="(metric_name, metric) in provider.metrics" class="metric">
-               <img ng-src="/static/img/favicons/{{ provider.name }}_{{ metric_name }}.ico" width="16" height="16" />
-               <strong>{{ metric.display_name }}</strong>
-               <span class="metric-descr">{{ metric.description }}</span>
-               <span class="csv-name">({{ provider.name }}:{{ metric_name }})</span>
-            </li>
-         </ul>
-      </li>
-   </ul>
-
-
-
    <h3 id="why-charge">Impactstory is a non-profit. Why are you charging for profiles?</h3>
 
    <p>Impactstory is the best place in the world to learn and share your scholarly impact. With our new subscription model, we&rsquo;re able to offer you a profile not built on selling your personal data, or cramming your page with ads, or our ability to hustle up more funding, or on a hope Elsevier acquires us someday.</p>
