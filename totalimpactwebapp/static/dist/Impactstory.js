@@ -5825,7 +5825,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "\n" +
     "\n" +
     "         <div class=\"header-controls\">\n" +
-    "            <div class=\"edit-controls\">\n" +
+    "            <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(url_slug)\">\n" +
     "\n" +
     "               <!-- no products are selected. allow user to select all -->\n" +
     "\n" +
