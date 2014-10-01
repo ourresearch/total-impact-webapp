@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-29
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-30
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -504,6 +504,7 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'genrePage',
+  'services.genreConfigs',
   'accountPage',
   'services.profileService',
   'services.profileAboutService',
@@ -576,6 +577,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      Breadcrumbs,
+                                                     GenreConfigs,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
@@ -593,11 +595,9 @@ angular.module('app').controller('AppCtrl', function($scope,
 //    $location.host()
 //  ))
 
-  $http.get("/configs/genres")
-    .success(function(resp){
-      $rootScope.genreConfigs = resp
-    })
 
+  // init the genre configs service
+  $scope.GenreConfigs = GenreConfigs
 
   security.requestCurrentUser().then(function(currentUser){
 
@@ -732,6 +732,40 @@ angular.module("genrePage", [
   }
 })
 
+.factory("SelectedProducts", function(){
+  var tiids = []
+
+  return {
+    add: function(tiid){
+      return tiids.push(tiid)
+    },
+    addFromObjects: function(objects){
+      return tiids = _.pluck(objects, "tiid")
+    },
+    remove: function(tiid){
+      tiids = _.without(tiids, tiid)
+    },
+    removeAll: function(){
+      return tiids.length = 0
+    },
+    contains: function(tiid){
+      return _.contains(tiids, tiid)
+    },
+    containsAny: function(){
+      return tiids.length > 0
+    },
+    get: function(){
+      return tiids
+    },
+    count: function(){
+      return tiids.length
+    }
+  }
+})
+
+
+
+
 
 
 
@@ -757,19 +791,27 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
+    GenreConfigs,
     ProfileService,
     ProfileAboutService,
+    SelectedProducts,
     PinboardService,
     Page) {
 
     $scope.pinboardService = PinboardService
 
+    SelectedProducts.removeAll()
+    $scope.SelectedProducts = SelectedProducts
+
 
     Timer.start("genreViewRender")
-    Timer.start("genreViewRender.load")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
-    $scope.genre_name = $routeParams.genre_name
+
+    var genreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    $scope.genre = genreConfig
+
+    $scope.genreChangeDropdown = {}
 
     var rendering = true
 
@@ -778,12 +820,9 @@ angular.module("genrePage", [
     }
     ProfileService.get($routeParams.url_slug).then(
       function(resp){
-        console.log("genre page loaded products", resp)
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.about = resp.about
-        $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
-        $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
+        $scope.genreCards = ProfileService.genreCards($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.
@@ -791,9 +830,6 @@ angular.module("genrePage", [
           var lastScrollPos = Page.getLastScrollPosition($location.path())
           $window.scrollTo(0, lastScrollPos)
         }, 0)
-      },
-      function(resp){
-        console.log("ProfileService failed in genrePage.js...", resp)
       }
     )
 
@@ -812,6 +848,33 @@ angular.module("genrePage", [
       var sorted = _.sortBy(cards, "sort_by")
       var reversed = sorted.concat([]).reverse()
       return reversed.slice(startIndex, endIndex)
+    }
+
+    $scope.removeSelectedProducts = function(){
+      console.log("removing products: ", SelectedProducts.get())
+      ProfileService.removeProducts(SelectedProducts.get())
+      SelectedProducts.removeAll()
+
+      // handle removing the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        $location.path($routeParams.url_slug)
+      }
+    }
+
+    $scope.changeProductsGenre = function(newGenre){
+      console.log("changing products genres: ", SelectedProducts.get())
+      $scope.genreChangeDropdown.isOpen = false
+
+      ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+      SelectedProducts.removeAll()
+
+      // handle moving the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
+        $location.path($routeParams.url_slug + "/products/" + newGenreUrlRepresentation)
+      }
     }
 
 
@@ -2716,7 +2779,7 @@ angular.module('settings', [
 
       else {
         console.log("yay, Stripe CC token created successfully! Now let's save the card.")
-        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, null)
+        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, $scope.subscribeForm.coupon)
 
       }
     }
@@ -2753,7 +2816,11 @@ angular.module('profileSidebar', [
     'resources.users',
     'services.profileService'
 ])
-  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
+  .controller("profileSidebarCtrl", function($scope,
+                                             GenreConfigs,
+                                             ProfileService,
+                                             Page,
+                                             security){
 
   })
 
@@ -3646,6 +3713,20 @@ angular.module('resources.products',['ngResource'])
   )
 })
 
+.factory('ProductsBiblio', function ($resource) {
+
+  return $resource(
+   "/products/:commaSeparatedTiids/biblio",
+   {},
+    {
+      patch:{
+        method: "POST",
+        headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
+      }
+    }
+  )
+})
+
 .factory('ProductBiblio', function ($resource) {
 
   return $resource(
@@ -3694,7 +3775,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -3900,7 +3980,10 @@ angular.module('services.userMessage', [])
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info'],
 
-      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info']
+      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info'],
+
+
+      'genrePage.changeGenre.success': ["Moved {{numProducts}} products to {{newGenre}}.", 'success']
     };
 
     var clear = function(){
@@ -3918,7 +4001,6 @@ angular.module('services.userMessage', [])
       set: function(key, persist, interpolateParams){
         if (!persist){
           $timeout(function(){
-            console.log("removing the user message")
             clear()
           }, 2000)
         }
@@ -3927,6 +4009,18 @@ angular.module('services.userMessage', [])
         currentMessageObject = {
           message: $interpolate(msg[0])(interpolateParams),
           type: msg[1]
+        }
+      },
+
+      setStr: function(msg, type, persist){
+        if (!persist){
+          $timeout(function(){
+            clear()
+          }, 2000)
+        }
+        currentMessageObject = {
+          message: msg,
+          type: type || "info"
         }
       },
 
@@ -4219,6 +4313,58 @@ angular.module('services.exceptionHandler').config(['$provide', function($provid
   }]);
 }]);
 
+globalGenreConfigs = globalGenreConfigs || []
+
+angular.module("services.genreConfigs", [])
+.factory("GenreConfigs", function($http){
+    var configs = globalGenreConfigs
+
+    var get = function(name, configKey){
+
+        if (!configs.length){
+          return false
+        }
+
+        var ret
+        if (name){
+          var myConfig = _.findWhere(configs, {name: name})
+          if (configKey){
+            ret = myConfig[configKey]
+          }
+          else {
+            ret = myConfig
+          }
+        }
+        else {
+          ret = configs
+        }
+        return ret
+    }
+
+    return {
+      get: get,
+      getForMove: function(){
+        var removeConfigs = [
+          "unknown",
+          "other"
+        ]
+        return _.filter(configs, function(myConfig){
+          return !_.contains(removeConfigs, myConfig.name)
+        })
+      },
+
+      getConfigFromUrlRepresentation: function(urlRepresentation){
+        var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})
+        return myConfig
+      },
+
+
+      getByName: function(genreName){
+        return _.findWhere(configs, {name: genreName})
+      }
+    }
+
+  })
 angular.module('services.httpRequestTracker', []);
 angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$http', function($http){
 
@@ -4274,9 +4420,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.pinboardService",["resources.users"]).factory("PinboardService",function(n,o){function t(n){return g[e(n)]}function e(n){return"product"==n[0]?"one":"two"}function r(n){console.log("pinning this id: ",n),t(n).push(n),i()}function i(t){var e=o.getCurrentUserSlug();return e?t&&l()?!1:void n.save({id:e},{contents:g},function(n){},function(n){}):!1}function u(o){console.log("calling ProfilePinboard.get("+o+")",g,a),a.url_slug=o,n.get({id:o},function(n){g.one=n.one,g.two=n.two},function(n){console.log("no pinboard set yet."),c()})}function c(){g.one=[],g.two=[];for(var n in a)a.hasOwnProperty(n)&&delete a[n]}function l(){return!g.one.length&&!g.two.length}function s(n){return console.log("unpin this!",n),g[e(n)]=_.filter(t(n),function(o){return!_.isEqual(n,o)}),i(),!0}function f(n){return!!_.find(t(n),function(o){return _.isEqual(n,o)})}var a={},g={one:[],two:[]};return{cols:g,pin:r,unPin:s,isPinned:f,get:u,saveState:i,getUrlSlug:function(){return a.url_slug},clear:c}});
-angular.module("services.profileService",["resources.users"]).factory("ProfileService",function(e,r,n,o,t,i,u,c,d,s){function l(r,o,t){return!S||o||P?(P=!0,d.createResource().get({id:r,embedded:t},function(e){console.log("ProfileService got a response",e),_.each(S,function(e,r){delete S[r]}),angular.extend(S,e),P=!1,n.showUpdateModal(r,e.is_refreshing).then(function(e){console.log("updater (resolved):",e),l(r,!0)},function(e){})},function(e){console.log("ProfileService got a failure response",e),P=!1}).$promise):e.when(S)}function a(e){console.log("removing product in profileService",e),S.products.splice(S.products.indexOf(e),1),o.set("profile.removeProduct.success",!1,{title:e.display_title}),i.delete({user_id:S.about.url_slug,tiid:e.tiid},function(){console.log("finished deleting",e.display_title),l(S.about.url_slug,!0),t.track("delete product",{tiid:e.tiid,title:e.display_title})})}function f(){return P}function g(e){if("undefined"==typeof S.genres)return void 0;var r=_.findWhere(S.genres,{url_representation:e});return r}function p(e){if("undefined"==typeof S.products)return void 0;var r=g(e).name,n=_.where(S.products,{genre:r});return n}function v(e){return _.findWhere(S.products,{tiid:e})}function m(){for(var e in S)S.hasOwnProperty(e)&&delete S[e]}function h(e){return console.log("calling getAccountProducts"),"undefined"==typeof S.account_products?void 0:(console.log("account_products",S.account_products),_.findWhere(S.account_products,{index_name:e}))}function y(e){if(!S.genres)return!1;var r=[];_.each(S.genres,function(e){r.push(e.cards)});var n=_.flatten(r),o=_.findWhere(n,{genre_card_address:e});if(!o)return!1;var t=_.findWhere(S.genres,{name:o.genre}),i={genre_num_products:t.num_products,genre_icon:t.icon,genre_plural_name:t.plural_name,genre_url_representation:t.url_representation};return _.extend(o,i)}var P=!0,S={};return{data:S,loading:P,isLoading:f,get:l,productsByGenre:p,genreLookup:g,productByTiid:v,removeProduct:a,getAccountProduct:h,getFromPinId:y,clear:m,getUrlSlug:function(){return S&&S.about?S.about.url_slug:void 0}}}).factory("SelfCancellingProfileResource",["$resource","$q",function(e,r){var n=r.defer(),o=function(){n.resolve(),n=r.defer()},t=function(){return o(),e("/profile/:id",{},{get:{method:"GET",timeout:n.promise}})};return{createResource:t,cancelResource:o}}]);
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4730,6 +4873,9 @@ angular.module('services.profileService', [
                                       Product,
                                       PinboardService,
                                       ProfileAboutService,
+                                      GenreConfigs,
+                                      UsersProducts,
+                                      ProductsBiblio,
                                       SelfCancellingProfileResource,
                                       Users){
 
@@ -4774,35 +4920,93 @@ angular.module('services.profileService', [
       ).$promise
     }
 
-    function removeProduct(product){
-      console.log("removing product in profileService", product)
-      data.products.splice(data.products.indexOf(product),1)
 
+    function removeProducts(tiids){
+      if (!tiids.length){
+        return false
+      }
 
-      UserMessage.set(
-        "profile.removeProduct.success",
-        false,
-        {title: product.display_title}
-      )
+      _.each(tiids, function(tiid){
+        var tiidIndex = getProductIndexFromTiid(tiid)
+        data.products.splice(tiidIndex, 1)
+      })
 
-      // do the deletion in the background, without a progress spinner...
-      Product.delete(
-        {user_id: data.about.url_slug, tiid: product.tiid},
-        function(){
-          console.log("finished deleting", product.display_title)
-          get(data.about.url_slug, true) // go back to the server to get new data
+      UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
 
-          TiMixpanel.track("delete product", {
-            tiid: product.tiid,
-            title: product.display_title
-          })
+      UsersProducts.delete(
+        {id: data.about.url_slug, tiids: tiids.join(",")},
+        function(resp){
+          console.log("finished deleting", tiids)
+          get(data.about.url_slug, true)
+
         }
       )
     }
 
+    function changeProductsGenre(tiids, newGenre){
+      if (!tiids.length){
+        return false
+      }
+
+      _.each(tiids, function(tiid){
+        var productToChange = getProductFromTiid(tiid)
+        if (productToChange){
+          productToChange.genre = newGenre
+        }
+      })
+
+      // assume it worked...
+      UserMessage.setStr("Moved "+ tiids.length +" items to " + GenreConfigs.get(newGenre, "plural_name") + ".", "success" )
+
+      // save the new genre info on the server here...
+      ProductsBiblio.patch(
+        {commaSeparatedTiids: tiids.join(",")},
+        {genre: newGenre},
+        function(resp){
+          console.log("ProfileService.changeProductsGenre() successful.", resp)
+          get(data.about.url_slug, true)
+        },
+        function(resp){
+          console.log("ProfileService.changeProductsGenre() FAILED.", resp)
+        }
+      )
+
+    }
+
+    function getProductIndexFromTiid(tiid){
+      for (var i=0; i<data.products.length; i++ ){
+        if (data.products[i].tiid == tiid) {
+          return i
+        }
+      }
+      return -1
+    }
+
+    function getProductFromTiid(tiid){
+      var tiidIndex = getProductIndexFromTiid(tiid)
+      if (tiidIndex > -1){
+        return data.products[tiidIndex]
+      }
+      else {
+        return null
+      }
+
+    }
+
+
 
     function isLoading(){
       return loading
+    }
+
+    function genreCards(url_representation){
+      if (typeof data.genres == "undefined"){
+        return []
+      }
+      else {
+        var myGenre = _.findWhere(data.genres, {url_representation: url_representation})
+        return myGenre.cards
+      }
     }
 
     function genreLookup(url_representation){
@@ -4815,15 +5019,22 @@ angular.module('services.profileService', [
       }
     }
 
-    function productsByGenre(url_representation){
+    function productsByGenre(genreName){
       if (typeof data.products == "undefined"){
         return undefined
       }
       else {
-        var genreCanonicalName = genreLookup(url_representation).name
-        var res = _.where(data.products, {genre: genreCanonicalName})
+        var res = _.where(data.products, {genre: genreName})
         return res
       }
+    }
+
+    function getGenreCounts(){
+      var counts = _.countBy(data.products, function(product){
+        return product.genre
+      })
+      return counts
+
     }
 
     function productByTiid(tiid){
@@ -4889,11 +5100,13 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       productsByGenre: productsByGenre,
-      genreLookup: genreLookup,
+      genreCards: genreCards,
       productByTiid: productByTiid,
-      removeProduct: removeProduct,
+      removeProducts: removeProducts,
+      changeProductsGenre: changeProductsGenre,
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId,
+      getGenreCounts: getGenreCounts,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {
@@ -5483,7 +5696,7 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "<div id=\"page-footer-container\">\n" +
     "\n" +
     "   <div id=\"page-footer\"\n" +
-    "        ng-if=\"footer.show\"\n" +
+    "        ng-show=\"footer.show\"\n" +
     "        ng-mouseleave=\"footer.show=false\"\n" +
     "        class=\"animated slideInUp slideOutDown\">\n" +
     "      <div class=\"wrapper\">\n" +
@@ -5515,7 +5728,17 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "            <ul>\n" +
     "               <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
     "               <li>\n" +
-    "                  <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
+    "                     <a class=\"help control\"\n" +
+    "                        href=\"javascript:void(0)\"\n" +
+    "                        data-uv-lightbox=\"classic_widget\"\n" +
+    "                        data-uv-trigger\n" +
+    "                        data-uv-mode=\"full\"\n" +
+    "                        data-uv-primary-color=\"#cc6d00\"\n" +
+    "                        data-uv-link-color=\"#007dbf\"\n" +
+    "                        data-uv-default-mode=\"support\"\n" +
+    "                        data-uv-forum-id=\"166950\">\n" +
+    "                           Report bug\n" +
+    "                     </a>\n" +
     "               </li>\n" +
     "               <li><a href=\"/faq\">FAQ</a></li>\n" +
     "               <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
@@ -5552,18 +5775,20 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
     "\n" +
     "      <div class=\"header\">\n" +
-    "         <h2>\n" +
-    "            <span class=\"count\">\n" +
-    "               {{ profileService.productsByGenre(genre_name).length }}\n" +
-    "            </span>\n" +
-    "            <span class=\"text\">\n" +
-    "               {{ genre.plural_name }}\n" +
-    "            </span>\n" +
-    "         </h2>\n" +
-    "         <div class=\"genre-summary\">\n" +
-    "            <div class=\"genre-summary-top\">\n" +
-    "               <ul class=\"genre-cards-best\">\n" +
-    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
+    "         <div class=\"header-content\">\n" +
+    "\n" +
+    "            <h2>\n" +
+    "               <span class=\"count\">\n" +
+    "                  {{ profileService.productsByGenre(genre.name).length }}\n" +
+    "               </span>\n" +
+    "               <span class=\"text\">\n" +
+    "                  {{ genre.plural_name }}\n" +
+    "               </span>\n" +
+    "            </h2>\n" +
+    "            <div class=\"genre-summary\">\n" +
+    "               <div class=\"genre-summary-top\">\n" +
+    "                  <ul class=\"genre-cards-best\">\n" +
+    "                     <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genreCards, 0, 3).slice().reverse()\">\n" +
     "\n" +
     "                     <span class=\"data\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
@@ -5573,61 +5798,143 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
     "                        </span>\n" +
     "\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                           <span class=\"key\">\n" +
+    "                              <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                           </span>\n" +
     "                        </span>\n" +
-    "                     </span>\n" +
     "\n" +
-    "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                        <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"feature-this\">\n" +
-    "                           <i class=\"icon-star-empty\"></i>\n" +
-    "                        </a>\n" +
+    "                           <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
+    "                              ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                              tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              class=\"feature-this\">\n" +
+    "                              <i class=\"icon-star-empty\"></i>\n" +
+    "                           </a>\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"unfeature-this\">\n" +
-    "                           <i class=\"icon-star\"></i>\n" +
-    "                        </a>\n" +
+    "                           <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
+    "                              ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                              tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              class=\"unfeature-this\">\n" +
+    "                              <i class=\"icon-star\"></i>\n" +
+    "                           </a>\n" +
     "\n" +
-    "                     </span>\n" +
+    "                        </span>\n" +
     "\n" +
-    "                  </li>\n" +
-    "               </ul>\n" +
-    "               <div class=\"clearfix\"></div>\n" +
-    "            </div>\n" +
-    "            <div class=\"genre-summary-more\">\n" +
+    "                     </li>\n" +
+    "                  </ul>\n" +
+    "                  <div class=\"clearfix\"></div>\n" +
+    "               </div>\n" +
+    "               <div class=\"genre-summary-more\">\n" +
     "\n" +
+    "               </div>\n" +
     "            </div>\n" +
     "         </div>\n" +
-    "         <span class=\"more-button\">\n" +
-    "            <span class=\"more\"><i class=\"icon-caret-down left\"></i>more stats</span>\n" +
-    "         </span>\n" +
     "\n" +
+    "\n" +
+    "         <div class=\"header-controls\">\n" +
+    "            <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(url_slug)\">\n" +
+    "\n" +
+    "               <!-- no products are selected. allow user to select all -->\n" +
+    "\n" +
+    "               <span class=\"global-selection-control\">\n" +
+    "                  <i class=\"icon-check-empty\"\n" +
+    "                     tooltip=\"Select all\"\n" +
+    "                     ng-show=\"SelectedProducts.count() == 0\"\n" +
+    "                     ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))\"></i>\n" +
+    "\n" +
+    "\n" +
+    "               <!-- between zero and all products are selected. allow user to select all -->\n" +
+    "               <i class=\"icon-check-minus\"\n" +
+    "                  tooltip=\"Select all\"\n" +
+    "                  ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre.name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))\"></i>\n" +
+    "\n" +
+    "               <!-- everything is selected. allow user to unselect all -->\n" +
+    "               <i class=\"icon-check\"\n" +
+    "                  tooltip=\"Unselect all\"\n" +
+    "                  ng-show=\"SelectedProducts.count() == profileService.productsByGenre(genre.name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
+    "            </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "               <span class=\"actions has-selected-products-{{ !!SelectedProducts.count() }}\">\n" +
+    "\n" +
+    "                  <span class=\"action\">\n" +
+    "                     <button type=\"button\"\n" +
+    "                             ng-click=\"removeSelectedProducts()\"\n" +
+    "                             tooltip=\"Delete selected items.\"\n" +
+    "                             class=\"btn btn-default btn-xs\">\n" +
+    "                        <i class=\"icon-trash\"></i>\n" +
+    "                     </button>\n" +
+    "\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"action\">\n" +
+    "                     <div class=\"btn-group genre-select-group\" dropdown is-open=\"genreChangeDropdown.isOpen\">\n" +
+    "                        <button type=\"button\"\n" +
+    "                                tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
+    "                                class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
+    "                           <i class=\"icon-folder-close-alt\"></i>\n" +
+    "                           <span class=\"caret\"></span>\n" +
+    "                        </button>\n" +
+    "                        <ul class=\"dropdown-menu\">\n" +
+    "                           <li class=\"instr\">Move to:</li>\n" +
+    "                           <li class=\"divider\"></li>\n" +
+    "                           <li ng-repeat=\"genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']\">\n" +
+    "                              <a ng-click=\"changeProductsGenre(genreConfigForList.name)\">\n" +
+    "                                 <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
+    "                                 {{ genreConfigForList.plural_name }}\n" +
+    "                              </a>\n" +
+    "                           </li>\n" +
+    "                        </ul>\n" +
+    "                     </div>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "\n" +
+    "               </span>\n" +
+    "\n" +
+    "               <span class=\"num-selected\" ng-show=\"SelectedProducts.count() > 0\">\n" +
+    "                  <span class=\"val\">{{ SelectedProducts.count() }}</span>\n" +
+    "                  <span class=\"text\">selected</span>\n" +
+    "               </span>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"sort-controls\">\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "         </div>\n" +
     "      </div>\n" +
+    "\n" +
     "      <div class=\"products\">\n" +
     "         <ul class=\"products-list\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
     "                ng-class=\"{first: $first}\"\n" +
-    "                ng-repeat=\"product in profileService.productsByGenre(genre_name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
+    "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
     "                id=\"{{ product.tiid }}\"\n" +
     "                on-repeat-finished>\n" +
     "\n" +
     "\n" +
     "               <!-- users must be logged in -->\n" +
     "               <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
-    "                  <span class=\"delete-product-controls\"> <!--needed to style tooltip -->\n" +
-    "                     <a class=\"remove-product\"\n" +
-    "                        tooltip=\"Delete this product\"\n" +
-    "                        ng-click=\"profileService.removeProduct(product)\">\n" +
-    "                        <i class=\"icon-trash icon\"></i>\n" +
-    "                     </a>\n" +
+    "                  <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
+    "\n" +
+    "                     <i class=\"icon-check-empty\"\n" +
+    "                        ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +
+    "                        ng-click=\"SelectedProducts.add(product.tiid)\"></i>\n" +
+    "\n" +
+    "                     <i class=\"icon-check\"\n" +
+    "                        ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
+    "                        ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
+    "\n" +
     "                  </span>\n" +
     "                  <span class=\"feature-product-controls\">\n" +
     "                     <a class=\"feature-product\"\n" +
@@ -5650,7 +5957,8 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "         </ul>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -7979,7 +8287,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "\n" +
     "         <!-- CVV -->\n" +
     "         <div class=\"form-group\">\n" +
-    "            <label class=\"col-sm-3 control-label\" for=\"cvv\">Coupon code</label>\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"coupon-code\">Coupon code</label>\n" +
     "           <div class=\"col-sm-9\">\n" +
     "             <input type=\"text\"\n" +
     "                    class=\"form-control\"\n" +
@@ -8064,15 +8372,15 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "         </a>\n" +
     "         <div class=\"nav-group genres\">\n" +
     "            <ul>\n" +
-    "               <li ng-repeat=\"genre in profileService.data.genres | orderBy: 'name'\">\n" +
-    "                  <a href=\"/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}\"\n" +
-    "                     ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
-    "                     <i class=\"{{ genre.icon }} left\"></i>\n" +
+    "               <li ng-repeat=\"(genreName, genreCount) in profileService.getGenreCounts() | orderBy: 'genreName'\">\n" +
+    "                  <a ng-href=\"/{{ profileAboutService.data.url_slug }}/products/{{ GenreConfigs.get(genreName, 'url_representation') }}\"\n" +
+    "                     ng-class=\"{active: page.isNamed(GenreConfigs.get(genreName, 'url_representation'))}\">\n" +
+    "                     <i class=\"{{ GenreConfigs.get(genreName, 'icon') }} left\"></i>\n" +
     "                     <span class=\"text\">\n" +
-    "                        {{ genre.plural_name }}\n" +
+    "                        {{  GenreConfigs.get(genreName, \"plural_name\") }}\n" +
     "                     </span>\n" +
     "                     <span class=\"count value\">\n" +
-    "                        ({{ genre.num_products }})\n" +
+    "                        ({{ genreCount }})\n" +
     "                     </span>\n" +
     "                  </a>\n" +
     "               </li>\n" +

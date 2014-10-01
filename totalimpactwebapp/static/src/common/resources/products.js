@@ -8,6 +8,20 @@ angular.module('resources.products',['ngResource'])
   )
 })
 
+.factory('ProductsBiblio', function ($resource) {
+
+  return $resource(
+   "/products/:commaSeparatedTiids/biblio",
+   {},
+    {
+      patch:{
+        method: "POST",
+        headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
+      }
+    }
+  )
+})
+
 .factory('ProductBiblio', function ($resource) {
 
   return $resource(

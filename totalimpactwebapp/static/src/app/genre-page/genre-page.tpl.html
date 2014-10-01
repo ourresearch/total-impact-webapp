@@ -5,18 +5,20 @@
    <div class="wrapper" ng-show="!isRendering()">
 
       <div class="header">
-         <h2>
-            <span class="count">
-               {{ profileService.productsByGenre(genre_name).length }}
-            </span>
-            <span class="text">
-               {{ genre.plural_name }}
-            </span>
-         </h2>
-         <div class="genre-summary">
-            <div class="genre-summary-top">
-               <ul class="genre-cards-best">
-                  <li class="genre-card" ng-repeat="card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()">
+         <div class="header-content">
+
+            <h2>
+               <span class="count">
+                  {{ profileService.productsByGenre(genre.name).length }}
+               </span>
+               <span class="text">
+                  {{ genre.plural_name }}
+               </span>
+            </h2>
+            <div class="genre-summary">
+               <div class="genre-summary-top">
+                  <ul class="genre-cards-best">
+                     <li class="genre-card" ng-repeat="card in sliceSortedCards(genreCards, 0, 3).slice().reverse()">
 
                      <span class="data"
                            tooltip-placement="bottom"
@@ -26,61 +28,143 @@
                            <span class="value">{{ nFormat(card.current_value) }}</span>
                         </span>
 
-                        <span class="key">
-                           <span class="interaction">{{ card.display_things_we_are_counting }}</span>
+                           <span class="key">
+                              <span class="interaction">{{ card.display_things_we_are_counting }}</span>
+                           </span>
                         </span>
-                     </span>
 
-                     <span class="feature-controls" ng-show="security.isLoggedIn(url_slug)">
+                        <span class="feature-controls" ng-show="security.isLoggedIn(url_slug)">
 
-                        <a ng-click="pinboardService.pin(card.genre_card_address)"
-                           ng-if="!pinboardService.isPinned(card.genre_card_address)"
-                           tooltip="Feature this metric on your profile front page"
-                           tooltip-placement="bottom"
-                           class="feature-this">
-                           <i class="icon-star-empty"></i>
-                        </a>
+                           <a ng-click="pinboardService.pin(card.genre_card_address)"
+                              ng-if="!pinboardService.isPinned(card.genre_card_address)"
+                              tooltip="Feature this metric on your profile front page"
+                              tooltip-placement="bottom"
+                              class="feature-this">
+                              <i class="icon-star-empty"></i>
+                           </a>
 
-                        <a ng-click="pinboardService.unPin(card.genre_card_address)"
-                           ng-if="pinboardService.isPinned(card.genre_card_address)"
-                           tooltip="Feature this metric on your profile front page"
-                           tooltip-placement="bottom"
-                           class="unfeature-this">
-                           <i class="icon-star"></i>
-                        </a>
+                           <a ng-click="pinboardService.unPin(card.genre_card_address)"
+                              ng-if="pinboardService.isPinned(card.genre_card_address)"
+                              tooltip="Feature this metric on your profile front page"
+                              tooltip-placement="bottom"
+                              class="unfeature-this">
+                              <i class="icon-star"></i>
+                           </a>
 
-                     </span>
+                        </span>
 
-                  </li>
-               </ul>
-               <div class="clearfix"></div>
-            </div>
-            <div class="genre-summary-more">
+                     </li>
+                  </ul>
+                  <div class="clearfix"></div>
+               </div>
+               <div class="genre-summary-more">
 
+               </div>
             </div>
          </div>
-         <span class="more-button">
-            <span class="more"><i class="icon-caret-down left"></i>more stats</span>
-         </span>
 
+
+         <div class="header-controls">
+            <div class="edit-controls" ng-if="security.isLoggedIn(url_slug)">
+
+               <!-- no products are selected. allow user to select all -->
+
+               <span class="global-selection-control">
+                  <i class="icon-check-empty"
+                     tooltip="Select all"
+                     ng-show="SelectedProducts.count() == 0"
+                     ng-click="SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))"></i>
+
+
+               <!-- between zero and all products are selected. allow user to select all -->
+               <i class="icon-check-minus"
+                  tooltip="Select all"
+                  ng-show="SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre.name).length"
+                  ng-click="SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))"></i>
+
+               <!-- everything is selected. allow user to unselect all -->
+               <i class="icon-check"
+                  tooltip="Unselect all"
+                  ng-show="SelectedProducts.count() == profileService.productsByGenre(genre.name).length"
+                  ng-click="SelectedProducts.removeAll()"></i>
+            </span>
+
+
+
+
+
+
+               <span class="actions has-selected-products-{{ !!SelectedProducts.count() }}">
+
+                  <span class="action">
+                     <button type="button"
+                             ng-click="removeSelectedProducts()"
+                             tooltip="Delete selected items."
+                             class="btn btn-default btn-xs">
+                        <i class="icon-trash"></i>
+                     </button>
+
+                  </span>
+
+                  <span class="action">
+                     <div class="btn-group genre-select-group" dropdown is-open="genreChangeDropdown.isOpen">
+                        <button type="button"
+                                tooltip-html-unsafe="Recategorize selected&nbsp;items"
+                                class="btn btn-default btn-xs dropdown-toggle">
+                           <i class="icon-folder-close-alt"></i>
+                           <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                           <li class="instr">Move to:</li>
+                           <li class="divider"></li>
+                           <li ng-repeat="genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']">
+                              <a ng-click="changeProductsGenre(genreConfigForList.name)">
+                                 <i class="{{ genreConfigForList.icon }} left"></i>
+                                 {{ genreConfigForList.plural_name }}
+                              </a>
+                           </li>
+                        </ul>
+                     </div>
+                  </span>
+
+
+               </span>
+
+               <span class="num-selected" ng-show="SelectedProducts.count() > 0">
+                  <span class="val">{{ SelectedProducts.count() }}</span>
+                  <span class="text">selected</span>
+               </span>
+
+            </div>
+
+            <div class="sort-controls">
+
+            </div>
+
+         </div>
       </div>
+
       <div class="products">
          <ul class="products-list">
             <li class="product genre-{{ product.genre }}"
                 ng-class="{first: $first}"
-                ng-repeat="product in profileService.productsByGenre(genre_name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']"
+                ng-repeat="product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']"
                 id="{{ product.tiid }}"
                 on-repeat-finished>
 
 
                <!-- users must be logged in -->
                <div class="product-margin" ng-show="security.isLoggedIn(url_slug)">
-                  <span class="delete-product-controls"> <!--needed to style tooltip -->
-                     <a class="remove-product"
-                        tooltip="Delete this product"
-                        ng-click="profileService.removeProduct(product)">
-                        <i class="icon-trash icon"></i>
-                     </a>
+                  <span class="select-product-controls"> <!--needed to style tooltip -->
+
+                     <i class="icon-check-empty"
+                        ng-show="!SelectedProducts.contains(product.tiid)"
+                        ng-click="SelectedProducts.add(product.tiid)"></i>
+
+                     <i class="icon-check"
+                        ng-show="SelectedProducts.contains(product.tiid)"
+                        ng-click="SelectedProducts.remove(product.tiid)"></i>
+
                   </span>
                   <span class="feature-product-controls">
                      <a class="feature-product"

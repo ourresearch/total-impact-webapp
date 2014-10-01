@@ -297,7 +297,7 @@ angular.module('settings', [
 
       else {
         console.log("yay, Stripe CC token created successfully! Now let's save the card.")
-        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, null)
+        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, $scope.subscribeForm.coupon)
 
       }
     }
