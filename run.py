@@ -12,6 +12,6 @@ it sending data from localhost.
 
 
 from totalimpactwebapp import app
-app.run(debug=True)
+app.run(debug=True, threaded=True)
 
 
