@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-24
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-09-30
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -504,6 +504,7 @@ angular.module('app', [
   'passwordReset',
   'productPage',
   'genrePage',
+  'services.genreConfigs',
   'accountPage',
   'services.profileService',
   'services.profileAboutService',
@@ -576,6 +577,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      Loading,
                                                      Page,
                                                      Breadcrumbs,
+                                                     GenreConfigs,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
@@ -593,11 +595,9 @@ angular.module('app').controller('AppCtrl', function($scope,
 //    $location.host()
 //  ))
 
-  $http.get("/configs/genres")
-    .success(function(resp){
-      $rootScope.genreConfigs = resp
-    })
 
+  // init the genre configs service
+  $scope.GenreConfigs = GenreConfigs
 
   security.requestCurrentUser().then(function(currentUser){
 
@@ -732,6 +732,40 @@ angular.module("genrePage", [
   }
 })
 
+.factory("SelectedProducts", function(){
+  var tiids = []
+
+  return {
+    add: function(tiid){
+      return tiids.push(tiid)
+    },
+    addFromObjects: function(objects){
+      return tiids = _.pluck(objects, "tiid")
+    },
+    remove: function(tiid){
+      tiids = _.without(tiids, tiid)
+    },
+    removeAll: function(){
+      return tiids.length = 0
+    },
+    contains: function(tiid){
+      return _.contains(tiids, tiid)
+    },
+    containsAny: function(){
+      return tiids.length > 0
+    },
+    get: function(){
+      return tiids
+    },
+    count: function(){
+      return tiids.length
+    }
+  }
+})
+
+
+
+
 
 
 
@@ -757,19 +791,27 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
+    GenreConfigs,
     ProfileService,
     ProfileAboutService,
+    SelectedProducts,
     PinboardService,
     Page) {
 
     $scope.pinboardService = PinboardService
 
+    SelectedProducts.removeAll()
+    $scope.SelectedProducts = SelectedProducts
+
 
     Timer.start("genreViewRender")
-    Timer.start("genreViewRender.load")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
-    $scope.genre_name = $routeParams.genre_name
+
+    var genreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    $scope.genre = genreConfig
+
+    $scope.genreChangeDropdown = {}
 
     var rendering = true
 
@@ -778,12 +820,9 @@ angular.module("genrePage", [
     }
     ProfileService.get($routeParams.url_slug).then(
       function(resp){
-        console.log("genre page loaded products", resp)
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.about = resp.about
-        $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
-        $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
+        $scope.genreCards = ProfileService.genreCards($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.
@@ -791,9 +830,6 @@ angular.module("genrePage", [
           var lastScrollPos = Page.getLastScrollPosition($location.path())
           $window.scrollTo(0, lastScrollPos)
         }, 0)
-      },
-      function(resp){
-        console.log("ProfileService failed in genrePage.js...", resp)
       }
     )
 
@@ -812,6 +848,33 @@ angular.module("genrePage", [
       var sorted = _.sortBy(cards, "sort_by")
       var reversed = sorted.concat([]).reverse()
       return reversed.slice(startIndex, endIndex)
+    }
+
+    $scope.removeSelectedProducts = function(){
+      console.log("removing products: ", SelectedProducts.get())
+      ProfileService.removeProducts(SelectedProducts.get())
+      SelectedProducts.removeAll()
+
+      // handle removing the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        $location.path($routeParams.url_slug)
+      }
+    }
+
+    $scope.changeProductsGenre = function(newGenre){
+      console.log("changing products genres: ", SelectedProducts.get())
+      $scope.genreChangeDropdown.isOpen = false
+
+      ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+      SelectedProducts.removeAll()
+
+      // handle moving the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
+        $location.path($routeParams.url_slug + "/products/" + newGenreUrlRepresentation)
+      }
     }
 
 
@@ -1965,8 +2028,6 @@ angular.module('security.login.form', [
                                             $modalInstance,
                                             $modal,
                                             UserMessage,
-                                            email,
-                                            clearMessages,
                                             Page,
                                             Loading) {
   var reportError = function(status){
@@ -1991,9 +2052,6 @@ angular.module('security.login.form', [
 
   UserMessage.showOnTop(false)
   $scope.user = {};
-  if (email){
-    $scope.user.email = email
-  }
   $scope.loading = Loading
   $scope.userMessage = UserMessage
 
@@ -2007,7 +2065,6 @@ angular.module('security.login.form', [
     security.login($scope.user.email, $scope.user.password)
       .success(function(data, status){
         dismissModal()
-        security.redirectToProfile()
       })
       .error(function(data, status){
         console.log("login error!", status)
@@ -2150,16 +2207,12 @@ angular.module('security.service', [
 
     // Login form dialog stuff
     var loginDialog = null;
-    function openLoginDialog(email, clearMessages) {
+    function openLoginDialog(redirectTo) {
       console.log("openLoginDialog() fired.")
       loginDialog = $modal.open({
         templateUrl: "security/login/form.tpl.html",
         controller: "LoginFormController",
-        windowClass: "creds",
-        resolve: {
-          email: function(){return email},
-          clearMessages: function(){return clearMessages}
-        }
+        windowClass: "creds"
       });
       loginDialog.result.then();
     }
@@ -2177,8 +2230,8 @@ angular.module('security.service', [
     // The public API of the service
     var service = {
 
-      showLogin: function(email, clearMessages) {
-        openLoginDialog(email, clearMessages);
+      showLogin: function() {
+        openLoginDialog();
       },
 
       login: function(email, password) {
@@ -2446,11 +2499,10 @@ angular.module('settings', [
         templateUrl:'settings/settings.tpl.html',
         controller: "settingsCtrl",
         resolve:{
-          authenticatedUser:function (security) {
-            return security.requestCurrentUser();
-          },
-          allowed: function(security){
-            return security.testUserAuthenticationLevel("loggedIn")
+          currentUser:function (security) {
+            var currentUser = security.requestCurrentUser()
+            console.log("checking the current user in /settings/:page resolve", currentUser)
+            return currentUser
           }
         }
       }
@@ -2459,7 +2511,7 @@ angular.module('settings', [
 
   .controller('settingsCtrl', function ($scope,
                                         $location,
-                                        authenticatedUser,
+                                        currentUser,
                                         SettingsPageDescriptions,
                                         ProfileAboutService,
                                         ProfileService,
@@ -2467,14 +2519,25 @@ angular.module('settings', [
                                         Page,
                                         Loading) {
 
+    if (currentUser || $routeParams.page === "subscription"){
+      var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
+      $scope.include =  currentPageDescr.templatePath;
+    }
+    else {
+      console.log("there ain't no current user; redirecting to landing page.")
+      $location.path("/")
+    }
+
+    $scope.authenticatedUser = currentUser;
+    $scope.pageDescriptions = SettingsPageDescriptions.get();
 
     Page.setName("settings")
     $scope.resetUser = function(){
-      $scope.user = angular.copy(authenticatedUser)
+      $scope.user = angular.copy(currentUser)
     }
     $scope.loading = Loading
     $scope.home = function(){
-      $location.path('/' + authenticatedUser.url_slug);
+      $location.path('/' + currentUser.url_slug);
     }
     $scope.isCurrentPath = function(path) {
       return path == $location.path();
@@ -2489,13 +2552,12 @@ angular.module('settings', [
       formCtrl.$setPristine()
     }
 
-    var currentPageDescr = SettingsPageDescriptions.getDescrFromPath($location.path());
-
     $scope.resetUser()
     Loading.finish()
-    $scope.include =  currentPageDescr.templatePath;
-    $scope.authenticatedUser = authenticatedUser;
-    $scope.pageDescriptions = SettingsPageDescriptions.get();
+
+
+
+
 
   })
 
@@ -2717,7 +2779,7 @@ angular.module('settings', [
 
       else {
         console.log("yay, Stripe CC token created successfully! Now let's save the card.")
-        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, null)
+        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, $scope.subscribeForm.coupon)
 
       }
     }
@@ -2754,7 +2816,11 @@ angular.module('profileSidebar', [
     'resources.users',
     'services.profileService'
 ])
-  .controller("profileSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
+  .controller("profileSidebarCtrl", function($scope,
+                                             GenreConfigs,
+                                             ProfileService,
+                                             Page,
+                                             security){
 
   })
 
@@ -3647,6 +3713,20 @@ angular.module('resources.products',['ngResource'])
   )
 })
 
+.factory('ProductsBiblio', function ($resource) {
+
+  return $resource(
+   "/products/:commaSeparatedTiids/biblio",
+   {},
+    {
+      patch:{
+        method: "POST",
+        headers: {'X-HTTP-METHOD-OVERRIDE': 'PATCH'}
+      }
+    }
+  )
+})
+
 .factory('ProductBiblio', function ($resource) {
 
   return $resource(
@@ -3900,7 +3980,10 @@ angular.module('services.userMessage', [])
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info'],
 
-      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info']
+      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info'],
+
+
+      'genrePage.changeGenre.success': ["Moved {{numProducts}} products to {{newGenre}}.", 'success']
     };
 
     var clear = function(){
@@ -3918,7 +4001,6 @@ angular.module('services.userMessage', [])
       set: function(key, persist, interpolateParams){
         if (!persist){
           $timeout(function(){
-            console.log("removing the user message")
             clear()
           }, 2000)
         }
@@ -3927,6 +4009,18 @@ angular.module('services.userMessage', [])
         currentMessageObject = {
           message: $interpolate(msg[0])(interpolateParams),
           type: msg[1]
+        }
+      },
+
+      setStr: function(msg, type, persist){
+        if (!persist){
+          $timeout(function(){
+            clear()
+          }, 2000)
+        }
+        currentMessageObject = {
+          message: msg,
+          type: type || "info"
         }
       },
 
@@ -4219,6 +4313,58 @@ angular.module('services.exceptionHandler').config(['$provide', function($provid
   }]);
 }]);
 
+globalGenreConfigs = globalGenreConfigs || []
+
+angular.module("services.genreConfigs", [])
+.factory("GenreConfigs", function($http){
+    var configs = globalGenreConfigs
+
+    var get = function(name, configKey){
+
+        if (!configs.length){
+          return false
+        }
+
+        var ret
+        if (name){
+          var myConfig = _.findWhere(configs, {name: name})
+          if (configKey){
+            ret = myConfig[configKey]
+          }
+          else {
+            ret = myConfig
+          }
+        }
+        else {
+          ret = configs
+        }
+        return ret
+    }
+
+    return {
+      get: get,
+      getForMove: function(){
+        var removeConfigs = [
+          "unknown",
+          "other"
+        ]
+        return _.filter(configs, function(myConfig){
+          return !_.contains(removeConfigs, myConfig.name)
+        })
+      },
+
+      getConfigFromUrlRepresentation: function(urlRepresentation){
+        var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})
+        return myConfig
+      },
+
+
+      getByName: function(genreName){
+        return _.findWhere(configs, {name: genreName})
+      }
+    }
+
+  })
 angular.module('services.httpRequestTracker', []);
 angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$http', function($http){
 
@@ -4727,6 +4873,9 @@ angular.module('services.profileService', [
                                       Product,
                                       PinboardService,
                                       ProfileAboutService,
+                                      GenreConfigs,
+                                      UsersProducts,
+                                      ProductsBiblio,
                                       SelfCancellingProfileResource,
                                       Users){
 
@@ -4771,35 +4920,93 @@ angular.module('services.profileService', [
       ).$promise
     }
 
-    function removeProduct(product){
-      console.log("removing product in profileService", product)
-      data.products.splice(data.products.indexOf(product),1)
 
+    function removeProducts(tiids){
+      if (!tiids.length){
+        return false
+      }
 
-      UserMessage.set(
-        "profile.removeProduct.success",
-        false,
-        {title: product.display_title}
-      )
+      _.each(tiids, function(tiid){
+        var tiidIndex = getProductIndexFromTiid(tiid)
+        data.products.splice(tiidIndex, 1)
+      })
 
-      // do the deletion in the background, without a progress spinner...
-      Product.delete(
-        {user_id: data.about.url_slug, tiid: product.tiid},
-        function(){
-          console.log("finished deleting", product.display_title)
-          get(data.about.url_slug, true) // go back to the server to get new data
+      UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
 
-          TiMixpanel.track("delete product", {
-            tiid: product.tiid,
-            title: product.display_title
-          })
+      UsersProducts.delete(
+        {id: data.about.url_slug, tiids: tiids.join(",")},
+        function(resp){
+          console.log("finished deleting", tiids)
+          get(data.about.url_slug, true)
+
         }
       )
     }
 
+    function changeProductsGenre(tiids, newGenre){
+      if (!tiids.length){
+        return false
+      }
+
+      _.each(tiids, function(tiid){
+        var productToChange = getProductFromTiid(tiid)
+        if (productToChange){
+          productToChange.genre = newGenre
+        }
+      })
+
+      // assume it worked...
+      UserMessage.setStr("Moved "+ tiids.length +" items to " + GenreConfigs.get(newGenre, "plural_name") + ".", "success" )
+
+      // save the new genre info on the server here...
+      ProductsBiblio.patch(
+        {commaSeparatedTiids: tiids.join(",")},
+        {genre: newGenre},
+        function(resp){
+          console.log("ProfileService.changeProductsGenre() successful.", resp)
+          get(data.about.url_slug, true)
+        },
+        function(resp){
+          console.log("ProfileService.changeProductsGenre() FAILED.", resp)
+        }
+      )
+
+    }
+
+    function getProductIndexFromTiid(tiid){
+      for (var i=0; i<data.products.length; i++ ){
+        if (data.products[i].tiid == tiid) {
+          return i
+        }
+      }
+      return -1
+    }
+
+    function getProductFromTiid(tiid){
+      var tiidIndex = getProductIndexFromTiid(tiid)
+      if (tiidIndex > -1){
+        return data.products[tiidIndex]
+      }
+      else {
+        return null
+      }
+
+    }
+
+
 
     function isLoading(){
       return loading
+    }
+
+    function genreCards(url_representation){
+      if (typeof data.genres == "undefined"){
+        return []
+      }
+      else {
+        var myGenre = _.findWhere(data.genres, {url_representation: url_representation})
+        return myGenre.cards
+      }
     }
 
     function genreLookup(url_representation){
@@ -4812,15 +5019,22 @@ angular.module('services.profileService', [
       }
     }
 
-    function productsByGenre(url_representation){
+    function productsByGenre(genreName){
       if (typeof data.products == "undefined"){
         return undefined
       }
       else {
-        var genreCanonicalName = genreLookup(url_representation).name
-        var res = _.where(data.products, {genre: genreCanonicalName})
+        var res = _.where(data.products, {genre: genreName})
         return res
       }
+    }
+
+    function getGenreCounts(){
+      var counts = _.countBy(data.products, function(product){
+        return product.genre
+      })
+      return counts
+
     }
 
     function productByTiid(tiid){
@@ -4861,6 +5075,11 @@ angular.module('services.profileService', [
 
       var flatCards = _.flatten(cards)
       var pinnedCard = _.findWhere(flatCards, {genre_card_address: pinId})
+
+      if (!pinnedCard){
+        return false
+      }
+      
       var myGenreObj = _.findWhere(data.genres, {name: pinnedCard.genre})
 
       var extraData = {
@@ -4881,11 +5100,13 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       productsByGenre: productsByGenre,
-      genreLookup: genreLookup,
+      genreCards: genreCards,
       productByTiid: productByTiid,
-      removeProduct: removeProduct,
+      removeProducts: removeProducts,
+      changeProductsGenre: changeProductsGenre,
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId,
+      getGenreCounts: getGenreCounts,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {
@@ -5475,7 +5696,7 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "<div id=\"page-footer-container\">\n" +
     "\n" +
     "   <div id=\"page-footer\"\n" +
-    "        ng-if=\"footer.show\"\n" +
+    "        ng-show=\"footer.show\"\n" +
     "        ng-mouseleave=\"footer.show=false\"\n" +
     "        class=\"animated slideInUp slideOutDown\">\n" +
     "      <div class=\"wrapper\">\n" +
@@ -5507,7 +5728,17 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "            <ul>\n" +
     "               <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
     "               <li>\n" +
-    "                  <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
+    "                     <a class=\"help control\"\n" +
+    "                        href=\"javascript:void(0)\"\n" +
+    "                        data-uv-lightbox=\"classic_widget\"\n" +
+    "                        data-uv-trigger\n" +
+    "                        data-uv-mode=\"full\"\n" +
+    "                        data-uv-primary-color=\"#cc6d00\"\n" +
+    "                        data-uv-link-color=\"#007dbf\"\n" +
+    "                        data-uv-default-mode=\"support\"\n" +
+    "                        data-uv-forum-id=\"166950\">\n" +
+    "                           Report bug\n" +
+    "                     </a>\n" +
     "               </li>\n" +
     "               <li><a href=\"/faq\">FAQ</a></li>\n" +
     "               <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
@@ -5544,82 +5775,166 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
     "\n" +
     "      <div class=\"header\">\n" +
-    "         <h2>\n" +
-    "            <span class=\"count\">\n" +
-    "               {{ profileService.productsByGenre(genre_name).length }}\n" +
-    "            </span>\n" +
-    "            <span class=\"text\">\n" +
-    "               {{ genre.plural_name }}\n" +
-    "            </span>\n" +
-    "         </h2>\n" +
-    "         <div class=\"genre-summary\">\n" +
-    "            <div class=\"genre-summary-top\">\n" +
-    "               <ul class=\"genre-cards-best\">\n" +
-    "                  <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genre.cards, 0, 3).slice().reverse()\">\n" +
+    "         <div class=\"header-content\">\n" +
+    "\n" +
+    "            <h2>\n" +
+    "               <span class=\"count\">\n" +
+    "                  {{ profileService.productsByGenre(genre.name).length }}\n" +
+    "               </span>\n" +
+    "               <span class=\"text\">\n" +
+    "                  {{ genre.plural_name }}\n" +
+    "               </span>\n" +
+    "            </h2>\n" +
+    "            <div class=\"genre-summary\">\n" +
+    "               <div class=\"genre-summary-top\">\n" +
+    "                  <ul class=\"genre-cards-best\">\n" +
+    "                     <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genreCards, 0, 3).slice().reverse()\">\n" +
     "\n" +
     "                     <span class=\"data\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
-    "                           tooltip=\"{{ card.tooltip }}\">\n" +
+    "                           tooltip-html-unsafe=\"{{ card.tooltip }}\">\n" +
     "                        <span class=\"img-and-value\">\n" +
     "                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
     "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
     "                        </span>\n" +
     "\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                           <span class=\"key\">\n" +
+    "                              <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                           </span>\n" +
     "                        </span>\n" +
-    "                     </span>\n" +
     "\n" +
-    "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                        <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"feature-this\">\n" +
-    "                           <i class=\"icon-star-empty\"></i>\n" +
-    "                        </a>\n" +
+    "                           <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
+    "                              ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                              tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              class=\"feature-this\">\n" +
+    "                              <i class=\"icon-star-empty\"></i>\n" +
+    "                           </a>\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"unfeature-this\">\n" +
-    "                           <i class=\"icon-star\"></i>\n" +
-    "                        </a>\n" +
+    "                           <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
+    "                              ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                              tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              class=\"unfeature-this\">\n" +
+    "                              <i class=\"icon-star\"></i>\n" +
+    "                           </a>\n" +
     "\n" +
-    "                     </span>\n" +
+    "                        </span>\n" +
     "\n" +
-    "                  </li>\n" +
-    "               </ul>\n" +
-    "               <div class=\"clearfix\"></div>\n" +
-    "            </div>\n" +
-    "            <div class=\"genre-summary-more\">\n" +
+    "                     </li>\n" +
+    "                  </ul>\n" +
+    "                  <div class=\"clearfix\"></div>\n" +
+    "               </div>\n" +
+    "               <div class=\"genre-summary-more\">\n" +
     "\n" +
+    "               </div>\n" +
     "            </div>\n" +
     "         </div>\n" +
-    "         <span class=\"more-button\">\n" +
-    "            <span class=\"more\"><i class=\"icon-caret-down left\"></i>more stats</span>\n" +
-    "         </span>\n" +
     "\n" +
+    "\n" +
+    "         <div class=\"header-controls\">\n" +
+    "            <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(url_slug)\">\n" +
+    "\n" +
+    "               <!-- no products are selected. allow user to select all -->\n" +
+    "\n" +
+    "               <span class=\"global-selection-control\">\n" +
+    "                  <i class=\"icon-check-empty\"\n" +
+    "                     tooltip=\"Select all\"\n" +
+    "                     ng-show=\"SelectedProducts.count() == 0\"\n" +
+    "                     ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))\"></i>\n" +
+    "\n" +
+    "\n" +
+    "               <!-- between zero and all products are selected. allow user to select all -->\n" +
+    "               <i class=\"icon-check-minus\"\n" +
+    "                  tooltip=\"Select all\"\n" +
+    "                  ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre.name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))\"></i>\n" +
+    "\n" +
+    "               <!-- everything is selected. allow user to unselect all -->\n" +
+    "               <i class=\"icon-check\"\n" +
+    "                  tooltip=\"Unselect all\"\n" +
+    "                  ng-show=\"SelectedProducts.count() == profileService.productsByGenre(genre.name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
+    "            </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "               <span class=\"actions has-selected-products-{{ !!SelectedProducts.count() }}\">\n" +
+    "\n" +
+    "                  <span class=\"action\">\n" +
+    "                     <button type=\"button\"\n" +
+    "                             ng-click=\"removeSelectedProducts()\"\n" +
+    "                             tooltip=\"Delete selected items.\"\n" +
+    "                             class=\"btn btn-default btn-xs\">\n" +
+    "                        <i class=\"icon-trash\"></i>\n" +
+    "                     </button>\n" +
+    "\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"action\">\n" +
+    "                     <div class=\"btn-group genre-select-group\" dropdown is-open=\"genreChangeDropdown.isOpen\">\n" +
+    "                        <button type=\"button\"\n" +
+    "                                tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
+    "                                class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
+    "                           <i class=\"icon-folder-close-alt\"></i>\n" +
+    "                           <span class=\"caret\"></span>\n" +
+    "                        </button>\n" +
+    "                        <ul class=\"dropdown-menu\">\n" +
+    "                           <li class=\"instr\">Move to:</li>\n" +
+    "                           <li class=\"divider\"></li>\n" +
+    "                           <li ng-repeat=\"genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']\">\n" +
+    "                              <a ng-click=\"changeProductsGenre(genreConfigForList.name)\">\n" +
+    "                                 <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
+    "                                 {{ genreConfigForList.plural_name }}\n" +
+    "                              </a>\n" +
+    "                           </li>\n" +
+    "                        </ul>\n" +
+    "                     </div>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "\n" +
+    "               </span>\n" +
+    "\n" +
+    "               <span class=\"num-selected\" ng-show=\"SelectedProducts.count() > 0\">\n" +
+    "                  <span class=\"val\">{{ SelectedProducts.count() }}</span>\n" +
+    "                  <span class=\"text\">selected</span>\n" +
+    "               </span>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"sort-controls\">\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "         </div>\n" +
     "      </div>\n" +
+    "\n" +
     "      <div class=\"products\">\n" +
     "         <ul class=\"products-list\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
     "                ng-class=\"{first: $first}\"\n" +
-    "                ng-repeat=\"product in profileService.productsByGenre(genre_name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
+    "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
     "                id=\"{{ product.tiid }}\"\n" +
     "                on-repeat-finished>\n" +
     "\n" +
     "\n" +
     "               <!-- users must be logged in -->\n" +
     "               <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
-    "                  <span class=\"delete-product-controls\"> <!--needed to style tooltip -->\n" +
-    "                     <a class=\"remove-product\"\n" +
-    "                        tooltip=\"Delete this product\"\n" +
-    "                        ng-click=\"profileService.removeProduct(product)\">\n" +
-    "                        <i class=\"icon-trash icon\"></i>\n" +
-    "                     </a>\n" +
+    "                  <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
+    "\n" +
+    "                     <i class=\"icon-check-empty\"\n" +
+    "                        ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +
+    "                        ng-click=\"SelectedProducts.add(product.tiid)\"></i>\n" +
+    "\n" +
+    "                     <i class=\"icon-check\"\n" +
+    "                        ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
+    "                        ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
+    "\n" +
     "                  </span>\n" +
     "                  <span class=\"feature-product-controls\">\n" +
     "                     <a class=\"feature-product\"\n" +
@@ -5642,7 +5957,8 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "         </ul>\n" +
     "      </div>\n" +
     "   </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -6922,7 +7238,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "             ng-if=\"security.isLoggedIn(url_slug)\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
     "             ng-model=\"pinboardService.cols.two\">\n" +
-    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
+    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\" ng-if=\"profileService.getFromPinId(pinId).current_value\">\n" +
     "               <div class=\"pin-header\">\n" +
     "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
     "                     <i class=\"icon-remove\"></i>\n" +
@@ -6931,7 +7247,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <div class=\"pin-body genre-card-pin-body\">\n" +
     "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "                  <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
     "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
     "                     <span class=\"my-label\">\n" +
     "                        <span class=\"things-we-are-counting\">\n" +
@@ -6956,7 +7272,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "         <!-- LOGGED-OUT version -->\n" +
     "         <ul class=\"col-two pinboard-list logged-out\" ng-if=\"!security.isLoggedIn(url_slug)\">\n" +
-    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\">\n" +
+    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\" ng-if=\"profileService.getFromPinId(pinId).current_value\">\n" +
     "               <div class=\"pin-header\">\n" +
     "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
     "                     <i class=\"icon-remove\"></i>\n" +
@@ -6965,7 +7281,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "               <div class=\"pin-body genre-card-pin-body\">\n" +
     "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "                  <span class=\"interaction\" tooltip=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
+    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
     "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
     "                     <span class=\"my-label\">\n" +
     "                        <span class=\"things-we-are-counting\">\n" +
@@ -7623,208 +7939,221 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "   <p class=\"expl\">Update your payment information.</p>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
-    "\n" +
-    "   <div class=\"current-plan-status cancelled\" ng-if=\"!isLive()\">\n" +
-    "      <span class=\"setup\">Your account is cancelled!</span>\n" +
-    "\n" +
-    "      <div class=\"pitch\">\n" +
-    "         <p>But you can get it back! And you should, because your research is\n" +
-    "            making impacts all the time.\n" +
-    "         And with Impactstory, you can see and share them all&mdash;\n" +
-    "            everything from citations to downloads to tweets\n" +
-    "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
-    "         <p>By subscribing today, you'll restore your impact profile and\n" +
-    "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit.</p>\n" +
-    "      </div>\n" +
+    "<div class=\"logged-out-subscription\" ng-if=\"!security.getCurrentUser()\">\n" +
+    "   <h3>You must be logged in to change your subscription settings.</h3>\n" +
+    "   <div class=\"btn-container\">\n" +
+    "      <a class=\"btn btn-xlarge btn-primary\" ng-click=\"security.showLogin()\">\n" +
+    "         <i class=\"icon-signin\"></i>\n" +
+    "         Log in now\n" +
+    "      </a>\n" +
     "   </div>\n" +
+    "</div>\n" +
     "\n" +
     "\n" +
+    "<div class=\"logged-in\" ng-if=\"security.getCurrentUser()\">\n" +
+    "   <div class=\"upgrade-form-container\"  ng-controller=\"subscriptionSettingsCtrl\">\n" +
     "\n" +
-    "   <div class=\"current-plan-status paid\" ng-if=\"isSubscribed() && isLive()\">\n" +
-    "      <span class=\"setup\">\n" +
-    "         Your Impactstory subscription is active.\n" +
-    "      </span>\n" +
-    "      <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
-    "   </div>\n" +
+    "      <div class=\"current-plan-status cancelled\" ng-if=\"!isLive()\">\n" +
+    "         <span class=\"setup\">Your account is cancelled!</span>\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "   <div class=\"current-plan-status trial\" ng-if=\"isTrialing() && isLive()\">\n" +
-    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
-    "      <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
-    "\n" +
-    "      <div class=\"email-example\">\n" +
-    "         <img src=\"/static/img/card-example.png\" alt=\"Impactstory notification email\"/>\n" +
-    "      </div>\n" +
-    "      <div class=\"pitch\">\n" +
-    "         <p>Your research is making impacts all the time.\n" +
-    "         And with Impactstory, you can see and share them all&mdash;\n" +
-    "            everything from citations to downloads to tweets\n" +
-    "         and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
-    "         <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
-    "            email notifications&mdash;and   you'll be helping to keep\n" +
-    "         Impactstory a sustainable, open-source nonprofit. </p>\n" +
-    "      </div>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "   <form stripe-form=\"handleStripe\"\n" +
-    "         name=\"upgradeForm\"\n" +
-    "         novalidate\n" +
-    "         ng-if=\"isTrialing() || !isLive()\"\n" +
-    "         class=\"form-horizontal upgrade-form\">\n" +
-    "\n" +
-    "       <div class=\"form-title trial\">\n" +
-    "         <h3>Continue your subscription</h3>\n" +
-    "         <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "      <!-- plan -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"plan-options\">Billing period</label>\n" +
-    "         <div class=\"col-sm-9\" id=\"plan-options\">\n" +
-    "            <div class=\"radio\">\n" +
-    "               <label>\n" +
-    "                  <input type=\"radio\" name=\"plan\" value=\"ongoing-monthly\" ng-model=\"subscribeForm.plan\">\n" +
-    "                  $10 per month\n" +
-    "               </label>\n" +
-    "            </div>\n" +
-    "            <div class=\"radio\">\n" +
-    "               <label>\n" +
-    "                  <input type=\"radio\" name=\"plan\" value=\"ongoing-yearly\" ng-model=\"subscribeForm.plan\">\n" +
-    "                  $60 per year\n" +
-    "               </label>\n" +
-    "            </div>\n" +
-    "         </div>\n" +
-    "      </div> \n" +
-    "\n" +
-    "      <!-- name on card -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
-    "         <div class=\"col-sm-9\">\n" +
-    "            <input type=\"text\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   name=\"card-holder-name\"\n" +
-    "                   id=\"card-holder-name\"\n" +
-    "                   placeholder=\"Card Holder's Name\">\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "      <!-- card number -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "        <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"card-number\"\n" +
-    "                 id=\"card-number\"\n" +
-    "                 ng-model=\"number\"\n" +
-    "                 payments-validate=\"card\"\n" +
-    "                 payments-format=\"card\"\n" +
-    "                 payments-type-model=\"type\"\n" +
-    "                 ng-class=\"type\"\n" +
-    "                 placeholder=\"Credit Card Number\">\n" +
-    "        </div>\n" +
-    "      </div>\n" +
-    "\n" +
-    "\n" +
-    "      <!-- expiration date -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
-    "         <div class=\"col-sm-3\">\n" +
-    "            <input type=\"text\"\n" +
-    "                   class=\"form-control\"\n" +
-    "                   name=\"card-expiry\"\n" +
-    "                   id=\"card-expiry\"\n" +
-    "                   ng-model=\"expiry\"\n" +
-    "                   payments-validate=\"expiry\"\n" +
-    "                   payments-format=\"expiry\"\n" +
-    "                   placeholder=\"MM/YY\">\n" +
+    "         <div class=\"pitch\">\n" +
+    "            <p>But you can get it back! And you should, because your research is\n" +
+    "               making impacts all the time.\n" +
+    "            And with Impactstory, you can see and share them all&mdash;\n" +
+    "               everything from citations to downloads to tweets\n" +
+    "            and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
+    "            <p>By subscribing today, you'll restore your impact profile and\n" +
+    "               email notifications&mdash;and   you'll be helping to keep\n" +
+    "            Impactstory a sustainable, open-source nonprofit.</p>\n" +
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
-    "      <!-- CVV -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"cvv\"\n" +
-    "                 id=\"cvv\"\n" +
-    "                 ng-model=\"cvc\"\n" +
-    "                 payments-validate=\"cvc\"\n" +
-    "                 payments-format=\"cvc\"\n" +
-    "                 payments-type-model=\"type\"\n" +
-    "                 placeholder=\"CVV\">\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-2 cvv-graphic\">\n" +
-    "           <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
-    "        </div>\n" +
-    "      </div>\n" +
     "\n" +
-    "      <!-- CVV -->\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <label class=\"col-sm-3 control-label\" for=\"cvv\">Coupon code</label>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "          <input type=\"text\"\n" +
-    "                 class=\"form-control\"\n" +
-    "                 name=\"coupon-code\"\n" +
-    "                 id=\"coupon-code\"\n" +
-    "                 ng-model=\"subscribeForm.coupon\"\n" +
-    "                 placeholder=\"If you have a coupon, it goes here\">\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-2\">\n" +
-    "        </div>\n" +
+    "      <div class=\"current-plan-status paid\" ng-if=\"isSubscribed() && isLive()\">\n" +
+    "         <span class=\"setup\">\n" +
+    "            Your Impactstory subscription is active.\n" +
+    "         </span>\n" +
+    "         <span class=\"thanks\">Thanks for helping to keep Impactstory nonprofit and open source!</span>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
     "\n" +
+    "      <div class=\"current-plan-status trial\" ng-if=\"isTrialing() && isLive()\">\n" +
+    "         <span class=\"setup\" ng-if=\"daysLeftInTrial()>0\">Your Impactstory trial ends in {{ daysLeftInTrial() }} days</span>\n" +
+    "         <span class=\"setup\" ng-if=\"daysLeftInTrial()==0\">Your Impactstory trial ends today!</span>\n" +
     "\n" +
-    "      <div class=\"form-group\">\n" +
-    "         <div class=\"col-sm-offset-3 col-sm-9\">\n" +
-    "               <button type=\"submit\"\n" +
-    "                       ng-show=\"!loading.is('subscribe')\"\n" +
-    "                       class=\"btn btn-success\">\n" +
-    "                  Subscribe me!\n" +
-    "               </button>\n" +
-    "               <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
-    "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "                  <span class=\"text\">Subscribing you to Impactstory&hellip;</span>\n" +
+    "         <div class=\"email-example\">\n" +
+    "            <img src=\"/static/img/card-example.png\" alt=\"Impactstory notification email\"/>\n" +
+    "         </div>\n" +
+    "         <div class=\"pitch\">\n" +
+    "            <p>Your research is making impacts all the time.\n" +
+    "            And with Impactstory, you can see and share them all&mdash;\n" +
+    "               everything from citations to downloads to tweets\n" +
+    "            and more&mdash;on your profile and delivered straight to your inbox. </p>\n" +
+    "            <p>By extending your free trial today, you'll keep benefiting from your impact profile and\n" +
+    "               email notifications&mdash;and   you'll be helping to keep\n" +
+    "            Impactstory a sustainable, open-source nonprofit. </p>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      <form stripe-form=\"handleStripe\"\n" +
+    "            name=\"upgradeForm\"\n" +
+    "            novalidate\n" +
+    "            ng-if=\"isTrialing() || !isLive()\"\n" +
+    "            class=\"form-horizontal upgrade-form\">\n" +
+    "\n" +
+    "          <div class=\"form-title trial\">\n" +
+    "            <h3>Continue your subscription</h3>\n" +
+    "            <h4>If you ever decide you're not getting your money's worth, we'll refund it all. No questions asked. Simple as that.</h4>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "         <!-- plan -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"plan-options\">Billing period</label>\n" +
+    "            <div class=\"col-sm-9\" id=\"plan-options\">\n" +
+    "               <div class=\"radio\">\n" +
+    "                  <label>\n" +
+    "                     <input type=\"radio\" name=\"plan\" value=\"ongoing-monthly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                     $10 per month\n" +
+    "                  </label>\n" +
     "               </div>\n" +
+    "               <div class=\"radio\">\n" +
+    "                  <label>\n" +
+    "                     <input type=\"radio\" name=\"plan\" value=\"ongoing-yearly\" ng-model=\"subscribeForm.plan\">\n" +
+    "                     $60 per year\n" +
+    "                  </label>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
     "         </div>\n" +
-    "         <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
-    "            Trouble affording a subscription? No worries, we've been through some lean times\n" +
-    "            ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
     "\n" +
-    "            <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
-    "               <br>\n" +
-    "               To get your waiver, just <a href=\"mailto:team@impactstory.org\">drop us a line</a> showing us how you’re linking to your Impactstory profile\n" +
-    "               in your email signature and we’ll send you a coupon for a free account.\n" +
+    "         <!-- name on card -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
+    "            <div class=\"col-sm-9\">\n" +
+    "               <input type=\"text\"\n" +
+    "                      class=\"form-control\"\n" +
+    "                      name=\"card-holder-name\"\n" +
+    "                      id=\"card-holder-name\"\n" +
+    "                      placeholder=\"Card Holder's Name\">\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <!-- card number -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "           <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "           <div class=\"col-sm-9\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"card-number\"\n" +
+    "                    id=\"card-number\"\n" +
+    "                    ng-model=\"number\"\n" +
+    "                    payments-validate=\"card\"\n" +
+    "                    payments-format=\"card\"\n" +
+    "                    payments-type-model=\"type\"\n" +
+    "                    ng-class=\"type\"\n" +
+    "                    placeholder=\"Credit Card Number\">\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- expiration date -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "            <div class=\"col-sm-3\">\n" +
+    "               <input type=\"text\"\n" +
+    "                      class=\"form-control\"\n" +
+    "                      name=\"card-expiry\"\n" +
+    "                      id=\"card-expiry\"\n" +
+    "                      ng-model=\"expiry\"\n" +
+    "                      payments-validate=\"expiry\"\n" +
+    "                      payments-format=\"expiry\"\n" +
+    "                      placeholder=\"MM/YY\">\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <!-- CVV -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "           <div class=\"col-sm-3\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"cvv\"\n" +
+    "                    id=\"cvv\"\n" +
+    "                    ng-model=\"cvc\"\n" +
+    "                    payments-validate=\"cvc\"\n" +
+    "                    payments-format=\"cvc\"\n" +
+    "                    payments-type-model=\"type\"\n" +
+    "                    placeholder=\"CVV\">\n" +
+    "           </div>\n" +
+    "           <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "              <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <!-- CVV -->\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"coupon-code\">Coupon code</label>\n" +
+    "           <div class=\"col-sm-9\">\n" +
+    "             <input type=\"text\"\n" +
+    "                    class=\"form-control\"\n" +
+    "                    name=\"coupon-code\"\n" +
+    "                    id=\"coupon-code\"\n" +
+    "                    ng-model=\"subscribeForm.coupon\"\n" +
+    "                    placeholder=\"If you have a coupon, it goes here\">\n" +
+    "           </div>\n" +
+    "           <div class=\"col-sm-2\">\n" +
+    "           </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "         <div class=\"form-group\">\n" +
+    "            <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "                  <button type=\"submit\"\n" +
+    "                          ng-show=\"!loading.is('subscribe')\"\n" +
+    "                          class=\"btn btn-success\">\n" +
+    "                     Subscribe me!\n" +
+    "                  </button>\n" +
+    "                  <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
+    "                     <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                     <span class=\"text\">Subscribing you to Impactstory&hellip;</span>\n" +
+    "                  </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-sm-offset-3 col-sm-9 money-help\" ng-hide=\"loading.is('subscribe')\">\n" +
+    "               Trouble affording a subscription? No worries, we've been through some lean times\n" +
+    "               ourselves. So we've got a <a ng-click=\"showFeeWaiverDetails=!showFeeWaiverDetails\">no-questions-asked fee waiver for you.</a>\n" +
+    "\n" +
+    "               <div class=\"fee-waiver-details\" ng-show=\"showFeeWaiverDetails\">\n" +
+    "                  <br>\n" +
+    "                  To get your waiver, just <a href=\"mailto:team@impactstory.org\">drop us a line</a> showing us how you’re linking to your Impactstory profile\n" +
+    "                  in your email signature and we’ll send you a coupon for a free account.\n" +
+    "\n" +
+    "               </div>\n" +
     "\n" +
     "            </div>\n" +
-    "\n" +
     "         </div>\n" +
+    "      </form>\n" +
+    "\n" +
+    "      <div class=\"subscriber-buttons\" ng-if=\"isSubscribed()\">\n" +
+    "         <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
+    "            <i class=\"icon-credit-card left\"></i>\n" +
+    "            Change my credit card info\n" +
+    "         </button>\n" +
+    "         <button ng-click=\"cancelSubscription()\" class=\"btn btn-danger\">\n" +
+    "            <i class=\"icon-warning-sign left\"></i>\n" +
+    "            Cancel subscription\n" +
+    "         </button>\n" +
     "      </div>\n" +
-    "   </form> \n" +
     "\n" +
-    "   <div class=\"subscriber-buttons\" ng-if=\"isSubscribed()\">\n" +
-    "      <button ng-click=\"editCard()\" class=\"btn btn-primary edit-credit-card\">\n" +
-    "         <i class=\"icon-credit-card left\"></i>\n" +
-    "         Change my credit card info\n" +
-    "      </button>\n" +
-    "      <button ng-click=\"cancelSubscription()\" class=\"btn btn-danger\">\n" +
-    "         <i class=\"icon-warning-sign left\"></i>\n" +
-    "         Cancel subscription\n" +
-    "      </button>\n" +
     "   </div>\n" +
-    "\n" +
     "</div>\n" +
     "\n" +
     "");
@@ -7855,15 +8184,15 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "         </a>\n" +
     "         <div class=\"nav-group genres\">\n" +
     "            <ul>\n" +
-    "               <li ng-repeat=\"genre in profileService.data.genres | orderBy: 'name'\">\n" +
-    "                  <a href=\"/{{ profileAboutService.data.url_slug }}/products/{{ genre.url_representation }}\"\n" +
-    "                     ng-class=\"{active: page.isNamed(genre.url_representation)}\">\n" +
-    "                     <i class=\"{{ genre.icon }} left\"></i>\n" +
+    "               <li ng-repeat=\"(genreName, genreCount) in profileService.getGenreCounts() | orderBy: 'genreName'\">\n" +
+    "                  <a ng-href=\"/{{ profileAboutService.data.url_slug }}/products/{{ GenreConfigs.get(genreName, 'url_representation') }}\"\n" +
+    "                     ng-class=\"{active: page.isNamed(GenreConfigs.get(genreName, 'url_representation'))}\">\n" +
+    "                     <i class=\"{{ GenreConfigs.get(genreName, 'icon') }} left\"></i>\n" +
     "                     <span class=\"text\">\n" +
-    "                        {{ genre.plural_name }}\n" +
+    "                        {{  GenreConfigs.get(genreName, \"plural_name\") }}\n" +
     "                     </span>\n" +
     "                     <span class=\"count value\">\n" +
-    "                        ({{ genre.num_products }})\n" +
+    "                        ({{ genreCount }})\n" +
     "                     </span>\n" +
     "                  </a>\n" +
     "               </li>\n" +

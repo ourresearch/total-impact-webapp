@@ -30,6 +30,40 @@ angular.module("genrePage", [
   }
 })
 
+.factory("SelectedProducts", function(){
+  var tiids = []
+
+  return {
+    add: function(tiid){
+      return tiids.push(tiid)
+    },
+    addFromObjects: function(objects){
+      return tiids = _.pluck(objects, "tiid")
+    },
+    remove: function(tiid){
+      tiids = _.without(tiids, tiid)
+    },
+    removeAll: function(){
+      return tiids.length = 0
+    },
+    contains: function(tiid){
+      return _.contains(tiids, tiid)
+    },
+    containsAny: function(){
+      return tiids.length > 0
+    },
+    get: function(){
+      return tiids
+    },
+    count: function(){
+      return tiids.length
+    }
+  }
+})
+
+
+
+
 
 
 
@@ -55,19 +89,27 @@ angular.module("genrePage", [
     Tour,
     Timer,
     security,
+    GenreConfigs,
     ProfileService,
     ProfileAboutService,
+    SelectedProducts,
     PinboardService,
     Page) {
 
     $scope.pinboardService = PinboardService
 
+    SelectedProducts.removeAll()
+    $scope.SelectedProducts = SelectedProducts
+
 
     Timer.start("genreViewRender")
-    Timer.start("genreViewRender.load")
     Page.setName($routeParams.genre_name)
     $scope.url_slug = $routeParams.url_slug
-    $scope.genre_name = $routeParams.genre_name
+
+    var genreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    $scope.genre = genreConfig
+
+    $scope.genreChangeDropdown = {}
 
     var rendering = true
 
@@ -76,12 +118,9 @@ angular.module("genrePage", [
     }
     ProfileService.get($routeParams.url_slug).then(
       function(resp){
-        console.log("genre page loaded products", resp)
         Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.about = resp.about
-        $scope.products = ProfileService.productsByGenre($routeParams.genre_name)
-        $scope.genre = ProfileService.genreLookup($routeParams.genre_name)
+        $scope.genreCards = ProfileService.genreCards($routeParams.genre_name)
 
         // scroll to the last place we were on this page. in a timeout because
         // must happen after page is totally rendered.
@@ -89,9 +128,6 @@ angular.module("genrePage", [
           var lastScrollPos = Page.getLastScrollPosition($location.path())
           $window.scrollTo(0, lastScrollPos)
         }, 0)
-      },
-      function(resp){
-        console.log("ProfileService failed in genrePage.js...", resp)
       }
     )
 
@@ -110,6 +146,33 @@ angular.module("genrePage", [
       var sorted = _.sortBy(cards, "sort_by")
       var reversed = sorted.concat([]).reverse()
       return reversed.slice(startIndex, endIndex)
+    }
+
+    $scope.removeSelectedProducts = function(){
+      console.log("removing products: ", SelectedProducts.get())
+      ProfileService.removeProducts(SelectedProducts.get())
+      SelectedProducts.removeAll()
+
+      // handle removing the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        $location.path($routeParams.url_slug)
+      }
+    }
+
+    $scope.changeProductsGenre = function(newGenre){
+      console.log("changing products genres: ", SelectedProducts.get())
+      $scope.genreChangeDropdown.isOpen = false
+
+      ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+      SelectedProducts.removeAll()
+
+      // handle moving the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
+        $location.path($routeParams.url_slug + "/products/" + newGenreUrlRepresentation)
+      }
     }
 
 

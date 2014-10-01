@@ -827,10 +827,10 @@ providers = [
             "news": {
                 "description": "Number of times the product has been mentioned in the mainstream media",
                 "display_name": "news mentions",
-                "display_provider": "Twitter",
+                "display_provider": "",
                 "icon": "https://twitter.com/favicon.ico",
                 "provider_name": "Altmetric.com",
-                "provider_url": "http://twitter.com",
+                "provider_url": "http://altmetric.com",
                 "audience": "public",
                 "engagement_type": "discussed",
                 "milestones": fives_then_orders_of_magnitude(),
@@ -847,7 +847,20 @@ providers = [
                 "engagement_type": "discussed",
                 "milestones": fives_then_orders_of_magnitude(),
                 "metric_debut_date": "2014-09-17"
-            }              
+            },
+            "tweeter_followers": {
+                "hide_badge": True,            
+                "description": "People who have tweeted the product and their follower counts",
+                "display_name": "tweeter followers",
+                "display_provider": "Twitter",
+                "icon": "https://twitter.com/favicon.ico",
+                "provider_name": "Altmetric.com",
+                "provider_url": "http://twitter.com",
+                "audience": "public",
+                "engagement_type": "discussed",
+                "milestones": fives_then_orders_of_magnitude(),
+                "metric_debut_date": "2014-09-17"
+            }                               
         },
         "name": "altmetric_com",
         "provides_aliases": True,
@@ -1050,17 +1063,22 @@ def metrics(this_key_only=None):
 
 genre_icons = {
     'article': "icon-file-text-alt",
-    'blog': "icon-comments",
+    #'blog': "icon-comments",
     'dataset': "icon-table",
     'figure': "icon-bar-chart",
     'poster': "icon-picture",
     'slides': "icon-desktop",
     'software': "icon-save",
-    'twitter': "icon-twitter",
+    #'twitter': "icon-twitter",
     'video': "icon-facetime-video",
     'webpage': "icon-globe",
     'other': "icon-file-alt",
-    'unknown': "icon-file-alt"
+    'unknown': "icon-file-alt",
+    "conference paper": "icon-list-alt",  # conference proceeding
+    "book": "icon-book",
+    "book chapter": "icon-bookmark-empty",  # chapter anthology
+    "thesis": "icon-align-center",  # dissertation
+
 }
 
 
@@ -1092,7 +1110,8 @@ def genre_configs():
         my_config_dict = {
             "name": name,
             "icon": icon,
-            "plural_name": my_plural
+            "plural_name": my_plural,
+            "url_representation": my_plural.replace(" ", "-")
         }
         ret.append(my_config_dict)
 

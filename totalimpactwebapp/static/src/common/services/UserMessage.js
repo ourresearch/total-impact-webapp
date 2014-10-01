@@ -32,7 +32,10 @@ angular.module('services.userMessage', [])
       'browser.error.oldIE': ["Warning: you're browsing using an out-of-date version of Internet Explorer.  Many ImpactStory features won't work. <a href='http://windows.microsoft.com/en-us/internet-explorer/download-ie'>Update</a>", 'warning'],
       'dedup.success': ["We've successfully merged <span class='count'>{{ numDuplicates }}</span> duplicated products.", 'info'],
 
-      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info']
+      'subscription.trialing': ["You've got {{daysLeft}} days left on your free trial. <a href='/settings/subscription'>Subscribe</a> to keep your profile going strong!", 'info'],
+
+
+      'genrePage.changeGenre.success': ["Moved {{numProducts}} products to {{newGenre}}.", 'success']
     };
 
     var clear = function(){
@@ -50,7 +53,6 @@ angular.module('services.userMessage', [])
       set: function(key, persist, interpolateParams){
         if (!persist){
           $timeout(function(){
-            console.log("removing the user message")
             clear()
           }, 2000)
         }
@@ -59,6 +61,18 @@ angular.module('services.userMessage', [])
         currentMessageObject = {
           message: $interpolate(msg[0])(interpolateParams),
           type: msg[1]
+        }
+      },
+
+      setStr: function(msg, type, persist){
+        if (!persist){
+          $timeout(function(){
+            clear()
+          }, 2000)
+        }
+        currentMessageObject = {
+          message: msg,
+          type: type || "info"
         }
       },
 

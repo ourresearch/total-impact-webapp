@@ -12,6 +12,7 @@ from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import notification_report
+from totalimpactwebapp.drip_email import drip_email_context
 from totalimpactwebapp import emailer
 
 
@@ -142,13 +143,16 @@ def send_email_report(profile, now=None):
     return status
 
 
-def send_trial_expiring(profile, now=None):
+def send_drip_email(profile, drip_milestone):
+    status = "started"    
     if os.getenv("ENVIRONMENT", "testing") == "production":
         email = profile.email
     else:
         email = "heather@impactstory.org"
 
-    msg = emailer.send(email, "Your Impactstory", "report", report)
+    email_context = drip_email_context(profile, drip_milestone)
+    msg = emailer.send(email, email_context["subject"], email_context["template"], email_context)
+    status = "email sent"    
     logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=profile.url_slug))
 
     return status

@@ -1,59 +1,92 @@
+@import 'variables';
+
+
 div.genre-page {
+
+
+
+
+   /*****************************************************
+
+   genre header content (info about the products)
+
+   *****************************************************/
+
    div.header {
-      padding: 20px 10px 10px @contentPaddingLeft;
       margin: 0 0 70px -@contentPaddingLeft;
-      border-bottom: 1px solid #eee;
-      position:relative;
 
-      .more-button {
-         display:none;
-         font-size: 14px;
-         background: #fff;
-         padding: 0 10px 2px;
-         position:absolute;
-         bottom: -12px;
-         left: 50%;
-         color: #777;
-      }
-      h2 {
-         span.count {
-            font-weight: normal;
+      div.header-content {
+         padding: 20px 10px 10px @contentPaddingLeft;
+         border-bottom: 1px solid #eee;
+         position:relative;
+
+         .more-button {
+            display:none;
+            font-size: 14px;
+            background: #fff;
+            padding: 0 10px 2px;
+            position:absolute;
+            bottom: -12px;
+            left: 50%;
+            color: #777;
          }
-         font-size: 28px;
-         line-height: 1.3;
-         margin: 0 20px 0 5px;
-         text-transform: capitalize;
-         color: #333;
-         float:left;
-
-      }
-      div.genre-summary {
-         div.genre-summary-top {
-            margin-bottom: 20px;
-            .clearfix {
-               clear:both;
+         h2 {
+            span.count {
+               font-weight: normal;
             }
+            font-size: 28px;
+            line-height: 1.3;
+            margin: 0 20px 0 5px;
+            text-transform: capitalize;
+            color: #333;
+            float:left;
 
-            ul.genre-cards-best {
-               li.genre-card {
-                  float:right;
-                  margin: 0 20px 0 40px;
-                  line-height: 1;
+         }
+         div.genre-summary {
+            div.genre-summary-top {
+               margin-bottom: 20px;
+               .clearfix {
+                  clear:both;
+               }
 
-                  span.feature-controls {
-                     margin-right: 3px;
-                     a {
-                        font-size: 16px;
-                        &.unfeature-this {
-                           color: @linkColor;
-                        }
-                        &.feature-this {
-                           color: #999;
-                           &:hover {
-                              color: #000;
+               ul.genre-cards-best {
+                  li.genre-card {
+                     float:right;
+                     margin: 0 20px 0 40px;
+                     line-height: 1;
+
+                     span.feature-controls {
+                        margin-right: 3px;
+                        a {
+                           font-size: 16px;
+                           &.unfeature-this {
+                              color: @linkColor;
+                           }
+                           &.feature-this {
+                              color: #999;
+                              &:hover {
+                                 color: #000;
+                              }
                            }
                         }
                      }
+
+                  div.tooltip {
+                     div.tooltip-inner {
+                        font-size: 14px;
+                        text-align: left;
+                        li {
+                           font-size: 14px;
+                           list-style-type: disc;
+                           margin-left: 25px;
+                           .twitter-handle {
+                              font-weight: bold;
+                           }
+                           .followers {
+                              font-size: 10px;
+                           }
+                        }                  
+                     }                  
                   }
 
                   span.data {
@@ -89,6 +122,90 @@ div.genre-page {
 
 
 
+      /*****************************************************
+
+      genre header product controls
+
+      *****************************************************/
+
+      div.header-controls {
+//         background: #eee;
+         padding: 10px 10px 10px @contentPaddingLeft;
+         div.edit-controls {
+            margin-left: 5px;
+            button {
+               padding: 5px 10px;
+               opacity: .5;
+            }
+            span.global-selection-control {
+               width: 25px;
+               display: inline-block;
+               i {
+                  font-size: 18px;
+                  color: #777;
+                  vertical-align: -2px;
+               }
+            }
+
+
+            span.actions {
+               &.has-selected-products-true {
+                  button {
+                     opacity: 1;
+                  }
+               }
+               span.action {
+                  margin-left: 1px;
+               }
+               div.genre-select-group {
+                  ul.dropdown-menu {
+                     li {
+                        font-size: 16px;
+                        &.instr {
+                           padding: 10px 0 0 20px;
+                        }
+                        a {
+                           color: #333;
+                           i {
+                              color: #555;
+                           }
+                        }
+
+                     }
+
+                  }
+               }
+            } // end span.actions
+
+            span.num-selected {
+               font-size: 14px;
+               margin-left: 10px;
+               color: #555;
+            }
+
+         }
+
+         div.sort-controls {
+
+         }
+      }
+
+   }
+
+
+
+
+
+
+
+
+
+
+   /*****************************************************
+
+   products (most product styles are in product.less)
+
+   *****************************************************/
 
 
 
@@ -115,83 +232,3 @@ div.genre-page {
 
 
 
-
-
-
-
-/*****************************************************
-
-saving this here for later maybe
-
-******************************************************/
-
-   // filters and counts on right side of profile
-   div.products-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      div.products-done-updating {
-
-         div.last-collected {
-            font-size: 13px;
-            font-weight: 300;
-            display:none;
-         }
-
-         div.products-count-info {
-            font-weight: 300;
-            margin: 0;
-            span.showing {
-               font-weight: normal;
-               display:none;
-            }
-            span.value {
-               font-weight: bold;
-               margin-right: 3px;
-            }
-         }
-         div.filters-label {
-            color: #777;
-            font-weight: normal;
-            font-size: 16px;
-            float:left;
-         }
-         div.filters {
-            float:left;
-            i.icon-chevron-right {
-               vertical-align: -2px;
-               color: #aaa;
-            }
-            .filters-label {
-               float:left;
-               font-weight: normal;
-            }
-            .filter {
-               font-size: 15px;
-               &.active {
-                  a {
-                     font-weight: normal;
-                     color: #555;
-                     cursor: default;
-                  }
-                  &.this-week {
-                     a {
-                        font-weight: 900;
-                        color: @linkColor;
-                     }
-                  }
-               }
-               float:left;
-               padding-left: 10px;
-               a {
-                  font-weight: 100;
-                  color: @gray-light;
-                  span.count {
-                     font-size: 80%;
-                  }
-               }
-            }
-
-         }
-      }
-   }
