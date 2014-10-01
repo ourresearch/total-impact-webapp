@@ -2779,7 +2779,7 @@ angular.module('settings', [
 
       else {
         console.log("yay, Stripe CC token created successfully! Now let's save the card.")
-        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, null)
+        subscribeUser($scope.user.url_slug, $scope.subscribeForm.plan, response.id, $scope.subscribeForm.coupon)
 
       }
     }
@@ -8287,7 +8287,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "\n" +
     "         <!-- CVV -->\n" +
     "         <div class=\"form-group\">\n" +
-    "            <label class=\"col-sm-3 control-label\" for=\"cvv\">Coupon code</label>\n" +
+    "            <label class=\"col-sm-3 control-label\" for=\"coupon-code\">Coupon code</label>\n" +
     "           <div class=\"col-sm-9\">\n" +
     "             <input type=\"text\"\n" +
     "                    class=\"form-control\"\n" +
