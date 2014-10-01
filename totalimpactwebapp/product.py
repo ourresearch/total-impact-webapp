@@ -310,19 +310,6 @@ class Product(db.Model):
         except AttributeError:
             return False
 
-    def get_pdf(self):
-        if self.has_file:
-            return self.get_file()
-        try:
-            if self.aliases.pmc:
-                pdf_url = "http://ukpmc.ac.uk/articles/{pmcid}?pdf=render".format(
-                    pmcid=self.aliases.pmc[0])
-                r = requests.get(pdf_url, timeout=10)
-                return r.content
-        except (AttributeError, requests.exceptions.Timeout):
-            return None
-
-
     def get_file(self):
         if not self.has_file:
             return None
@@ -359,43 +346,49 @@ class Product(db.Model):
 
         return length
 
+    def get_pdf(self):
+        if self.has_file:
+            return self.get_file()
+        try:
+            pdf_url = self.get_pdf_url()
+            if pdf_url:
+                r = requests.get(pdf_url, timeout=10)
+                return r.content
+        except (AttributeError, requests.exceptions.Timeout):
+            pass
+        return None
+
 
     def get_pdf_url(self):
-        try:
-            this_host = flask.request.url_root.strip("/")
-        except RuntimeError:  # when running as a script
-            this_host = "https://impactstory.org"
-
-        if self.has_file:
-            return u"{this_host}/product/{tiid}/pdf".format(
-                this_host=this_host, tiid=self.tiid)
+        url = None
 
         if self.aliases.display_pmc:
-            # workaround for google docs viewer not supporting localhost urls
-            this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
-            return u"{this_host}/product/{tiid}/pdf".format(
-                this_host=this_host, tiid=self.tiid)
+            url = "http://ukpmc.ac.uk/articles/{pmcid}?pdf=render".format(
+                    pmcid=self.aliases.pmc[0])
 
-        if self.aliases.display_arxiv:
-            return "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
-                arxiv_id=self.aliases.display_arxiv)
+        elif self.aliases.display_arxiv:
+            url = "http://arxiv.org/pdf/{arxiv_id}.pdf".format(
+                    arxiv_id=self.aliases.display_arxiv)
 
-        if hasattr(self.biblio, "free_fulltext_url") and self.biblio.free_fulltext_url:
+        elif hasattr(self.biblio, "free_fulltext_url") and self.biblio.free_fulltext_url:
             # print "trying free fulltext url!"
             # just return right away if pdf is in the link
             if "pdf" in self.biblio.free_fulltext_url:
-                return self.biblio.free_fulltext_url
+                url = self.biblio.free_fulltext_url
 
-            # since link isn't obviously a pdf, try to get pdf link by scraping page
-            pdf_link = embed_markup.extract_pdf_link_from_html(self.biblio.free_fulltext_url)
-            if pdf_link:
-                return pdf_link # got it!
+            if not url:
+                # since link isn't obviously a pdf, try to get pdf link by scraping page
+                url = embed_markup.extract_pdf_link_from_html(self.biblio.free_fulltext_url)
 
         # got here with nothing else?  use the resolved url if it has pdf in it
-        if self.aliases.resolved_url and ("pdf" in self.aliases.resolved_url):
-            return self.aliases.resolved_url
+        if not url:
+            if self.aliases.resolved_url and ("pdf" in self.aliases.resolved_url):
+                url = self.aliases.resolved_url
 
-        return None
+        if url and ".pdf+html" in url:
+            url = url.replace(".pdf+html", ".pdf")
+
+        return url
 
 
     def get_embed_markup(self):
@@ -423,7 +416,15 @@ class Product(db.Model):
             html = embed_markup.get_figshare_embed_html(self.aliases.best_url)
 
         else:
-            url = self.get_pdf_url()
+            try:
+                this_host = flask.request.url_root.strip("/")
+                # workaround for google docs viewer not supporting localhost urls
+                this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
+            except RuntimeError:  # when running as a script
+                this_host = "https://impactstory.org"
+            url = u"{this_host}/product/{tiid}/pdf".format(
+                this_host=this_host, tiid=self.tiid)
+
             if url and "localhost" in url:
                 html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
                         url=url)
