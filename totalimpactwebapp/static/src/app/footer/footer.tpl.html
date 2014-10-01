@@ -1,7 +1,7 @@
 <div id="page-footer-container">
 
    <div id="page-footer"
-        ng-if="footer.show"
+        ng-show="footer.show"
         ng-mouseleave="footer.show=false"
         class="animated slideInUp slideOutDown">
       <div class="wrapper">
@@ -33,7 +33,17 @@
             <ul>
                <li><a href="http://feedback.impactstory.org" target="_blank">Suggestions</a></li>
                <li>
-                  <a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950">Report bug</a>
+                     <a class="help control"
+                        href="javascript:void(0)"
+                        data-uv-lightbox="classic_widget"
+                        data-uv-trigger
+                        data-uv-mode="full"
+                        data-uv-primary-color="#cc6d00"
+                        data-uv-link-color="#007dbf"
+                        data-uv-default-mode="support"
+                        data-uv-forum-id="166950">
+                           Report bug
+                     </a>
                </li>
                <li><a href="/faq">FAQ</a></li>
                <li><a href="/CarlBoettiger">Example profile</a></li>

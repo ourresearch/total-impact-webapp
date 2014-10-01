@@ -5696,7 +5696,7 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "<div id=\"page-footer-container\">\n" +
     "\n" +
     "   <div id=\"page-footer\"\n" +
-    "        ng-if=\"footer.show\"\n" +
+    "        ng-show=\"footer.show\"\n" +
     "        ng-mouseleave=\"footer.show=false\"\n" +
     "        class=\"animated slideInUp slideOutDown\">\n" +
     "      <div class=\"wrapper\">\n" +
@@ -5728,7 +5728,17 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "            <ul>\n" +
     "               <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
     "               <li>\n" +
-    "                  <a href=\"javascript:void(0)\" data-uv-lightbox=\"classic_widget\" data-uv-mode=\"full\" data-uv-primary-color=\"#cc6d00\" data-uv-link-color=\"#007dbf\" data-uv-default-mode=\"support\" data-uv-forum-id=\"166950\">Report bug</a>\n" +
+    "                     <a class=\"help control\"\n" +
+    "                        href=\"javascript:void(0)\"\n" +
+    "                        data-uv-lightbox=\"classic_widget\"\n" +
+    "                        data-uv-trigger\n" +
+    "                        data-uv-mode=\"full\"\n" +
+    "                        data-uv-primary-color=\"#cc6d00\"\n" +
+    "                        data-uv-link-color=\"#007dbf\"\n" +
+    "                        data-uv-default-mode=\"support\"\n" +
+    "                        data-uv-forum-id=\"166950\">\n" +
+    "                           Report bug\n" +
+    "                     </a>\n" +
     "               </li>\n" +
     "               <li><a href=\"/faq\">FAQ</a></li>\n" +
     "               <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
