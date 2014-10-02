@@ -1060,6 +1060,10 @@ angular.module( 'infopages', [
         templateUrl: 'infopages/faq.tpl.html',
         controller: 'faqPageCtrl'
       })
+      .when('/legal', {
+        templateUrl: 'infopages/legal.tpl.html',
+        controller: 'legalPageCtrl'
+      })
       .when('/metrics', {
         templateUrl: 'infopages/metrics.tpl.html',
         controller: 'metricsPageCtrl',
@@ -1123,6 +1127,11 @@ angular.module( 'infopages', [
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page) {
     Page.setTitle("FAQ")
+    Page.setInfopage(true)
+  })
+
+  .controller( 'legalPageCtrl', function faqPageCtrl ( $scope, Page) {
+    Page.setTitle("Legal")
     Page.setInfopage(true)
   })
 
@@ -4454,6 +4463,8 @@ angular.module("services.page")
       "/h-index",
       "/open-science",
       "/faq",
+      "/legal",
+      "/metrics",
       "/signup",
       "/about",
       "/advisors",
@@ -5502,7 +5513,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -5715,9 +5726,8 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "            <ul>\n" +
     "               <li><a href=\"/about\">About us</a></li>\n" +
     "               <li><a href=\"/metrics\">Our metrics</a></li>\n" +
-    "               <li><a href=\"/faq#tos\" target=\"_self\">Terms of use</a></li>\n" +
-    "               <li><a href=\"/faq#copyright\" target=\"_self\">Copyright</a></li>\n" +
-    "               <li><a href=\"https://github.com/total-impact\">GitHub</a></li>\n" +
+    "               <li><a href=\"https://github.com/total-impact\">Our code</a></li>\n" +
+    "               <li><a href=\"/legal\">Legal</a></li>\n" +
     "            </ul>\n" +
     "         </div>\n" +
     "\n" +
@@ -6353,6 +6363,31 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "</div>\n" +
     "\n" +
     "");
+}]);
+
+angular.module("infopages/legal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("infopages/legal.tpl.html",
+    "<div class=\"main infopage\" id=\"legal-page\"><div class=\"wrapper\">\n" +
+    "   <h2 class=\"infopage-heading\">Legal</h2>\n" +
+    "\n" +
+    "   <h3 id=\"copyright\">Copyright</h3>\n" +
+    "   <p>\n" +
+    "      Except where otherwise noted, content on this site is copyright Impactstory,\n" +
+    "      and is freely sharable under the\n" +
+    "      <a href=\"http://creativecommons.org/licenses/by/4.0/\">CC-BY</a> license.\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <h3 id=\"terms-of-use\">Terms of use</h3>\n" +
+    "   <p>\n" +
+    "      Due to agreements we have made with data providers, you may not scrape this \n" +
+    "      website&mdash;use the embed or download functionality instead (see the\n" +
+    "      <a href=\"http://feedback.impactstory.org/knowledgebase\">knowledge base</a>\n" +
+    "      for more on how to do this).\n" +
+    "   </p>\n" +
+    "\n" +
+    "\n" +
+    "</div><!-- end wrapper -->\n" +
+    "</div>");
 }]);
 
 angular.module("infopages/metrics.tpl.html", []).run(["$templateCache", function($templateCache) {

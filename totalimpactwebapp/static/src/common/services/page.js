@@ -23,6 +23,8 @@ angular.module("services.page")
       "/h-index",
       "/open-science",
       "/faq",
+      "/legal",
+      "/metrics",
       "/signup",
       "/about",
       "/advisors",

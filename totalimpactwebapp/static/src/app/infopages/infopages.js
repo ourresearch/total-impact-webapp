@@ -57,6 +57,10 @@ angular.module( 'infopages', [
         templateUrl: 'infopages/faq.tpl.html',
         controller: 'faqPageCtrl'
       })
+      .when('/legal', {
+        templateUrl: 'infopages/legal.tpl.html',
+        controller: 'legalPageCtrl'
+      })
       .when('/metrics', {
         templateUrl: 'infopages/metrics.tpl.html',
         controller: 'metricsPageCtrl',
@@ -120,6 +124,11 @@ angular.module( 'infopages', [
 
   .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page) {
     Page.setTitle("FAQ")
+    Page.setInfopage(true)
+  })
+
+  .controller( 'legalPageCtrl', function faqPageCtrl ( $scope, Page) {
+    Page.setTitle("Legal")
     Page.setInfopage(true)
   })
 
