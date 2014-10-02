@@ -17,9 +17,6 @@ def wrap_as_image(class_name, image_url):
         class_name=class_name, image_url=image_url)
 
 def wrap_in_pdf_reader(class_name, url):
-    if ".pdf+html" in url:
-        url = url.replace(".pdf+html", ".pdf")
-        
     return u"""<iframe class="{class_name}" src="https://docs.google.com/viewer?url={url}&embedded=true" 
                 width="600" height="780" style="border: none;"></iframe>""".format(
         class_name=class_name, url=url)

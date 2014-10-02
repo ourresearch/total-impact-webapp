@@ -379,6 +379,9 @@ class Product(db.Model):
             # just return right away if pdf is in the link
             if "pdf" in self.biblio.free_fulltext_url:
                 url = self.biblio.free_fulltext_url
+            
+            elif self.aliases.resolved_url and ("sagepub.com/" in self.aliases.resolved_url):
+                url = self.aliases.resolved_url + ".full.pdf"
 
             if not url:
                 # since link isn't obviously a pdf, try to get pdf link by scraping page
