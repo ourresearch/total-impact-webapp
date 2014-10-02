@@ -139,8 +139,8 @@ def extract_pdf_link_from_html(url):
     href = None
     # otherwise try to find a url link inside it
     soup = BeautifulSoup(r.text)
-    # pdf either as solo word or with spaces around it
-    lookup_re = re.compile(".*(^|\s)+(pdf)(\s|$)+.*", re.IGNORECASE)
+    # pdf either as solo word or with spaces or parens around it
+    lookup_re = re.compile(".*(^|\s|\\()+(pdf)(\\)|\s|$)+.*", re.IGNORECASE)
     found = soup.find("a", text=lookup_re)
     if found:
         href = found.get("href")
