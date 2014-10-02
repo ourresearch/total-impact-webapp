@@ -55,7 +55,15 @@ angular.module( 'infopages', [
       })
       .when('/faq', {
         templateUrl: 'infopages/faq.tpl.html',
-        controller: 'faqPageCtrl',
+        controller: 'faqPageCtrl'
+      })
+      .when('/legal', {
+        templateUrl: 'infopages/legal.tpl.html',
+        controller: 'legalPageCtrl'
+      })
+      .when('/metrics', {
+        templateUrl: 'infopages/metrics.tpl.html',
+        controller: 'metricsPageCtrl',
         resolve: {
           providersInfo: function(InfoPages){
             return InfoPages.getProvidersInfo()
@@ -114,11 +122,21 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
-  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
+  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page) {
     Page.setTitle("FAQ")
     Page.setInfopage(true)
+  })
+
+  .controller( 'legalPageCtrl', function faqPageCtrl ( $scope, Page) {
+    Page.setTitle("Legal")
+    Page.setInfopage(true)
+  })
+
+  .controller( 'metricsPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
+    Page.setTitle("Metrics")
+    Page.setInfopage(true)
     $scope.providers = providersInfo
-    console.log("faq page controller running")
+    console.log("metrics page controller running")
   })
 
   .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
