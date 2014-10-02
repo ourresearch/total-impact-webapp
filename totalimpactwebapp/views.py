@@ -603,6 +603,8 @@ def product_pdf(tiid):
         try:
             product = get_product(tiid)
             pdf = product.get_pdf()
+            db.session.merge(product)  # get pdf might have cached the pdf
+            db.session.commit()
             if pdf:
                 resp = make_response(pdf, 200)
                 resp.mimetype = "application/pdf"
