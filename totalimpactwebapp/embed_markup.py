@@ -124,10 +124,11 @@ def extract_pdf_link_from_html(url):
 
     soup = BeautifulSoup(r.text)
     try:
-        href = soup.find("a", text=re.compile("pdf", re.IGNORECASE)).get("href")
+        href = soup.find("a", text=re.compile(".*(\s*)pdf(\s*).*", re.IGNORECASE)).get("href")
     except AttributeError:
         href = None
 
+    # handle relative urls
     if href and href.startswith("/"):
         href = urljoin(r.url, href)  # see https://docs.python.org/2/library/urlparse.html#urlparse.urljoin
 
