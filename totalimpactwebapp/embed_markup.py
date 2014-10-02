@@ -5,6 +5,7 @@ import logging
 from urlparse import urljoin
 from bs4 import BeautifulSoup
 from embedly import Embedly
+from PyPDF2 import PdfFileReader
 
 logger = logging.getLogger("tiwebapp.embed_markup")
 
@@ -122,11 +123,31 @@ def extract_pdf_link_from_html(url):
     except requests.exceptions.Timeout:
         return None
 
+    # if this is a pdf, return this url directly
+    if "application/pdf" in r.headers['content-type'].lower():
+        return url
+    elif ('content-disposition'in r.headers) and \
+            ("pdf" in r.headers['content-disposition'].lower()):
+        return url
+    else:
+        try:
+            pdf_contents = PdfFileReader(r.content)
+            if pdf_contents.getNumPages() >= 1:
+                return url
+        except IOError:
+            pass
+
+    # otherwise try to find a url link inside it
     soup = BeautifulSoup(r.text)
-    try:
-        href = soup.find("a", text=re.compile(".*(\s*)pdf(\s*).*", re.IGNORECASE)).get("href")
-    except AttributeError:
-        href = None
+    # pdf either as solo word or with spaces around it
+    lookup_re = re.compile(".*(^|\s)+(pdf)(\s|$)+.*", re.IGNORECASE)
+    found = soup.find("a", text=lookup_re)
+    if found:
+        href = found.get("href")
+    else:
+        found = soup.find("a", title=lookup_re)
+        if found:
+            href = found.get("href")
 
     # handle relative urls
     if href and href.startswith("/"):
