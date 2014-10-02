@@ -89,7 +89,7 @@ def get_figshare_embed_html(figshare_doi_url):
     figshare_resource_links = [link.get("href") for link in figshare_resource_links if link]  #remove blanks
     if not figshare_resource_links:
         try:
-            figshare_resource_links = [re.search("(http://files.figshare.com/.*.pdf)", r.text, re.IGNORECASE).group(0)]
+            figshare_resource_links = [re.search('\"(http://files.figshare.com/.*)\"', r.text, re.IGNORECASE).group(1)]
         except AttributeError:
             pass
     if not figshare_resource_links:
