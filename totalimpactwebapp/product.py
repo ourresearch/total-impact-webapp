@@ -77,7 +77,8 @@ class Product(db.Model):
     last_refresh_failure_message = db.Column(json_sqlalchemy.JSONAlchemy(db.Text)) #ALTER TABLE item ADD last_refresh_failure_message text
     has_file = db.Column(db.Boolean, default=False)  # alter table item add has_file bool; alter table item alter has_file SET DEFAULT false;
     embed_markup = db.Column(db.Text)  # alter table item add embed_markup text
-
+    pdf_url = db.Column(db.Text)  # alter table item add pdf_url text
+    checked_pdf_url = db.Column(db.Boolean, default=False)  # alter table item add checked_pdf_url text
 
     alias_rows = db.relationship(
         'AliasRow',
@@ -360,6 +361,9 @@ class Product(db.Model):
 
 
     def get_pdf_url(self):
+        if self.checked_pdf_url:
+            return self.pdf_url
+
         url = None
 
         if self.aliases.display_pmc:
@@ -387,6 +391,10 @@ class Product(db.Model):
 
         if url and ".pdf+html" in url:
             url = url.replace(".pdf+html", ".pdf")
+
+        # do a commit after this
+        self.checked_pdf_url = True
+        self.pdf_url = True
 
         return url
 
@@ -516,6 +524,10 @@ def patch_biblio(tiid, patch_dict):
     )
 
     if "free_fulltext_url" in patch_dict.keys():
+        product = get_product(tiid)
+        product.checked_pdf_url = False
+        db.session.add(product)
+        commit(db)        
         add_product_embed_markup(tiid)
 
     return r
