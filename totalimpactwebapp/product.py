@@ -361,6 +361,7 @@ class Product(db.Model):
 
 
     def get_pdf_url(self):
+
         if self.checked_pdf_url:
             return self.pdf_url
 
@@ -427,27 +428,28 @@ class Product(db.Model):
             html = embed_markup.get_figshare_embed_html(self.aliases.best_url)
 
         else:
-            try:
-                this_host = flask.request.url_root.strip("/")
-                # workaround for google docs viewer not supporting localhost urls
-                this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
-            except RuntimeError:  # when running as a script
-                this_host = "https://impactstory.org"
-            url = u"{this_host}/product/{tiid}/pdf".format(
-                this_host=this_host, tiid=self.tiid)
+            if self.has_file or self.get_pdf_url():
+                try:
+                    this_host = flask.request.url_root.strip("/")
+                    # workaround for google docs viewer not supporting localhost urls
+                    this_host = this_host.replace("localhost:5000", "staging-impactstory.org")
+                except RuntimeError:  # when running as a script
+                    this_host = "https://impactstory.org"
+                url = u"{this_host}/product/{tiid}/pdf".format(
+                    this_host=this_host, tiid=self.tiid)
 
-            if url and "localhost" in url:
-                html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
-                        url=url)
-            else:
-                if url:
-                    try:
-                        html = embed_markup.wrap_in_pdf_reader("embed-pdf", url)
-                    except UnicodeEncodeError:
-                        pass
-                elif self.genre not in ["article", "unknown"]:
-                    # this is how we embed slides, videos, etc
-                    html = embed_markup.wrap_with_embedly(self.aliases.best_url)
+                if url and "localhost" in url:
+                    html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
+                            url=url)
+                else:
+                    if url:
+                        try:
+                            html = embed_markup.wrap_in_pdf_reader("embed-pdf", url)
+                        except UnicodeEncodeError:
+                            pass
+                    elif self.genre not in ["article", "unknown"]:
+                        # this is how we embed slides, videos, etc
+                        html = embed_markup.wrap_with_embedly(self.aliases.best_url)
 
         return html
 
