@@ -86,17 +86,13 @@ def get_figshare_embed_html(figshare_doi_url):
 
     # case insensitive on download because figshare does both upper and lower
     figshare_resource_links = soup.find_all("a", text=re.compile(".ownload", re.IGNORECASE))
-    logger.debug(u"figshare_resource_links before filter in get_figshare_embed_html {figshare_doi_url}".format(
-        figshare_doi_url=figshare_doi_url))
-    figshare_resource_links = [link for link in figshare_resource_links if link]  #remove blanks
+    figshare_resource_links = [link.get("href") for link in figshare_resource_links if link]  #remove blanks
     if not figshare_resource_links:
-        logger.debug(u"no figshare_resource_links in get_figshare_embed_html for {figshare_doi_url}".format(
-            figshare_doi_url=figshare_doi_url))
-        return None
-    url = None
+        figshare_resource_links = [re.search("(http://files.figshare.com/.*.pdf)", r.text, re.IGNORECASE).group(0)]
+        if not figshare_resource_links:
+            return None
 
-    for match in figshare_resource_links:
-        url = match.get("href")
+    for url in figshare_resource_links:
         file_extension = url.rsplit(".")[-1]
 
         if file_extension in ["png", "gif", "jpg"]:
@@ -107,11 +103,11 @@ def get_figshare_embed_html(figshare_doi_url):
 
             return wrap_in_pdf_reader("embed-pdf", url)
 
-    logger.debug(u"no pdf in get_figshare_embed_html for {figshare_doi_url}".format(
+    logger.debug(u"no image or pdf in get_figshare_embed_html for {figshare_doi_url}".format(
         figshare_doi_url=figshare_doi_url))
 
     # if got here, just use the first matching url and give it a shot with embedly
-    return wrap_with_embedly(figshare_resource_links[0].get("href"))
+    return wrap_with_embedly(figshare_resource_links[0])
 
 
 def extract_pdf_link_from_html(url):
