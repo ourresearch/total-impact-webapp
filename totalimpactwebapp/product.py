@@ -449,9 +449,10 @@ class Product(db.Model):
                             html = embed_markup.wrap_in_pdf_reader("embed-pdf", url)
                         except UnicodeEncodeError:
                             pass
-                    elif self.genre not in ["article", "unknown"]:
-                        # this is how we embed slides, videos, etc
-                        html = embed_markup.wrap_with_embedly(self.aliases.best_url)
+
+        if not html and self.genre not in ["article", "unknown"]:
+            # this is how we embed slides, videos, etc
+            html = embed_markup.wrap_with_embedly(self.aliases.best_url)
 
         return html
 
