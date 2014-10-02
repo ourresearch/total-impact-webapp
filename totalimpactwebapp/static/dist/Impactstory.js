@@ -6184,41 +6184,59 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "<div class=\"main infopage\" id=\"faq\"><div class=\"wrapper\">\n" +
     "   <h2 class=\"infopage-heading\">FAQ</h2>\n" +
     "\n" +
+    "   <h3 id=\"isitopen\">Is this data Open?</h3>\n" +
     "\n" +
+    "   <p>The short answer: yes, as open as we can make make it.</p>\n" +
     "\n" +
-    "   <h3 id=\"why-charge\">Impactstory is a non-profit. Why are you charging for profiles?</h3>\n" +
-    "\n" +
-    "   <p>Impactstory is the best place in the world to learn and share your scholarly impact. With our new subscription model, we&rsquo;re able to offer you a profile not built on selling your personal data, or cramming your page with ads, or our ability to hustle up more funding, or on a hope Elsevier acquires us someday.</p>\n" +
-    "\n" +
-    "   <p>Impactstory profiles deliver real, practical value to real researchers every day. To continue doing so, we&rsquo;ve got to &ldquo;keep the lights on&rdquo; in a financially sustainable way.</p>\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"can-i-keep-data\">do I get to keep my data if I unsubscribe?</h3>\n" +
-    "\n" +
-    "   <p>Yes. We&rsquo;re big believers in Open Data--it&rsquo;s one of the reasons we decided to make Impactstory non-profit! And unlike most commercial sites for academics, we allow users full control over their data, including the ability to export it in multiple formats. You can <a href=\"http://feedback.impactstory.org/knowledgebase/articles/398552-exporting-your-impactstory-profile-data\">export your data</a>&nbsp;at any time prior to unsubscribing.</p>\n" +
-    "   <p>The only catch? We are bound by the terms of service of our data providers. We lobby them hard for the most open terms possible, but some still forbid anyone to download their data.</p>\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"fee-but-open\">how can profiles still be Open if they cost money?</h3>\n" +
-    "\n" +
-    "   <p>Good question! Much like other open science non-profits PLOS and Dryad support their missions and daily operations by recovering costs up front, we&rsquo;re asking our users to pay $10/month for an app that both helps them discover and share their scholarly impact and supports a larger mission of making altmetrics Open.</p>\n" +
-    "\n" +
-    "   <p>On the other hand, there are services like Google Scholar that are free for authors to use, but are far from Open.They don&rsquo;t allow authors to download and reuse their own citation data; they won&rsquo;t open up their source code nor provide an API, so others can improve upon their service; and they lack transparency that allows their users to understand exactly how metrics are gathered.</p>\n" +
-    "\n" +
-    "   <p>These &ldquo;free&rdquo; services are often backed by larger commercial operations or venture capital funding that are required to make money for shareholders. They do this by selling your data, or putting ads on your profile, or getting bought out by Elsevier. </p>\n" +
-    "\n" +
-    "   <p>In contrast, we&rsquo;re a non-profit that&rsquo;s fiercely committed to independence, openness, and transparency. End users can access Impactstory profiles for free; anyone can fork our app and build a better one using our open source code; and trial users and subscribers alike can access and reuse the data behind their profiles, in JSON or CSV formats, as open as we can make it. That won&rsquo;t change. It&rsquo;s who we are. But we need to be financially sustainable to keep on doing it.</p>\n" +
-    "\n" +
-    "\n" +
-    "   <h3 id=\"isitopen\">is this data Open?</h3>\n" +
-    "\n" +
-    "   <p>We’d like to make all of the data displayed by Impactstory available under CC0. Unfortunately, the terms-of-use of most of the data sources don’t allow that. We're trying to figure out how to handle this.\n" +
-    "   <p>An option to restrict the displayed reports to Fully Open metrics — those suitable for commercial use — is on the To Do list.\n" +
+    "   <p>The longer answer is that, although we'd like to make all of the\n" +
+    "      data displayed by Impactstory available under <a href=\"https://wiki.creativecommons.org/CC0_use_for_data\">CC0</a>, the terms-of-use\n" +
+    "      of most of the data sources don’t allow that. We're still working out the best ways to handle this.\n" +
+    "      An option to restrict the displayed reports to Fully Open metrics — those suitable for commercial use — is on the To Do list.\n" +
+    "   </p>\n" +
     "   <p>The Impactstory software itself is fully open source under an MIT license. <a href=\"https://github.com/total-impact\">GitHub</a>\n" +
     "\n" +
     "\n" +
+    "   <h3 id=\"can-i-keep-data\">Do I get to keep my data if I unsubscribe?</h3>\n" +
+    "\n" +
+    "   <p>For sure! Unlike most commercial sites for academics, we allow users full\n" +
+    "      control over their data, including the ability to export everything in multiple formats (within the guidelines of our data providers; see above).\n" +
+    "      You can <a href=\"http://feedback.impactstory.org/knowledgebase/articles/398552-exporting-your-impactstory-profile-data\">export your data</a>&nbsp;at any time.</p>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "   <h3 id=\"why-charge\">Impactstory is a nonprofit. Why are you charging for profiles?</h3>\n" +
+    "\n" +
+    "   <p>As a nonprofit, Impactstory doesn't do things like sell your personal data,  guard secret algorithms,\n" +
+    "      cram your page with ads, or restrict access to data. That's because we're\n" +
+    "      driven by a mission--to transform science evaluation--not by the need to\n" +
+    "      impress investors or attract buyers. We're fiercely committed to independence, openness, and transparency;\n" +
+    "      it's who we are, and it's not going to change.\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <p>But we do have to keep the lights on. And although we've been generously supported\n" +
+    "      by the NSF, JISC, and Sloan Foundation to date, we need a model that will keep us in the\n" +
+    "      black in the coming years.\n" +
+    "   </p>\n" +
+    "   <p>\n" +
+    "      Charging for individual profiles helps us stay laser-laser focused on delivering\n" +
+    "      real, practical value to real researchers every day, and we like that. So far, so\n" +
+    "      have our subscribers. We may also offer other plans (like department or lab subscriptions)\n" +
+    "      in the future; if you've got thoughts on that, we'd love to hear from you.\n" +
+    "   </p>\n" +
+    "\n" +
+    "\n" +
+    "   <h3 id=\"learn-more\">I've got more questions. Where can I learn more?</h3>\n" +
+    "   <p>\n" +
+    "      Check out our <a href=\"http://feedback.impactstory.org/knowledgebase\">knowledge base!</a>\n" +
+    "      You'll find answers to dozens of other common questions, from\n" +
+    "      how to customize your profile to details on individual metrics and much more.\n" +
+    "   </p>\n" +
+    "      You can also learn more about our mission, history, and team our <a href=\"/about\">about page</a>,\n" +
+    "      and get a snapshot of all the metrics we gather on our <a href=\"/metrics\">metrics page</a>.\n" +
+    "   </p>\n" +
+    "\n" +
+    "\n" +
     "</div><!-- end wrapper -->\n" +
-    "</div><!-- end faq -->\n" +
     "</div>");
 }]);
 
