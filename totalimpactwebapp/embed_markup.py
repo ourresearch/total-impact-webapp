@@ -88,9 +88,12 @@ def get_figshare_embed_html(figshare_doi_url):
     figshare_resource_links = soup.find_all("a", text=re.compile(".ownload", re.IGNORECASE))
     figshare_resource_links = [link.get("href") for link in figshare_resource_links if link]  #remove blanks
     if not figshare_resource_links:
-        figshare_resource_links = [re.search("(http://files.figshare.com/.*.pdf)", r.text, re.IGNORECASE).group(0)]
-        if not figshare_resource_links:
-            return None
+        try:
+            figshare_resource_links = [re.search("(http://files.figshare.com/.*.pdf)", r.text, re.IGNORECASE).group(0)]
+        except AttributeError:
+            pass
+    if not figshare_resource_links:
+        return None
 
     for url in figshare_resource_links:
         file_extension = url.rsplit(".")[-1]
@@ -133,6 +136,7 @@ def extract_pdf_link_from_html(url):
         except IOError:
             pass
 
+    href = None
     # otherwise try to find a url link inside it
     soup = BeautifulSoup(r.text)
     # pdf either as solo word or with spaces around it
