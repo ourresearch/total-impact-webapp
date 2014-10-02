@@ -78,7 +78,7 @@ class Product(db.Model):
     has_file = db.Column(db.Boolean, default=False)  # alter table item add has_file bool; alter table item alter has_file SET DEFAULT false;
     embed_markup = db.Column(db.Text)  # alter table item add embed_markup text
     pdf_url = db.Column(db.Text)  # alter table item add pdf_url text
-    checked_pdf_url = db.Column(db.Boolean, default=False)  # alter table item add checked_pdf_url text
+    checked_pdf_url = db.Column(db.Boolean, default=False)  # alter table item add checked_pdf_url boolean
 
     alias_rows = db.relationship(
         'AliasRow',
@@ -394,7 +394,7 @@ class Product(db.Model):
 
         # do a commit after this
         self.checked_pdf_url = True
-        self.pdf_url = True
+        self.pdf_url = url
 
         return url
 
