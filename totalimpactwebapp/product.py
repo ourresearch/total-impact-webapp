@@ -396,7 +396,7 @@ class Product(db.Model):
         if url and ".pdf+html" in url:
             url = url.replace(".pdf+html", ".pdf")
         if url and "jstor.org/" in url:
-            url = url + "?acceptTC=true"
+            url = None  # we can't embed jstor urls at the moment
 
         # do a commit after this
         self.checked_pdf_url = True
