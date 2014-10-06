@@ -360,7 +360,7 @@ def login():
 #
 ###############################################################################
 
-def get_user_profile(profile_id):
+def get_user_profile_dict(profile_id):
     resp_constr_timer = util.Timer()
 
     profile = get_user_for_response(
@@ -383,7 +383,7 @@ def get_user_profile(profile_id):
 @app.route("/profile/<profile_id>", methods=['GET'])
 @app.route("/profile/<profile_id>.json", methods=['GET'])
 def user_profile(profile_id):
-    resp = get_user_profile(profile_id)
+    resp = get_user_profile_dict(profile_id)
     resp = json_resp_from_thing(resp)
     return resp
 
@@ -524,28 +524,32 @@ def refresh_status(profile_id):
 ###############################################################################
 
 
-@app.route("/profile/<id>/products", methods=["POST", "PATCH", "DELETE"])
-@app.route("/profile/<id>/products.json", methods=["POST", "PATCH", "DELETE"])
-def profile_products_modify(id):
+
+@app.route("/profile/<id>/products", methods=["GET", "POST", "PATCH", "DELETE"])
+@app.route("/profile/<id>/products.json", methods=["GET", "POST", "PATCH", "DELETE"])
+def profile_products(id):
 
     action = request.args.get("action", "refresh")
-    profile = get_user_for_response(id, request)
-    # logger.debug(u"got user {user}".format(
-    #     user=user))
-
     source = request.args.get("source", "webapp")
 
-    if request.method == "POST" and action == "deduplicate":
+    profile = get_user_for_response(id, request)
+
+    if request.method == "GET":
+        resp = profile.products_not_removed
+        just_stubs = request.args.get("stubs")
+        if just_stubs:
+            resp = [{"tiid": p.tiid, "genre": p.genre} for p in profile.products_not_removed]
+
+    elif request.method == "POST" and action == "deduplicate":
         deleted_tiids = remove_duplicates_from_profile(profile.id)
         resp = {"deleted_tiids": deleted_tiids}
-        local_sleep(30)
+        # local_sleep(30)
 
-    elif request.method == "POST" and (action == "refresh"):
+    elif request.method == "POST" and action == "refresh":
         tiids_being_refreshed = profile.refresh_products(source)
         resp = {"products": tiids_being_refreshed}
 
     else:
-
         # Actions that require authentication
         abort_if_user_not_logged_in(profile)
         local_sleep(2)
