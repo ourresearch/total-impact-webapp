@@ -326,7 +326,7 @@ angular.module('accounts.allTheAccounts', [
       sync:false,
       usernameCleanupFunction: function(x){return x},
       url: 'http://scholar.google.com/citations',
-      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+      descr: "Google Scholar profiles find and show scientists' articles as well as their citation impact.",
       username: {
         inputNeeded: "profile URL",
         placeholder: "http://scholar.google.ca/citations?user=your_user_id"
@@ -476,6 +476,7 @@ angular.module('accounts.allTheAccounts', [
 
 })
 
+angular.module("accounts.allTheAccounts",["accounts.account"]).factory("AllTheAccounts",function(){var e=[],r={figshare:{displayName:"figshare",url:"http://figshare.com",sync:!0,descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",username:{inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345"},usernameCleanupFunction:function(e){return"undefined"==typeof e?e:"http://"+e.replace("http://","")}},github:{displayName:"GitHub",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",username:{inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in."}},google_scholar:{displayName:"Google Scholar",sync:!1,usernameCleanupFunction:function(e){return e},url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show scientists' articles as well as their citation impact.",username:{inputNeeded:"profile URL",placeholder:"http://scholar.google.ca/citations?user=your_user_id"}},orcid:{displayName:"ORCID",sync:!0,username:{inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."},usernameCleanupFunction:function(e){return e.replace("http://orcid.org/","")},url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},slideshare:{displayName:"SlideShare",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",username:{help:'Your username is right after "slideshare.net/" in your profile\'s URL.',inputNeeded:"username"}},twitter:{displayName:"Twitter",sync:!0,usernameCleanupFunction:function(e){return"@"+e.replace("@","")},url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",username:{inputNeeded:"username",placeholder:"@example",help:"Your Twitter username is often written starting with @."}}},t=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},n=function(e){return e.endpoint?e.endpoint:makeName(e.displayName)},a=function(e){return e.replace(/ /g,"-").toLowerCase()};return{addProducts:function(r){e=e.concat(r)},getProducts:function(){return e},accountServiceNamesFromUserAboutDict:function(e){},get:function(e){var n=[],o=angular.copy(r);return _.each(o,function(r,o){var i=o+"_id";r.username.value=e[i],r.accountHost=o,r.CSSname=a(r.displayName),r.logoPath=t(r.displayName),n.push(r)}),_.sortBy(n,function(e){return e.displayName.toLocaleLowerCase()})}}});
 // setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
 // Underscore string functions: https://github.com/epeli/underscore.string
 _.mixin(_.str.exports());
@@ -3793,6 +3794,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4471,6 +4473,9 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.pinboardService",["resources.users"]).factory("PinboardService",function(n,o){function t(n){return g[e(n)]}function e(n){return"product"==n[0]?"one":"two"}function r(n){console.log("pinning this id: ",n),t(n).push(n),i()}function i(t){var e=o.getCurrentUserSlug();return e?t&&l()?!1:void n.save({id:e},{contents:g},function(n){},function(n){}):!1}function u(o){console.log("calling ProfilePinboard.get("+o+")",g,a),a.url_slug=o,n.get({id:o},function(n){g.one=n.one,g.two=n.two},function(n){console.log("no pinboard set yet."),c()})}function c(){g.one=[],g.two=[];for(var n in a)a.hasOwnProperty(n)&&delete a[n]}function l(){return!g.one.length&&!g.two.length}function s(n){return console.log("unpin this!",n),g[e(n)]=_.filter(t(n),function(o){return!_.isEqual(n,o)}),i(),!0}function f(n){return!!_.find(t(n),function(o){return _.isEqual(n,o)})}var a={},g={one:[],two:[]};return{cols:g,pin:r,unPin:s,isPinned:f,get:u,saveState:i,getUrlSlug:function(){return a.url_slug},clear:c}});
+angular.module("services.profileService",["resources.users"]).factory("ProfileService",function(e,r,n,o,t,i,u,c,d,s){function l(r,o,t){return!S||o||P?(P=!0,d.createResource().get({id:r,embedded:t},function(e){console.log("ProfileService got a response",e),_.each(S,function(e,r){delete S[r]}),angular.extend(S,e),P=!1,n.showUpdateModal(r,e.is_refreshing).then(function(e){console.log("updater (resolved):",e),l(r,!0)},function(e){})},function(e){console.log("ProfileService got a failure response",e),P=!1}).$promise):e.when(S)}function a(e){console.log("removing product in profileService",e),S.products.splice(S.products.indexOf(e),1),o.set("profile.removeProduct.success",!1,{title:e.display_title}),i.delete({user_id:S.about.url_slug,tiid:e.tiid},function(){console.log("finished deleting",e.display_title),l(S.about.url_slug,!0),t.track("delete product",{tiid:e.tiid,title:e.display_title})})}function f(){return P}function g(e){if("undefined"==typeof S.genres)return void 0;var r=_.findWhere(S.genres,{url_representation:e});return r}function p(e){if("undefined"==typeof S.products)return void 0;var r=g(e).name,n=_.where(S.products,{genre:r});return n}function v(e){return _.findWhere(S.products,{tiid:e})}function m(){for(var e in S)S.hasOwnProperty(e)&&delete S[e]}function h(e){return console.log("calling getAccountProducts"),"undefined"==typeof S.account_products?void 0:(console.log("account_products",S.account_products),_.findWhere(S.account_products,{index_name:e}))}function y(e){if(!S.genres)return!1;var r=[];_.each(S.genres,function(e){r.push(e.cards)});var n=_.flatten(r),o=_.findWhere(n,{genre_card_address:e});if(!o)return!1;var t=_.findWhere(S.genres,{name:o.genre}),i={genre_num_products:t.num_products,genre_icon:t.icon,genre_plural_name:t.plural_name,genre_url_representation:t.url_representation};return _.extend(o,i)}var P=!0,S={};return{data:S,loading:P,isLoading:f,get:l,productsByGenre:p,genreLookup:g,productByTiid:v,removeProduct:a,getAccountProduct:h,getFromPinId:y,clear:m,getUrlSlug:function(){return S&&S.about?S.about.url_slug:void 0}}}).factory("SelfCancellingProfileResource",["$resource","$q",function(e,r){var n=r.defer(),o=function(){n.resolve(),n=r.defer()},t=function(){return o(),e("/profile/:id",{},{get:{method:"GET",timeout:n.promise}})};return{createResource:t,cancelResource:o}}]);
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -6069,12 +6074,12 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "      <h2 class=\"infopage-heading\">About</h2>\n" +
     "\n" +
     "\n" +
-    "      <p>Impactstory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the National Science Foundation and the Alfred P. Sloan Foundation and incorporated as a 501(c)(3) nonprofit corporation.\n" +
+    "      <p>Impactstory is an open-source, web-based tool that helps scientists explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping scientists tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the National Science Foundation and the Alfred P. Sloan Foundation and incorporated as a 501(c)(3) nonprofit corporation.\n" +
     "\n" +
     "      <p>Impactstory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "      <ul>\n" +
     "         <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
-    "         <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
+    "         <li><b>With context</b>: To help scientists move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
     "         <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles&mdash;each genre a first-class citizen, each making its own kind of impact.</li>\n" +
     "      </ul>\n" +
     "\n" +
@@ -6262,7 +6267,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </p>\n" +
     "   <p>\n" +
     "      Charging for individual profiles helps us stay laser-laser focused on delivering\n" +
-    "      real, practical value to real researchers every day, and we like that. So far, so\n" +
+    "      real, practical value to real scientists every day, and we like that. So far, so\n" +
     "      have our subscribers. We may also offer other plans (like department or lab subscriptions)\n" +
     "      in the future; if you've got thoughts on that, we'd love to hear from you.\n" +
     "   </p>\n" +
@@ -6504,13 +6509,13 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "         <p>\n" +
     "            Click the <img src=\"http://i.imgur.com/ivV76hl.png\" alt=\"\"/> icon under the embedded slides on the right to\n" +
     "            download them as PDF or Powerpoint, or check them out on\n" +
-    "            <a href=\"https://docs.google.com/presentation/d/1WhE8yNwQ1grOffBoXSbbpNJo8oY7YdOBy83x8NPVU7s\" target=\"_blank\">Google Slides.</a>\n" +
+    "            <a href=\"https://docs.google.com/a/impactstory.org/presentation/d/1-R2ESFCXKuhD7pMMDcvHb6BywOdYgR4X833DOykcghk\" target=\"_blank\">Google Slides.</a>\n" +
     "         </p>\n" +
     "         <p class=\"translations\">\n" +
     "            Translations:\n" +
     "            <a href=\"https://docs.google.com/presentation/d/1hl1MbX80g2Pnt2KAzBmZrC29e3udzto96l-ZxLo19Uk\" target=\"_blank\">Spanish</a>, courtesy Carlos Rodr&iacute;guez Rell&aacute;n;\n" +
-    "            <a href=\"https://docs.google.com/presentation/d/1-R2ESFCXKuhD7pMMDcvHb6BywOdYgR4X833DOykcghk/edit\" target=\"_blank\">German</a>, courtesy Timo Lüke;\n" +
-    "            <a href=\"https://docs.google.com/a/impactstory.org/file/d/0BzVyoVbp68fZSHIycHBGTlVtcEY1UmR6OXNXRXJ4dUtJdF9J/edit?pli=1\" target=\"_blank\">Persian</a>, courtesy Samad Keramatfar.\n" +
+    "            <a href=\"https://docs.google.com/a/impactstory.org/presentation/d/1-R2ESFCXKuhD7pMMDcvHb6BywOdYgR4X833DOykcghk\" target=\"_blank\">German</a>, courtesy Timo Lüke;\n" +
+    "            <a href=\"https://docs.google.com/a/impactstory.org/presentation/d/1OlsPs_sOwgtESO2nhdeOIQPGp28ICNwsLDZgdHWT7O8\" target=\"_blank\">Persian</a>, courtesy Samad Keramatfar.\n" +
     "         </p>\n" +
     "      </div>\n" +
     "      <div class=\"content\">\n" +
@@ -6538,7 +6543,7 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "         <p class=\"translations\">\n" +
     "            Translations:\n" +
     "            <a href=\"/static/downloads/share-the-word-poster-german.pdf\" target=\"_self\">German, </a> courtesy Timo L&uuml;ke;\n" +
-    "            <a href=\"https://docs.google.com/a/impactstory.org/document/d/1WCWxR7Q8SrZf5jUk_Kwt7vC6jklzu0zEdh-KPYvktOc/edit?pli=1\" target=\"_self\">Italian, </a> courtesy Giulia Nicolino and J Lawrence Dennis;\n" +
+    "            <a href=\"https://docs.google.com/a/impactstory.org/document/d/1WCWxR7Q8SrZf5jUk_Kwt7vC6jklzu0zEdh-KPYvktOc\" target=\"_self\">Italian, </a> courtesy Giulia Nicolino and J Lawrence Dennis;\n" +
     "            <a href=\"/static/downloads/share-the-word-poster_PTBR.pdf\" target=\"_self\">Portuguese, </a> courtesy Atila Iamarino.\n" +
     "         </p>\n" +
     "      </div>\n" +
