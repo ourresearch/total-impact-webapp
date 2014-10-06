@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-01
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-06
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -4346,6 +4346,11 @@ angular.module("services.genreConfigs", [])
         var ret
         if (name){
           var myConfig = _.findWhere(configs, {name: name})
+
+          if (!myConfig){ // this genre is not in the configs
+            myConfig = getDefaultConfig(name)
+          }
+
           if (configKey){
             ret = myConfig[configKey]
           }
@@ -4357,6 +4362,28 @@ angular.module("services.genreConfigs", [])
           ret = configs
         }
         return ret
+    }
+
+    function getDefaultConfig(genreName){
+      var myPlural = genreName + "s"
+      return {
+        name: genreName,
+        icon: "icon-file-alt",
+        plural_name: myPlural,
+        url_representation: myPlural.replace(" ", "_")
+
+      }
+    }
+
+    function getDefaultConfigFromUrlRepresentation(genreUrlRepresentation){
+      var myName = genreUrlRepresentation.replace(/s$/, "")
+      return {
+        name: myName,
+        icon: "icon-file-alt",
+        plural_name: myName + "s",
+        url_representation: genreUrlRepresentation
+
+      }
     }
 
     return {
@@ -4373,6 +4400,12 @@ angular.module("services.genreConfigs", [])
 
       getConfigFromUrlRepresentation: function(urlRepresentation){
         var myConfig = _.findWhere(configs, {url_representation: urlRepresentation})
+
+        if (!myConfig){ // this genre is not in the configs
+          myConfig = getDefaultConfigFromUrlRepresentation(urlRepresentation)
+        }
+
+        console.log("returning genre config:", myConfig)
         return myConfig
       },
 
@@ -5040,6 +5073,7 @@ angular.module('services.profileService', [
     }
 
     function productsByGenre(genreName){
+      console.log("getting products by genre. genre name: ", genreName)
       if (typeof data.products == "undefined"){
         return undefined
       }
@@ -6430,6 +6464,7 @@ angular.module("infopages/metrics.tpl.html", []).run(["$templateCache", function
     "      </li>\n" +
     "   </ul>\n" +
     "\n" +
+    "</div>\n" +
     "</div>");
 }]);
 
