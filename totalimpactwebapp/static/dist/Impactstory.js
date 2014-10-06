@@ -6424,6 +6424,22 @@ angular.module("infopages/legal.tpl.html", []).run(["$templateCache", function($
     "   </p>\n" +
     "\n" +
     "\n" +
+    "   <h3 id=\"terms-of-use\">Privacy policy</h3>\n" +
+    "   <p>\n" +
+    "      We’ll never share your contact information without your consent.\n" +
+    "   </p>\n" +
+    "   \n" +
+    "   <p>\n" +
+    "      If you sign up to receive the Impactstory newsletter, we’ll only use your email address to send you newsletters; you can unsubscribe from these any time.\n" +
+    "   </p>\n" +
+    "\n" +
+    "   <p>\n" +
+    "      Like many startups, we use <a href=\"http://mailchimp.com\">Mailchimp</a> to manage our newsletter email lists. In accordance with\n" +
+    "      <a href=\"http://mailchimp.com/legal/privacy/\">Mailchimp’s privacy policy,</a> they will not share or use your contact information under any circumstances, unless required by law.\n" +
+    "   </p>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "</div><!-- end wrapper -->\n" +
     "</div>");
 }]);
