@@ -326,7 +326,7 @@ angular.module('accounts.allTheAccounts', [
       sync:false,
       usernameCleanupFunction: function(x){return x},
       url: 'http://scholar.google.com/citations',
-      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+      descr: "Google Scholar profiles find and show scientists' articles as well as their citation impact.",
       username: {
         inputNeeded: "profile URL",
         placeholder: "http://scholar.google.ca/citations?user=your_user_id"
@@ -476,6 +476,7 @@ angular.module('accounts.allTheAccounts', [
 
 })
 
+angular.module("accounts.allTheAccounts",["accounts.account"]).factory("AllTheAccounts",function(){var e=[],r={figshare:{displayName:"figshare",url:"http://figshare.com",sync:!0,descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",username:{inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345"},usernameCleanupFunction:function(e){return"undefined"==typeof e?e:"http://"+e.replace("http://","")}},github:{displayName:"GitHub",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",username:{inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in."}},google_scholar:{displayName:"Google Scholar",sync:!1,usernameCleanupFunction:function(e){return e},url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show scientists' articles as well as their citation impact.",username:{inputNeeded:"profile URL",placeholder:"http://scholar.google.ca/citations?user=your_user_id"}},orcid:{displayName:"ORCID",sync:!0,username:{inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."},usernameCleanupFunction:function(e){return e.replace("http://orcid.org/","")},url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},slideshare:{displayName:"SlideShare",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",username:{help:'Your username is right after "slideshare.net/" in your profile\'s URL.',inputNeeded:"username"}},twitter:{displayName:"Twitter",sync:!0,usernameCleanupFunction:function(e){return"@"+e.replace("@","")},url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",username:{inputNeeded:"username",placeholder:"@example",help:"Your Twitter username is often written starting with @."}}},t=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},n=function(e){return e.endpoint?e.endpoint:makeName(e.displayName)},a=function(e){return e.replace(/ /g,"-").toLowerCase()};return{addProducts:function(r){e=e.concat(r)},getProducts:function(){return e},accountServiceNamesFromUserAboutDict:function(e){},get:function(e){var n=[],o=angular.copy(r);return _.each(o,function(r,o){var i=o+"_id";r.username.value=e[i],r.accountHost=o,r.CSSname=a(r.displayName),r.logoPath=t(r.displayName),n.push(r)}),_.sortBy(n,function(e){return e.displayName.toLocaleLowerCase()})}}});
 // setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
 // Underscore string functions: https://github.com/epeli/underscore.string
 _.mixin(_.str.exports());
@@ -5077,7 +5078,6 @@ angular.module('services.profileService', [
     }
 
     function productsByGenre(genreName){
-      console.log("getting products by genre. genre name: ", genreName)
       if (typeof data.products == "undefined"){
         return undefined
       }
@@ -6074,12 +6074,12 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "      <h2 class=\"infopage-heading\">About</h2>\n" +
     "\n" +
     "\n" +
-    "      <p>Impactstory is an open-source, web-based tool that helps researchers explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping researchers tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the National Science Foundation and the Alfred P. Sloan Foundation and incorporated as a 501(c)(3) nonprofit corporation.\n" +
+    "      <p>Impactstory is an open-source, web-based tool that helps scientists explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping scientists tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the National Science Foundation and the Alfred P. Sloan Foundation and incorporated as a 501(c)(3) nonprofit corporation.\n" +
     "\n" +
     "      <p>Impactstory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "      <ul>\n" +
     "         <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
-    "         <li><b>With context</b>: To help researcher move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
+    "         <li><b>With context</b>: To help scientists move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
     "         <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles&mdash;each genre a first-class citizen, each making its own kind of impact.</li>\n" +
     "      </ul>\n" +
     "\n" +
@@ -6267,7 +6267,7 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </p>\n" +
     "   <p>\n" +
     "      Charging for individual profiles helps us stay laser-laser focused on delivering\n" +
-    "      real, practical value to real researchers every day, and we like that. So far, so\n" +
+    "      real, practical value to real scientists every day, and we like that. So far, so\n" +
     "      have our subscribers. We may also offer other plans (like department or lab subscriptions)\n" +
     "      in the future; if you've got thoughts on that, we'd love to hear from you.\n" +
     "   </p>\n" +

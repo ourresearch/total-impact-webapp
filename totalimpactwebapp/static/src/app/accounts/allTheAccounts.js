@@ -50,7 +50,7 @@ angular.module('accounts.allTheAccounts', [
       sync:false,
       usernameCleanupFunction: function(x){return x},
       url: 'http://scholar.google.com/citations',
-      descr: "Google Scholar profiles find and show researchers' articles as well as their citation impact.",
+      descr: "Google Scholar profiles find and show scientists' articles as well as their citation impact.",
       username: {
         inputNeeded: "profile URL",
         placeholder: "http://scholar.google.ca/citations?user=your_user_id"
