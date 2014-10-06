@@ -717,10 +717,10 @@ def product_biblio_modify(tiid):
     # part-product it gets from core now.
 
     current_user_must_own_tiid(tiid)
-    resp = patch_biblio(tiid, request.data)
+    resp = patch_biblio(tiid, request.json)
     local_sleep(1)
 
-    return json_resp_from_thing(resp)
+    return json_resp_from_thing({"msg": resp})
 
 
 

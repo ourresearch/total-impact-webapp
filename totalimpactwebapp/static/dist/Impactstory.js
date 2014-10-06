@@ -5073,7 +5073,6 @@ angular.module('services.profileService', [
     }
 
     function productsByGenre(genreName){
-      console.log("getting products by genre. genre name: ", genreName)
       if (typeof data.products == "undefined"){
         return undefined
       }
