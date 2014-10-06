@@ -37,9 +37,7 @@ import arrow
 logger = logging.getLogger("tiwebapp.profile")
 redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
-free_trial_timedelta = datetime.timedelta(days=30)
-trial_for_old_free_users_started_on = datetime.datetime(year=2014, month=8, day=21)
-first_users_with_expiry_notice = datetime.datetime(year=2014, month=8, day=13)
+default_free_trial_days = 30
 
 
 
@@ -132,6 +130,7 @@ class Profile(db.Model):
     last_email_sent = db.Column(db.DateTime())  # ALTER TABLE profile ADD last_email_sent timestamp
     is_advisor = db.Column(db.Boolean)  # ALTER TABLE profile ADD is_advisor bool
     bio = db.Column(db.Text)  # ALTER TABLE profile ADD bio text
+    trial_extended_until = db.Column(db.DateTime())  # ALTER TABLE profile ADD trial_extended_until timestamp
 
 
     products = db.relationship(
@@ -260,7 +259,7 @@ class Profile(db.Model):
 
     @cached_property
     def product_count(self):
-        return len(self.products_not_removed)
+        return len(self.display_products)
 
     @cached_property
     def is_live(self):
@@ -301,25 +300,21 @@ class Profile(db.Model):
             return self.created.strftime("%B %d %Y")
         return None
 
+
     @cached_property
-    def is_trialing(self):
-
-        in_trial_period = self.created > first_users_with_expiry_notice
-
-        # go back to this method once we are sending automated drop emails
-        # in_trial_period = self.trial_age_timedelta < free_trial_timedelta
-
-        return in_trial_period and not self.is_subscribed
+    def trial_end_date(self):
+        if self.trial_extended_until:
+            return self.trial_extended_until
+        return self.created + datetime.timedelta(days=default_free_trial_days)
 
     @cached_property
     def days_left_in_trial(self):
-        return max(0, (free_trial_timedelta - self.trial_age_timedelta).days)
+        return max(0, (self.trial_end_date - datetime.datetime.utcnow()).days)
 
     @cached_property
-    def trial_age_timedelta(self):
-        trial_started = max(trial_for_old_free_users_started_on, self.created)
-        return datetime.datetime.utcnow() - trial_started
-
+    def is_trialing(self):
+        in_trial_period = self.days_left_in_trial > 0
+        return in_trial_period and not self.is_subscribed
 
     @cached_property
     def awards(self):
@@ -585,6 +580,8 @@ class Profile(db.Model):
             "is_paid_subscriber",            
             "subscription_start_date",            
             "is_trialing",
+            "trial_extended_until",
+            "trial_end_date",
             "is_live"
         ]
 
