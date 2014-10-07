@@ -46,6 +46,9 @@ angular.module('services.profileService', [
 
         function(resp){
           console.log("ProfileService got a failure response", resp)
+          if (resp.status == 404){
+            data.is404 = true
+          }
           loading = false
         }
       ).$promise

@@ -1952,7 +1952,7 @@ angular.module("profile", [
     }
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
-      if (!_.isEmpty(newVal)) {
+      if (newVal.full_name) {
         Page.setTitle(newVal.about.full_name)
         security.isLoggedInPromise(url_slug).then(
           function(){
@@ -1965,6 +1965,9 @@ angular.module("profile", [
             }
           }
         )
+      }
+      else if (newVal.is404){
+
       }
 
     }, true);
@@ -4935,6 +4938,9 @@ angular.module('services.profileService', [
 
         function(resp){
           console.log("ProfileService got a failure response", resp)
+          if (resp.status == 404){
+            data.is404 = true
+          }
           loading = false
         }
       ).$promise
@@ -7219,7 +7225,7 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
 
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
-    "<div class=\"loading\" ng-show=\"!profileService.data.about\">\n" +
+    "<div class=\"loading\" ng-show=\"!profileService.data.about && !profileService.data.is404\">\n" +
     "   <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
     "</div>\n" +
     "\n" +
@@ -7430,9 +7436,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "\n" +
-    "<div class=\"user-does-not-exist no-page\" ng-show=\"!userExists\">\n" +
+    "<div class=\"user-does-not-exist no-page\" ng-show=\"profileService.data.is404\">\n" +
     "   <h2>Whoops!</h2>\n" +
-    "   <p>We don't have a user account for <span class=\"slug\">'{{ profile.about.url_slug }}.'</span><br> Would you like to <a href=\"/signup\">make one?</a></p>\n" +
+    "   <p>We don't have a user account for <span class=\"slug\">'{{ url_slug }}.'</span><br> Would you like to <a href=\"/signup\">make one?</a></p>\n" +
     "\n" +
     "</div>\n" +
     "\n" +

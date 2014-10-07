@@ -200,7 +200,7 @@ angular.module("profile", [
     }
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
-      if (!_.isEmpty(newVal)) {
+      if (newVal.full_name) {
         Page.setTitle(newVal.about.full_name)
         security.isLoggedInPromise(url_slug).then(
           function(){
@@ -213,6 +213,9 @@ angular.module("profile", [
             }
           }
         )
+      }
+      else if (newVal.is404){
+
       }
 
     }, true);

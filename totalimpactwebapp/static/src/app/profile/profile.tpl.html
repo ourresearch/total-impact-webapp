@@ -1,4 +1,4 @@
-<div class="loading" ng-show="!profileService.data.about">
+<div class="loading" ng-show="!profileService.data.about && !profileService.data.is404">
    <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
 </div>
 
@@ -209,9 +209,9 @@
 
 
 
-<div class="user-does-not-exist no-page" ng-show="!userExists">
+<div class="user-does-not-exist no-page" ng-show="profileService.data.is404">
    <h2>Whoops!</h2>
-   <p>We don't have a user account for <span class="slug">'{{ profile.about.url_slug }}.'</span><br> Would you like to <a href="/signup">make one?</a></p>
+   <p>We don't have a user account for <span class="slug">'{{ url_slug }}.'</span><br> Would you like to <a href="/signup">make one?</a></p>
 
 </div>
 
