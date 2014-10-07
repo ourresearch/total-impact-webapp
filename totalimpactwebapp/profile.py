@@ -5,6 +5,7 @@ from totalimpactwebapp import configs
 from totalimpactwebapp.account import account_factory
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
+from totalimpactwebapp.product import Product
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.drip_email import DripEmail
 from totalimpactwebapp.util import cached_property
@@ -799,7 +800,10 @@ def create_profile_from_slug(url_slug, profile_request_dict, db):
 
 
 def get_profile_stubs_from_url_slug(url_slug):
-    query_base = db.session.query(Profile).options(orm.noload('*'), orm.subqueryload(Profile.products))
+
+    # query_base = db.session.query(Profile).options(orm.lazyload('*'), orm.subqueryload(Profile.products))
+    # query_base = db.session.query(Profile).options(orm.noload('*'), subqueryload("products").subqueryload("alias_rows"))
+    query_base = Profile.query.options(orm.subqueryload(Profile.products), orm.noload(Profile.products, Product.snaps))
     profile = query_base.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
     return profile
 
