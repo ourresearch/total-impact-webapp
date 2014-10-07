@@ -139,7 +139,6 @@ angular.module("profile", [
 
     $scope.profileLoading =  ProfileService.isLoading
     $scope.url_slug = url_slug
-    $scope.userExists = true;
 
     $scope.hideSignupBannerNow = function(){
       $scope.hideSignupBanner = true

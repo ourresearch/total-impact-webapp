@@ -1,10 +1,6 @@
-<div class="loading" ng-show="!profileService.data.about && !profileService.data.is404">
-   <div class="working"><i class="icon-refresh icon-spin"></i><span class="text">Loading profile info...</span></div>
-</div>
+<div class="profile-content animated fadeIn" ng-if="profileAboutService.data.full_name">
 
-<div class="profile-content animated fadeIn" ng-if="profileService.data.about" >
-
-   <div class="profile-header" ng-show="userExists">
+   <div class="profile-header">
 
 
       <div class="profile-header-loaded">
@@ -26,7 +22,7 @@
                <ul class="profile-award-list">
                   <li class="profile-award-container level-{{ profileAward.level }}"
                       ng-include="'profile-award/profile-award.tpl.html'"
-                      ng-repeat="profileAward in profile.awards">
+                      ng-repeat="profileAward in profileService.data.awards">
                   </li>
                </ul>
             </div>
@@ -201,15 +197,15 @@
 <div class="profile-footer">
    <span class="download">
       Download profile as
-      <a href="/profile/{{ profile.about.url_slug }}/products.csv" target="_self">csv</a>
+      <a href="/profile/{{ profileAboutService.data.url_slug }}/products.csv" target="_self">csv</a>
       or
-      <a href="/profile/{{ profile.about.url_slug }}?hide=markup,awards" target="_blank">json</a>
+      <a href="/profile/{{ profileAboutService.data.url_slug }}?hide=markup,awards" target="_blank">json</a>
    </span>
 </div>
 
 
 
-<div class="user-does-not-exist no-page" ng-show="profileService.data.is404">
+<div class="user-does-not-exist no-page" ng-show="profileAboutService.data.is404">
    <h2>Whoops!</h2>
    <p>We don't have a user account for <span class="slug">'{{ url_slug }}.'</span><br> Would you like to <a href="/signup">make one?</a></p>
 
@@ -219,7 +215,7 @@
      ng-show="userExists && !isAuthenticated()"
      ng-if="!hideSignupBanner">
 
-   <span class="msg">Join {{ profile.about.given_name }} and thousands of other scientists:</span>
+   <span class="msg">Join {{ profileAboutService.data.given_name }} and thousands of other scientists:</span>
    <a class="signup-button btn btn-primary btn-sm" ng-click="clickSignupLink()" href="/signup">Try Impactstory for free</a>
    <a class="close-link" ng-click="hideSignupBannerNow()">&times;</a>
 </div>

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-06
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-07
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1891,7 +1891,6 @@ angular.module("profile", [
 
     $scope.profileLoading =  ProfileService.isLoading
     $scope.url_slug = url_slug
-    $scope.userExists = true;
 
     $scope.hideSignupBannerNow = function(){
       $scope.hideSignupBanner = true
@@ -2688,10 +2687,6 @@ angular.module('settings', [
 
     $scope.daysLeftInTrial = function(){
       return security.getCurrentUser("days_left_in_trial")
-    }
-
-    $scope.paidSince = function(){
-      return security.getCurrentUser("subscription_start_date")  // short-term hack
     }
 
     $scope.editCard = function(){
@@ -4844,7 +4839,10 @@ angular.module('services.profileAboutService', [
         },
 
         function(resp){
-          console.log("ProfileService got a failure response", resp)
+          console.log("ProfileAboutService got a failure response", resp)
+          if (resp.status == 404){
+            data.is404 = true
+          }
           loading = false
         }
       ).$promise
@@ -7222,13 +7220,9 @@ angular.module("profile-single-products/profile-single-products.tpl.html", []).r
 
 angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile/profile.tpl.html",
-    "<div class=\"loading\" ng-show=\"!profileService.data.about && !profileService.data.is404\">\n" +
-    "   <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
-    "</div>\n" +
+    "<div class=\"profile-content animated fadeIn\" ng-if=\"profileAboutService.data.full_name\">\n" +
     "\n" +
-    "<div class=\"profile-content animated fadeIn\" ng-if=\"profileService.data.about\" >\n" +
-    "\n" +
-    "   <div class=\"profile-header\" ng-show=\"userExists\">\n" +
+    "   <div class=\"profile-header\">\n" +
     "\n" +
     "\n" +
     "      <div class=\"profile-header-loaded\">\n" +
@@ -7250,7 +7244,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <ul class=\"profile-award-list\">\n" +
     "                  <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
     "                      ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
-    "                      ng-repeat=\"profileAward in profile.awards\">\n" +
+    "                      ng-repeat=\"profileAward in profileService.data.awards\">\n" +
     "                  </li>\n" +
     "               </ul>\n" +
     "            </div>\n" +
@@ -7425,15 +7419,15 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"profile-footer\">\n" +
     "   <span class=\"download\">\n" +
     "      Download profile as\n" +
-    "      <a href=\"/profile/{{ profile.about.url_slug }}/products.csv\" target=\"_self\">csv</a>\n" +
+    "      <a href=\"/profile/{{ profileAboutService.data.url_slug }}/products.csv\" target=\"_self\">csv</a>\n" +
     "      or\n" +
-    "      <a href=\"/profile/{{ profile.about.url_slug }}?hide=markup,awards\" target=\"_blank\">json</a>\n" +
+    "      <a href=\"/profile/{{ profileAboutService.data.url_slug }}?hide=markup,awards\" target=\"_blank\">json</a>\n" +
     "   </span>\n" +
     "</div>\n" +
     "\n" +
     "\n" +
     "\n" +
-    "<div class=\"user-does-not-exist no-page\" ng-show=\"profileService.data.is404\">\n" +
+    "<div class=\"user-does-not-exist no-page\" ng-show=\"profileAboutService.data.is404\">\n" +
     "   <h2>Whoops!</h2>\n" +
     "   <p>We don't have a user account for <span class=\"slug\">'{{ url_slug }}.'</span><br> Would you like to <a href=\"/signup\">make one?</a></p>\n" +
     "\n" +
@@ -7443,7 +7437,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "     ng-show=\"userExists && !isAuthenticated()\"\n" +
     "     ng-if=\"!hideSignupBanner\">\n" +
     "\n" +
-    "   <span class=\"msg\">Join {{ profile.about.given_name }} and thousands of other scientists:</span>\n" +
+    "   <span class=\"msg\">Join {{ profileAboutService.data.given_name }} and thousands of other scientists:</span>\n" +
     "   <a class=\"signup-button btn btn-primary btn-sm\" ng-click=\"clickSignupLink()\" href=\"/signup\">Try Impactstory for free</a>\n" +
     "   <a class=\"close-link\" ng-click=\"hideSignupBannerNow()\">&times;</a>\n" +
     "</div>\n" +
