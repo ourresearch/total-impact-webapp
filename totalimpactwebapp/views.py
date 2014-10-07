@@ -398,6 +398,7 @@ def profile_without_products(profile_id):
 
 @app.route("/profile/<profile_id>/about", methods=["GET"])
 def profile_about(profile_id):
+
     profile = get_user_for_response(profile_id, request, include_products=False)
     dict_about = profile.dict_about(show_secrets=False)
     return json_resp_from_thing(dict_about)

@@ -578,13 +578,17 @@ class Profile(db.Model):
             "is_advisor",
             "linked_accounts",
             "is_subscribed",
-            "is_paid_subscriber",            
-            "subscription_start_date",            
             "is_trialing",
             "trial_extended_until",
             "trial_end_date",
             "is_live"
+
+            # these make calls out to Stripe, plus we're not using them anyway.
+            #"is_paid_subscriber",
+            #"subscription_start_date"
         ]
+
+
 
         ret_dict = {}
         for prop in properties_to_return:

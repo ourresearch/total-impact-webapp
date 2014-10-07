@@ -215,10 +215,6 @@ angular.module('settings', [
       return security.getCurrentUser("days_left_in_trial")
     }
 
-    $scope.paidSince = function(){
-      return security.getCurrentUser("subscription_start_date")  // short-term hack
-    }
-
     $scope.editCard = function(){
       alert("Sorry--we're actually still working on the form for this! But drop us a line at team@impactstory.org and we'll be glad to modify your credit card information manually.")
     }
