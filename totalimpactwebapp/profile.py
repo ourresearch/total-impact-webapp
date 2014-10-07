@@ -798,6 +798,13 @@ def create_profile_from_slug(url_slug, profile_request_dict, db):
     return profile
 
 
+def get_profile_stubs_from_url_slug(url_slug):
+    query_base = db.session.query(Profile).options(orm.noload('*'), orm.subqueryload(Profile.products))
+    profile = query_base.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
+    return profile
+
+
+
 def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_products=True, include_product_relationships=True):
     if include_products:
         if include_product_relationships:

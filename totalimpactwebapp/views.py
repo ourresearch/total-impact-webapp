@@ -30,6 +30,7 @@ from totalimpactwebapp.password_reset import PasswordResetError
 
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import create_profile_from_slug
+from totalimpactwebapp.profile import get_profile_stubs_from_url_slug
 from totalimpactwebapp.profile import get_profile_from_id
 from totalimpactwebapp.profile import delete_profile
 from totalimpactwebapp.profile import remove_duplicates_from_profile
@@ -524,23 +525,33 @@ def refresh_status(profile_id):
 ###############################################################################
 
 
+@app.route("/profile/<id>/products", methods=["GET"])
+@app.route("/profile/<id>/products.json", methods=["GET"])
+def profile_products_get(id):
 
-@app.route("/profile/<id>/products", methods=["GET", "POST", "PATCH", "DELETE"])
-@app.route("/profile/<id>/products.json", methods=["GET", "POST", "PATCH", "DELETE"])
-def profile_products(id):
+    action = request.args.get("action", "refresh")
+    source = request.args.get("source", "webapp")
+
+    profile = get_profile_stubs_from_url_slug(id)
+
+    resp = profile.products_not_removed
+    just_stubs = request.args.get("stubs", "False").lower() in ["1", "true"]
+    if just_stubs:
+        resp = [{"tiid": p.tiid, "genre": p.genre} for p in profile.products_not_removed]
+
+    return json_resp_from_thing(resp)
+
+
+@app.route("/profile/<id>/products", methods=["POST", "PATCH", "DELETE"])
+@app.route("/profile/<id>/products.json", methods=["POST", "PATCH", "DELETE"])
+def profile_products_modify(id):
 
     action = request.args.get("action", "refresh")
     source = request.args.get("source", "webapp")
 
     profile = get_user_for_response(id, request)
 
-    if request.method == "GET":
-        resp = profile.products_not_removed
-        just_stubs = request.args.get("stubs")
-        if just_stubs:
-            resp = [{"tiid": p.tiid, "genre": p.genre} for p in profile.products_not_removed]
-
-    elif request.method == "POST" and action == "deduplicate":
+    if request.method == "POST" and action == "deduplicate":
         deleted_tiids = remove_duplicates_from_profile(profile.id)
         resp = {"deleted_tiids": deleted_tiids}
         # local_sleep(30)
