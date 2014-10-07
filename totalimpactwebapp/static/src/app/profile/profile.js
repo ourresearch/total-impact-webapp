@@ -199,40 +199,23 @@ angular.module("profile", [
       return num;
     }
 
-
-
-
-    ProfileService.get(url_slug).then(
-      function(resp){
-        // put our stuff in the scope
-
-        // hack. profile service was cleared because profile is dead.
-        if (_.isEmpty(resp)){
-          return false
-        }
-
-        $scope.profile = resp
-        Page.setTitle(resp.about.full_name)
+    $scope.$watch('profileService.data', function(newVal, oldVal){
+      if (!_.isEmpty(newVal)) {
+        Page.setTitle(newVal.about.full_name)
         security.isLoggedInPromise(url_slug).then(
           function(){
-            var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
             TiMixpanel.track("viewed own profile", {
-              "Number of products": numTrueProducts
+              "Number of products": newVal.products.length
             })
-            if (resp.products.length == 0){
+            if (newVal.products.length === 0){
               console.log("logged-in user looking at own profile with no products. showing tour.")
-              Tour.start(resp.about)
+              Tour.start(newVal.about)
             }
           }
         )
-      },
-      function(resp){
-        console.log("problem loading the profile!", resp)
-        $scope.userExists = false
       }
-    )
 
-
+    }, true);
 })
 
 

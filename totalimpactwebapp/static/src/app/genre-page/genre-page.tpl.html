@@ -18,7 +18,12 @@
             <div class="genre-summary">
                <div class="genre-summary-top">
                   <ul class="genre-cards-best">
-                     <li class="genre-card" ng-repeat="card in sliceSortedCards(genreCards, 0, 3).slice().reverse()">
+
+                     <li class="genre-card"
+                         ng-repeat="card in profileService.genreCards(genre.name, 3)">
+
+
+
 
                      <span class="data"
                            tooltip-placement="bottom"

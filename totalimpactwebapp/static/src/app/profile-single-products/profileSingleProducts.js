@@ -59,7 +59,7 @@ angular.module('profileSingleProducts', [
           // refresh the profile obj
 
           ProfileAboutService.get($routeParams.url_slug, true)
-          ProfileService.get($routeParams.url_slug, true)
+          ProfileService.get($routeParams.url_slug)
 
           TiMixpanel.track(
             "Added single products",
