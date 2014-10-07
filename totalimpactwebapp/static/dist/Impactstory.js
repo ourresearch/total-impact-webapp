@@ -255,7 +255,7 @@ angular.module('accounts.account', [
 
          // make sure everyone can see the new linked account
         ProfileAboutService.get($routeParams.url_slug, true)
-        ProfileService.get($routeParams.url_slug, true)
+        ProfileService.get($routeParams.url_slug)
         security.refreshCurrentUser().then(
           function(resp){
             console.log("update the client's current user with our new linked account", resp)
@@ -476,7 +476,6 @@ angular.module('accounts.allTheAccounts', [
 
 })
 
-angular.module("accounts.allTheAccounts",["accounts.account"]).factory("AllTheAccounts",function(){var e=[],r={figshare:{displayName:"figshare",url:"http://figshare.com",sync:!0,descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",username:{inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345"},usernameCleanupFunction:function(e){return"undefined"==typeof e?e:"http://"+e.replace("http://","")}},github:{displayName:"GitHub",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",username:{inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in."}},google_scholar:{displayName:"Google Scholar",sync:!1,usernameCleanupFunction:function(e){return e},url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show scientists' articles as well as their citation impact.",username:{inputNeeded:"profile URL",placeholder:"http://scholar.google.ca/citations?user=your_user_id"}},orcid:{displayName:"ORCID",sync:!0,username:{inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."},usernameCleanupFunction:function(e){return e.replace("http://orcid.org/","")},url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},slideshare:{displayName:"SlideShare",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",username:{help:'Your username is right after "slideshare.net/" in your profile\'s URL.',inputNeeded:"username"}},twitter:{displayName:"Twitter",sync:!0,usernameCleanupFunction:function(e){return"@"+e.replace("@","")},url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",username:{inputNeeded:"username",placeholder:"@example",help:"Your Twitter username is often written starting with @."}}},t=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},n=function(e){return e.endpoint?e.endpoint:makeName(e.displayName)},a=function(e){return e.replace(/ /g,"-").toLowerCase()};return{addProducts:function(r){e=e.concat(r)},getProducts:function(){return e},accountServiceNamesFromUserAboutDict:function(e){},get:function(e){var n=[],o=angular.copy(r);return _.each(o,function(r,o){var i=o+"_id";r.username.value=e[i],r.accountHost=o,r.CSSname=a(r.displayName),r.logoPath=t(r.displayName),n.push(r)}),_.sortBy(n,function(e){return e.displayName.toLocaleLowerCase()})}}});
 // setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
 // Underscore string functions: https://github.com/epeli/underscore.string
 _.mixin(_.str.exports());
@@ -819,37 +818,26 @@ angular.module("genrePage", [
     $scope.isRendering = function(){
       return rendering
     }
-    ProfileService.get($routeParams.url_slug).then(
-      function(resp){
-        Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.genreCards = ProfileService.genreCards($routeParams.genre_name)
 
-        // scroll to the last place we were on this page. in a timeout because
-        // must happen after page is totally rendered.
-        $timeout(function(){
-          var lastScrollPos = Page.getLastScrollPosition($location.path())
-          $window.scrollTo(0, lastScrollPos)
-        }, 0)
+    $scope.$watch('profileService.data', function(newVal, oldVal){
+      if (!_.isEmpty(newVal)) {
+        Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
       }
-    )
-
-
+    }, true);
 
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       rendering = false
+      $timeout(function(){
+        var lastScrollPos = Page.getLastScrollPosition($location.path())
+        $window.scrollTo(0, lastScrollPos)
+      }, 0)
       console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
       )
     });
 
-    $scope.sliceSortedCards = function(cards, startIndex, endIndex){
-      // var GenreMetricSumCards = _.where(cards, {card_type: "GenreMetricSumCards"}) // temp hack?
-      var sorted = _.sortBy(cards, "sort_by")
-      var reversed = sorted.concat([]).reverse()
-      return reversed.slice(startIndex, endIndex)
-    }
 
     $scope.removeSelectedProducts = function(){
       console.log("removing products: ", SelectedProducts.get())
@@ -956,7 +944,7 @@ angular.module("googleScholar", [
         function(resp){
           console.log("successfully uploaded bibtex!", resp)
           Loading.finish("bibtex")
-          ProfileService.get(url_slug, true)
+          ProfileService.get(url_slug)
           ProfileAboutService.get(url_slug, true)
 
 
@@ -1469,7 +1457,7 @@ angular.module("productPage", [
           console.log("updated product biblio; re-rendering", resp)
           $scope.reRenderProduct()
           ProfileAboutService.get($routeParams.url_slug, true)
-          ProfileService.get($routeParams.url_slug, true)
+          ProfileService.get($routeParams.url_slug)
         }
       )
     }
@@ -1738,7 +1726,7 @@ angular.module('profileSingleProducts', [
           // refresh the profile obj
 
           ProfileAboutService.get($routeParams.url_slug, true)
-          ProfileService.get($routeParams.url_slug, true)
+          ProfileService.get($routeParams.url_slug)
 
           TiMixpanel.track(
             "Added single products",
@@ -1963,40 +1951,23 @@ angular.module("profile", [
       return num;
     }
 
-
-
-
-    ProfileService.get(url_slug).then(
-      function(resp){
-        // put our stuff in the scope
-
-        // hack. profile service was cleared because profile is dead.
-        if (_.isEmpty(resp)){
-          return false
-        }
-
-        $scope.profile = resp
-        Page.setTitle(resp.about.full_name)
+    $scope.$watch('profileService.data', function(newVal, oldVal){
+      if (!_.isEmpty(newVal)) {
+        Page.setTitle(newVal.about.full_name)
         security.isLoggedInPromise(url_slug).then(
           function(){
-            var numTrueProducts = _.where(resp.products, {is_true_product: true}).length
             TiMixpanel.track("viewed own profile", {
-              "Number of products": numTrueProducts
+              "Number of products": newVal.products.length
             })
-            if (resp.products.length == 0){
+            if (newVal.products.length === 0){
               console.log("logged-in user looking at own profile with no products. showing tour.")
-              Tour.start(resp.about)
+              Tour.start(newVal.about)
             }
           }
         )
-      },
-      function(resp){
-        console.log("problem loading the profile!", resp)
-        $scope.userExists = false
       }
-    )
 
-
+    }, true);
 })
 
 
@@ -2757,7 +2728,7 @@ angular.module('settings', [
           security.refreshCurrentUser() // refresh the currentUser from server
           ProfileAboutService.get($scope.user.url_slug, true).then(
             function(){
-              ProfileService.get($scope.user.url_slug, true)
+              ProfileService.get($scope.user.url_slug)
               PinboardService.get($scope.user.url_slug, true)
 
               window.scrollTo(0,0)
@@ -3794,7 +3765,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4473,9 +4443,6 @@ angular.module("services.loading")
     }
   }
 })
-angular.module("services.pinboardService",["resources.users"]).factory("PinboardService",function(n,o){function t(n){return g[e(n)]}function e(n){return"product"==n[0]?"one":"two"}function r(n){console.log("pinning this id: ",n),t(n).push(n),i()}function i(t){var e=o.getCurrentUserSlug();return e?t&&l()?!1:void n.save({id:e},{contents:g},function(n){},function(n){}):!1}function u(o){console.log("calling ProfilePinboard.get("+o+")",g,a),a.url_slug=o,n.get({id:o},function(n){g.one=n.one,g.two=n.two},function(n){console.log("no pinboard set yet."),c()})}function c(){g.one=[],g.two=[];for(var n in a)a.hasOwnProperty(n)&&delete a[n]}function l(){return!g.one.length&&!g.two.length}function s(n){return console.log("unpin this!",n),g[e(n)]=_.filter(t(n),function(o){return!_.isEqual(n,o)}),i(),!0}function f(n){return!!_.find(t(n),function(o){return _.isEqual(n,o)})}var a={},g={one:[],two:[]};return{cols:g,pin:r,unPin:s,isPinned:f,get:u,saveState:i,getUrlSlug:function(){return a.url_slug},clear:c}});
-angular.module("services.profileService",["resources.users"]).factory("ProfileService",function(e,r,n,o,t,i,u,c,d,s){function l(r,o,t){return!S||o||P?(P=!0,d.createResource().get({id:r,embedded:t},function(e){console.log("ProfileService got a response",e),_.each(S,function(e,r){delete S[r]}),angular.extend(S,e),P=!1,n.showUpdateModal(r,e.is_refreshing).then(function(e){console.log("updater (resolved):",e),l(r,!0)},function(e){})},function(e){console.log("ProfileService got a failure response",e),P=!1}).$promise):e.when(S)}function a(e){console.log("removing product in profileService",e),S.products.splice(S.products.indexOf(e),1),o.set("profile.removeProduct.success",!1,{title:e.display_title}),i.delete({user_id:S.about.url_slug,tiid:e.tiid},function(){console.log("finished deleting",e.display_title),l(S.about.url_slug,!0),t.track("delete product",{tiid:e.tiid,title:e.display_title})})}function f(){return P}function g(e){if("undefined"==typeof S.genres)return void 0;var r=_.findWhere(S.genres,{url_representation:e});return r}function p(e){if("undefined"==typeof S.products)return void 0;var r=g(e).name,n=_.where(S.products,{genre:r});return n}function v(e){return _.findWhere(S.products,{tiid:e})}function m(){for(var e in S)S.hasOwnProperty(e)&&delete S[e]}function h(e){return console.log("calling getAccountProducts"),"undefined"==typeof S.account_products?void 0:(console.log("account_products",S.account_products),_.findWhere(S.account_products,{index_name:e}))}function y(e){if(!S.genres)return!1;var r=[];_.each(S.genres,function(e){r.push(e.cards)});var n=_.flatten(r),o=_.findWhere(n,{genre_card_address:e});if(!o)return!1;var t=_.findWhere(S.genres,{name:o.genre}),i={genre_num_products:t.num_products,genre_icon:t.icon,genre_plural_name:t.plural_name,genre_url_representation:t.url_representation};return _.extend(o,i)}var P=!0,S={};return{data:S,loading:P,isLoading:f,get:l,productsByGenre:p,genreLookup:g,productByTiid:v,removeProduct:a,getAccountProduct:h,getFromPinId:y,clear:m,getUrlSlug:function(){return S&&S.about?S.about.url_slug:void 0}}}).factory("SelfCancellingProfileResource",["$resource","$q",function(e,r){var n=r.defer(),o=function(){n.resolve(),n=r.defer()},t=function(){return o(),e("/profile/:id",{},{get:{method:"GET",timeout:n.promise}})};return{createResource:t,cancelResource:o}}]);
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4524,7 +4491,7 @@ angular.module("services.page")
       if (ProfileAboutService.slugIsNew(profileSlug)) {
         console.log("new user slug; loading new profile.")
         clearProfileData()
-        ProfileService.get(profileSlug, true)
+        ProfileService.get(profileSlug)
         PinboardService.get(profileSlug)
         ProfileAboutService.get(profileSlug, true).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
@@ -4941,15 +4908,10 @@ angular.module('services.profileService', [
     var data = {}
 
 
-    function get(url_slug, getFromServer, isEmbedded){
-      if (data && !getFromServer && !loading){
-        return $q.when(data)
-      }
-
-
+    function get(url_slug){
       loading = true
       return SelfCancellingProfileResource.createResource().get(
-        {id: url_slug, embedded:isEmbedded},
+        {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
           console.log("ProfileService got a response", resp)
           _.each(data, function(v, k){delete data[k]})
@@ -5057,13 +5019,21 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function genreCards(url_representation){
+    function genreCards(genreName, numberOfCards, reverse){
       if (typeof data.genres == "undefined"){
         return []
       }
       else {
-        var myGenre = _.findWhere(data.genres, {url_representation: url_representation})
-        return myGenre.cards
+        var cardsToReturn
+        var myGenre = _.findWhere(data.genres, {name: genreName})
+        var sortedCards = _.sortBy(myGenre.cards, "sort_by")
+        if (reverse){
+          cardsToReturn = sortedCards.concat([]).reverse()
+        }
+        else {
+          cardsToReturn = sortedCards
+        }
+        return cardsToReturn.slice(0, numberOfCards)
       }
     }
 
@@ -5846,7 +5816,12 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "            <div class=\"genre-summary\">\n" +
     "               <div class=\"genre-summary-top\">\n" +
     "                  <ul class=\"genre-cards-best\">\n" +
-    "                     <li class=\"genre-card\" ng-repeat=\"card in sliceSortedCards(genreCards, 0, 3).slice().reverse()\">\n" +
+    "\n" +
+    "                     <li class=\"genre-card\"\n" +
+    "                         ng-repeat=\"card in profileService.genreCards(genre.name, 3)\">\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "\n" +
     "                     <span class=\"data\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +

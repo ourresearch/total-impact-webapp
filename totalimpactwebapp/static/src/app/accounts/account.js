@@ -217,7 +217,7 @@ angular.module('accounts.account', [
 
          // make sure everyone can see the new linked account
         ProfileAboutService.get($routeParams.url_slug, true)
-        ProfileService.get($routeParams.url_slug, true)
+        ProfileService.get($routeParams.url_slug)
         security.refreshCurrentUser().then(
           function(resp){
             console.log("update the client's current user with our new linked account", resp)

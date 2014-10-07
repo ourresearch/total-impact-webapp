@@ -256,7 +256,7 @@ angular.module('settings', [
           security.refreshCurrentUser() // refresh the currentUser from server
           ProfileAboutService.get($scope.user.url_slug, true).then(
             function(){
-              ProfileService.get($scope.user.url_slug, true)
+              ProfileService.get($scope.user.url_slug)
               PinboardService.get($scope.user.url_slug, true)
 
               window.scrollTo(0,0)

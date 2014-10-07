@@ -65,7 +65,7 @@ angular.module("googleScholar", [
         function(resp){
           console.log("successfully uploaded bibtex!", resp)
           Loading.finish("bibtex")
-          ProfileService.get(url_slug, true)
+          ProfileService.get(url_slug)
           ProfileAboutService.get(url_slug, true)
 
 

@@ -116,37 +116,26 @@ angular.module("genrePage", [
     $scope.isRendering = function(){
       return rendering
     }
-    ProfileService.get($routeParams.url_slug).then(
-      function(resp){
-        Page.setTitle(resp.about.full_name + "'s " + $routeParams.genre_name)
 
-        $scope.genreCards = ProfileService.genreCards($routeParams.genre_name)
 
-        // scroll to the last place we were on this page. in a timeout because
-        // must happen after page is totally rendered.
-        $timeout(function(){
-          var lastScrollPos = Page.getLastScrollPosition($location.path())
-          $window.scrollTo(0, lastScrollPos)
-        }, 0)
+    $scope.$watch('profileService.data', function(newVal, oldVal){
+      if (!_.isEmpty(newVal)) {
+        Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
       }
-    )
-
-
+    }, true);
 
 
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       rendering = false
+      $timeout(function(){
+        var lastScrollPos = Page.getLastScrollPosition($location.path())
+        $window.scrollTo(0, lastScrollPos)
+      }, 0)
       console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
       )
     });
 
-    $scope.sliceSortedCards = function(cards, startIndex, endIndex){
-      // var GenreMetricSumCards = _.where(cards, {card_type: "GenreMetricSumCards"}) // temp hack?
-      var sorted = _.sortBy(cards, "sort_by")
-      var reversed = sorted.concat([]).reverse()
-      return reversed.slice(startIndex, endIndex)
-    }
 
     $scope.removeSelectedProducts = function(){
       console.log("removing products: ", SelectedProducts.get())

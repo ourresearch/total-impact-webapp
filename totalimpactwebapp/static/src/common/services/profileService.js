@@ -19,15 +19,10 @@ angular.module('services.profileService', [
     var data = {}
 
 
-    function get(url_slug, getFromServer, isEmbedded){
-      if (data && !getFromServer && !loading){
-        return $q.when(data)
-      }
-
-
+    function get(url_slug){
       loading = true
       return SelfCancellingProfileResource.createResource().get(
-        {id: url_slug, embedded:isEmbedded},
+        {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
           console.log("ProfileService got a response", resp)
           _.each(data, function(v, k){delete data[k]})
@@ -135,13 +130,21 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function genreCards(url_representation){
+    function genreCards(genreName, numberOfCards, reverse){
       if (typeof data.genres == "undefined"){
         return []
       }
       else {
-        var myGenre = _.findWhere(data.genres, {url_representation: url_representation})
-        return myGenre.cards
+        var cardsToReturn
+        var myGenre = _.findWhere(data.genres, {name: genreName})
+        var sortedCards = _.sortBy(myGenre.cards, "sort_by")
+        if (reverse){
+          cardsToReturn = sortedCards.concat([]).reverse()
+        }
+        else {
+          cardsToReturn = sortedCards
+        }
+        return cardsToReturn.slice(0, numberOfCards)
       }
     }
 
