@@ -254,7 +254,7 @@ angular.module('accounts.account', [
 
 
          // make sure everyone can see the new linked account
-        ProfileAboutService.get($routeParams.url_slug, true)
+        ProfileAboutService.get($routeParams.url_slug)
         ProfileService.get($routeParams.url_slug)
         security.refreshCurrentUser().then(
           function(resp){
@@ -945,7 +945,7 @@ angular.module("googleScholar", [
           console.log("successfully uploaded bibtex!", resp)
           Loading.finish("bibtex")
           ProfileService.get(url_slug)
-          ProfileAboutService.get(url_slug, true)
+          ProfileAboutService.get(url_slug)
 
 
         },
@@ -1456,7 +1456,7 @@ angular.module("productPage", [
         function(resp){
           console.log("updated product biblio; re-rendering", resp)
           $scope.reRenderProduct()
-          ProfileAboutService.get($routeParams.url_slug, true)
+          ProfileAboutService.get($routeParams.url_slug)
           ProfileService.get($routeParams.url_slug)
         }
       )
@@ -1725,7 +1725,7 @@ angular.module('profileSingleProducts', [
           console.log("saved some single products!", resp)
           // refresh the profile obj
 
-          ProfileAboutService.get($routeParams.url_slug, true)
+          ProfileAboutService.get($routeParams.url_slug)
           ProfileService.get($routeParams.url_slug)
 
           TiMixpanel.track(
@@ -2562,7 +2562,7 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
           security.setCurrentUser(resp.about) // update the current authenticated user.
           UserMessage.set('settings.profile.change.success');
           $scope.home();
@@ -2585,7 +2585,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
 
           UserMessage.set(messageKey);
           $scope.home();
@@ -2633,7 +2633,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
 
           UserMessage.set('settings.url.change.success');
           $location.path('/' + resp.about.url_slug)
@@ -2705,7 +2705,7 @@ angular.module('settings', [
         function(resp){
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
 
           UserMessage.set("settings.subscription.delete.success")
 
@@ -2729,7 +2729,7 @@ angular.module('settings', [
         function(resp){
           console.log("we subscribed a user, huzzah!", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          ProfileAboutService.get($scope.user.url_slug, true).then(
+          ProfileAboutService.get($scope.user.url_slug).then(
             function(){
               ProfileService.get($scope.user.url_slug)
               PinboardService.get($scope.user.url_slug, true)
@@ -2788,7 +2788,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
 
           UserMessage.set(
             'settings.email.change.success',
@@ -4496,7 +4496,7 @@ angular.module("services.page")
         clearProfileData()
         ProfileService.get(profileSlug)
         PinboardService.get(profileSlug)
-        ProfileAboutService.get(profileSlug, true).then(function(resp){
+        ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
           }
         )
@@ -4830,11 +4830,8 @@ angular.module('services.profileAboutService', [
     var data = {}
 
 
-    function get(url_slug, getFromServer){
-      if (data && !getFromServer && !loading){
-        return $q.when(data)
-      }
-
+    function get(url_slug){
+      console.log("calling ProfileAboutService.get() with ", url_slug)
 
       loading = true
       return ProfileAbout.get(

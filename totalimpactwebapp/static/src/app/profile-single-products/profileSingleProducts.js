@@ -58,7 +58,7 @@ angular.module('profileSingleProducts', [
           console.log("saved some single products!", resp)
           // refresh the profile obj
 
-          ProfileAboutService.get($routeParams.url_slug, true)
+          ProfileAboutService.get($routeParams.url_slug)
           ProfileService.get($routeParams.url_slug)
 
           TiMixpanel.track(

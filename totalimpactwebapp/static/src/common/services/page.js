@@ -48,7 +48,7 @@ angular.module("services.page")
         clearProfileData()
         ProfileService.get(profileSlug)
         PinboardService.get(profileSlug)
-        ProfileAboutService.get(profileSlug, true).then(function(resp){
+        ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
           }
         )

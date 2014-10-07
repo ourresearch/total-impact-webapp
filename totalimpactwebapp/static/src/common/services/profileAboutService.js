@@ -7,11 +7,8 @@ angular.module('services.profileAboutService', [
     var data = {}
 
 
-    function get(url_slug, getFromServer){
-      if (data && !getFromServer && !loading){
-        return $q.when(data)
-      }
-
+    function get(url_slug){
+      console.log("calling ProfileAboutService.get() with ", url_slug)
 
       loading = true
       return ProfileAbout.get(

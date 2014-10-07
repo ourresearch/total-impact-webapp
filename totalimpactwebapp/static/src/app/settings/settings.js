@@ -87,7 +87,7 @@ angular.module('settings', [
         {id: $scope.user.url_slug},
         {about: $scope.user},
         function(resp) {
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
           security.setCurrentUser(resp.about) // update the current authenticated user.
           UserMessage.set('settings.profile.change.success');
           $scope.home();
@@ -110,7 +110,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
 
           UserMessage.set(messageKey);
           $scope.home();
@@ -158,7 +158,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
 
           UserMessage.set('settings.url.change.success');
           $location.path('/' + resp.about.url_slug)
@@ -230,7 +230,7 @@ angular.module('settings', [
         function(resp){
           console.log("subscription successfully cancelled", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
 
           UserMessage.set("settings.subscription.delete.success")
 
@@ -254,7 +254,7 @@ angular.module('settings', [
         function(resp){
           console.log("we subscribed a user, huzzah!", resp)
           security.refreshCurrentUser() // refresh the currentUser from server
-          ProfileAboutService.get($scope.user.url_slug, true).then(
+          ProfileAboutService.get($scope.user.url_slug).then(
             function(){
               ProfileService.get($scope.user.url_slug)
               PinboardService.get($scope.user.url_slug, true)
@@ -313,7 +313,7 @@ angular.module('settings', [
         {about: $scope.user},
         function(resp) {
           security.setCurrentUser(resp.about) // update the current authenticated user.
-          ProfileAboutService.get($scope.user.url_slug, true)
+          ProfileAboutService.get($scope.user.url_slug)
 
           UserMessage.set(
             'settings.email.change.success',
