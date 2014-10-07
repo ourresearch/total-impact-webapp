@@ -803,7 +803,10 @@ def get_profile_stubs_from_url_slug(url_slug):
 
     # query_base = db.session.query(Profile).options(orm.lazyload('*'), orm.subqueryload(Profile.products))
     # query_base = db.session.query(Profile).options(orm.noload('*'), subqueryload("products").subqueryload("alias_rows"))
-    query_base = Profile.query.options(orm.subqueryload(Profile.products), orm.noload(Profile.products, Product.snaps))
+    query_base = Profile.query.options( orm.noload('*'), 
+                                        orm.subqueryload(Profile.products), 
+                                        orm.subqueryload(Profile.products, Product.biblio_rows), 
+                                        orm.subqueryload(Profile.products, Product.alias_rows))
     profile = query_base.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
     return profile
 
