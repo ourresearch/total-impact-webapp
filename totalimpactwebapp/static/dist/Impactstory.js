@@ -1883,6 +1883,7 @@ angular.module("profile", [
     }
 
     if (!ProfileService.hasFullProducts()){
+      console.log("no full products!")
       Loading.startPage()
     }
 
@@ -4459,7 +4460,9 @@ angular.module("services.loading")
       pageLoading = true
     },
     finishPage:function(){
-      ngProgress.complete()
+      if (pageLoading){
+        ngProgress.complete()
+      }
       pageLoading = false
     },
     isPage: function(){

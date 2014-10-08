@@ -47,7 +47,9 @@ angular.module("services.loading")
       pageLoading = true
     },
     finishPage:function(){
-      ngProgress.complete()
+      if (pageLoading){
+        ngProgress.complete()
+      }
       pageLoading = false
     },
     isPage: function(){

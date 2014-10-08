@@ -126,6 +126,7 @@ angular.module("profile", [
     }
 
     if (!ProfileService.hasFullProducts()){
+      console.log("no full products!")
       Loading.startPage()
     }
 
