@@ -207,9 +207,9 @@ angular.module("services.page")
       setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
 
 
-      isProfile:function(){
+      isProfilePage:function(){
         var path = $location.path()
-        return (path != "/") && (path != "/faq") && (path != "/about")
+        return (!_.contains(nonProfilePages, path))
       },
 
       setName: function(name){

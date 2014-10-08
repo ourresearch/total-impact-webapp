@@ -18,8 +18,27 @@ angular.module('services.profileService', [
     var loading = true
     var data = {}
 
+    function getProductStubs(url_slug){
+      UsersProducts.query(
+        {id: url_slug, stubs: true},
+        function(resp){
+//          console.log("got response from stubs call", resp)
+          data.products = resp
+        },
+        function(resp){
+          console.log("stubs call failed", resp)
+        }
+      )
+
+    }
+
 
     function get(url_slug){
+
+      if (!data.products){
+        getProductStubs(url_slug)
+      }
+
       loading = true
       return SelfCancellingProfileResource.createResource().get(
         {id: url_slug, embedded:false}, // pretend is never embedded for now

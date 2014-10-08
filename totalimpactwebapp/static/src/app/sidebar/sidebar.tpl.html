@@ -11,7 +11,7 @@
       </h1>
 
 
-      <div class="nav animated fadeIn" ng-if="profileService.data.genres">
+      <div class="nav animated fadeIn" ng-if="profileService.data.products">
          <a href="/{{ profileAboutService.data.url_slug }}" ng-class="{active: page.isNamed('overview')}">
             <i class="icon-user left"></i>
             <span class="text">
@@ -59,7 +59,7 @@
 
 
    <div class="infopage-sidebar"
-        ng-show="!profileAboutService.data.is_live">
+        ng-show="!page.isProfilePage() || profileAboutService.data.is_live===false">
       <h1>
          <a href="/" class="logo">
             <img src="static/img/impactstory-logo-sideways.png" alt=""/>
@@ -88,7 +88,7 @@
 
 
    <div class="sidebar-footer">
-      <a href="/" class="logo" ng-show="profileAboutService.data.is_live">
+      <a href="/" class="logo" ng-show="page.isProfilePage()  && profileAboutService.data.is_live===true">
          <img src="static/img/impactstory-logo-sideways.png" alt=""/>
       </a>
 

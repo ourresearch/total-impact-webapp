@@ -821,7 +821,7 @@ angular.module("genrePage", [
 
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
-      if (!_.isEmpty(newVal)) {
+      if (newVal.about) {
         Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
       }
     }, true);
@@ -4650,9 +4650,9 @@ angular.module("services.page")
       setTitle: function(newTitle) { title = "Impactstory: " + newTitle },
 
 
-      isProfile:function(){
+      isProfilePage:function(){
         var path = $location.path()
-        return (path != "/") && (path != "/faq") && (path != "/about")
+        return (!_.contains(nonProfilePages, path))
       },
 
       setName: function(name){
@@ -4905,8 +4905,27 @@ angular.module('services.profileService', [
     var loading = true
     var data = {}
 
+    function getProductStubs(url_slug){
+      UsersProducts.query(
+        {id: url_slug, stubs: true},
+        function(resp){
+//          console.log("got response from stubs call", resp)
+          data.products = resp
+        },
+        function(resp){
+          console.log("stubs call failed", resp)
+        }
+      )
+
+    }
+
 
     function get(url_slug){
+
+      if (!data.products){
+        getProductStubs(url_slug)
+      }
+
       loading = true
       return SelfCancellingProfileResource.createResource().get(
         {id: url_slug, embedded:false}, // pretend is never embedded for now
@@ -8282,7 +8301,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "      </h1>\n" +
     "\n" +
     "\n" +
-    "      <div class=\"nav animated fadeIn\" ng-if=\"profileService.data.genres\">\n" +
+    "      <div class=\"nav animated fadeIn\" ng-if=\"profileService.data.products\">\n" +
     "         <a href=\"/{{ profileAboutService.data.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
     "            <i class=\"icon-user left\"></i>\n" +
     "            <span class=\"text\">\n" +
@@ -8330,7 +8349,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "   <div class=\"infopage-sidebar\"\n" +
-    "        ng-show=\"!profileAboutService.data.is_live\">\n" +
+    "        ng-show=\"!page.isProfilePage() || profileAboutService.data.is_live===false\">\n" +
     "      <h1>\n" +
     "         <a href=\"/\" class=\"logo\">\n" +
     "            <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
@@ -8359,7 +8378,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "   <div class=\"sidebar-footer\">\n" +
-    "      <a href=\"/\" class=\"logo\" ng-show=\"profileAboutService.data.is_live\">\n" +
+    "      <a href=\"/\" class=\"logo\" ng-show=\"page.isProfilePage()  && profileAboutService.data.is_live===true\">\n" +
     "         <img src=\"static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
     "      </a>\n" +
     "\n" +

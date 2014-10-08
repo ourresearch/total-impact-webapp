@@ -119,7 +119,7 @@ angular.module("genrePage", [
 
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
-      if (!_.isEmpty(newVal)) {
+      if (newVal.about) {
         Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
       }
     }, true);

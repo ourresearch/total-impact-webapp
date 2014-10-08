@@ -538,7 +538,10 @@ def profile_products_get(id):
     resp = profile.products_not_removed
     just_stubs = request.args.get("stubs", "False").lower() in ["1", "true"]
     if just_stubs:
-        resp = [{"tiid": p.tiid, "genre": p.genre} for p in profile.products_not_removed]
+        resp = [{"tiid": p.tiid, "genre": p.genre}
+                for p in profile.products_not_removed
+                if p.genre not in ["account"]
+                ]
 
     return json_resp_from_thing(resp)
 
