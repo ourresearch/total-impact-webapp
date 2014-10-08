@@ -1,8 +1,9 @@
 angular.module("services.loading", [])
 angular.module("services.loading")
-.factory("Loading", function(){
+.factory("Loading", function(ngProgress){
 
   var loadingJobs = {}
+  var pageLoading = false
 
   var setLoading = function(setLoadingTo, jobName) {
     loadingJobs[jobName] = !!setLoadingTo
@@ -40,6 +41,17 @@ angular.module("services.loading")
     clear: function(){
       loading = false;
       for (var jobName in loadingJobs) delete loadingJobs[jobName]
+    },
+    startPage: function(){
+      ngProgress.start()
+      pageLoading = true
+    },
+    finishPage:function(){
+      ngProgress.complete()
+      pageLoading = false
+    },
+    isPage: function(){
+      return pageLoading
     }
   }
 })

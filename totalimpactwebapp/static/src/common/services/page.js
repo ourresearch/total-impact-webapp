@@ -7,6 +7,7 @@ angular.module("services.page")
                             PinboardService,
                             security,
                             ProfileAboutService,
+                            ngProgress,
                             ProfileService){
     var title = '';
     var notificationsLoc = "header"
@@ -45,8 +46,11 @@ angular.module("services.page")
 
       if (ProfileAboutService.slugIsNew(profileSlug)) {
         console.log("new user slug; loading new profile.")
+        ngProgress.start()
         clearProfileData()
-        ProfileService.get(profileSlug)
+        ProfileService.get(profileSlug).then(function(resp){
+          ngProgress.complete()
+        })
         PinboardService.get(profileSlug)
         ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)

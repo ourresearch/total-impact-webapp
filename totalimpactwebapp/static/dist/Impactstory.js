@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-07
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-08
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -513,7 +513,8 @@ angular.module('app', [
   'deadProfile',
   'services.pinboardService',
   'settings',
-  'xeditable'
+  'xeditable',
+  'ngProgress'
 ]);
 
 angular.module('app').constant('TEST', {
@@ -4398,9 +4399,10 @@ angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$h
 }]);
 angular.module("services.loading", [])
 angular.module("services.loading")
-.factory("Loading", function(){
+.factory("Loading", function(ngProgress){
 
   var loadingJobs = {}
+  var pageLoading = false
 
   var setLoading = function(setLoadingTo, jobName) {
     loadingJobs[jobName] = !!setLoadingTo
@@ -4438,6 +4440,17 @@ angular.module("services.loading")
     clear: function(){
       loading = false;
       for (var jobName in loadingJobs) delete loadingJobs[jobName]
+    },
+    startPage: function(){
+      ngProgress.start()
+      pageLoading = true
+    },
+    finishPage:function(){
+      ngProgress.complete()
+      pageLoading = false
+    },
+    isPage: function(){
+      return pageLoading
     }
   }
 })
@@ -4450,6 +4463,7 @@ angular.module("services.page")
                             PinboardService,
                             security,
                             ProfileAboutService,
+                            ngProgress,
                             ProfileService){
     var title = '';
     var notificationsLoc = "header"
@@ -4488,8 +4502,11 @@ angular.module("services.page")
 
       if (ProfileAboutService.slugIsNew(profileSlug)) {
         console.log("new user slug; loading new profile.")
+        ngProgress.start()
         clearProfileData()
-        ProfileService.get(profileSlug)
+        ProfileService.get(profileSlug).then(function(resp){
+          ngProgress.complete()
+        })
         PinboardService.get(profileSlug)
         ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
@@ -4983,6 +5000,18 @@ angular.module('services.profileService', [
       )
     }
 
+    function hasFullProducts(){
+      if (!data.products){
+        return false
+      }
+
+      if (data.products[0] && data.products[0].metrics){
+        return true
+      }
+
+    }
+
+
     function changeProductsGenre(tiids, newGenre){
       if (!tiids.length){
         return false
@@ -5155,6 +5184,7 @@ angular.module('services.profileService', [
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId,
       getGenreCounts: getGenreCounts,
+      hasFullProducts: hasFullProducts,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {
@@ -5817,9 +5847,7 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
 angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("genre-page/genre-page.tpl.html",
     "<div class=\"genre-page\">\n" +
-    "   <div class=\"loading\" ng-show=\"isRendering()\">\n" +
-    "      <div class=\"working\"><i class=\"icon-refresh icon-spin\"></i><span class=\"text\">Loading profile info...</span></div>\n" +
-    "   </div>\n" +
+    "\n" +
     "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
     "\n" +
     "      <div class=\"header\">\n" +
@@ -5968,7 +5996,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "      </div>\n" +
     "\n" +
     "      <div class=\"products\">\n" +
-    "         <ul class=\"products-list\">\n" +
+    "         <ul class=\"products-list\" ng-show=\"profileService.hasFullProducts()\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
     "                ng-class=\"{first: $first}\"\n" +
     "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +

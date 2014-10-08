@@ -96,6 +96,18 @@ angular.module('services.profileService', [
       )
     }
 
+    function hasFullProducts(){
+      if (!data.products){
+        return false
+      }
+
+      if (data.products[0] && data.products[0].metrics){
+        return true
+      }
+
+    }
+
+
     function changeProductsGenre(tiids, newGenre){
       if (!tiids.length){
         return false
@@ -268,6 +280,7 @@ angular.module('services.profileService', [
       getAccountProduct: getAccountProduct,
       getFromPinId: getFromPinId,
       getGenreCounts: getGenreCounts,
+      hasFullProducts: hasFullProducts,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {

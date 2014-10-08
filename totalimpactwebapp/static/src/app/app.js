@@ -35,7 +35,8 @@ angular.module('app', [
   'deadProfile',
   'services.pinboardService',
   'settings',
-  'xeditable'
+  'xeditable',
+  'ngProgress'
 ]);
 
 angular.module('app').constant('TEST', {
