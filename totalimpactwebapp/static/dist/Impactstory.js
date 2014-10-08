@@ -803,6 +803,9 @@ angular.module("genrePage", [
 
     SelectedProducts.removeAll()
     $scope.SelectedProducts = SelectedProducts
+    if (!ProfileService.hasFullProducts()){
+      Loading.startPage()
+    }
 
 
     Timer.start("genreViewRender")
@@ -831,6 +834,7 @@ angular.module("genrePage", [
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       rendering = false
+      Loading.finishPage()
       $timeout(function(){
         var lastScrollPos = Page.getLastScrollPosition($location.path())
         $window.scrollTo(0, lastScrollPos)
@@ -1878,6 +1882,10 @@ angular.module("profile", [
     $scope.sortableOptions = {
     }
 
+    if (!ProfileService.hasFullProducts()){
+      Loading.startPage()
+    }
+
 
 
     Timer.start("profileViewRender")
@@ -1952,6 +1960,11 @@ angular.module("profile", [
     }
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
+
+      if (ProfileService.hasFullProducts()){
+        Loading.finishPage()
+      }
+
       if (newVal.full_name) {
         Page.setTitle(newVal.about.full_name)
         security.isLoggedInPromise(url_slug).then(
@@ -4502,11 +4515,8 @@ angular.module("services.page")
 
       if (ProfileAboutService.slugIsNew(profileSlug)) {
         console.log("new user slug; loading new profile.")
-        Loading.startPage()
         clearProfileData()
-        ProfileService.get(profileSlug).then(function(resp){
-          Loading.finishPage()
-        })
+        ProfileService.get(profileSlug)
         PinboardService.get(profileSlug)
         ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
@@ -5849,7 +5859,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
   $templateCache.put("genre-page/genre-page.tpl.html",
     "<div class=\"genre-page\">\n" +
     "\n" +
-    "   <div class=\"wrapper\" ng-show=\"!isRendering()\">\n" +
+    "   <div class=\"wrapper\">\n" +
     "\n" +
     "      <div class=\"header\">\n" +
     "         <div class=\"header-content\">\n" +
@@ -5997,7 +6007,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "      </div>\n" +
     "\n" +
     "      <div class=\"products\">\n" +
-    "         <ul class=\"products-list\" ng-show=\"profileService.hasFullProducts()\">\n" +
+    "         <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
     "                ng-class=\"{first: $first}\"\n" +
     "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +

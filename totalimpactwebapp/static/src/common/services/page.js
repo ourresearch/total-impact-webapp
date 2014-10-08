@@ -46,11 +46,8 @@ angular.module("services.page")
 
       if (ProfileAboutService.slugIsNew(profileSlug)) {
         console.log("new user slug; loading new profile.")
-        Loading.startPage()
         clearProfileData()
-        ProfileService.get(profileSlug).then(function(resp){
-          Loading.finishPage()
-        })
+        ProfileService.get(profileSlug)
         PinboardService.get(profileSlug)
         ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)

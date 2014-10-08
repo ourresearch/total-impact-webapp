@@ -125,6 +125,10 @@ angular.module("profile", [
     $scope.sortableOptions = {
     }
 
+    if (!ProfileService.hasFullProducts()){
+      Loading.startPage()
+    }
+
 
 
     Timer.start("profileViewRender")
@@ -199,6 +203,11 @@ angular.module("profile", [
     }
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
+
+      if (ProfileService.hasFullProducts()){
+        Loading.finishPage()
+      }
+
       if (newVal.full_name) {
         Page.setTitle(newVal.about.full_name)
         security.isLoggedInPromise(url_slug).then(

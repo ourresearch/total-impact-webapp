@@ -100,6 +100,9 @@ angular.module("genrePage", [
 
     SelectedProducts.removeAll()
     $scope.SelectedProducts = SelectedProducts
+    if (!ProfileService.hasFullProducts()){
+      Loading.startPage()
+    }
 
 
     Timer.start("genreViewRender")
@@ -128,6 +131,7 @@ angular.module("genrePage", [
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       rendering = false
+      Loading.finishPage()
       $timeout(function(){
         var lastScrollPos = Page.getLastScrollPosition($location.path())
         $window.scrollTo(0, lastScrollPos)

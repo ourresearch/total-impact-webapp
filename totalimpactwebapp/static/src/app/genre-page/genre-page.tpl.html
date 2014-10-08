@@ -1,6 +1,6 @@
 <div class="genre-page">
 
-   <div class="wrapper" ng-show="!isRendering()">
+   <div class="wrapper">
 
       <div class="header">
          <div class="header-content">
@@ -148,7 +148,7 @@
       </div>
 
       <div class="products">
-         <ul class="products-list" ng-show="profileService.hasFullProducts()">
+         <ul class="products-list" ng-if="profileService.hasFullProducts()">
             <li class="product genre-{{ product.genre }}"
                 ng-class="{first: $first}"
                 ng-repeat="product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']"
