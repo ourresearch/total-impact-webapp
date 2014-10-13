@@ -63,7 +63,60 @@ angular.module("genrePage", [
 
 
 
+.factory("GenreSort", function($location){
 
+  var configs = [
+    {
+      keys: ["-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "default",
+      urlName: "default"
+    } ,
+    {
+      keys: ["biblio.title", "-awardedness_score", '-metric_raw_sum'],
+      name: "title",
+      urlName: "title"
+    },
+    {
+      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "year",
+      urlName: "year"
+    },
+    {
+      keys: ["biblio.authors", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "first author",
+      urlName: "first_author"
+    }
+  ]
+
+  function getCurrentConfig(){
+    var ret
+    ret = _.findWhere(configs, {urlName: $location.search().sort_by})
+    if (!ret){
+      ret = _.findWhere(configs, {urlName: "default"})
+    }
+    return ret
+  }
+
+
+  return {
+    get: getCurrentConfig,
+    set: function(name){
+      var myConfig = _.findWhere(configs, {name: name})
+      if (myConfig.name == "default"){
+        $location.search("sort_by", null)
+      }
+      else {
+        $location.search("sort_by", myConfig.urlName)
+      }
+    },
+    options: function(){
+      var currentName = getCurrentConfig().name
+      return _.filter(configs, function(config){
+        return config.name !== currentName
+      })
+    }
+  }
+})
 
 
 
@@ -93,6 +146,7 @@ angular.module("genrePage", [
     ProfileService,
     ProfileAboutService,
     SelectedProducts,
+    GenreSort,
     PinboardService,
     Page) {
 
@@ -103,6 +157,9 @@ angular.module("genrePage", [
     if (!ProfileService.hasFullProducts()){
       Loading.startPage()
     }
+
+    $scope.sortBy = "default"
+    $scope.GenreSort = GenreSort
 
 
     Timer.start("genreViewRender")

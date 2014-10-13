@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-08
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-13
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -766,7 +766,60 @@ angular.module("genrePage", [
 
 
 
+.factory("GenreSort", function($location){
 
+  var configs = [
+    {
+      keys: ["-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "default",
+      urlName: "default"
+    } ,
+    {
+      keys: ["biblio.title", "-awardedness_score", '-metric_raw_sum'],
+      name: "title",
+      urlName: "title"
+    },
+    {
+      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "year",
+      urlName: "year"
+    },
+    {
+      keys: ["biblio.authors", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "first author",
+      urlName: "first_author"
+    }
+  ]
+
+  function getCurrentConfig(){
+    var ret
+    ret = _.findWhere(configs, {urlName: $location.search().sort_by})
+    if (!ret){
+      ret = _.findWhere(configs, {urlName: "default"})
+    }
+    return ret
+  }
+
+
+  return {
+    get: getCurrentConfig,
+    set: function(name){
+      var myConfig = _.findWhere(configs, {name: name})
+      if (myConfig.name == "default"){
+        $location.search("sort_by", null)
+      }
+      else {
+        $location.search("sort_by", myConfig.urlName)
+      }
+    },
+    options: function(){
+      var currentName = getCurrentConfig().name
+      return _.filter(configs, function(config){
+        return config.name !== currentName
+      })
+    }
+  }
+})
 
 
 
@@ -796,6 +849,7 @@ angular.module("genrePage", [
     ProfileService,
     ProfileAboutService,
     SelectedProducts,
+    GenreSort,
     PinboardService,
     Page) {
 
@@ -806,6 +860,9 @@ angular.module("genrePage", [
     if (!ProfileService.hasFullProducts()){
       Loading.startPage()
     }
+
+    $scope.sortBy = "default"
+    $scope.GenreSort = GenreSort
 
 
     Timer.start("genreViewRender")
@@ -4441,7 +4498,6 @@ angular.module("services.loading")
 
         // ok, someone asked for a real job object.
         return loadingJobs[jobName]
-
       }
     },
     set: setLoading,
@@ -6003,6 +6059,22 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "            </div>\n" +
     "\n" +
     "            <div class=\"sort-controls\">\n" +
+    "               <div class=\"btn-group sort-select-group\" dropdown>\n" +
+    "               <span class=\"sort-by-label\">\n" +
+    "                  Sorting by\n" +
+    "               </span>\n" +
+    "                  <a class=\"dropdown-toggle\">\n" +
+    "                     {{ GenreSort.get().name }}\n" +
+    "                     <span class=\"caret\"></span>\n" +
+    "                  </a>\n" +
+    "\n" +
+    "                  <ul class=\"dropdown-menu\">\n" +
+    "                     <li class=\"sort-by-option\" ng-repeat=\"sortConfig in GenreSort.options()\">\n" +
+    "                        <a ng-click=\"GenreSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "                     </li>\n" +
+    "                  </ul>\n" +
+    "               </div>\n" +
+    "\n" +
     "\n" +
     "            </div>\n" +
     "\n" +
@@ -6013,7 +6085,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "         <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
     "                ng-class=\"{first: $first}\"\n" +
-    "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']\"\n" +
+    "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy: GenreSort.get().keys\"\n" +
     "                id=\"{{ product.tiid }}\"\n" +
     "                on-repeat-finished>\n" +
     "\n" +
@@ -6330,14 +6402,27 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "<div class=\"main infopage landing\">\n" +
     "   <div class=\"top-screen\" fullscreen> <!-- this needs to be set to the viewport height-->\n" +
     "\n" +
+    "      <div class=\"top-logo\">\n" +
+    "         <img src=\"/static/img/impactstory-logo-sideways.png\" alt=\"\"/>\n" +
+    "      </div>\n" +
+    "\n" +
     "      <div id=\"tagline\">\n" +
     "         <div class=\"wrapper\">\n" +
     "            <img class=\"big-logo\" src=\"/static/img/impactstory-logo-no-type.png\" alt=\"\"/>\n" +
     "\n" +
-    "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='main'\">\n" +
-    "               <h1>Uncover your full research impact.</h1>\n" +
-    "               <h2>Impactstory is a place to learn and share all the ways your research is making a difference.</h2>\n" +
+    "               <h1>Your CV, but better.</h1>\n" +
+    "               <div class=\"main-testimonial\">\n" +
+    "                  <q>\n" +
+    "                     Impactstory looks great and works beautifully. The new standard for scientific CVs.\n" +
+    "                  </q>\n" +
+    "                  <div class=\"quote-source\">\n" +
+    "                     &ndash;\n" +
+    "                     <span class=\"name\">Pietro Gatti Lafranconi,</span>\n" +
+    "                     <span class=\"affiliation\">Cambridge University</span>\n" +
+    "                  </div>\n" +
+    "               </div>\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +
@@ -6353,7 +6438,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "            <div id=\"call-to-action\">\n" +
-    "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">What's my impact?</a>\n" +
+    "               <a href=\"/signup\" class=\"btn btn-xlarge btn-primary primary-action\" id=\"signup-button\">Try it for free</a>\n" +
     "               <!--<a href=\"/CarlBoettiger\"\n" +
     "                  ng-show=\"abTesting.getTestState['link to sample profile from landing page']=='yes'\"\n" +
     "                  class=\"btn btn-xlarge btn-default\"\n" +
@@ -6388,6 +6473,16 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "   <div id=\"selling-points\">\n" +
+    "      <div class=\"selling-point\">\n" +
+    "         <h3>For open scientists, by open scientsts</h3>\n" +
+    "         <div class=\"copy\"></div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "      <ul class=\"wrapper\">\n" +
     "         <li>\n" +
     "            <h3><i class=\"icon-bar-chart icon-3x\"></i><span class=\"text\">Citations and more</span></h3>\n" +
@@ -6404,25 +6499,6 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "      </ul>\n" +
     "   </div>\n" +
     "\n" +
-    "\n" +
-    "   <div id=\"testimonials\">\n" +
-    "      <ul class=\"wrapper\">\n" +
-    "         <li>\n" +
-    "            <img src=\"/static/img/people/luo.png\"/>\n" +
-    "            <q class=\"text\">I don't need my CV now, Impactstory tells my story!</q>\n" +
-    "            <cite>Ruibang Luo, Hong Kong University</cite>\n" +
-    "         </li>\n" +
-    "\n" +
-    "         <li>\n" +
-    "            <img src=\"/static/img/people/graziotin.jpeg\"/>\n" +
-    "            <q class=\"text\">Every time I look at my Impactstory profile, I see that I did some good things and somebody actually noticed them. There is so much besides the number of citations. </q>\n" +
-    "            <cite>Daniel Graziotin, Free University of Bozen-Bolzano</cite>\n" +
-    "         </li>\n" +
-    "\n" +
-    "\n" +
-    "      </ul>\n" +
-    "\n" +
-    "   </div>\n" +
     "\n" +
     "   <div class=\"bottom-cta\">\n" +
     "      <div id=\"call-to-action\">\n" +

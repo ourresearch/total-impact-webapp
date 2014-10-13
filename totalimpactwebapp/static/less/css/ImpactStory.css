@@ -6923,6 +6923,16 @@ div.infopage.landing div.top-screen {
   display: table;
   width: 100%;
 }
+div.infopage.landing div.top-screen div.top-logo {
+  display: none;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+}
+div.infopage.landing div.top-screen div.top-logo img {
+  width: 180px;
+  margin-left: -90px;
+}
 div.infopage.landing div.top-screen div#tagline {
   margin-bottom: 120px;
   text-align: center;
@@ -6932,24 +6942,25 @@ div.infopage.landing div.top-screen div#tagline {
   margin-top: -150px;
 }
 div.infopage.landing div.top-screen div#tagline img.big-logo {
-  height: 100px;
+  height: 80px;
 }
 div.infopage.landing div.top-screen div#tagline h1 {
   color: #ff4000;
-  font-size: 60px;
+  font-size: 45px;
   font-family: 'lato', helvetica, arial, sans-serif;
   font-weight: 900;
   margin: 20px auto 30px;
 }
-div.infopage.landing div.top-screen div#tagline h2 {
-  margin-top: -20px;
-  font-weight: 300;
+div.infopage.landing div.top-screen div#tagline div.main-testimonial {
   color: #555;
-  font-size: 30px;
+  font-size: 26px;
   line-height: 1.4;
-  width: 650px;
+  width: 580px;
   text-align: center;
   margin: 0 auto;
+}
+div.infopage.landing div.top-screen div#tagline div.main-testimonial div.quote-source {
+  font-size: 14px;
 }
 div.infopage.landing div.top-screen div#tagline #call-to-action {
   margin: 40px auto;
@@ -6974,21 +6985,23 @@ div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-su
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported h3 {
   margin: 0 0 20px;
   font-weight: 300;
-  font-size: 18px;
+  font-size: 14px;
+  color: #999;
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported img {
-  height: 50px;
+  height: 40px;
   margin: 0 10px;
   opacity: .7;
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported span.divider {
+  display: inline-block;
+  display: none;
   height: 50px;
   width: 1px;
   padding-right: 1px;
   background: #999;
   margin: 0 30px;
   vertical-align: -16px;
-  display: inline-block;
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.ask-for-more {
   display: none;
@@ -7021,11 +7034,8 @@ div#selling-points:after {
 div#selling-points:after {
   clear: both;
 }
-div#selling-points p {
-  margin-top: 0;
-  color: #777;
-  line-height: 1.8;
-  font-size: 18px;
+div#selling-points ul {
+  display: none;
 }
 div#selling-points ul li {
   float: left;
@@ -9799,6 +9809,7 @@ div.genre-page div.header div.header-content div.genre-summary div.genre-summary
 }
 div.genre-page div.header div.header-controls {
   padding: 10px 10px 10px 50px;
+  position: relative;
 }
 div.genre-page div.header div.header-controls div.edit-controls {
   margin-left: 5px;
@@ -9838,6 +9849,36 @@ div.genre-page div.header div.header-controls div.edit-controls span.num-selecte
   font-size: 14px;
   margin-left: 10px;
   color: #555;
+}
+div.genre-page div.header div.header-controls div.sort-controls {
+  top: 0;
+  right: 0;
+  position: absolute;
+  margin: 5px 15px;
+  color: #555;
+  font-size: 14px;
+}
+div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group {
+  vertical-align: top;
+}
+div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
+  border: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  text-decoration: underline;
+  color: #333;
+}
+div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
+  color: #555;
+  padding: 2px 5px 2px 0;
+  font-weight: bold;
+}
+div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
+  text-decoration: underline;
+}
+div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
+  font-size: 14px;
 }
 div.genre-page div.products {
   margin-top: 0;

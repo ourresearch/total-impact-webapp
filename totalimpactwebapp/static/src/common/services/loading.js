@@ -28,7 +28,6 @@ angular.module("services.loading")
 
         // ok, someone asked for a real job object.
         return loadingJobs[jobName]
-
       }
     },
     set: setLoading,

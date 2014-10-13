@@ -131,6 +131,7 @@ div.genre-page {
       div.header-controls {
 //         background: #eee;
          padding: 10px 10px 10px @contentPaddingLeft;
+         position: relative;
          div.edit-controls {
             margin-left: 5px;
             button {
@@ -186,7 +187,39 @@ div.genre-page {
          }
 
          div.sort-controls {
+            top: 0;
+            right: 0;
+            position: absolute;
+            margin: 5px 15px;
+            color: #555;
+            font-size: 14px;
+            .btn-group.sort-select-group {
+               vertical-align: top;
+               &.open {
+                  a.dropdown-toggle {
+                     border: none;
+                     box-shadow: none;
+                     -webkit-box-shadow: none;
+                     -moz-box-shadow:none;
+                     text-decoration: underline;
+                     color: #333;
 
+                  }
+               }
+               a.dropdown-toggle {
+                  color: #555;
+                  padding: 2px 5px 2px 0;
+                  &:hover {
+                     text-decoration: underline;
+                  }
+                  font-weight: bold;
+               }
+               ul.dropdown-menu {
+                  li {
+                     font-size: 14px;
+                  }
+               }
+            }
          }
       }
 

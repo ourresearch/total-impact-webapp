@@ -141,6 +141,22 @@
             </div>
 
             <div class="sort-controls">
+               <div class="btn-group sort-select-group" dropdown>
+               <span class="sort-by-label">
+                  Sorting by
+               </span>
+                  <a class="dropdown-toggle">
+                     {{ GenreSort.get().name }}
+                     <span class="caret"></span>
+                  </a>
+
+                  <ul class="dropdown-menu">
+                     <li class="sort-by-option" ng-repeat="sortConfig in GenreSort.options()">
+                        <a ng-click="GenreSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
+                     </li>
+                  </ul>
+               </div>
+
 
             </div>
 
@@ -151,7 +167,7 @@
          <ul class="products-list" ng-if="profileService.hasFullProducts()">
             <li class="product genre-{{ product.genre }}"
                 ng-class="{first: $first}"
-                ng-repeat="product in profileService.productsByGenre(genre.name) | orderBy:['-awardedness_score', '-metric_raw_sum', 'biblio.title']"
+                ng-repeat="product in profileService.productsByGenre(genre.name) | orderBy: GenreSort.get().keys"
                 id="{{ product.tiid }}"
                 on-repeat-finished>
 

@@ -76,6 +76,17 @@ div.infopage.landing {
       display:table;
       width: 100%;
 
+      div.top-logo {
+         display:none;
+         position: absolute;
+         top: 20px;
+         left: 50%;
+         img {
+            width: 180px;
+            margin-left: -90px;
+         }
+      }
+
 
       div#tagline {
          margin-bottom: 120px;
@@ -86,24 +97,25 @@ div.infopage.landing {
          margin-top: -150px;
 
          img.big-logo {
-            height: 100px;
+            height: 80px;
          }
          h1 {
             color: @linkColor;
-            font-size: 60px;
+            font-size: 45px;
             font-family: 'lato', helvetica, arial, sans-serif;
             font-weight: 900;
             margin: 20px auto 30px;
          }
-         h2 {
-            margin-top: -20px;
-            font-weight: 300;
+         div.main-testimonial {
             color: #555;
-            font-size: 30px;
+            font-size: 26px;
             line-height: 1.4;
-            width: 650px;
+            width: 580px;
             text-align: center;
             margin: 0 auto;
+            div.quote-source {
+               font-size: 14px;
+            }
          }
 
          #call-to-action {
@@ -130,23 +142,26 @@ div.infopage.landing {
             h3 {
                margin:0 0 20px;
                font-weight: 300;
-               font-size: 18px;
+               font-size: 14px;
+               color: #999;
 
             }
             img {
-               height: 50px;
+               height: 40px;
                margin: 0 10px;
                opacity: .7;
             }
 
             span.divider {
+               display:inline-block;
+               display:none;
+
                height: 50px;
                width: 1px;
                padding-right: 1px;
                background: #999;
                margin: 0 30px;
                vertical-align: -16px;
-               display:inline-block;
             }
          }
 
@@ -170,14 +185,13 @@ div#selling-points{
    .clearfix();
    margin-top: 50px;
 
-   p {
-       margin-top:0;
-       color: #777;
-       line-height: 1.8;
-      font-size: 18px;
+   .selling-point {
+
    }
 
+
    ul {
+      display:none;
       li {
          float:left;
          width: 30%;
