@@ -7034,7 +7034,7 @@ div#selling-points:after {
 div#selling-points:after {
   clear: both;
 }
-div#selling-points ul {
+div#selling-points .selling-point {
   display: none;
 }
 div#selling-points ul li {
