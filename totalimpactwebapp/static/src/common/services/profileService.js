@@ -171,6 +171,9 @@ angular.module('services.profileService', [
       else {
         var cardsToReturn
         var myGenre = _.findWhere(data.genres, {name: genreName})
+        if (typeof myGenre == "undefined"){
+          return []
+        }
         var sortedCards = _.sortBy(myGenre.cards, "sort_by")
         if (reverse){
           cardsToReturn = sortedCards.concat([]).reverse()

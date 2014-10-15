@@ -113,6 +113,7 @@ class Profile(db.Model):
     slideshare_id = db.Column(db.Text)
     twitter_id = db.Column(db.Text)
     figshare_id = db.Column(db.Text)
+    publons_id = db.Column(db.Text) # ALTER TABLE profile ADD publons_id text
     google_scholar_id = db.Column(db.Text)
     mendeley_id = db.Column(db.Text)
     researchgate_id = db.Column(db.Text)
@@ -565,11 +566,8 @@ class Profile(db.Model):
             "slideshare_id",
             "twitter_id",
             "figshare_id",
+            "publons_id",
             "google_scholar_id",
-            "mendeley_id",
-            "academia_edu_id",
-            "researchgate_id",
-            "linkedin_id",
             "wordpress_api_key",
             "stripe_id",
             "days_left_in_trial",
