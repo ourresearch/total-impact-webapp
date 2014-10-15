@@ -6475,7 +6475,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "   <div id=\"selling-points\">\n" +
-    "      <div class=\"selling-point img-right\">\n" +
+    "      <div class=\"selling-point\">\n" +
     "         <div class=\"img\">\n" +
     "            <i class=\"icon-unlock-alt\"></i>\n" +
     "         </div>\n" +
@@ -6487,7 +6487,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"selling-point img-left\">\n" +
+    "      <div class=\"selling-point\">\n" +
     "         <div class=\"img\">\n" +
     "            <i class=\"icon-trophy\"></i>\n" +
     "         </div>\n" +
@@ -6499,7 +6499,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"selling-point img-right\">\n" +
+    "      <div class=\"selling-point\">\n" +
     "         <div class=\"img\">\n" +
     "            <i class=\"icon-bullhorn\"></i>\n" +
     "         </div>\n" +
@@ -6511,7 +6511,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "         </div>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"selling-point img-left\">\n" +
+    "      <div class=\"selling-point\">\n" +
     "         <div class=\"img\">\n" +
     "            <i class=\"icon-lightbulb\"></i>\n" +
     "         </div>\n" +
@@ -6530,7 +6530,10 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            Promotion with tenure is now official. Thank you Impactstory!\n" +
     "         </q>\n" +
     "         <cite>\n" +
-    "            -Ahmed Moustafa, University of Western Sydney\n" +
+    "            <img src=\"http://i.imgur.com/yqjQpHw.pnghttp://i.imgur.com/yqjQpHw.png\" alt=\"\"/>\n" +
+    "            <span class=\"name\">\n" +
+    "               Ahmed Moustafa, University of Western Sydney\n" +
+    "            </span>\n" +
     "         </cite>\n" +
     "      </div>\n" +
     "   </div>\n" +
@@ -6538,15 +6541,21 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "   <div class=\"bottom-cta\">\n" +
     "      <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">Try it free</a>\n" +
-    "      <a href=\"/CarlBoettiger\" class=\"btn btn-large btn-default secondary-action\" id=\"view-sample-collection\">See an example profile</a>\n" +
+    "      <a href=\"/hollybik\" class=\"btn btn-large btn-default secondary-action\" id=\"view-sample-collection\">See an example profile</a>\n" +
     "   </div>\n" +
     "\n" +
-    "</div>\n" +
     "\n" +
-    "<div class=\"page-footer\">\n" +
-    "   <div ng-include=\"'footer/footer.tpl.html'\"></div>\n" +
-    "</div>\n" +
+    "   <div class=\"landing-page-footer\">\n" +
+    "      <a href=\"/about\">about</a>\n" +
+    "      <a href=\"/faq\">faq</a>\n" +
+    "      <a href=\"https://github.com/total-impact\">source code</a>\n" +
+    "      <a href=\"/legal\">legal</a>\n" +
+    "      <a href=\"http://blog.impactstory.org\">blog</a>\n" +
+    "      <a href=\"http://twitter.com/impactstory\">twitter</a>\n" +
+    "   </div>\n" +
     "\n" +
+    "\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -8640,7 +8649,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "               <button ng-disabled=\"signupForm.$invalid\"\n" +
     "                       ng-hide=\"loading.is('signup')\"\n" +
     "                       class=\"btn btn-primary btn-xlarge\">\n" +
-    "                  Uncover my impact<i class=\"icon-arrow-right\"></i>\n" +
+    "                  Create my profile<i class=\"icon-arrow-right\"></i>\n" +
     "               </button>\n" +
     "               <div class=\"working\" ng-show=\"loading.is('signup')\">\n" +
     "                  <i class=\"icon-refresh icon-spin\"></i>\n" +

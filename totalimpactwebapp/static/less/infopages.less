@@ -70,7 +70,7 @@ div.infopage.landing {
       }
    }
    div.top-screen{
-      border-bottom: 1px solid #999;
+      border-bottom: 1px solid #ccc;
       position:relative;
       height: 820px;
       display:table;
@@ -210,13 +210,13 @@ div#selling-points{
          font-weight: 300;
       }
 
-      &.img-right {
+      &:nth-child(odd){
          div.img {float: right;}
       }
-      &.img-left {
+
+      &:nth-child(even){
          div.img {float: left;}
       }
-
    }
 
 
@@ -250,50 +250,56 @@ div#selling-points{
 }
 
 
-div#testimonials {
-   display: none;
-   border-top: 1px solid #999;
-   margin-top: 100px;
+div.testimonials {
+   border-top: 1px solid #ccc;
    padding-top: 50px;
-   li {
-      @imgWidth: 100px;
+   div.testimonial {
+      @imgWidth: 40px;
+      text-align: center;
+      width: 800px;
+      margin: 0 auto;
+      font-weight: 300;
       img {
-         margin: 0 20px;
+         margin: 5px;
          width: @imgWidth;
          .border-radius(@imgWidth/2, @imgWidth/2, @imgWidth/2, @imgWidth/2);
          border: 1px solid #eee;
       }
       q {
-         font-size: 22px;
+         font-size: 50px;
          color: #555;
-         padding-top: @imgWidth/3;
          display:block;
       }
       cite {
          display:block;
-         font-size: 70%;
+         font-size: 14px;
          font-weight: 300;
       }
-
-      &:nth-child(odd){
-         img {
-            float:left;
-         }
-      }
-
-      &:nth-child(even){
-         text-align: right;
-         img {
-            float:right;
-         }
-      }
-
    }
 }
 
 div.bottom-cta {
    text-align: center;
    margin-top: 100px;
+   a {
+      margin: 0 5px;
+   }
+}
+
+div.landing-page-footer {
+   text-align: center;
+   margin: 70px 0 150px;
+   a {
+      color: #999;
+      display: inline-block;
+      margin: 0 20px;
+      font-size: 13px;
+      font-weight: 300;
+      &:hover {
+         text-decoration: underline;
+      }
+   }
+
 }
 
 

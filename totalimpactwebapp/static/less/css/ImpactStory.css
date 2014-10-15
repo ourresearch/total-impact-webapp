@@ -6917,7 +6917,7 @@ div.infopage.landing div.toolbar-container a.login i {
   margin-left: 5px;
 }
 div.infopage.landing div.top-screen {
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #ccc;
   position: relative;
   height: 820px;
   display: table;
@@ -7066,10 +7066,10 @@ div#selling-points .selling-point div.copy {
   font-size: 16px;
   font-weight: 300;
 }
-div#selling-points .selling-point.img-right div.img {
+div#selling-points .selling-point:nth-child(odd) div.img {
   float: right;
 }
-div#selling-points .selling-point.img-left div.img {
+div#selling-points .selling-point:nth-child(even) div.img {
   float: left;
 }
 div#selling-points ul {
@@ -7096,55 +7096,66 @@ div#selling-points ul li h3 i {
   display: block;
   margin-bottom: 20px;
 }
-div#testimonials {
-  display: none;
-  border-top: 1px solid #999;
-  margin-top: 100px;
+div.testimonials {
+  border-top: 1px solid #ccc;
   padding-top: 50px;
 }
-div#testimonials li img {
-  margin: 0 20px;
-  width: 100px;
-  -webkit-border-top-right-radius: 50px;
-  -webkit-border-bottom-right-radius: 50px;
-  -webkit-border-bottom-left-radius: 50px;
-  -webkit-border-top-left-radius: 50px;
-  -moz-border-radius-topright: 50px;
-  -moz-border-radius-bottomright: 50px;
-  -moz-border-radius-bottomleft: 50px;
-  -moz-border-radius-topleft: 50px;
-  border-top-right-radius: 50px;
-  border-bottom-right-radius: 50px;
-  border-bottom-left-radius: 50px;
-  border-top-left-radius: 50px;
+div.testimonials div.testimonial {
+  text-align: center;
+  width: 800px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+div.testimonials div.testimonial img {
+  margin: 5px;
+  width: 40px;
+  -webkit-border-top-right-radius: 20px;
+  -webkit-border-bottom-right-radius: 20px;
+  -webkit-border-bottom-left-radius: 20px;
+  -webkit-border-top-left-radius: 20px;
+  -moz-border-radius-topright: 20px;
+  -moz-border-radius-bottomright: 20px;
+  -moz-border-radius-bottomleft: 20px;
+  -moz-border-radius-topleft: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 1px solid #eee;
 }
-div#testimonials li q {
-  font-size: 22px;
+div.testimonials div.testimonial q {
+  font-size: 50px;
   color: #555;
-  padding-top: 33.333333333333336px;
   display: block;
 }
-div#testimonials li cite {
+div.testimonials div.testimonial cite {
   display: block;
-  font-size: 70%;
+  font-size: 14px;
   font-weight: 300;
-}
-div#testimonials li:nth-child(odd) img {
-  float: left;
-}
-div#testimonials li:nth-child(even) {
-  text-align: right;
-}
-div#testimonials li:nth-child(even) img {
-  float: right;
 }
 div.bottom-cta {
   text-align: center;
   margin-top: 100px;
+}
+div.bottom-cta a {
+  margin: 0 5px;
+}
+div.landing-page-footer {
+  text-align: center;
+  margin: 70px 0 150px;
+}
+div.landing-page-footer a {
+  color: #999;
+  display: inline-block;
+  margin: 0 20px;
+  font-size: 13px;
+  font-weight: 300;
+}
+div.landing-page-footer a:hover {
+  text-decoration: underline;
 }
 div#sources {
   width: 100%;
