@@ -6944,16 +6944,15 @@ div.infopage.landing div.top-screen div#tagline img.big-logo {
 }
 div.infopage.landing div.top-screen div#tagline h1 {
   color: #ff4000;
-  font-size: 45px;
-  font-family: 'lato', helvetica, arial, sans-serif;
-  font-weight: 900;
-  margin: 20px auto 30px;
+  font-size: 60px;
+  font-weight: 300;
+  margin: 20px auto 40px;
 }
 div.infopage.landing div.top-screen div#tagline div.main-testimonial {
   color: #555;
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1.4;
-  width: 580px;
+  width: 520px;
   text-align: center;
   margin: 0 auto;
 }
@@ -6962,9 +6961,6 @@ div.infopage.landing div.top-screen div#tagline div.main-testimonial div.quote-s
 }
 div.infopage.landing div.top-screen div#tagline #call-to-action {
   margin: 40px auto 0;
-}
-div.infopage.landing div.top-screen div#tagline #call-to-action #signup-button {
-  font-weight: bold;
 }
 div.infopage.landing div.top-screen div#tagline #call-to-action #secondary-cta-button {
   margin-left: 30px;
