@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-13
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-15
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -446,6 +446,8 @@ angular.module('accounts.allTheAccounts', [
     },
 
     get: function(userDict){
+
+      console.log("running alltheaccounts.get()")
 
       var ret = []
       var accountsConfig = angular.copy(accounts)
@@ -5138,7 +5140,7 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function genreCards(genreName, numberOfCards, reverse){
+    function genreCards(genreName, numberOfCards, smallestFirst){
       if (typeof data.genres == "undefined"){
         return []
       }
@@ -5146,11 +5148,11 @@ angular.module('services.profileService', [
         var cardsToReturn
         var myGenre = _.findWhere(data.genres, {name: genreName})
         var sortedCards = _.sortBy(myGenre.cards, "sort_by")
-        if (reverse){
-          cardsToReturn = sortedCards.concat([]).reverse()
+        if (smallestFirst){
+          cardsToReturn = sortedCards
         }
         else {
-          cardsToReturn = sortedCards
+          cardsToReturn = sortedCards.concat([]).reverse()
         }
         return cardsToReturn.slice(0, numberOfCards)
       }
@@ -5936,7 +5938,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  <ul class=\"genre-cards-best\">\n" +
     "\n" +
     "                     <li class=\"genre-card\"\n" +
-    "                         ng-repeat=\"card in profileService.genreCards(genre.name, 3)\">\n" +
+    "                         ng-repeat=\"card in profileService.genreCards(genre.name, 3).reverse()\">\n" +
     "\n" +
     "\n" +
     "\n" +
@@ -6449,7 +6451,7 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "      <div class=\"bottom-of-top-screen\">\n" +
     "         <div class=\"featured-and-supported\">\n" +
-    "            <h3>featured in and supported by</h3>\n" +
+    "            <h3>featured in and funded by</h3>\n" +
     "            <img src=\"/static/img/logos/bbc.png\" />\n" +
     "            <img src=\"/static/img/logos/nature.png\" />\n" +
     "            <img src=\"/static/img/logos/chronicle.png\"/>\n" +
@@ -6473,38 +6475,70 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "\n" +
     "   <div id=\"selling-points\">\n" +
-    "      <div class=\"selling-point\">\n" +
-    "         <h3>For open scientists, by open scientsts</h3>\n" +
-    "         <div class=\"copy\"></div>\n" +
+    "      <div class=\"selling-point img-right\">\n" +
+    "         <div class=\"img\">\n" +
+    "            <i class=\"icon-unlock-alt\"></i>\n" +
+    "         </div>\n" +
+    "         <h3>For open scientists</h3>\n" +
+    "         <div class=\"copy\">\n" +
+    "            <p>\n" +
+    "              As researchers, we publish in open places like PLOS, GitHub, ArXiv, PeerJ, and Figshare. If you do too, you’re going to love it here. And of course we’re an open-source nonprofit ourselves.\n" +
+    "            </p>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "\n" +
+    "      <div class=\"selling-point img-left\">\n" +
+    "         <div class=\"img\">\n" +
+    "            <i class=\"icon-trophy\"></i>\n" +
+    "         </div>\n" +
+    "         <h3>Demonstrate your impact</h3>\n" +
+    "         <div class=\"copy\">\n" +
+    "            <p>\n" +
+    "               Discover and share how your research is read, cited, tweeted, bookmarked, and more. And stay up to date with weekly email updates on new impacts.\n" +
+    "            </p>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
     "\n" +
+    "      <div class=\"selling-point img-right\">\n" +
+    "         <div class=\"img\">\n" +
+    "            <i class=\"icon-bullhorn\"></i>\n" +
+    "         </div>\n" +
+    "         <h3>Reach more readers</h3>\n" +
+    "         <div class=\"copy\">\n" +
+    "            <p>\n" +
+    "               Help colleagues find and read your preprints, articles, slides and other work by uploading research products straight your profile.\n" +
+    "            </p>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
     "\n" +
+    "      <div class=\"selling-point img-left\">\n" +
+    "         <div class=\"img\">\n" +
+    "            <i class=\"icon-lightbulb\"></i>\n" +
+    "         </div>\n" +
+    "         <h3>Your latest work</h3>\n" +
+    "         <div class=\"copy\">\n" +
+    "            <p>\n" +
+    "               Your Impactstory profile stays up-to-date automatically for most kinds of products. You can also add new products with a simple email\n" +
+    "            </p>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "      <ul class=\"wrapper\">\n" +
-    "         <li>\n" +
-    "            <h3><i class=\"icon-bar-chart icon-3x\"></i><span class=\"text\">Citations and more</span></h3>\n" +
-    "            <p>Find out where your work has been cited, viewed, downloaded, tweeted, and more.</p>\n" +
-    "         </li>\n" +
-    "         <li class=\"middle\">\n" +
-    "            <h3><i class=\"icon-globe icon-3x\"></i><span class=\"text\">All your outputs</span></h3>\n" +
-    "            <p>Discover and share the impacts of your articles, slides, datasets, and software.</p>\n" +
-    "         </li>\n" +
-    "         <li>\n" +
-    "            <h3 id=\"its-open\"><i class=\"icon-unlock-alt icon-3x\"></i><span class=\"text\">Open and nonprofit</span></h3>\n" +
-    "            <p>We're in this to improve science. Your data is open, and our code is open-source.</p>\n" +
-    "         </li>\n" +
-    "      </ul>\n" +
+    "   <div class=\"testimonials\">\n" +
+    "      <div class=\"testimonial\">\n" +
+    "         <q>\n" +
+    "            Promotion with tenure is now official. Thank you Impactstory!\n" +
+    "         </q>\n" +
+    "         <cite>\n" +
+    "            -Ahmed Moustafa, University of Western Sydney\n" +
+    "         </cite>\n" +
+    "      </div>\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
     "   <div class=\"bottom-cta\">\n" +
-    "      <div id=\"call-to-action\">\n" +
-    "         <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">What's my impact?</a>\n" +
-    "         <!--<a href=\"/CarlBoettiger\" class=\"btn btn-large btn-primary secondary-action\" id=\"view-sample-collection\">Show me a sample profile</a>-->\n" +
-    "      </div>\n" +
+    "      <a href=\"/signup\" class=\"btn btn-large btn-primary primary-action\" id=\"create-collection\">Try it free</a>\n" +
+    "      <a href=\"/CarlBoettiger\" class=\"btn btn-large btn-default secondary-action\" id=\"view-sample-collection\">See an example profile</a>\n" +
     "   </div>\n" +
     "\n" +
     "</div>\n" +

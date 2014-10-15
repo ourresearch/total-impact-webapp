@@ -6934,12 +6934,10 @@ div.infopage.landing div.top-screen div.top-logo img {
   margin-left: -90px;
 }
 div.infopage.landing div.top-screen div#tagline {
-  margin-bottom: 120px;
   text-align: center;
   display: table-cell;
   vertical-align: middle;
   width: 100%;
-  margin-top: -150px;
 }
 div.infopage.landing div.top-screen div#tagline img.big-logo {
   height: 80px;
@@ -6963,7 +6961,7 @@ div.infopage.landing div.top-screen div#tagline div.main-testimonial div.quote-s
   font-size: 14px;
 }
 div.infopage.landing div.top-screen div#tagline #call-to-action {
-  margin: 40px auto;
+  margin: 40px auto 0;
 }
 div.infopage.landing div.top-screen div#tagline #call-to-action #signup-button {
   font-weight: bold;
@@ -6984,14 +6982,13 @@ div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-su
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported h3 {
   margin: 0 0 20px;
-  font-weight: 300;
-  font-size: 14px;
-  color: #999;
+  font-size: 12px;
+  color: #555;
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported img {
   height: 40px;
   margin: 0 10px;
-  opacity: .7;
+  opacity: .5;
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported span.divider {
   display: inline-block;
@@ -7016,7 +7013,7 @@ div.infopage.landing div.top-screen div.bottom-of-top-screen div.ask-for-more i 
 }
 div#selling-points {
   clear: both;
-  margin-top: 50px;
+  margin-top: 150px;
 }
 div#selling-points:before,
 div#selling-points:after {
@@ -7035,6 +7032,47 @@ div#selling-points:after {
   clear: both;
 }
 div#selling-points .selling-point {
+  width: 700px;
+  margin: 0 auto;
+  clear: both;
+  padding-bottom: 150px;
+}
+div#selling-points .selling-point div.img {
+  width: 300px;
+  text-align: center;
+}
+div#selling-points .selling-point div.img i {
+  font-size: 150px;
+}
+div#selling-points .selling-point div.img i.icon-unlock-alt {
+  color: #5cb85c;
+}
+div#selling-points .selling-point div.img i.icon-trophy {
+  color: #f0ad4e;
+}
+div#selling-points .selling-point div.img i.icon-bullhorn {
+  color: #428bca;
+}
+div#selling-points .selling-point div.img i.icon-lightbulb {
+  color: #d9534f;
+}
+div#selling-points .selling-point h3 {
+  margin: 0 0 20px 0;
+  font-size: 30px;
+  color: #555;
+  font-weight: normal;
+}
+div#selling-points .selling-point div.copy {
+  font-size: 16px;
+  font-weight: 300;
+}
+div#selling-points .selling-point.img-right div.img {
+  float: right;
+}
+div#selling-points .selling-point.img-left div.img {
+  float: left;
+}
+div#selling-points ul {
   display: none;
 }
 div#selling-points ul li {
@@ -7105,7 +7143,6 @@ div#testimonials li:nth-child(even) img {
   float: right;
 }
 div.bottom-cta {
-  display: none;
   text-align: center;
   margin-top: 100px;
 }

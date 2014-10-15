@@ -89,12 +89,10 @@ div.infopage.landing {
 
 
       div#tagline {
-         margin-bottom: 120px;
          text-align: center;
          display: table-cell;
          vertical-align: middle;
          width: 100%;
-         margin-top: -150px;
 
          img.big-logo {
             height: 80px;
@@ -119,7 +117,7 @@ div.infopage.landing {
          }
 
          #call-to-action {
-            margin: 40px auto;
+            margin: 40px auto 0;
             #signup-button {
                font-weight: bold;
             }
@@ -141,15 +139,14 @@ div.infopage.landing {
             padding-bottom: 20px;
             h3 {
                margin:0 0 20px;
-               font-weight: 300;
-               font-size: 14px;
-               color: #999;
+               font-size: 12px;
+               color: #555;
 
             }
             img {
                height: 40px;
                margin: 0 10px;
-               opacity: .7;
+               opacity: .5;
             }
 
             span.divider {
@@ -181,16 +178,50 @@ div.infopage.landing {
    }
 }
 
+
 div#selling-points{
    .clearfix();
-   margin-top: 50px;
+   margin-top: 150px;
 
    .selling-point {
-      display:none;
+      width: 700px;
+      margin: 0 auto;
+      clear:both;
+      padding-bottom: 150px;
+      div.img {
+         width: 300px;
+         text-align: center;
+         i {
+            font-size: 150px;
+            &.icon-unlock-alt {color: #5cb85c;}
+            &.icon-trophy {color: #f0ad4e;}
+            &.icon-bullhorn {color: #428bca;}
+            &.icon-lightbulb {color: #d9534f;}
+         }
+      }
+      h3 {
+         margin: 0 0 20px 0;
+         font-size: 30px;
+         color: #555;
+         font-weight: normal;
+      }
+      div.copy {
+         font-size: 16px;
+         font-weight: 300;
+      }
+
+      &.img-right {
+         div.img {float: right;}
+      }
+      &.img-left {
+         div.img {float: left;}
+      }
+
    }
 
 
    ul {
+      display:none;
       li {
          float:left;
          width: 30%;
@@ -261,7 +292,6 @@ div#testimonials {
 }
 
 div.bottom-cta {
-   display:none;
    text-align: center;
    margin-top: 100px;
 }

@@ -164,7 +164,7 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function genreCards(genreName, numberOfCards, reverse){
+    function genreCards(genreName, numberOfCards, smallestFirst){
       if (typeof data.genres == "undefined"){
         return []
       }
@@ -172,11 +172,11 @@ angular.module('services.profileService', [
         var cardsToReturn
         var myGenre = _.findWhere(data.genres, {name: genreName})
         var sortedCards = _.sortBy(myGenre.cards, "sort_by")
-        if (reverse){
-          cardsToReturn = sortedCards.concat([]).reverse()
+        if (smallestFirst){
+          cardsToReturn = sortedCards
         }
         else {
-          cardsToReturn = sortedCards
+          cardsToReturn = sortedCards.concat([]).reverse()
         }
         return cardsToReturn.slice(0, numberOfCards)
       }
