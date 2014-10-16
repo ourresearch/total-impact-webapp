@@ -80,6 +80,7 @@ linked_accounts = {
     "slideshare": u"http://www.slideshare.net/{id}",
     "twitter": u"http://twitter.com/{id}",
     "figshare": u"{id}",
+    "publons": u"{id}",
     "google_scholar": u"{id}",
     "mendeley": u"http://mendeley.com/{id}",
     "researchgate": u"http://researchgate.com/{id}",
@@ -293,6 +294,29 @@ providers = [
         "url": "http://figshare.com"
     },
 
+
+    # *************************************************************************
+    #                             Publons
+    # *************************************************************************
+    {
+        "descr": "Speeding up science by making peer review faster, more efficient, and more effective.",
+        "metrics": {
+            "views": {
+                "description": "The number of times this item has been viewed",
+                "display_name": "views",
+                "icon": "https://publons.com/favicon.ico",
+                "provider_name": "Publons",
+                "provider_url": "https://publons.com",
+                "audience": "scholars",
+                "engagement_type": "viewed",
+                "milestones": orders_of_magnitude()
+            }
+        },
+        "name": "publons",
+        "provides_aliases": True,
+        "provides_metrics": True,
+        "url": "https://publons.com"
+    },
 
 
 
@@ -824,18 +848,18 @@ providers = [
                 "engagement_type": "discussed",
                 "milestones": fives_then_orders_of_magnitude()
             },
-            "news": {
-                "description": "Number of times the product has been mentioned in the mainstream media",
-                "display_name": "news mentions",
-                "display_provider": "",
-                "icon": "https://twitter.com/favicon.ico",
-                "provider_name": "Altmetric.com",
-                "provider_url": "http://altmetric.com",
-                "audience": "public",
-                "engagement_type": "discussed",
-                "milestones": fives_then_orders_of_magnitude(),
-                "metric_debut_date": "2014-09-17"                
-            },            
+            # "news": {
+            #     "description": "Number of times the product has been mentioned in the mainstream media",
+            #     "display_name": "news mentions",
+            #     "display_provider": "",
+            #     "icon": "https://twitter.com/favicon.ico",
+            #     "provider_name": "Altmetric.com",
+            #     "provider_url": "http://altmetric.com",
+            #     "audience": "public",
+            #     "engagement_type": "discussed",
+            #     "milestones": fives_then_orders_of_magnitude(),
+            #     "metric_debut_date": "2014-09-17"                
+            # },            
             "impressions": {
                 "description": "Number of times a tweet about the product has appeared in someone's twitter stream",
                 "display_name": "impressions",
@@ -1078,7 +1102,7 @@ genre_icons = {
     "book": "icon-book",
     "book chapter": "icon-bookmark-empty",  # chapter anthology
     "thesis": "icon-align-center",  # dissertation
-
+    "peer review": "icon-comment-alt",
 }
 
 

@@ -3,7 +3,7 @@ angular.module('accounts.allTheAccounts', [
 ])
 
 .factory('AllTheAccounts', function(){
-
+  
   var importedProducts = []
   var accounts = {
 //    academia_edu: {
@@ -92,6 +92,21 @@ angular.module('accounts.allTheAccounts', [
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",
       extra: "If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."
+    },
+
+    publons: {
+      displayName: "Publons",
+      url: "https://publons.com",
+      sync: true,
+      descr: "Publons hosts and aggregates open peer reviews.",
+      username:{
+            inputNeeded: "author page URL",
+            placeholder: "https://publons.com/author/12345/your-username/"
+      },
+      usernameCleanupFunction: function(x) {
+              if (typeof x==="undefined") return x;
+              return('https://'+x.replace('https://', ''))
+      }
     },
 
 //    researchgate: {
