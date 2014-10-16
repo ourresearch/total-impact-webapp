@@ -519,6 +519,7 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
+  'giftSubscriptionPage',
   'productPage',
   'genrePage',
   'services.genreConfigs',
@@ -956,6 +957,24 @@ angular.module("genrePage", [
 
 
 
+angular.module( 'giftSubscriptionPage', [
+    'security',
+    'services.page',
+    'services.tiMixpanel'
+  ])
+
+  .config(function($routeProvider) {
+    $routeProvider
+
+    .when('/buy-subscriptions', {
+      templateUrl: 'gift-subscription-page/gift-subscription-page.tpl.html',
+      controller: 'landingPageCtrl'
+    })
+  })
+
+  .controller("giftSubscriptionPageCtrl", function(){
+    console.log("gift-subscription-page controller ran.")
+  })
 angular.module("googleScholar", [
  "security",
  "resources.users"
@@ -5667,7 +5686,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -6152,6 +6171,20 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "   </div>\n" +
     "</div>\n" +
     "");
+}]);
+
+angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("gift-subscription-page/gift-subscription-page.tpl.html",
+    "<div id=\"gift-subscription-page\">\n" +
+    "   <div class=\"header\">\n" +
+    "      <h2>Buy multiple subscriptions</h2>\n" +
+    "      <div class=\"more\">\n" +
+    "         Want to get Impactstory for your department, lab, or organization?\n" +
+    "         Excellent choice.\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "</div>");
 }]);
 
 angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
