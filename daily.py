@@ -217,8 +217,7 @@ def populate_profile_deets(profile):
                 pass
         citation_metric = product.get_metric_by_name("scopus", "citations")
         if citation_metric:
-            print citation_metric.current_value
-            citations[str(citation_metric.current_value)] += 1    
+            citations[citation_metric.current_value] += 1    
         mendeley_disciplines[product.mendeley_discipline] += 1
 
  
