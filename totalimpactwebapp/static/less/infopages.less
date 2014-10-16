@@ -70,7 +70,7 @@ div.infopage.landing {
       }
    }
    div.top-screen{
-      border-bottom: 1px solid #999;
+      border-bottom: 1px solid #ccc;
       position:relative;
       height: 820px;
       display:table;
@@ -89,28 +89,25 @@ div.infopage.landing {
 
 
       div#tagline {
-         margin-bottom: 120px;
          text-align: center;
          display: table-cell;
          vertical-align: middle;
          width: 100%;
-         margin-top: -150px;
 
          img.big-logo {
             height: 80px;
          }
          h1 {
             color: @linkColor;
-            font-size: 45px;
-            font-family: 'lato', helvetica, arial, sans-serif;
-            font-weight: 900;
-            margin: 20px auto 30px;
+            font-size: 60px;
+            font-weight: 300;
+            margin: 20px auto 40px;
          }
          div.main-testimonial {
             color: #555;
-            font-size: 26px;
+            font-size: 24px;
             line-height: 1.4;
-            width: 580px;
+            width: 520px;
             text-align: center;
             margin: 0 auto;
             div.quote-source {
@@ -119,9 +116,8 @@ div.infopage.landing {
          }
 
          #call-to-action {
-            margin: 40px auto;
+            margin: 40px auto 0;
             #signup-button {
-               font-weight: bold;
             }
             #secondary-cta-button {
                margin-left: 30px;
@@ -141,15 +137,14 @@ div.infopage.landing {
             padding-bottom: 20px;
             h3 {
                margin:0 0 20px;
-               font-weight: 300;
-               font-size: 14px;
-               color: #999;
+               font-size: 12px;
+               color: #555;
 
             }
             img {
                height: 40px;
                margin: 0 10px;
-               opacity: .7;
+               opacity: .5;
             }
 
             span.divider {
@@ -181,16 +176,50 @@ div.infopage.landing {
    }
 }
 
+
 div#selling-points{
    .clearfix();
-   margin-top: 50px;
+   margin-top: 150px;
 
    .selling-point {
-      display:none;
+      width: 700px;
+      margin: 0 auto;
+      clear:both;
+      padding-bottom: 150px;
+      div.img {
+         width: 300px;
+         text-align: center;
+         i {
+            font-size: 150px;
+            &.icon-unlock-alt {color: #5cb85c;}
+            &.icon-trophy {color: #f0ad4e;}
+            &.icon-bullhorn {color: #428bca;}
+            &.icon-lightbulb {color: #d9534f;}
+         }
+      }
+      h3 {
+         margin: 0 0 20px 0;
+         font-size: 30px;
+         color: #555;
+         font-weight: normal;
+      }
+      div.copy {
+         font-size: 16px;
+         font-weight: 300;
+      }
+
+      &:nth-child(odd){
+         div.img {float: right;}
+      }
+
+      &:nth-child(even){
+         div.img {float: left;}
+      }
    }
 
 
    ul {
+      display:none;
       li {
          float:left;
          width: 30%;
@@ -219,51 +248,56 @@ div#selling-points{
 }
 
 
-div#testimonials {
-   display: none;
-   border-top: 1px solid #999;
-   margin-top: 100px;
+div.testimonials {
+   border-top: 1px solid #ccc;
    padding-top: 50px;
-   li {
-      @imgWidth: 100px;
+   div.testimonial {
+      @imgWidth: 40px;
+      text-align: center;
+      width: 800px;
+      margin: 0 auto;
+      font-weight: 300;
       img {
-         margin: 0 20px;
+         margin: 5px;
          width: @imgWidth;
          .border-radius(@imgWidth/2, @imgWidth/2, @imgWidth/2, @imgWidth/2);
          border: 1px solid #eee;
       }
       q {
-         font-size: 22px;
+         font-size: 50px;
          color: #555;
-         padding-top: @imgWidth/3;
          display:block;
       }
       cite {
          display:block;
-         font-size: 70%;
+         font-size: 14px;
          font-weight: 300;
       }
-
-      &:nth-child(odd){
-         img {
-            float:left;
-         }
-      }
-
-      &:nth-child(even){
-         text-align: right;
-         img {
-            float:right;
-         }
-      }
-
    }
 }
 
 div.bottom-cta {
-   display:none;
    text-align: center;
    margin-top: 100px;
+   a {
+      margin: 0 5px;
+   }
+}
+
+div.landing-page-footer {
+   text-align: center;
+   margin: 70px 0 150px;
+   a {
+      color: #999;
+      display: inline-block;
+      margin: 0 20px;
+      font-size: 13px;
+      font-weight: 300;
+      &:hover {
+         text-decoration: underline;
+      }
+   }
+
 }
 
 

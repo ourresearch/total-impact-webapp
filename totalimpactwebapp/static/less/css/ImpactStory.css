@@ -6917,7 +6917,7 @@ div.infopage.landing div.toolbar-container a.login i {
   margin-left: 5px;
 }
 div.infopage.landing div.top-screen {
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #ccc;
   position: relative;
   height: 820px;
   display: table;
@@ -6934,28 +6934,25 @@ div.infopage.landing div.top-screen div.top-logo img {
   margin-left: -90px;
 }
 div.infopage.landing div.top-screen div#tagline {
-  margin-bottom: 120px;
   text-align: center;
   display: table-cell;
   vertical-align: middle;
   width: 100%;
-  margin-top: -150px;
 }
 div.infopage.landing div.top-screen div#tagline img.big-logo {
   height: 80px;
 }
 div.infopage.landing div.top-screen div#tagline h1 {
   color: #ff4000;
-  font-size: 45px;
-  font-family: 'lato', helvetica, arial, sans-serif;
-  font-weight: 900;
-  margin: 20px auto 30px;
+  font-size: 60px;
+  font-weight: 300;
+  margin: 20px auto 40px;
 }
 div.infopage.landing div.top-screen div#tagline div.main-testimonial {
   color: #555;
-  font-size: 26px;
+  font-size: 24px;
   line-height: 1.4;
-  width: 580px;
+  width: 520px;
   text-align: center;
   margin: 0 auto;
 }
@@ -6963,10 +6960,7 @@ div.infopage.landing div.top-screen div#tagline div.main-testimonial div.quote-s
   font-size: 14px;
 }
 div.infopage.landing div.top-screen div#tagline #call-to-action {
-  margin: 40px auto;
-}
-div.infopage.landing div.top-screen div#tagline #call-to-action #signup-button {
-  font-weight: bold;
+  margin: 40px auto 0;
 }
 div.infopage.landing div.top-screen div#tagline #call-to-action #secondary-cta-button {
   margin-left: 30px;
@@ -6984,14 +6978,13 @@ div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-su
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported h3 {
   margin: 0 0 20px;
-  font-weight: 300;
-  font-size: 14px;
-  color: #999;
+  font-size: 12px;
+  color: #555;
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported img {
   height: 40px;
   margin: 0 10px;
-  opacity: .7;
+  opacity: .5;
 }
 div.infopage.landing div.top-screen div.bottom-of-top-screen div.featured-and-supported span.divider {
   display: inline-block;
@@ -7016,7 +7009,7 @@ div.infopage.landing div.top-screen div.bottom-of-top-screen div.ask-for-more i 
 }
 div#selling-points {
   clear: both;
-  margin-top: 50px;
+  margin-top: 150px;
 }
 div#selling-points:before,
 div#selling-points:after {
@@ -7035,6 +7028,47 @@ div#selling-points:after {
   clear: both;
 }
 div#selling-points .selling-point {
+  width: 700px;
+  margin: 0 auto;
+  clear: both;
+  padding-bottom: 150px;
+}
+div#selling-points .selling-point div.img {
+  width: 300px;
+  text-align: center;
+}
+div#selling-points .selling-point div.img i {
+  font-size: 150px;
+}
+div#selling-points .selling-point div.img i.icon-unlock-alt {
+  color: #5cb85c;
+}
+div#selling-points .selling-point div.img i.icon-trophy {
+  color: #f0ad4e;
+}
+div#selling-points .selling-point div.img i.icon-bullhorn {
+  color: #428bca;
+}
+div#selling-points .selling-point div.img i.icon-lightbulb {
+  color: #d9534f;
+}
+div#selling-points .selling-point h3 {
+  margin: 0 0 20px 0;
+  font-size: 30px;
+  color: #555;
+  font-weight: normal;
+}
+div#selling-points .selling-point div.copy {
+  font-size: 16px;
+  font-weight: 300;
+}
+div#selling-points .selling-point:nth-child(odd) div.img {
+  float: right;
+}
+div#selling-points .selling-point:nth-child(even) div.img {
+  float: left;
+}
+div#selling-points ul {
   display: none;
 }
 div#selling-points ul li {
@@ -7058,56 +7092,66 @@ div#selling-points ul li h3 i {
   display: block;
   margin-bottom: 20px;
 }
-div#testimonials {
-  display: none;
-  border-top: 1px solid #999;
-  margin-top: 100px;
+div.testimonials {
+  border-top: 1px solid #ccc;
   padding-top: 50px;
 }
-div#testimonials li img {
-  margin: 0 20px;
-  width: 100px;
-  -webkit-border-top-right-radius: 50px;
-  -webkit-border-bottom-right-radius: 50px;
-  -webkit-border-bottom-left-radius: 50px;
-  -webkit-border-top-left-radius: 50px;
-  -moz-border-radius-topright: 50px;
-  -moz-border-radius-bottomright: 50px;
-  -moz-border-radius-bottomleft: 50px;
-  -moz-border-radius-topleft: 50px;
-  border-top-right-radius: 50px;
-  border-bottom-right-radius: 50px;
-  border-bottom-left-radius: 50px;
-  border-top-left-radius: 50px;
+div.testimonials div.testimonial {
+  text-align: center;
+  width: 800px;
+  margin: 0 auto;
+  font-weight: 300;
+}
+div.testimonials div.testimonial img {
+  margin: 5px;
+  width: 40px;
+  -webkit-border-top-right-radius: 20px;
+  -webkit-border-bottom-right-radius: 20px;
+  -webkit-border-bottom-left-radius: 20px;
+  -webkit-border-top-left-radius: 20px;
+  -moz-border-radius-topright: 20px;
+  -moz-border-radius-bottomright: 20px;
+  -moz-border-radius-bottomleft: 20px;
+  -moz-border-radius-topleft: 20px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  border-top-left-radius: 20px;
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 1px solid #eee;
 }
-div#testimonials li q {
-  font-size: 22px;
+div.testimonials div.testimonial q {
+  font-size: 50px;
   color: #555;
-  padding-top: 33.333333333333336px;
   display: block;
 }
-div#testimonials li cite {
+div.testimonials div.testimonial cite {
   display: block;
-  font-size: 70%;
+  font-size: 14px;
   font-weight: 300;
 }
-div#testimonials li:nth-child(odd) img {
-  float: left;
-}
-div#testimonials li:nth-child(even) {
-  text-align: right;
-}
-div#testimonials li:nth-child(even) img {
-  float: right;
-}
 div.bottom-cta {
-  display: none;
   text-align: center;
   margin-top: 100px;
+}
+div.bottom-cta a {
+  margin: 0 5px;
+}
+div.landing-page-footer {
+  text-align: center;
+  margin: 70px 0 150px;
+}
+div.landing-page-footer a {
+  color: #999;
+  display: inline-block;
+  margin: 0 20px;
+  font-size: 13px;
+  font-weight: 300;
+}
+div.landing-page-footer a:hover {
+  text-decoration: underline;
 }
 div#sources {
   width: 100%;

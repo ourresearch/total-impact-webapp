@@ -186,6 +186,8 @@ angular.module('accounts.allTheAccounts', [
 
     get: function(userDict){
 
+      console.log("running alltheaccounts.get()")
+
       var ret = []
       var accountsConfig = angular.copy(accounts)
 
