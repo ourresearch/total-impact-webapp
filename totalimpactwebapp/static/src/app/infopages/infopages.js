@@ -122,41 +122,47 @@ angular.module( 'infopages', [
     Page.setTitle("Share the full story of your research impact.")
   })
 
-  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, Page) {
+  .controller( 'faqPageCtrl', function faqPageCtrl ( $scope, $window, Page) {
+    $window.scrollTo(0, 0)
     Page.setTitle("FAQ")
     Page.setInfopage(true)
   })
 
-  .controller( 'legalPageCtrl', function faqPageCtrl ( $scope, Page) {
+  .controller( 'legalPageCtrl', function faqPageCtrl ( $scope, $window, Page) {
+    $window.scrollTo(0, 0)
     Page.setTitle("Legal")
     Page.setInfopage(true)
   })
 
-  .controller( 'metricsPageCtrl', function faqPageCtrl ( $scope, Page, providersInfo) {
+  .controller( 'metricsPageCtrl', function faqPageCtrl ( $scope,$window, Page, providersInfo) {
+    $window.scrollTo(0, 0)
     Page.setTitle("Metrics")
     Page.setInfopage(true)
     $scope.providers = providersInfo
     console.log("metrics page controller running")
   })
 
-  .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, Page ) {
+  .controller( 'aboutPageCtrl', function aboutPageCtrl ( $scope, $window, Page ) {
+    $window.scrollTo(0, 0)
     Page.setTitle("about")
     Page.setInfopage(true)
 
   })
 
-  .controller('advisorsPageCtrl', function($scope, Page) {
+  .controller('advisorsPageCtrl', function($scope, $window,Page) {
+    $window.scrollTo(0, 0)
     Page.setTitle("advisors")
     Page.setInfopage(true)
 
   })
-  .controller('SpreadTheWordCtrl', function($scope, Page) {
+  .controller('SpreadTheWordCtrl', function($scope, $window,Page) {
+    $window.scrollTo(0, 0)
     Page.setTitle("Spread the word")
     Page.setInfopage(true)
 
   })
 
-  .controller( 'collectionPageCtrl', function aboutPageCtrl ( $scope, Page ) {
+  .controller( 'collectionPageCtrl', function aboutPageCtrl ( $scope, $window,Page ) {
     Page.setTitle("Collections are retired")
     Page.setInfopage(true)
 
