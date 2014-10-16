@@ -440,7 +440,7 @@ class Product(db.Model):
                 url = u"{this_host}/product/{tiid}/pdf".format(
                     this_host=this_host, tiid=self.tiid)
 
-                if url and "localhost" in url:
+                if url and ("localhost" in url or "127.0.0.1" in url):
                     html = u"<p>Can't view uploaded file on localhost.  View it at <a href='{url}'>{url}</a>.</p>".format(
                             url=url)
                 else:
