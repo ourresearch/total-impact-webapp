@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-15
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-16
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6530,9 +6530,9 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "            Promotion with tenure is now official. Thank you Impactstory!\n" +
     "         </q>\n" +
     "         <cite>\n" +
-    "            <img src=\"http://i.imgur.com/yqjQpHw.pnghttp://i.imgur.com/yqjQpHw.png\" alt=\"\"/>\n" +
+    "            <img src=\"http://i.imgur.com/3nd9FfW.png\" alt=\"\"/>\n" +
     "            <span class=\"name\">\n" +
-    "               Ahmed Moustafa, University of Western Sydney\n" +
+    "               Ahmed Moustafa, American University in Cairo\n" +
     "            </span>\n" +
     "         </cite>\n" +
     "      </div>\n" +
