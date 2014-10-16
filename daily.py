@@ -10,14 +10,19 @@ from totalimpactwebapp.util import commit
 from totalimpactwebapp import db
 import tasks
 
-from sqlalchemy import and_, func
+from sqlalchemy import and_, func, between
 import datetime
 import os
 import requests
 import argparse
 import logging
 import time
-from collections import defaultdict
+import pickle
+from collections import defaultdict, Counter, OrderedDict
+import StringIO
+import csv
+import urllib
+import hashlib
 
 logger = logging.getLogger("webapp.daily")
 
@@ -105,6 +110,163 @@ def windowed_query(q, column, windowsize):
             yield row
 
 
+    orcid_id = db.Column(db.Text)
+    github_id = db.Column(db.Text)
+    slideshare_id = db.Column(db.Text)
+    twitter_id = db.Column(db.Text)
+    figshare_id = db.Column(db.Text)
+
+
+
+
+def csv_of_dict(mydicts):
+    (header, rows) = build_csv_rows_from_dict(mydicts)
+
+    mystream = StringIO.StringIO()
+    dw = csv.DictWriter(mystream, delimiter=',', dialect=csv.excel, fieldnames=header)
+    dw.writeheader()
+    for row in rows:
+        dw.writerow(row)
+    contents = mystream.getvalue()
+    mystream.close()
+    return contents
+
+
+def build_csv_rows_from_dict(mydicts):
+    columns = []
+    for dictrow in mydicts:
+        print dictrow
+        columns += dictrow.keys()
+    columns = sorted(list(set(columns)))
+
+    # make header row
+    ordered_column_names = OrderedDict([(col, None) for col in columns])
+
+    # body rows
+    rows = []
+    for dictrow in mydicts:
+        ordered_contents = OrderedDict()
+        for col in ordered_column_names:
+            try:
+                ordered_contents[col] = unicode(dictrow[col]).encode("utf8")
+            except (AttributeError, KeyError):
+                ordered_contents[col] = u""
+        rows += [ordered_contents]
+    return(ordered_column_names, rows)
+
+
+
+def populate_profile_deets(profile):
+    deets = defaultdict(int)
+    deets["url_slug"] = profile.url_slug
+    deets["email"] = profile.email
+    deets["full_name"] = profile.full_name
+    deets["created"] = profile.created.isoformat()
+    deets["is_subscriber"] = profile.is_subscribed
+    deets["is_paid_subscriber"] = profile.is_paid_subscriber
+    deets["is_unpaid_subscriber"] = profile.is_subscribed and not profile.is_paid_subscriber
+    deets["google_scholar_id"] = profile.google_scholar_id
+    deets["orcid_id"] = profile.orcid_id
+    deets["github_id"] = profile.github_id
+    deets["slideshare_id"] = profile.slideshare_id
+    deets["twitter_id"] = profile.twitter_id
+    deets["figshare_id"] = profile.figshare_id
+    deets["publons_id"] = profile.publons_id
+    deets["has_bio"] = (None != profile.bio)
+    deets["got_alert_email"] = (None != profile.last_email_sent)
+    deets["subscription_date"] = profile.subscription_start_date
+    deets["oa_badge"] = profile.awards[0].level_name
+
+    products = profile.display_products
+    deets["number_products"] = len(products)
+    deets["earliest_publication_year"] = "9999"
+    mendeley_disciplines = Counter()
+    badges = Counter()
+    highly_badges = Counter()
+    citations = Counter()
+    for product in products:
+        for award in product.awards:
+            badges[award.engagement_type] += 1
+            if award.is_highly:
+                highly_badges[award.engagement_type] += 1
+        if product.awards:
+            deets["products_with_awards"] += 1
+        if product.awards and product.genre=="article":
+            deets["articles_with_awards"] += 1
+        num_highly_awards_for_this_product = len([1 for award in product.awards if award.is_highly])
+        if num_highly_awards_for_this_product:
+            deets["num_highly_awards_for_this_product"] += 1
+        if product.has_file:
+            deets["uploaded_file"] += 1
+        if product.embed_markup:
+            deets["embed_markup"] += 1
+        if product.has_metrics:
+            deets["has_metrics"] += 1
+        if product.aliases and product.aliases.best_url:
+            if "peerj" in product.aliases.best_url:
+                deets["got_peerj"] += 1
+            if "arxiv" in product.aliases.best_url:
+                deets["got_arxiv"] += 1
+            if "plos" in product.aliases.best_url:
+                deets["got_plos"] += 1            
+        if product.biblio:
+            try:
+                if product.biblio.year < deets["earliest_publication_year"]:
+                    deets["earliest_publication_year"] = product.biblio.year
+            except AttributeError:
+                pass
+        citation_metric = product.get_metric_by_name("scopus", "citations")
+        if citation_metric:
+            print citation_metric.current_value
+            citations[str(citation_metric.current_value)] += 1    
+        mendeley_disciplines[product.mendeley_discipline] += 1
+
+ 
+    gravatar_url = "http://www.gravatar.com/avatar.php?"
+    gravatar_url += urllib.urlencode({'gravatar_id':hashlib.md5(profile.email.lower()).hexdigest()})
+    gravitar_img = requests.get(gravatar_url)
+    if gravitar_img:
+        deets["has_gravitar"] = True
+
+
+    deets["highly_badges"] = highly_badges.most_common(5)
+    deets["badges"] = badges.most_common(5)
+    deets["mendeley_discipline"] = mendeley_disciplines.most_common(3)
+    deets["num_genres"] = len(profile.genres)
+    print citations.most_common(100)
+    for citation in citations.most_common(100):
+        deets["hindex"] = citation
+        if citation < citations[citation]:
+            break
+    for genre_dict in profile.genres:
+        deets["genre_" + genre_dict.name] = genre_dict.num_products
+    return deets
+
+
+
+def profile_deets(url_slug=None, min_url_slug=None):
+
+    start_date = datetime.datetime.utcnow() - datetime.timedelta(days=44)
+    end_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)
+    q = db.session.query(Profile) \
+            .filter(Profile.created.between(start_date, end_date))
+
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    elif min_url_slug:
+        q = q.filter(Profile.url_slug>=min_url_slug)
+
+    profile_deets = []
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.info(u"profile_deets: {url_slug}".format(
+            url_slug=profile.url_slug))
+        profile_deets += [populate_profile_deets(profile)]
+        # print csv_of_dict(profile_deets)
+        # with open("profile_deets.pickle", "wb") as handle:
+        #   pickle.dump(profile_deets, handle)
+
+    print "****"
+    print csv_of_dict(profile_deets)
 
 
 
@@ -580,6 +742,8 @@ def main(function, args):
         count_news_for_subscribers(args["url_slug"], args["min_url_slug"])
     elif function=="drip_email":
         send_drip_emails(args["url_slug"], args["min_url_slug"])
+    elif function=="profile_deets":
+        profile_deets(args["url_slug"], args["min_url_slug"])
 
 
 
