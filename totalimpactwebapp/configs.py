@@ -848,6 +848,17 @@ providers = [
                 "engagement_type": "discussed",
                 "milestones": fives_then_orders_of_magnitude()
             },
+            "demographics": {
+                "description": "Countries where the product has been tweeted",
+                "display_name": "countries",
+                "display_provider": "Twitter",
+                "icon": "https://twitter.com/favicon.ico",
+                "provider_name": "Altmetric.com",
+                "provider_url": "http://twitter.com",
+                "audience": "public",
+                "engagement_type": "discussed",
+                "milestones": fives_then_orders_of_magnitude()
+            },            
             # "news": {
             #     "description": "Number of times the product has been mentioned in the mainstream media",
             #     "display_name": "news mentions",
