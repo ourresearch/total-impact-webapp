@@ -266,6 +266,7 @@ def profile_deets(url_slug=None, min_url_slug=None):
 
     print "****"
     print csv_of_dict(profile_deets)
+    time.sleep(30)
 
 
 
