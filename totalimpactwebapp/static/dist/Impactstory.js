@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-17
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -900,6 +900,7 @@ angular.module("genrePage", [
 
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
+      console.log("profileService.data watch triggered!", newVal, oldVal)
       if (newVal.about) {
         Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
       }
@@ -968,13 +969,86 @@ angular.module( 'giftSubscriptionPage', [
 
     .when('/buy-subscriptions', {
       templateUrl: 'gift-subscription-page/gift-subscription-page.tpl.html',
-      controller: 'landingPageCtrl'
+      controller: 'giftSubscriptionPageCtrl'
     })
   })
 
-  .controller("giftSubscriptionPageCtrl", function(){
+  .controller("giftSubscriptionPageCtrl", function($scope,
+                                         $http,
+                                         Page,
+                                         TiMixpanel,
+                                         Loading,
+                                         UserMessage) {
     console.log("gift-subscription-page controller ran.")
+
+    Page.setTitle("Donate")
+
+
+    var subscribeUser = function(url_slug, plan, token, coupon) {
+      console.log("running subscribeUser()", url_slug, plan, token, coupon)
+      return UsersSubscription.save(
+        {id: url_slug},
+        {
+          token: token,
+          plan: plan,
+          coupon: coupon
+        },
+        function(resp){
+          console.log("we subscribed a user, huzzah!", resp)
+          security.refreshCurrentUser() // refresh the currentUser from server
+          window.scrollTo(0,0)
+          UserMessage.set("settings.subscription.subscribe.success")
+          Loading.finish("subscribe")
+          TiMixpanel.track("User subscribed")
+
+
+        },
+        function(resp){
+          console.log("we failed to subscribe a user.", resp)
+          UserMessage.set("settings.subscription.subscribe.error")
+          Loading.finish("subscribe")
+        }
+      )
+    }
+
+    var donate = function(token){
+      console.log("this is where the donate function works. sends this token: ", token)
+      $http.post("/donate",
+        {stripe_token: token},
+        function(resp){}
+      )
+    }
+
+
+    $scope.formData = {}
+    $scope.cost = function(){
+      return $scope.formData.numSubscriptions * 60
+    }
+
+
+
+
+
+    $scope.handleStripe = function(status, response){
+
+      console.log("handleStripe() returned stuff from Stripe:", response)
+
+      Loading.start("donate")
+      console.log("in handleStripe(), got a response back from Stripe.js's call to the Stripe server:", status, response)
+      if (response.error) {
+        console.log("got an error instead of a token.")
+        UserMessage.set("settings.subscription.subscribe.error")
+
+      }
+      else {
+        console.log("yay, Stripe CC token created successfully! Now let's charge the card.")
+        donate(response.id)
+      }
+    }
+
   })
+
+
 angular.module("googleScholar", [
  "security",
  "resources.users"
@@ -1769,6 +1843,24 @@ angular.module('profileLinkedAccounts', [
 
 
   })
+angular.module( 'profileMap', [
+    'security',
+    'services.page',
+    'services.tiMixpanel'
+  ])
+
+.config(function($routeProvider) {
+  $routeProvider
+
+  .when('/:url_slug/map', {
+    templateUrl: 'profile-map/profile-map.tpl.html',
+    controller: 'ProfileMapCtrl'
+  })
+})
+
+.controller("ProfileMapCtrl", function(){
+  console.log("profile map ctrl ran.")
+})
 angular.module('profileSingleProducts', [
   'services.page',
   'resources.users',
@@ -4599,7 +4691,8 @@ angular.module("services.page")
       "/signup",
       "/about",
       "/advisors",
-      "/spread-the-word"
+      "/spread-the-word",
+      "/buy-subscriptions"
     ]
 
     $rootScope.$on('$routeChangeSuccess', function () {
@@ -4683,6 +4776,9 @@ angular.module("services.page")
 
 
     var getPageType = function(){
+      // no longer maintained...i think/hope no longer used
+      // as of Oct 16 2014
+
       var myPageType = "profile"
       var path = $location.path()
 
@@ -4785,6 +4881,7 @@ angular.module("services.page")
       },
 
       setName: function(name){
+        console.log("setting page name", name)
         pageName = name
       },
 
@@ -5686,7 +5783,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -6181,6 +6278,125 @@ angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run
     "      <div class=\"more\">\n" +
     "         Want to get Impactstory for your department, lab, or organization?\n" +
     "         Excellent choice.\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"main-content\">\n" +
+    "\n" +
+    "         <form stripe-form=\"handleStripe\"\n" +
+    "               name=\"giftSubscriptionForm\"\n" +
+    "               novalidate\n" +
+    "               class=\"form-horizontal upgrade-form\">\n" +
+    "\n" +
+    "            <!-- name on card -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
+    "               <div class=\"col-sm-9\">\n" +
+    "                  <input type=\"text\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         required\n" +
+    "                         name=\"card-holder-name\"\n" +
+    "                         id=\"card-holder-name\"\n" +
+    "                         placeholder=\"Card Holder's Name\">\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <!-- card number -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "              <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "              <div class=\"col-sm-9\">\n" +
+    "                <input type=\"text\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"card-number\"\n" +
+    "                       id=\"card-number\"\n" +
+    "                       required\n" +
+    "                       ng-model=\"number\"\n" +
+    "                       payments-validate=\"card\"\n" +
+    "                       payments-format=\"card\"\n" +
+    "                       payments-type-model=\"type\"\n" +
+    "                       ng-class=\"type\"\n" +
+    "                       placeholder=\"Credit Card Number\">\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <!-- expiration date -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "               <div class=\"col-sm-3\">\n" +
+    "                  <input type=\"text\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         required\n" +
+    "                         name=\"card-expiry\"\n" +
+    "                         id=\"card-expiry\"\n" +
+    "                         ng-model=\"expiry\"\n" +
+    "                         payments-validate=\"expiry\"\n" +
+    "                         payments-format=\"expiry\"\n" +
+    "                         placeholder=\"MM/YY\">\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <!-- CVV -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "              <div class=\"col-sm-3\">\n" +
+    "                <input type=\"text\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       required\n" +
+    "                       name=\"cvv\"\n" +
+    "                       id=\"cvv\"\n" +
+    "                       ng-model=\"cvc\"\n" +
+    "                       payments-validate=\"cvc\"\n" +
+    "                       payments-format=\"cvc\"\n" +
+    "                       payments-type-model=\"type\"\n" +
+    "                       placeholder=\"CVV\">\n" +
+    "              </div>\n" +
+    "              <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "                 <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <!-- number of annual subscriptions to get -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"num-subscriptions\">Number of subscriptions</label>\n" +
+    "               <div class=\"col-sm-3\">\n" +
+    "                  <input type=\"text\"\n" +
+    "                         ng-model=\"formData.numSubscriptions\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         required\n" +
+    "                         name=\"num-subscriptions\"\n" +
+    "                         id=\"num-subscriptions\"\n" +
+    "                         placeholder=\"10\">\n" +
+    "               </div>\n" +
+    "               <label class=\"col-sm-3 control-label\"\n" +
+    "                      ng-show=\"cost()\"\n" +
+    "                      for=\"num-subscriptions\">\n" +
+    "                  for\n" +
+    "                  <span class=\"value\">\n" +
+    "                     ${{ cost() }}\n" +
+    "                  </span>\n" +
+    "               </label>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "                     <button type=\"submit\"\n" +
+    "                             ng-disabled=\"donateForm.$invalid\"\n" +
+    "                             ng-show=\"!loading.is('subscribe')\"\n" +
+    "                             class=\"btn btn-success\">\n" +
+    "                        Purchase\n" +
+    "                     </button>\n" +
+    "                     <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
+    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                        <span class=\"text\">Processing&hellip;</span>\n" +
+    "                     </div>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "         </form>\n" +
+    "\n" +
     "      </div>\n" +
     "\n" +
     "   </div>\n" +
@@ -7396,6 +7612,15 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "           ng-include=\"'accounts/account.tpl.html'\">\n" +
     "      </div>\n" +
     "   </div>\n" +
+    "\n" +
+    "</div>");
+}]);
+
+angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-map/profile-map.tpl.html",
+    "<div id=\"profile-map\">\n" +
+    "   <h2>It's profile map time!</h2>\n" +
+    "\n" +
     "\n" +
     "</div>");
 }]);

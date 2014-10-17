@@ -179,6 +179,7 @@ angular.module("genrePage", [
 
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
+      console.log("profileService.data watch triggered!", newVal, oldVal)
       if (newVal.about) {
         Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
       }
