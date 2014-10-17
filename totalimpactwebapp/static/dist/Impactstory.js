@@ -519,6 +519,7 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
+  'profileMap',
   'giftSubscriptionPage',
   'productPage',
   'genrePage',
@@ -1858,8 +1859,10 @@ angular.module( 'profileMap', [
   })
 })
 
-.controller("ProfileMapCtrl", function(){
+.controller("ProfileMapCtrl", function(Page){
   console.log("profile map ctrl ran.")
+  Page.setName("map")
+
 })
 angular.module('profileSingleProducts', [
   'services.page',
@@ -8749,6 +8752,13 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "            <i class=\"icon-user left\"></i>\n" +
     "            <span class=\"text\">\n" +
     "               Overview\n" +
+    "            </span>\n" +
+    "            <div class=\"arrow\"></div>\n" +
+    "         </a>\n" +
+    "         <a href=\"/{{ profileAboutService.data.url_slug }}/map\" ng-class=\"{active: page.isNamed('map')}\">\n" +
+    "            <i class=\"icon-globe left\"></i>\n" +
+    "            <span class=\"text\">\n" +
+    "               Map\n" +
     "            </span>\n" +
     "            <div class=\"arrow\"></div>\n" +
     "         </a>\n" +

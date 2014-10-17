@@ -24,6 +24,7 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
+  'profileMap',
   'giftSubscriptionPage',
   'productPage',
   'genrePage',

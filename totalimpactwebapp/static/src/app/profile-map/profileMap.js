@@ -13,6 +13,8 @@ angular.module( 'profileMap', [
   })
 })
 
-.controller("ProfileMapCtrl", function(){
+.controller("ProfileMapCtrl", function(Page){
   console.log("profile map ctrl ran.")
+  Page.setName("map")
+
 })

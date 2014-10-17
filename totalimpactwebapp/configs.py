@@ -1106,7 +1106,7 @@ genre_icons = {
     'software': "icon-save",
     #'twitter': "icon-twitter",
     'video': "icon-facetime-video",
-    'webpage': "icon-globe",
+    'webpage': "icon-keyboard",
     'other': "icon-file-alt",
     'unknown': "icon-file-alt",
     "conference paper": "icon-list-alt",  # conference proceeding
