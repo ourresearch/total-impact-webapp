@@ -23,6 +23,7 @@ import StringIO
 import csv
 import urllib
 import hashlib
+import json
 
 logger = logging.getLogger("webapp.daily")
 
@@ -173,13 +174,13 @@ def populate_profile_deets(profile):
     deets["figshare_id"] = profile.figshare_id
     deets["publons_id"] = profile.publons_id
     deets["has_bio"] = (None != profile.bio)
-    deets["got_alert_email"] = (None != profile.last_email_sent)
+    deets["got_new_metrics_email"] = (None != profile.last_email_sent)
     deets["subscription_date"] = profile.subscription_start_date
     deets["oa_badge"] = profile.awards[0].level_name
 
     products = profile.display_products
     deets["number_products"] = len(products)
-    deets["earliest_publication_year"] = "9999"
+    deets["earliest_publication_year"] = 9999
     mendeley_disciplines = Counter()
     badges = Counter()
     highly_badges = Counter()
@@ -202,17 +203,17 @@ def populate_profile_deets(profile):
             deets["embed_markup"] += 1
         if product.has_metrics:
             deets["has_metrics"] += 1
-        if product.aliases and product.aliases.best_url:
-            if "peerj" in product.aliases.best_url:
+        if product.aliases and product.aliases.resolved_url:
+            if "peerj" in product.aliases.resolved_url:
                 deets["got_peerj"] += 1
-            if "arxiv" in product.aliases.best_url:
+            if "arxiv" in product.aliases.resolved_url:
                 deets["got_arxiv"] += 1
-            if "plos" in product.aliases.best_url:
+            if "plos" in product.aliases.resolved_url:
                 deets["got_plos"] += 1            
         if product.biblio:
             try:
-                if product.biblio.year < deets["earliest_publication_year"]:
-                    deets["earliest_publication_year"] = product.biblio.year
+                if product.biblio.year and int(product.biblio.year) < deets["earliest_publication_year"]:
+                    deets["earliest_publication_year"] = int(product.biblio.year)
             except AttributeError:
                 pass
         citation_metric = product.get_metric_by_name("scopus", "citations")
@@ -223,8 +224,9 @@ def populate_profile_deets(profile):
  
     gravatar_url = "http://www.gravatar.com/avatar.php?"
     gravatar_url += urllib.urlencode({'gravatar_id':hashlib.md5(profile.email.lower()).hexdigest()})
-    gravitar_img = requests.get(gravatar_url)
-    if gravitar_img:
+    gravatar_url += "?d=404"  #gravatar returns 404 if doesn't exist, with this
+    gravitar_response = requests.get(gravatar_url)
+    if gravitar_response.status_code==200:
         deets["has_gravitar"] = True
 
 
@@ -232,13 +234,20 @@ def populate_profile_deets(profile):
     deets["badges"] = badges.most_common(5)
     deets["mendeley_discipline"] = mendeley_disciplines.most_common(3)
     deets["num_genres"] = len(profile.genres)
-    print citations.most_common(100)
-    for citation in citations.most_common(100):
-        deets["hindex"] = citation
-        if citation < citations[citation]:
+
+    sorted_citations = citations.most_common()
+    sorted_citations.sort(key=lambda tup: tup[0]) 
+    number_of_papers_with_fewer_citations = 0
+    for (citations, count) in sorted_citations:
+        number_of_papers_with_fewer_citations += count
+        print citations, count, number_of_papers_with_fewer_citations
+        if citations > number_of_papers_with_fewer_citations:
             break
+        deets["hindex"] = citations
+
     for genre_dict in profile.genres:
         deets["genre_" + genre_dict.name] = genre_dict.num_products
+
     return deets
 
 
@@ -267,6 +276,7 @@ def profile_deets(url_slug=None, min_url_slug=None):
     print "****"
     print csv_of_dict(profile_deets)
     time.sleep(30)
+    # print json.dumps(profile_deets, sort_keys=True, indent=4)
 
 
 
