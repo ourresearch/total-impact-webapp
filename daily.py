@@ -236,14 +236,16 @@ def populate_profile_deets(profile):
     deets["num_genres"] = len(profile.genres)
 
     sorted_citations = citations.most_common()
-    sorted_citations.sort(key=lambda tup: tup[0]) 
-    number_of_papers_with_fewer_citations = 0
-    for (citations, count) in sorted_citations:
-        number_of_papers_with_fewer_citations += count
-        print citations, count, number_of_papers_with_fewer_citations
-        if citations > number_of_papers_with_fewer_citations:
+    sorted_citations.sort(key=lambda tup: tup[0], reverse=True) 
+    # print sorted_citations
+    number_of_papers_with_more_citations = 0
+    for (cites, count) in sorted_citations:
+        number_of_papers_with_more_citations += count
+        if number_of_papers_with_more_citations > cites:
             break
-        deets["hindex"] = citations
+        deets["hindex"] = number_of_papers_with_more_citations
+        # print deets["hindex"]
+    print deets["hindex"]
 
     for genre_dict in profile.genres:
         deets["genre_" + genre_dict.name] = genre_dict.num_products
@@ -273,10 +275,11 @@ def profile_deets(url_slug=None, min_url_slug=None):
         # with open("profile_deets.pickle", "wb") as handle:
         #   pickle.dump(profile_deets, handle)
 
+    print json.dumps(profile_deets, sort_keys=True, indent=4)
+
     print "****"
     print csv_of_dict(profile_deets)
     time.sleep(30)
-    # print json.dumps(profile_deets, sort_keys=True, indent=4)
 
 
 
