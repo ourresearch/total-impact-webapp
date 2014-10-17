@@ -254,10 +254,13 @@ def populate_profile_deets(profile):
 
 
 
-def profile_deets(url_slug=None, min_url_slug=None):
+def profile_deets(url_slug=None, 
+        min_url_slug=None, 
+        start_days_ago=44, 
+        end_days_ago=30):
 
-    start_date = datetime.datetime.utcnow() - datetime.timedelta(days=44)
-    end_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)
+    start_date = datetime.datetime.utcnow() - datetime.timedelta(days=start_days_ago)
+    end_date = datetime.datetime.utcnow() - datetime.timedelta(days=end_days_ago)
     q = db.session.query(Profile) \
             .filter(Profile.created.between(start_date, end_date))
 
@@ -756,7 +759,7 @@ def main(function, args):
     elif function=="drip_email":
         send_drip_emails(args["url_slug"], args["min_url_slug"])
     elif function=="profile_deets":
-        profile_deets(args["url_slug"], args["min_url_slug"])
+        profile_deets(args["url_slug"], args["min_url_slug"], args["start_days_ago"], args["end_days_ago"])
 
 
 
@@ -778,6 +781,8 @@ if __name__ == "__main__":
     parser.add_argument('--min_tiid', default=None, type=str, help="min_tiid")
     parser.add_argument('--min_url_slug', default=None, type=str, help="min_url_slug")
     parser.add_argument('--account_type', default=None, type=str, help="account_type")
+    parser.add_argument('--start_days_ago', default=44, type=int)
+    parser.add_argument('--end_days_ago', default=30, type=int)
 
     args = vars(parser.parse_args())
     print args
