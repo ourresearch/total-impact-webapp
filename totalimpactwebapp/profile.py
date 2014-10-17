@@ -17,6 +17,7 @@ from sqlalchemy import orm
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
 from collections import OrderedDict
+from collections import Counter
 from stripe import InvalidRequestError
 
 import requests
@@ -321,6 +322,22 @@ class Profile(db.Model):
     @cached_property
     def awards(self):
         return profile_award.make_awards_list(self)
+
+    @cached_property
+    def countries(self):
+        resp = {
+            "impactstory:views": {"GB": 33, "US": 22}, 
+            }
+        countries = Counter()
+        for product in self.display_products:
+            altmetric_com_demographics_metric = product.get_metric_by_name("altmetric_com", "demographics")
+            if altmetric_com_demographics_metric:
+                demos = altmetric_com_demographics_metric.most_recent_snap.raw_value
+                countries.update(demos["geo"]["twitter"])
+                # for (k, v) in demos["geo"]["twitter"].iteritems():
+                #     countries[k] += v
+        resp["altmetric_com:twitter"] = countries
+        return resp
 
 
     def make_url_slug(self, surname, given_name):
@@ -627,6 +644,7 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["account_products"] = profile.account_products
     profile_dict["account_products_dict"] = profile.account_products_dict
     profile_dict["drip_emails"] = profile.drip_emails
+    profile_dict["countries"] = profile.countries
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)
