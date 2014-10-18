@@ -3,6 +3,8 @@
 @import "animate.css";
 
 @import "xeditable.css";
+
+@import "jquery-jvectormap-2.0.0.css";
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -6856,6 +6858,45 @@ code {
   left: 0;
   right: 0;
   z-index: 99999;
+}
+/* profile map
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+#profile-map-page h2 {
+  font-weight: 300;
+  font-size: 30px;
+  margin-top: 20px;
+  color: #333;
+}
+#profile-map-page #profile-map {
+  width: 800px;
+  height: 500px;
+  margin-top: 50px;
+}
+#profile-map-page .jvectormap-zoomout,
+#profile-map-page .jvectormap-zoomin {
+  height: auto;
+  width: auto;
+  background: #999;
+}
+div.jvectormap-tip {
+  z-index: 999999;
+  padding: 5px 10px;
+  font-family: lato, helvetica, arial, sans-serif;
+}
+div.jvectormap-tip ul li {
+  font-size: 14px;
+}
+div.jvectormap-tip ul li img {
+  margin-right: 5px;
+}
+div.jvectormap-tip ul li span.name {
+  font-weight: 300;
+}
+div.jvectormap-tip ul li span.val {
+  font-weight: bold;
+  margin-left: 5px;
 }
 /* info pages in general
 *****************************************************************************
