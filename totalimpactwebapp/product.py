@@ -318,8 +318,7 @@ class Product(db.Model):
     def is_free_to_read(self):
         return self.has_file or self.biblio.free_fulltext_host
 
-    # not a property right now so it won't make the JSON bigger
-    @cached_property  #temp
+    @cached_property
     def countries(self):
 
         countries = defaultdict(dict)
