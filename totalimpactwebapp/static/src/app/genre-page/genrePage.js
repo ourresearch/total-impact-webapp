@@ -5,6 +5,7 @@ angular.module("genrePage", [
   'security',
   'services.loading',
   'services.timer',
+  'services.selectedProducts',
   'services.userMessage'
 ])
 
