@@ -33,8 +33,8 @@ class Interaction(db.Model):
     event = db.Column(db.Text)
     ip = db.Column(db.Text)
     headers = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
-    country = db.Column(Text)       # ALTER TABLE interaction ADD country text;
-    user_type = db.Column(Text)     # ALTER TABLE interaction ADD user_type text;
+    country = db.Column(db.Text)       # ALTER TABLE interaction ADD country text;
+    user_type = db.Column(db.Text)     # ALTER TABLE interaction ADD user_type text;
 
     def __init__(self, **kwargs):
         insights = get_ip_insights(self.ip)
