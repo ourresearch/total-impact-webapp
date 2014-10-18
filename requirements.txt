@@ -11,7 +11,7 @@ Flask-SQLAlchemy==0.16
 Flask-WTF==0.6
 Jinja2==2.7.2
 PyPDF2==1.23
-SQLAlchemy==0.8.0
+SQLAlchemy==0.9.8
 WTForms==1.0.1
 Werkzeug==0.8.3
 analytics-python==0.4.2
@@ -25,6 +25,7 @@ chardet==1.0.1
 dnspython==1.11.1
 docopt==0.4.0
 eventlet==0.14.0
+geoip2==2.0.1
 gunicorn==0.14.3
 heroku==0.1.4
 iso8601==0.1.4
