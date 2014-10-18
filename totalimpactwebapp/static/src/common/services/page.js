@@ -29,7 +29,8 @@ angular.module("services.page")
       "/signup",
       "/about",
       "/advisors",
-      "/spread-the-word"
+      "/spread-the-word",
+      "/buy-subscriptions"
     ]
 
     $rootScope.$on('$routeChangeSuccess', function () {
@@ -113,6 +114,9 @@ angular.module("services.page")
 
 
     var getPageType = function(){
+      // no longer maintained...i think/hope no longer used
+      // as of Oct 16 2014
+
       var myPageType = "profile"
       var path = $location.path()
 
@@ -215,6 +219,7 @@ angular.module("services.page")
       },
 
       setName: function(name){
+        console.log("setting page name", name)
         pageName = name
       },
 

@@ -19,6 +19,13 @@
             </span>
             <div class="arrow"></div>
          </a>
+         <a href="/{{ profileAboutService.data.url_slug }}/map" ng-class="{active: page.isNamed('map')}">
+            <i class="icon-globe left"></i>
+            <span class="text">
+               Map
+            </span>
+            <div class="arrow"></div>
+         </a>
          <div class="nav-group genres">
             <ul>
                <li ng-repeat="(genreName, genreCount) in profileService.getGenreCounts() | orderBy: 'genreName'">
