@@ -13,7 +13,10 @@ angular.module( 'profileMap', [
   })
 })
 
-.controller("ProfileMapCtrl", function($scope, Page){
+.controller("ProfileMapCtrl", function($scope,
+                                       $location,
+                                       $routeParams,
+                                       Page){
   console.log("profile map ctrl ran.")
   Page.setName("map")
   Page.setTitle("Map")
@@ -48,8 +51,8 @@ angular.module( 'profileMap', [
 
         var ret = ("<li>" +
           "<img src='" + iconPath + "'>" +
-          "<span class='name'>"+ metricLabel +"</span>" +
           "<span class='val'>" + metricValue + "</span>" +
+          "<span class='name'>"+ metricLabel +"</span>" +
           "</li>")
 
         return ret
@@ -100,7 +103,13 @@ angular.module( 'profileMap', [
               normalizeFunction: 'polynomial'
             }]
           },
-          onRegionTipShow: makeRegionTipHandler(newVal.countries)
+          onRegionTipShow: makeRegionTipHandler(newVal.countries),
+          onRegionClick: function(event, countryCode){
+            console.log("country code click!", countryCode)
+            $location.path($routeParams.url_slug + "/map/" + countryCode)
+            $location.path("/foo")
+            window.location.path("/foo")
+          }
         })
       })
     }
