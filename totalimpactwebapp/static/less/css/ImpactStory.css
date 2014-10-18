@@ -6884,6 +6884,7 @@ div.jvectormap-tip {
   z-index: 999999;
   padding: 5px 10px;
   font-family: lato, helvetica, arial, sans-serif;
+  opacity: .9;
 }
 div.jvectormap-tip ul li {
   font-size: 14px;
@@ -6893,10 +6894,10 @@ div.jvectormap-tip ul li img {
 }
 div.jvectormap-tip ul li span.name {
   font-weight: 300;
+  margin-left: 5px;
 }
 div.jvectormap-tip ul li span.val {
   font-weight: bold;
-  margin-left: 5px;
 }
 /* info pages in general
 *****************************************************************************

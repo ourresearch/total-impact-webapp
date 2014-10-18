@@ -13,7 +13,11 @@ angular.module( 'profileMap', [
   })
 })
 
-.controller("ProfileMapCtrl", function($scope, Page){
+.controller("ProfileMapCtrl", function($scope,
+                                       $location,
+                                       $rootScope,
+                                       $routeParams,
+                                       Page){
   console.log("profile map ctrl ran.")
   Page.setName("map")
   Page.setTitle("Map")
@@ -41,15 +45,15 @@ angular.module( 'profileMap', [
           iconPath = '/static/img/favicons/impactstory_views.ico'
           metricLabel = "Impactstory views"
         }
-        else if (metricName == "mendeley:bookmarks"){
-          iconPath = '/static/img/favicons/mendeley_bookmarks.ico'
-          metricLabel = "Mendeley bookmarks"
+        else if (metricName == "mendeley:readers"){
+          iconPath = '/static/img/favicons/mendeley_readers.ico'
+          metricLabel = "Mendeley readers"
         }
 
         var ret = ("<li>" +
           "<img src='" + iconPath + "'>" +
-          "<span class='name'>"+ metricLabel +"</span>" +
           "<span class='val'>" + metricValue + "</span>" +
+          "<span class='name'>"+ metricLabel +"</span>" +
           "</li>")
 
         return ret
@@ -59,6 +63,7 @@ angular.module( 'profileMap', [
       var contents = "<ul>"
       contents += makeTipMetricLine("altmetric_com:tweets")
       contents += makeTipMetricLine("impactstory:views")
+      contents += makeTipMetricLine("mendeley:readers")
       contents += "</ul>"
 
       element.html(element.html() + contents);
@@ -100,7 +105,14 @@ angular.module( 'profileMap', [
               normalizeFunction: 'polynomial'
             }]
           },
-          onRegionTipShow: makeRegionTipHandler(newVal.countries)
+          onRegionTipShow: makeRegionTipHandler(newVal.countries),
+          onRegionClick: function(event, countryCode){
+            console.log("country code click!", countryCode)
+            $rootScope.$apply(function(){
+              $location.path($routeParams.url_slug + "/map/" + countryCode)
+
+            })
+          }
         })
       })
     }
