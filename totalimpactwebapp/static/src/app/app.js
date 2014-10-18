@@ -83,6 +83,10 @@ angular.module('app').run(function(security, $window, Page, $location, editableO
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
 
+
+
+
+
   editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
   angular.element($window).bind("scroll", function(event) {

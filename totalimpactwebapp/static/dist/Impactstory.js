@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-17
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-18
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -577,6 +577,10 @@ angular.module('app').run(function(security, $window, Page, $location, editableO
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
+
+
+
+
 
   editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
@@ -1859,9 +1863,102 @@ angular.module( 'profileMap', [
   })
 })
 
-.controller("ProfileMapCtrl", function(Page){
+.controller("ProfileMapCtrl", function($scope, Page){
   console.log("profile map ctrl ran.")
   Page.setName("map")
+  Page.setTitle("Map")
+
+
+
+  function makeRegionTipHandler(countriesData){
+    console.log("making the region tip handler with", countriesData)
+
+
+    return (function(event, element, countryCode){
+
+      function makeTipMetricLine(metricName){
+        var metricValue = countriesData[countryCode][metricName]
+        if (!metricValue) {
+          return ""
+        }
+        var iconPath
+        var metricLabel
+        if (metricName == "altmetric_com:tweets") {
+          iconPath = '/static/img/favicons/altmetric_com_tweets.ico'
+          metricLabel = "Tweets"
+        }
+        else if (metricName == "impactstory:views"){
+          iconPath = '/static/img/favicons/impactstory_views.ico'
+          metricLabel = "Impactstory views"
+        }
+        else if (metricName == "mendeley:bookmarks"){
+          iconPath = '/static/img/favicons/mendeley_bookmarks.ico'
+          metricLabel = "Mendeley bookmarks"
+        }
+
+        var ret = ("<li>" +
+          "<img src='" + iconPath + "'>" +
+          "<span class='name'>"+ metricLabel +"</span>" +
+          "<span class='val'>" + metricValue + "</span>" +
+          "</li>")
+
+        return ret
+      }
+
+
+      var contents = "<ul>"
+      contents += makeTipMetricLine("altmetric_com:tweets")
+      contents += makeTipMetricLine("impactstory:views")
+      contents += "</ul>"
+
+      element.html(element.html() + contents);
+  //    element.html(element.html()+' (GDP - '+gdpData[code]+')');
+
+    })
+  }
+
+
+
+
+
+  $scope.$watch('profileService.data', function(newVal, oldVal){
+    console.log("profileService.data watch triggered from profileMap", newVal, oldVal)
+    if (newVal.countries) {
+      console.log("here is where we load le map", newVal.countries)
+
+      var countryCounts = {}
+      _.each(newVal.countries, function(myCountryCounts, myCountryCode){
+        countryCounts[myCountryCode] = myCountryCounts.sum
+      })
+
+      console.log("preparing to run the map", countryCounts)
+
+      $(function(){
+        console.log("running the map", countryCounts)
+        $("#profile-map").vectorMap({
+          map: 'world_mill_en',
+          backgroundColor: "#fff",
+          regionStyle: {
+            initial: {
+              fill: "#dddddd"
+            }
+          },
+          series: {
+            regions: [{
+              values: countryCounts,
+              scale: ['#C8EEFF', '#0071A4'],
+              normalizeFunction: 'polynomial'
+            }]
+          },
+          onRegionTipShow: makeRegionTipHandler(newVal.countries)
+        })
+      })
+    }
+  }, true);
+
+
+  // this shouldn't live here.
+
 
 })
 angular.module('profileSingleProducts', [
@@ -7621,8 +7718,14 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
 
 angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-map/profile-map.tpl.html",
-    "<div id=\"profile-map\">\n" +
-    "   <h2>It's profile map time!</h2>\n" +
+    "<div id=\"profile-map-page\">\n" +
+    "   <h2>Impact map</h2>\n" +
+    "\n" +
+    "   <div class=\"main-content\">\n" +
+    "      <div id=\"profile-map\"></div>\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
     "\n" +
     "\n" +
     "</div>");
