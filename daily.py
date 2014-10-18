@@ -762,6 +762,23 @@ def send_drip_emails(url_slug=None, min_url_slug=None):
             logger.info(u"in send_drip_emails, but NOT sending email to: {url_slug}".format(
                 url_slug=profile.url_slug))
 
+def ip_deets():
+    from totalimpactwebapp.interaction import Interaction
+    from totalimpactwebapp.interaction import get_ip_insights 
+    q = db.session.query(Interaction)
+    cache = {}
+    for interaction in windowed_query(q, Interaction.ip, 25):
+        if interaction.ip in cache:
+            interaction.country, interaction.user_type = cache[interaction.ip]
+        else:
+            insights = get_ip_insights(interaction.ip)
+            interaction.country = insights.country.iso_code
+            interaction.user_type = insights.traits.user_type
+            cache[interaction.ip] = interaction.country, interaction.user_type
+            print interaction.country, interaction.user_type
+        db.session.add(interaction)
+        commit(db)
+
 
 def main(function, args):
     if function=="emailreports":
@@ -793,6 +810,8 @@ def main(function, args):
         profile_deets(args["url_slug"], args["min_url_slug"], args["start_days_ago"], args["end_days_ago"])
     elif function=="new_mendeley":
         collect_new_mendeley(args["url_slug"], args["min_url_slug"])
+    elif function=="ip_deets":
+        ip_deets()
 
 
 
