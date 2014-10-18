@@ -328,14 +328,13 @@ class Profile(db.Model):
         resp = {
             "impactstory:views": {"GB": 33, "US": 22}, 
             }
+
         countries = Counter()
         for product in self.display_products:
             altmetric_com_demographics_metric = product.get_metric_by_name("altmetric_com", "demographics")
             if altmetric_com_demographics_metric:
-                demos = altmetric_com_demographics_metric.most_recent_snap.raw_value
-                countries.update(demos["geo"]["twitter"])
-                # for (k, v) in demos["geo"]["twitter"].iteritems():
-                #     countries[k] += v
+                new_countries = altmetric_com_demographics_metric.most_recent_snap.raw_value
+                countries.update(new_countries["geo"]["twitter"])
         resp["altmetric_com:twitter"] = countries
         return resp
 
