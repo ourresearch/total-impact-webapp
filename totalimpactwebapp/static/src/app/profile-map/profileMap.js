@@ -45,8 +45,8 @@ angular.module( 'profileMap', [
           iconPath = '/static/img/favicons/impactstory_views.ico'
           metricLabel = "Impactstory views"
         }
-        else if (metricName == "mendeley:bookmarks"){
-          iconPath = '/static/img/favicons/mendeley_bookmarks.ico'
+        else if (metricName == "mendeley:readers"){
+          iconPath = '/static/img/favicons/mendeley_readers.ico'
           metricLabel = "Mendeley readers"
         }
 
