@@ -326,27 +326,25 @@ class Profile(db.Model):
 
     @cached_property
     def countries(self):
-        nested_dict = {
-            "impactstory:views": {"GB": 33, "US": 22}, 
-            }
-
-        countries = Counter()
+        # aggregate into format like {"US": {"altmetric_com:tweets":2, "sum":2}}
+        country_dict = defaultdict(dict)
         for product in self.display_products:
-            altmetric_com_demographics_metric = product.get_metric_by_name("altmetric_com", "demographics")
-            if altmetric_com_demographics_metric:
-                new_countries = altmetric_com_demographics_metric.most_recent_snap.raw_value
-                countries.update(new_countries["geo"]["twitter"])
-        nested_dict["altmetric_com:twitter"] = countries
+            for country in product.countries:
+               for source in product.countries[country]:
+                    if not source in country_dict[country]:
+                        country_dict[country][source] = 0
+                    number_interactions = product.countries[country][source]
+                    country_dict[country][source] += number_interactions
 
-        flipped = defaultdict(dict)
-        for key, val in nested_dict.iteritems():
-            for subkey, subval in val.iteritems():
-                flipped[subkey][key] = subval
-                if "sum" in flipped[subkey]:
-                    flipped[subkey]["sum"] += subval
-                else:
-                    flipped[subkey]["sum"] = subval                    
-        return flipped
+        #calculate sums
+        for product in self.display_products:
+            for country in product.countries:
+               for source in product.countries[country]:
+                    if not "sum" in country_dict[country]:
+                        country_dict[country]["sum"] = 0
+                    country_dict[country]["sum"] += product.countries[country][source]
+
+        return country_dict
 
 
     def make_url_slug(self, surname, given_name):
