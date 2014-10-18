@@ -769,7 +769,6 @@ def ip_deets():
     cache = {}
     for interaction in windowed_query(q, Interaction.ip, 25):
         if interaction.ip in cache:
-            print "hit cache"
             interaction.country, interaction.user_type = cache[interaction.ip]
         else:
             insights = get_ip_insights(interaction.ip)
