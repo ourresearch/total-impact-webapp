@@ -10,7 +10,7 @@ from totalimpactwebapp.util import commit
 from totalimpactwebapp import db
 import tasks
 
-from sqlalchemy import and_, func, between
+from sqlalchemy import and_, or_, func, between
 import datetime
 import os
 import requests
@@ -420,6 +420,37 @@ def collect_embed(tiid=None, min_tiid=None):
             print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
 
 
+def collect_new_mendeley(url_slug=None, min_url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None))
+        if min_url_slug:
+            q = q.filter(Profile.url_slug>=min_url_slug)
+
+    start_time = datetime.datetime.utcnow()
+    number_profiles = 0.0
+    total_refreshes = 0
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        number_profiles += 1
+        number_refreshes = 0.0
+        print profile.url_slug, profile.id
+        for product in profile.display_products:
+            if product.get_metric_by_name("mendeley", "readers"):
+                number_refreshes += 1
+                refresh_products_from_tiids([product.tiid], source="scheduled")
+        if number_refreshes:
+            total_refreshes += number_refreshes
+            pause_length = min(number_refreshes * 2, 60)
+            print "pausing", pause_length, "seconds after refreshing", number_refreshes, "products"
+            time.sleep(pause_length)
+            print total_refreshes, "total refreshes across", number_profiles, "profiles"
+            elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+            print "elapsed seconds=", elapsed_seconds, ";  number profiles per second=", number_profiles/(0.1+elapsed_seconds)
+
+
+
+
 def linked_accounts(account_type, url_slug=None, min_url_slug=None):
     column_name = account_type+"_id"
     if url_slug:
@@ -760,8 +791,8 @@ def main(function, args):
         send_drip_emails(args["url_slug"], args["min_url_slug"])
     elif function=="profile_deets":
         profile_deets(args["url_slug"], args["min_url_slug"], args["start_days_ago"], args["end_days_ago"])
-
-
+    elif function=="new_mendeley":
+        collect_new_mendeley(args["url_slug"], args["min_url_slug"])
 
 
 
