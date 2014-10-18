@@ -18,6 +18,7 @@ from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
 from collections import OrderedDict
 from collections import Counter
+from collections import defaultdict
 from stripe import InvalidRequestError
 
 import requests
@@ -325,7 +326,7 @@ class Profile(db.Model):
 
     @cached_property
     def countries(self):
-        resp = {
+        nested_dict = {
             "impactstory:views": {"GB": 33, "US": 22}, 
             }
 
@@ -335,8 +336,17 @@ class Profile(db.Model):
             if altmetric_com_demographics_metric:
                 new_countries = altmetric_com_demographics_metric.most_recent_snap.raw_value
                 countries.update(new_countries["geo"]["twitter"])
-        resp["altmetric_com:twitter"] = countries
-        return resp
+        nested_dict["altmetric_com:twitter"] = countries
+
+        flipped = defaultdict(dict)
+        for key, val in nested_dict.iteritems():
+            for subkey, subval in val.iteritems():
+                flipped[subkey][key] = subval
+                if "sum" in flipped[subkey]:
+                    flipped[subkey]["sum"] += subval
+                else:
+                    flipped[subkey]["sum"] = subval                    
+        return flipped
 
 
     def make_url_slug(self, surname, given_name):
