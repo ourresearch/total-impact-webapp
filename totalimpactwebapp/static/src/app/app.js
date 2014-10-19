@@ -27,7 +27,7 @@ angular.module('app', [
   'profileMap',
   'giftSubscriptionPage',
   'productPage',
-  'genrePage',
+  'productListPage',
   'services.genreConfigs',
   'accountPage',
   'services.profileService',

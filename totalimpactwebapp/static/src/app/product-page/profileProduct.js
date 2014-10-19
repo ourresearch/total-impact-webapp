@@ -41,7 +41,6 @@ angular.module("productPage", [
     $routeParams,
     $location,
     $modal,
-    $cacheFactory,
     $compile,
     $sce,
     security,

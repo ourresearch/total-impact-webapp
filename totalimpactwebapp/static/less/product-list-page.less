@@ -1,8 +1,7 @@
 @import 'variables';
 
 
-div.genre-page {
-
+div.product-list-page {
 
 
 
@@ -13,7 +12,7 @@ div.genre-page {
    *****************************************************/
 
    div.header {
-      margin: 0 0 70px -@contentPaddingLeft;
+      margin: 0 0 0 -@contentPaddingLeft;
 
       div.header-content {
          padding: 20px 10px 10px @contentPaddingLeft;
@@ -121,108 +120,108 @@ div.genre-page {
    }
 
 
+   }
 
-      /*****************************************************
 
-      genre header product controls
+   /*****************************************************
 
-      *****************************************************/
+   genre header product controls
 
-      div.header-controls {
-//         background: #eee;
-         padding: 10px 10px 10px @contentPaddingLeft;
-         position: relative;
-         div.edit-controls {
-            margin-left: 5px;
-            button {
-               padding: 5px 10px;
-               opacity: .5;
+   *****************************************************/
+
+   div.product-list-controls {
+      margin: 0 0 30px -@contentPaddingLeft;
+      padding: 10px 10px 10px @contentPaddingLeft;
+      position: relative;
+      div.edit-controls {
+         margin-left: 5px;
+         button {
+            padding: 5px 10px;
+            opacity: .5;
+         }
+         span.global-selection-control {
+            width: 25px;
+            display: inline-block;
+            i {
+               font-size: 18px;
+               color: #777;
+               vertical-align: -2px;
             }
-            span.global-selection-control {
-               width: 25px;
-               display: inline-block;
-               i {
-                  font-size: 18px;
-                  color: #777;
-                  vertical-align: -2px;
+         }
+
+
+         span.actions {
+            &.has-selected-products-true {
+               button {
+                  opacity: 1;
                }
             }
-
-
-            span.actions {
-               &.has-selected-products-true {
-                  button {
-                     opacity: 1;
-                  }
-               }
-               span.action {
-                  margin-left: 1px;
-               }
-               div.genre-select-group {
-                  ul.dropdown-menu {
-                     li {
-                        font-size: 16px;
-                        &.instr {
-                           padding: 10px 0 0 20px;
+            span.action {
+               margin-left: 1px;
+            }
+            div.genre-select-group {
+               ul.dropdown-menu {
+                  li {
+                     font-size: 16px;
+                     &.instr {
+                        padding: 10px 0 0 20px;
+                     }
+                     a {
+                        color: #333;
+                        i {
+                           color: #555;
                         }
-                        a {
-                           color: #333;
-                           i {
-                              color: #555;
-                           }
-                        }
-
                      }
 
                   }
+
                }
-            } // end span.actions
-
-            span.num-selected {
-               font-size: 14px;
-               margin-left: 10px;
-               color: #555;
             }
+         } // end span.actions
 
+         span.num-selected {
+            font-size: 14px;
+            margin-left: 10px;
+            color: #555;
          }
 
-         div.sort-controls {
-            top: 0;
-            right: 0;
-            position: absolute;
-            margin: 5px 15px;
-            color: #555;
-            font-size: 14px;
-            .btn-group.sort-select-group {
-               vertical-align: top;
-               &.open {
-                  a.dropdown-toggle {
-                     border: none;
-                     box-shadow: none;
-                     -webkit-box-shadow: none;
-                     -moz-box-shadow:none;
-                     text-decoration: underline;
-                     color: #333;
+      }
 
-                  }
-               }
+      div.sort-controls {
+         top: 0;
+         right: 0;
+         position: absolute;
+         margin: 5px 15px;
+         color: #555;
+         font-size: 14px;
+         .btn-group.sort-select-group {
+            vertical-align: top;
+            &.open {
                a.dropdown-toggle {
-                  color: #555;
-                  padding: 2px 5px 2px 0;
-                  &:hover {
-                     text-decoration: underline;
-                  }
-                  font-weight: bold;
+                  border: none;
+                  box-shadow: none;
+                  -webkit-box-shadow: none;
+                  -moz-box-shadow:none;
+                  text-decoration: underline;
+                  color: #333;
+
                }
-               ul.dropdown-menu {
-                  li {
-                     font-size: 14px;
-                  }
+            }
+            a.dropdown-toggle {
+               color: #555;
+               padding: 2px 5px 2px 0;
+               &:hover {
+                  text-decoration: underline;
+               }
+               font-weight: bold;
+            }
+            ul.dropdown-menu {
+               li {
+                  font-size: 14px;
                }
             }
          }
       }
-
    }
 
 

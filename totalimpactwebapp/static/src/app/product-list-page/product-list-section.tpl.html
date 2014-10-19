@@ -1,0 +1,127 @@
+<div class="product-list-controls">
+   <div class="edit-controls" ng-if="security.isLoggedIn(url_slug)">
+
+      <!-- no products are selected. allow user to select all -->
+
+      <span class="global-selection-control">
+         <i class="icon-check-empty"
+            tooltip="Select all"
+            ng-show="SelectedProducts.count() == 0"
+            ng-click="SelectedProducts.addFromObjects(ProductList.get())"></i>
+
+
+      <!-- between zero and all products are selected. allow user to select all -->
+      <i class="icon-check-minus"
+         tooltip="Select all"
+         ng-show="SelectedProducts.containsAny() && SelectedProducts.count() < ProductList.get().length"
+         ng-click="SelectedProducts.addFromObjects(ProductList.get())"></i>
+
+      <!-- everything is selected. allow user to unselect all -->
+      <i class="icon-check"
+         tooltip="Unselect all"
+         ng-show="SelectedProducts.count() == ProductList.get().length"
+         ng-click="SelectedProducts.removeAll()"></i>
+       </span>
+
+      <span class="actions has-selected-products-{{ !!SelectedProducts.count() }}">
+
+         <span class="action">
+            <button type="button"
+                    ng-click="removeSelectedProducts()"
+                    tooltip="Delete selected items."
+                    class="btn btn-default btn-xs">
+               <i class="icon-trash"></i>
+            </button>
+
+         </span>
+
+         <span class="action">
+            <div class="btn-group genre-select-group" dropdown is-open="ProductList.genreChangeDropdown.isOpen">
+               <button type="button"
+                       tooltip-html-unsafe="Recategorize selected&nbsp;items"
+                       class="btn btn-default btn-xs dropdown-toggle">
+                  <i class="icon-folder-close-alt"></i>
+                  <span class="caret"></span>
+               </button>
+               <ul class="dropdown-menu">
+                  <li class="instr">Move to:</li>
+                  <li class="divider"></li>
+                  <li ng-repeat="genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']">
+                     <a ng-click="ProductList.changeProductsGenre(genreConfigForList.name)">
+                        <i class="{{ genreConfigForList.icon }} left"></i>
+                        {{ genreConfigForList.plural_name }}
+                     </a>
+                  </li>
+               </ul>
+            </div>
+         </span>
+      </span>
+
+      <span class="num-selected" ng-show="SelectedProducts.count() > 0">
+         <span class="val">{{ SelectedProducts.count() }}</span>
+         <span class="text">selected</span>
+      </span>
+
+   </div>
+
+   <div class="sort-controls">
+      <div class="btn-group sort-select-group" dropdown>
+      <span class="sort-by-label">
+         Sorting by
+      </span>
+         <a class="dropdown-toggle">
+            {{ ProductListSort.get().name }}
+            <span class="caret"></span>
+         </a>
+
+         <ul class="dropdown-menu">
+            <li class="sort-by-option" ng-repeat="sortConfig in ProductListSort.options()">
+               <a ng-click="ProductListSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
+            </li>
+         </ul>
+      </div>
+   </div>
+</div>
+
+<div class="products">
+   <ul class="products-list" ng-if="profileService.hasFullProducts()">
+      <li class="product genre-{{ product.genre }}"
+          ng-class="{first: $first}"
+          ng-repeat="product in ProductList.get() | orderBy: ProductListSort.get().keys"
+          id="{{ product.tiid }}"
+          on-repeat-finished>
+
+
+         <!-- users must be logged in -->
+         <div class="product-margin" ng-show="security.isLoggedIn(url_slug)">
+            <span class="select-product-controls"> <!--needed to style tooltip -->
+
+               <i class="icon-check-empty"
+                  ng-show="!SelectedProducts.contains(product.tiid)"
+                  ng-click="SelectedProducts.add(product.tiid)"></i>
+
+               <i class="icon-check"
+                  ng-show="SelectedProducts.contains(product.tiid)"
+                  ng-click="SelectedProducts.remove(product.tiid)"></i>
+
+            </span>
+            <span class="feature-product-controls">
+               <a class="feature-product"
+                  ng-click="pinboardService.pin(['product', product.tiid])"
+                  ng-if="!pinboardService.isPinned(['product', product.tiid])"
+                  tooltip="Feature this product on your profile front page">
+                  <i class="icon-star-empty"></i>
+               </a>
+               <a class="unfeature-product"
+                  ng-click="pinboardService.unPin(['product', product.tiid])"
+                  ng-if="pinboardService.isPinned(['product', product.tiid])"
+                  tooltip="This product is featured on your profile front page; click to unfeature.">
+                  <i class="icon-star"></i>
+               </a>
+            </span>
+
+         </div>
+         <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
+      </li>
+   </ul>
+</div>
