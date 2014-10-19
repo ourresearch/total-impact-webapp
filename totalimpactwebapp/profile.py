@@ -17,6 +17,8 @@ from sqlalchemy import orm
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy import func
 from collections import OrderedDict
+from collections import Counter
+from collections import defaultdict
 from stripe import InvalidRequestError
 
 import requests
@@ -321,6 +323,28 @@ class Profile(db.Model):
     @cached_property
     def awards(self):
         return profile_award.make_awards_list(self)
+
+    @cached_property
+    def countries(self):
+        # aggregate into format like {"US": {"altmetric_com:tweets":2, "sum":2}}
+        country_dict = defaultdict(dict)
+        for product in self.display_products:
+            for country in product.countries:
+               for source in product.countries[country]:
+                    if not source in country_dict[country]:
+                        country_dict[country][source] = 0
+                    number_interactions = product.countries[country][source]
+                    country_dict[country][source] += number_interactions
+
+        #calculate sums
+        for product in self.display_products:
+            for country in product.countries:
+               for source in product.countries[country]:
+                    if not "sum" in country_dict[country]:
+                        country_dict[country]["sum"] = 0
+                    country_dict[country]["sum"] += product.countries[country][source]
+
+        return country_dict
 
 
     def make_url_slug(self, surname, given_name):
@@ -627,6 +651,7 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["account_products"] = profile.account_products
     profile_dict["account_products_dict"] = profile.account_products_dict
     profile_dict["drip_emails"] = profile.drip_emails
+    profile_dict["countries"] = profile.countries
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)

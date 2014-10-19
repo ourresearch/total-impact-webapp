@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-18
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -493,6 +493,7 @@ angular.module('accounts.allTheAccounts', [
 
 })
 
+angular.module("accounts.allTheAccounts",["accounts.account"]).factory("AllTheAccounts",function(){var e=[],t={figshare:{displayName:"figshare",url:"http://figshare.com",sync:!0,descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",username:{inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345"},usernameCleanupFunction:function(e){return"undefined"==typeof e?e:"http://"+e.replace("http://","")}},github:{displayName:"GitHub",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",username:{inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in."}},google_scholar:{displayName:"Google Scholar",sync:!1,usernameCleanupFunction:function(e){return e},url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show scientists' articles as well as their citation impact.",username:{inputNeeded:"profile URL",placeholder:"http://scholar.google.ca/citations?user=your_user_id"}},orcid:{displayName:"ORCID",sync:!0,username:{inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."},usernameCleanupFunction:function(e){return e.replace("http://orcid.org/","")},url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},publons:{displayName:"Publons",url:"https://publons.com",sync:!0,descr:"Publons hosts and aggregates open peer reviews.",username:{inputNeeded:"author page URL",placeholder:"https://publons.com/author/12345/your-username/"},usernameCleanupFunction:function(e){return"undefined"==typeof e?e:"https://"+e.replace("https://","")}},slideshare:{displayName:"SlideShare",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",username:{help:'Your username is right after "slideshare.net/" in your profile\'s URL.',inputNeeded:"username"}},twitter:{displayName:"Twitter",sync:!0,usernameCleanupFunction:function(e){return"@"+e.replace("@","")},url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",username:{inputNeeded:"username",placeholder:"@example",help:"Your Twitter username is often written starting with @."}}},r=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},n=function(e){return e.endpoint?e.endpoint:makeName(e.displayName)},o=function(e){return e.replace(/ /g,"-").toLowerCase()};return{addProducts:function(t){e=e.concat(t)},getProducts:function(){return e},accountServiceNamesFromUserAboutDict:function(e){},foo:function(e){console.log("in foo")},get:function(e){console.log("in GET in alltheaccounts");var n=[],a=angular.copy(t);return console.log("accountsConfig",a),_.each(a,function(t,a){var s=a+"_id";t.username.value=e[s],t.accountHost=a,t.CSSname=o(t.displayName),t.logoPath=r(t.displayName),n.push(t)}),console.log("ret",n),_.sortBy(n,function(e){return e.displayName.toLocaleLowerCase()})}}});
 // setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
 // Underscore string functions: https://github.com/epeli/underscore.string
 _.mixin(_.str.exports());
@@ -519,6 +520,8 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
+  'profileMap',
+  'giftSubscriptionPage',
   'productPage',
   'genrePage',
   'services.genreConfigs',
@@ -575,6 +578,10 @@ angular.module('app').run(function(security, $window, Page, $location, editableO
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
+
+
+
+
 
   editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
@@ -701,23 +708,6 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   };
 }]);
 
-
-angular.module('deadProfile', []).config(function ($routeProvider) {
-
-
-    $routeProvider.when("/:url_slug/expired", {
-      templateUrl: "dead-profile/dead-profile.tpl.html",
-      controller: "DeadProfileCtrl"
-    })
-
-
-})
-
-
-.controller("DeadProfileCtrl", function($scope, security){
-    console.log("dead profile ctrl")
-    $scope.showLogin = security.showLogin
-  })
 angular.module("genrePage", [
   'resources.users',
   'services.page',
@@ -725,14 +715,15 @@ angular.module("genrePage", [
   'security',
   'services.loading',
   'services.timer',
+  'services.selectedProducts',
   'services.userMessage'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
 
-  $routeProvider.when("/:url_slug/products/:genre_name", {
-    templateUrl:'genre-page/genre-page.tpl.html',
-    controller:'GenrePageCtrl'
+  $routeProvider.when("/:url_slug/products/country/:country_name", {
+    templateUrl:'country-page/country-page.tpl.html',
+    controller:'CountryPageCtrl'
   })
 
 }])
@@ -750,36 +741,6 @@ angular.module("genrePage", [
   }
 })
 
-.factory("SelectedProducts", function(){
-  var tiids = []
-
-  return {
-    add: function(tiid){
-      return tiids.push(tiid)
-    },
-    addFromObjects: function(objects){
-      return tiids = _.pluck(objects, "tiid")
-    },
-    remove: function(tiid){
-      tiids = _.without(tiids, tiid)
-    },
-    removeAll: function(){
-      return tiids.length = 0
-    },
-    contains: function(tiid){
-      return _.contains(tiids, tiid)
-    },
-    containsAny: function(){
-      return tiids.length > 0
-    },
-    get: function(){
-      return tiids
-    },
-    count: function(){
-      return tiids.length
-    }
-  }
-})
 
 
 
@@ -899,6 +860,7 @@ angular.module("genrePage", [
 
 
     $scope.$watch('profileService.data', function(newVal, oldVal){
+      console.log("profileService.data watch triggered!", newVal, oldVal)
       if (newVal.about) {
         Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
       }
@@ -954,6 +916,324 @@ angular.module("genrePage", [
 
 
 
+
+
+
+angular.module('deadProfile', []).config(function ($routeProvider) {
+
+
+    $routeProvider.when("/:url_slug/expired", {
+      templateUrl: "dead-profile/dead-profile.tpl.html",
+      controller: "DeadProfileCtrl"
+    })
+
+
+})
+
+
+.controller("DeadProfileCtrl", function($scope, security){
+    console.log("dead profile ctrl")
+    $scope.showLogin = security.showLogin
+  })
+angular.module("genrePage", [
+  'resources.users',
+  'services.page',
+  'ui.bootstrap',
+  'security',
+  'services.loading',
+  'services.timer',
+  'services.selectedProducts',
+  'services.userMessage'
+])
+
+.config(['$routeProvider', function ($routeProvider, security) {
+
+  $routeProvider.when("/:url_slug/products/:genre_name", {
+    templateUrl:'genre-page/genre-page.tpl.html',
+    controller:'GenrePageCtrl'
+  })
+
+}])
+
+.factory("GenrePage", function(){
+  var cacheProductsSetting = false
+
+  return {
+    useCache: function(cacheProductsArg){  // setter or getter
+      if (typeof cacheProductsArg !== "undefined"){
+        cacheProductsSetting = !!cacheProductsArg
+      }
+      return cacheProductsSetting
+    }
+  }
+})
+
+
+
+
+.factory("GenreSort", function($location){
+
+  var configs = [
+    {
+      keys: ["-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "default",
+      urlName: "default"
+    } ,
+    {
+      keys: ["biblio.title", "-awardedness_score", '-metric_raw_sum'],
+      name: "title",
+      urlName: "title"
+    },
+    {
+      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "year",
+      urlName: "year"
+    },
+    {
+      keys: ["biblio.authors", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      name: "first author",
+      urlName: "first_author"
+    }
+  ]
+
+  function getCurrentConfig(){
+    var ret
+    ret = _.findWhere(configs, {urlName: $location.search().sort_by})
+    if (!ret){
+      ret = _.findWhere(configs, {urlName: "default"})
+    }
+    return ret
+  }
+
+
+  return {
+    get: getCurrentConfig,
+    set: function(name){
+      var myConfig = _.findWhere(configs, {name: name})
+      if (myConfig.name == "default"){
+        $location.search("sort_by", null)
+      }
+      else {
+        $location.search("sort_by", myConfig.urlName)
+      }
+    },
+    options: function(){
+      var currentName = getCurrentConfig().name
+      return _.filter(configs, function(config){
+        return config.name !== currentName
+      })
+    }
+  }
+})
+
+
+
+.controller('GenrePageCtrl', function (
+    $scope,
+    $rootScope,
+    $location,
+    $routeParams,
+    $modal,
+    $timeout,
+    $http,
+    $anchorScroll,
+    $cacheFactory,
+    $window,
+    $sce,
+    Users,
+    Product,
+    TiMixpanel,
+    UserProfile,
+    UserMessage,
+    Update,
+    Loading,
+    Tour,
+    Timer,
+    security,
+    GenreConfigs,
+    ProfileService,
+    ProfileAboutService,
+    SelectedProducts,
+    GenreSort,
+    PinboardService,
+    Page) {
+
+    $scope.pinboardService = PinboardService
+
+    SelectedProducts.removeAll()
+    $scope.SelectedProducts = SelectedProducts
+    if (!ProfileService.hasFullProducts()){
+      Loading.startPage()
+    }
+
+    $scope.sortBy = "default"
+    $scope.GenreSort = GenreSort
+
+
+    Timer.start("genreViewRender")
+    Page.setName($routeParams.genre_name)
+    $scope.url_slug = $routeParams.url_slug
+
+    var genreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    $scope.genre = genreConfig
+
+    $scope.genreChangeDropdown = {}
+
+    var rendering = true
+
+    $scope.isRendering = function(){
+      return rendering
+    }
+
+
+    $scope.$watch('profileService.data', function(newVal, oldVal){
+      console.log("profileService.data watch triggered!", newVal, oldVal)
+      if (newVal.about) {
+        Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
+      }
+    }, true);
+
+
+    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+      rendering = false
+      Loading.finishPage()
+      $timeout(function(){
+        var lastScrollPos = Page.getLastScrollPosition($location.path())
+        $window.scrollTo(0, lastScrollPos)
+      }, 0)
+      console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
+      )
+    });
+
+
+    $scope.removeSelectedProducts = function(){
+      console.log("removing products: ", SelectedProducts.get())
+      ProfileService.removeProducts(SelectedProducts.get())
+      SelectedProducts.removeAll()
+
+      // handle removing the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        $location.path($routeParams.url_slug)
+      }
+    }
+
+    $scope.changeProductsGenre = function(newGenre){
+      console.log("changing products genres: ", SelectedProducts.get())
+      $scope.genreChangeDropdown.isOpen = false
+
+      ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+      SelectedProducts.removeAll()
+
+      // handle moving the last product in our current genre
+      var productsInCurrentGenre = ProfileService.productsByGenre(genreConfig.name)
+      if (!productsInCurrentGenre.length){
+        var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
+        $location.path($routeParams.url_slug + "/products/" + newGenreUrlRepresentation)
+      }
+    }
+
+
+
+
+})
+
+
+
+
+
+
+
+angular.module( 'giftSubscriptionPage', [
+    'security',
+    'services.page',
+    'services.tiMixpanel'
+  ])
+
+  .config(function($routeProvider) {
+    $routeProvider
+
+    .when('/buy-subscriptions', {
+      templateUrl: 'gift-subscription-page/gift-subscription-page.tpl.html',
+      controller: 'giftSubscriptionPageCtrl'
+    })
+  })
+
+  .controller("giftSubscriptionPageCtrl", function($scope,
+                                         $http,
+                                         Page,
+                                         TiMixpanel,
+                                         Loading,
+                                         UserMessage) {
+    console.log("gift-subscription-page controller ran.")
+
+    Page.setTitle("Donate")
+
+
+    var subscribeUser = function(url_slug, plan, token, coupon) {
+      console.log("running subscribeUser()", url_slug, plan, token, coupon)
+      return UsersSubscription.save(
+        {id: url_slug},
+        {
+          token: token,
+          plan: plan,
+          coupon: coupon
+        },
+        function(resp){
+          console.log("we subscribed a user, huzzah!", resp)
+          security.refreshCurrentUser() // refresh the currentUser from server
+          window.scrollTo(0,0)
+          UserMessage.set("settings.subscription.subscribe.success")
+          Loading.finish("subscribe")
+          TiMixpanel.track("User subscribed")
+
+
+        },
+        function(resp){
+          console.log("we failed to subscribe a user.", resp)
+          UserMessage.set("settings.subscription.subscribe.error")
+          Loading.finish("subscribe")
+        }
+      )
+    }
+
+    var donate = function(token){
+      console.log("this is where the donate function works. sends this token: ", token)
+      $http.post("/donate",
+        {stripe_token: token},
+        function(resp){}
+      )
+    }
+
+
+    $scope.formData = {}
+    $scope.cost = function(){
+      return $scope.formData.numSubscriptions * 60
+    }
+
+
+
+
+
+    $scope.handleStripe = function(status, response){
+
+      console.log("handleStripe() returned stuff from Stripe:", response)
+
+      Loading.start("donate")
+      console.log("in handleStripe(), got a response back from Stripe.js's call to the Stripe server:", status, response)
+      if (response.error) {
+        console.log("got an error instead of a token.")
+        UserMessage.set("settings.subscription.subscribe.error")
+
+      }
+      else {
+        console.log("yay, Stripe CC token created successfully! Now let's charge the card.")
+        donate(response.id)
+      }
+    }
+
+  })
 
 
 angular.module("googleScholar", [
@@ -1750,6 +2030,131 @@ angular.module('profileLinkedAccounts', [
 
 
   })
+angular.module( 'profileMap', [
+    'security',
+    'services.page',
+    'services.tiMixpanel'
+  ])
+
+.config(function($routeProvider) {
+  $routeProvider
+
+  .when('/:url_slug/map', {
+    templateUrl: 'profile-map/profile-map.tpl.html',
+    controller: 'ProfileMapCtrl'
+  })
+})
+
+.controller("ProfileMapCtrl", function($scope,
+                                       $location,
+                                       $rootScope,
+                                       $routeParams,
+                                       Page){
+  console.log("profile map ctrl ran.")
+  Page.setName("map")
+  Page.setTitle("Map")
+
+
+
+  function makeRegionTipHandler(countriesData){
+    console.log("making the region tip handler with", countriesData)
+
+
+    return (function(event, element, countryCode){
+
+      function makeTipMetricLine(metricName){
+        var metricValue = countriesData[countryCode][metricName]
+        if (!metricValue) {
+          return ""
+        }
+        var iconPath
+        var metricLabel
+        if (metricName == "altmetric_com:tweets") {
+          iconPath = '/static/img/favicons/altmetric_com_tweets.ico'
+          metricLabel = "Tweets"
+        }
+        else if (metricName == "impactstory:views"){
+          iconPath = '/static/img/favicons/impactstory_views.ico'
+          metricLabel = "Impactstory views"
+        }
+        else if (metricName == "mendeley:readers"){
+          iconPath = '/static/img/favicons/mendeley_readers.ico'
+          metricLabel = "Mendeley readers"
+        }
+
+        var ret = ("<li>" +
+          "<img src='" + iconPath + "'>" +
+          "<span class='val'>" + metricValue + "</span>" +
+          "<span class='name'>"+ metricLabel +"</span>" +
+          "</li>")
+
+        return ret
+      }
+
+
+      var contents = "<ul>"
+      contents += makeTipMetricLine("altmetric_com:tweets")
+      contents += makeTipMetricLine("impactstory:views")
+      contents += makeTipMetricLine("mendeley:readers")
+      contents += "</ul>"
+
+      element.html(element.html() + contents);
+  //    element.html(element.html()+' (GDP - '+gdpData[code]+')');
+
+    })
+  }
+
+
+
+
+
+  $scope.$watch('profileService.data', function(newVal, oldVal){
+    console.log("profileService.data watch triggered from profileMap", newVal, oldVal)
+    if (newVal.countries) {
+      console.log("here is where we load le map", newVal.countries)
+
+      var countryCounts = {}
+      _.each(newVal.countries, function(myCountryCounts, myCountryCode){
+        countryCounts[myCountryCode] = myCountryCounts.sum
+      })
+
+      console.log("preparing to run the map", countryCounts)
+
+      $(function(){
+        console.log("running the map", countryCounts)
+        $("#profile-map").vectorMap({
+          map: 'world_mill_en',
+          backgroundColor: "#fff",
+          regionStyle: {
+            initial: {
+              fill: "#dddddd"
+            }
+          },
+          series: {
+            regions: [{
+              values: countryCounts,
+              scale: ['#C8EEFF', '#0071A4'],
+              normalizeFunction: 'polynomial'
+            }]
+          },
+          onRegionTipShow: makeRegionTipHandler(newVal.countries),
+          onRegionClick: function(event, countryCode){
+            console.log("country code click!", countryCode)
+            $rootScope.$apply(function(){
+              $location.path($routeParams.url_slug + "/map/" + countryCode)
+
+            })
+          }
+        })
+      })
+    }
+  }, true);
+
+
+  // this shouldn't live here.
+
+
+})
 angular.module('profileSingleProducts', [
   'services.page',
   'resources.users',
@@ -1835,6 +2240,7 @@ angular.module('profileSingleProducts', [
     }
 
   })
+angular.module("profile",["resources.users","resources.products","services.page","ui.bootstrap","security","services.loading","services.timer","profileSingleProducts","profileLinkedAccounts","services.userMessage","services.tour","directives.jQueryTools","update.update"]).config(["$routeProvider",function(e,r){e.when("/embed/:url_slug",{templateUrl:"profile/profile.tpl.html",controller:"ProfileCtrl"})}]).factory("UserProfile",function(e,r,t,o,n,i){var l={},u=!1;return{useCache:function(e){return"undefined"!=typeof e&&(u=!!e),u},makeAnchorLink:function(e,r){var o=e;return r&&(o+=":"+encodeURIComponent(r)),t.path()+"#"+o},filterProducts:function(e,r){var t=_.filter(e,function(e){return _.size(e.metrics)}),o=_.filter(e,function(e){return e.metrics&&0==_.size(e.metrics)});return"withMetrics"==r?t:"withoutMetrics"===r?o:t.concat(o)},scrollToCorrectLocation:function(){t.hash()&&r()},makeSlug:function(){l.url_slug=n.make(l.givenName,l.surname)},readyToCreateOnServer:function(){return l.url_slug&&!id},reset:function(){l={}},setId:function(e){id=e},getId:function(){return id},getSlug:function(){return l.url_slug},about:l}}).controller("ProfileCtrl",function(e,r,t,o,n,i,l,u,s,c,a,f,d,p,g,h,m,v,k,b,w,P,S,L,C){e.pinboardService=w,e.$watch("pinboardService.cols",function(e,r){w.saveState(!0)},!0),e.sortableOptions={},k.hasFullProducts()||(console.log("no full products!"),v.startPage()),S.start("profileViewRender"),S.start("profileViewRender.load"),C.setName("overview");var y=o.url_slug;i(function(){twttr.widgets.load()},1e3),e.profileLoading=k.isLoading,e.url_slug=y,e.hideSignupBannerNow=function(){e.hideSignupBanner=!0},e.refresh=function(){var e="/profile/"+y+"/products?action=refresh";console.log("POSTing to ",e),l.post(e,{}).success(function(e,r,t,o){console.log("POST returned. We're refreshing these tiids: ",e),renderProducts()})},e.humanDate=function(e){return moment(e).fromNow()},e.clickSignupLink=function(){p.track("Clicked profile footer signup link")},e.openProfileEmbedModal=function(){n.open({templateUrl:"profile/profile-embed-modal.tpl.html",controller:"profileEmbedModalCtrl",resolve:{url_slug:function(e){return e.when(y)}}})},e.sliceSortedCards=function(e,r,t){var o=_.sortBy(e,"sort_by").reverse(),n=o.concat([]);return n.slice(r,t)},e.nFormat=function(e){return e>=1e6?(e/1e6).toFixed(1).replace(/\.0$/,"")+"M":e>=1e3?(e/1e3).toFixed(1).replace(/\.0$/,"")+"k":e},e.$watch("profileService.data",function(e,r){k.hasFullProducts()&&v.finishPage(),e.full_name?(C.setTitle(e.about.full_name),L.isLoggedInPromise(y).then(function(){p.track("viewed own profile",{"Number of products":e.products.length}),0===e.products.length&&(console.log("logged-in user looking at own profile with no products. showing tour."),P.start(e.about))})):e.is404},!0)}).directive("backToProfile",function(e,r){return{restrict:"A",replace:!0,template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}' ng-disabled='loading.is()'><i class='icon-chevron-left left'></i>back to profile</a>",link:function(r,t){console.log("path: ",e.path()),r.returnLink=e.path().split("/")[1],"/embed"===r.returnLink&&(r.returnLink=null)}}});
 angular.module("profile", [
   'resources.users',
   'resources.products',
@@ -3858,6 +4264,7 @@ angular.module('resources.products',['ngResource'])
 
 
 
+angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -4549,6 +4956,9 @@ angular.module("services.loading")
     }
   }
 })
+angular.module("services.pinboardService",["resources.users"]).factory("PinboardService",function(n,o){function t(n){return g[e(n)]}function e(n){return"product"==n[0]?"one":"two"}function r(n){console.log("pinning this id: ",n),t(n).push(n),i()}function i(t){var e=o.getCurrentUserSlug();return e?t&&l()?!1:void n.save({id:e},{contents:g},function(n){},function(n){}):!1}function u(o){console.log("calling ProfilePinboard.get("+o+")",g,a),a.url_slug=o,n.get({id:o},function(n){g.one=n.one,g.two=n.two},function(n){console.log("no pinboard set yet."),c()})}function c(){g.one=[],g.two=[];for(var n in a)a.hasOwnProperty(n)&&delete a[n]}function l(){return!g.one.length&&!g.two.length}function s(n){return console.log("unpin this!",n),g[e(n)]=_.filter(t(n),function(o){return!_.isEqual(n,o)}),i(),!0}function f(n){return!!_.find(t(n),function(o){return _.isEqual(n,o)})}var a={},g={one:[],two:[]};return{cols:g,pin:r,unPin:s,isPinned:f,get:u,saveState:i,getUrlSlug:function(){return a.url_slug},clear:c}});
+angular.module("services.profileService",["resources.users"]).factory("ProfileService",function(e,r,n,t,o,u,c,i,s,d,a,l,f){function g(e){d.query({id:e,stubs:!0},function(e){F.products=e},function(e){console.log("stubs call failed",e)})}function p(e){return F.products||g(e),C=!0,l.createResource().get({id:e,embedded:!1},function(r){console.log("ProfileService got a response",r),_.each(F,function(e,r){delete F[r]}),angular.extend(F,r),C=!1,n.showUpdateModal(e,r.is_refreshing).then(function(r){console.log("updater (resolved):",r),p(e,!0)},function(e){})},function(e){console.log("ProfileService got a failure response",e),404==e.status&&(F.is404=!0),C=!1}).$promise}function v(e){return e.length?(_.each(e,function(e){var r=P(e);F.products.splice(r,1)}),t.setStr("Deleted "+e.length+" items.","success"),void d.delete({id:F.about.url_slug,tiids:e.join(",")},function(r){console.log("finished deleting",e),p(F.about.url_slug,!0)})):!1}function h(){return F.products?F.products[0]&&F.products[0].metrics?!0:void 0:!1}function m(e,r){return e.length?(_.each(e,function(e){var n=y(e);n&&(n.genre=r)}),t.setStr("Moved "+e.length+" items to "+s.get(r,"plural_name")+".","success"),void a.patch({commaSeparatedTiids:e.join(",")},{genre:r},function(e){console.log("ProfileService.changeProductsGenre() successful.",e),p(F.about.url_slug,!0)},function(e){console.log("ProfileService.changeProductsGenre() FAILED.",e)})):!1}function P(e){for(var r=0;r<F.products.length;r++)if(F.products[r].tiid==e)return r;return-1}function y(e){var r=P(e);return r>-1?F.products[r]:null}function S(){return C}function b(e,r){if("undefined"==typeof F.genres)return[];var n,t=_.findWhere(F.genres,{name:e});if("undefined"==typeof t)return[];var o=_.sortBy(t.cards,"sort_by"),n=o.concat([]).reverse();return n.slice(0,r).reverse()}function G(e){if("undefined"==typeof F.genres)return void 0;var r=_.findWhere(F.genres,{url_representation:e});return r}function W(e){if("undefined"==typeof F.products)return void 0;var r=_.where(F.products,{genre:e});return r}function B(){var e=_.countBy(F.products,function(e){return e.genre});return e}function R(e){return _.findWhere(F.products,{tiid:e})}function w(){for(var e in F)F.hasOwnProperty(e)&&delete F[e]}function x(e){return console.log("calling getAccountProducts"),"undefined"==typeof F.account_products?void 0:(console.log("account_products",F.account_products),_.findWhere(F.account_products,{index_name:e}))}function A(e){if(!F.genres)return!1;var r=[];_.each(F.genres,function(e){r.push(e.cards)});var n=_.flatten(r),t=_.findWhere(n,{genre_card_address:e});if(!t)return!1;var o=_.findWhere(F.genres,{name:t.genre}),u={genre_num_products:o.num_products,genre_icon:o.icon,genre_plural_name:o.plural_name,genre_url_representation:o.url_representation};return _.extend(t,u)}var C=!0,F={};return{data:F,loading:C,isLoading:S,get:p,productsByGenre:W,genreCards:b,productByTiid:R,removeProducts:v,changeProductsGenre:m,getAccountProduct:x,getFromPinId:A,getGenreCounts:B,hasFullProducts:h,clear:w,getUrlSlug:function(){return F&&F.about?F.about.url_slug:void 0}}}).factory("SelfCancellingProfileResource",["$resource","$q",function(e,r){var n=r.defer(),t=function(){n.resolve(),n=r.defer()},o=function(){return t(),e("/profile/:id",{},{get:{method:"GET",timeout:n.promise}})};return{createResource:o,cancelResource:t}}]);
+angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -4580,7 +4990,8 @@ angular.module("services.page")
       "/signup",
       "/about",
       "/advisors",
-      "/spread-the-word"
+      "/spread-the-word",
+      "/buy-subscriptions"
     ]
 
     $rootScope.$on('$routeChangeSuccess', function () {
@@ -4664,6 +5075,9 @@ angular.module("services.page")
 
 
     var getPageType = function(){
+      // no longer maintained...i think/hope no longer used
+      // as of Oct 16 2014
+
       var myPageType = "profile"
       var path = $location.path()
 
@@ -4766,6 +5180,7 @@ angular.module("services.page")
       },
 
       setName: function(name){
+        console.log("setting page name", name)
         pageName = name
       },
 
@@ -5360,6 +5775,37 @@ angular.module('services.routeChangeErrorHandler', [
     }
   })
 
+angular.module('services.selectedProducts', [])
+.factory("SelectedProducts", function(){
+  var tiids = []
+
+  return {
+    add: function(tiid){
+      return tiids.push(tiid)
+    },
+    addFromObjects: function(objects){
+      return tiids = _.pluck(objects, "tiid")
+    },
+    remove: function(tiid){
+      tiids = _.without(tiids, tiid)
+    },
+    removeAll: function(){
+      return tiids.length = 0
+    },
+    contains: function(tiid){
+      return _.contains(tiids, tiid)
+    },
+    containsAny: function(){
+      return tiids.length > 0
+    },
+    get: function(){
+      return tiids
+    },
+    count: function(){
+      return tiids.length
+    }
+  }
+})
 angular.module('services.slug', [])
 angular.module('services.slug')
 .factory('Slug', function(){
@@ -5667,7 +6113,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'country-page/country-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -5842,6 +6288,220 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "\n" +
     "\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("country-page/country-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("country-page/country-page.tpl.html",
+    "<div class=\"genre-page\">\n" +
+    "\n" +
+    "   <div class=\"wrapper\">\n" +
+    "\n" +
+    "      <div class=\"header\">\n" +
+    "         <div class=\"header-content\">\n" +
+    "\n" +
+    "            <h2>\n" +
+    "               <span class=\"count\">\n" +
+    "                  {{ profileService.productsByGenre(genre.name).length }}\n" +
+    "               </span>\n" +
+    "               <span class=\"text\">\n" +
+    "                  {{ genre.plural_name }}\n" +
+    "               </span>\n" +
+    "            </h2>\n" +
+    "            <div class=\"genre-summary\">\n" +
+    "               <div class=\"genre-summary-top\">\n" +
+    "                  <ul class=\"genre-cards-best\">\n" +
+    "\n" +
+    "                     <li class=\"genre-card\"\n" +
+    "                         ng-repeat=\"card in profileService.genreCards(genre.name, 3).reverse()\">\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "                     <span class=\"data\"\n" +
+    "                           tooltip-placement=\"bottom\"\n" +
+    "                           tooltip-html-unsafe=\"{{ card.tooltip }}\">\n" +
+    "                        <span class=\"img-and-value\">\n" +
+    "                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
+    "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
+    "                        </span>\n" +
+    "\n" +
+    "                           <span class=\"key\">\n" +
+    "                              <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                           </span>\n" +
+    "                        </span>\n" +
+    "\n" +
+    "                        <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "\n" +
+    "                           <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
+    "                              ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                              tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              class=\"feature-this\">\n" +
+    "                              <i class=\"icon-star-empty\"></i>\n" +
+    "                           </a>\n" +
+    "\n" +
+    "                           <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
+    "                              ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                              tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                              tooltip-placement=\"bottom\"\n" +
+    "                              class=\"unfeature-this\">\n" +
+    "                              <i class=\"icon-star\"></i>\n" +
+    "                           </a>\n" +
+    "\n" +
+    "                        </span>\n" +
+    "\n" +
+    "                     </li>\n" +
+    "                  </ul>\n" +
+    "                  <div class=\"clearfix\"></div>\n" +
+    "               </div>\n" +
+    "               <div class=\"genre-summary-more\">\n" +
+    "\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
+    "         <div class=\"header-controls\">\n" +
+    "            <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(url_slug)\">\n" +
+    "\n" +
+    "               <!-- no products are selected. allow user to select all -->\n" +
+    "\n" +
+    "               <span class=\"global-selection-control\">\n" +
+    "                  <i class=\"icon-check-empty\"\n" +
+    "                     tooltip=\"Select all\"\n" +
+    "                     ng-show=\"SelectedProducts.count() == 0\"\n" +
+    "                     ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))\"></i>\n" +
+    "\n" +
+    "\n" +
+    "               <!-- between zero and all products are selected. allow user to select all -->\n" +
+    "               <i class=\"icon-check-minus\"\n" +
+    "                  tooltip=\"Select all\"\n" +
+    "                  ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < profileService.productsByGenre(genre.name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.addFromObjects(profileService.productsByGenre(genre.name))\"></i>\n" +
+    "\n" +
+    "               <!-- everything is selected. allow user to unselect all -->\n" +
+    "               <i class=\"icon-check\"\n" +
+    "                  tooltip=\"Unselect all\"\n" +
+    "                  ng-show=\"SelectedProducts.count() == profileService.productsByGenre(genre.name).length\"\n" +
+    "                  ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
+    "            </span>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "               <span class=\"actions has-selected-products-{{ !!SelectedProducts.count() }}\">\n" +
+    "\n" +
+    "                  <span class=\"action\">\n" +
+    "                     <button type=\"button\"\n" +
+    "                             ng-click=\"removeSelectedProducts()\"\n" +
+    "                             tooltip=\"Delete selected items.\"\n" +
+    "                             class=\"btn btn-default btn-xs\">\n" +
+    "                        <i class=\"icon-trash\"></i>\n" +
+    "                     </button>\n" +
+    "\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"action\">\n" +
+    "                     <div class=\"btn-group genre-select-group\" dropdown is-open=\"genreChangeDropdown.isOpen\">\n" +
+    "                        <button type=\"button\"\n" +
+    "                                tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
+    "                                class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
+    "                           <i class=\"icon-folder-close-alt\"></i>\n" +
+    "                           <span class=\"caret\"></span>\n" +
+    "                        </button>\n" +
+    "                        <ul class=\"dropdown-menu\">\n" +
+    "                           <li class=\"instr\">Move to:</li>\n" +
+    "                           <li class=\"divider\"></li>\n" +
+    "                           <li ng-repeat=\"genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']\">\n" +
+    "                              <a ng-click=\"changeProductsGenre(genreConfigForList.name)\">\n" +
+    "                                 <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
+    "                                 {{ genreConfigForList.plural_name }}\n" +
+    "                              </a>\n" +
+    "                           </li>\n" +
+    "                        </ul>\n" +
+    "                     </div>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "\n" +
+    "               </span>\n" +
+    "\n" +
+    "               <span class=\"num-selected\" ng-show=\"SelectedProducts.count() > 0\">\n" +
+    "                  <span class=\"val\">{{ SelectedProducts.count() }}</span>\n" +
+    "                  <span class=\"text\">selected</span>\n" +
+    "               </span>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"sort-controls\">\n" +
+    "               <div class=\"btn-group sort-select-group\" dropdown>\n" +
+    "               <span class=\"sort-by-label\">\n" +
+    "                  Sorting by\n" +
+    "               </span>\n" +
+    "                  <a class=\"dropdown-toggle\">\n" +
+    "                     {{ GenreSort.get().name }}\n" +
+    "                     <span class=\"caret\"></span>\n" +
+    "                  </a>\n" +
+    "\n" +
+    "                  <ul class=\"dropdown-menu\">\n" +
+    "                     <li class=\"sort-by-option\" ng-repeat=\"sortConfig in GenreSort.options()\">\n" +
+    "                        <a ng-click=\"GenreSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "                     </li>\n" +
+    "                  </ul>\n" +
+    "               </div>\n" +
+    "\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"products\">\n" +
+    "         <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
+    "            <li class=\"product genre-{{ product.genre }}\"\n" +
+    "                ng-class=\"{first: $first}\"\n" +
+    "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy: GenreSort.get().keys\"\n" +
+    "                id=\"{{ product.tiid }}\"\n" +
+    "                on-repeat-finished>\n" +
+    "\n" +
+    "\n" +
+    "               <!-- users must be logged in -->\n" +
+    "               <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                  <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
+    "\n" +
+    "                     <i class=\"icon-check-empty\"\n" +
+    "                        ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +
+    "                        ng-click=\"SelectedProducts.add(product.tiid)\"></i>\n" +
+    "\n" +
+    "                     <i class=\"icon-check\"\n" +
+    "                        ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
+    "                        ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
+    "\n" +
+    "                  </span>\n" +
+    "                  <span class=\"feature-product-controls\">\n" +
+    "                     <a class=\"feature-product\"\n" +
+    "                        ng-click=\"pinboardService.pin(['product', product.tiid])\"\n" +
+    "                        ng-if=\"!pinboardService.isPinned(['product', product.tiid])\"\n" +
+    "                        tooltip=\"Feature this product on your profile front page\">\n" +
+    "                        <i class=\"icon-star-empty\"></i>\n" +
+    "                     </a>\n" +
+    "                     <a class=\"unfeature-product\"\n" +
+    "                        ng-click=\"pinboardService.unPin(['product', product.tiid])\"\n" +
+    "                        ng-if=\"pinboardService.isPinned(['product', product.tiid])\"\n" +
+    "                        tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
+    "                        <i class=\"icon-star\"></i>\n" +
+    "                     </a>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "               </div>\n" +
+    "               <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "            </li>\n" +
+    "         </ul>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -6152,6 +6812,139 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "   </div>\n" +
     "</div>\n" +
     "");
+}]);
+
+angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("gift-subscription-page/gift-subscription-page.tpl.html",
+    "<div id=\"gift-subscription-page\">\n" +
+    "   <div class=\"header\">\n" +
+    "      <h2>Buy multiple subscriptions</h2>\n" +
+    "      <div class=\"more\">\n" +
+    "         Want to get Impactstory for your department, lab, or organization?\n" +
+    "         Excellent choice.\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"main-content\">\n" +
+    "\n" +
+    "         <form stripe-form=\"handleStripe\"\n" +
+    "               name=\"giftSubscriptionForm\"\n" +
+    "               novalidate\n" +
+    "               class=\"form-horizontal upgrade-form\">\n" +
+    "\n" +
+    "            <!-- name on card -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Name</label>\n" +
+    "               <div class=\"col-sm-9\">\n" +
+    "                  <input type=\"text\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         required\n" +
+    "                         name=\"card-holder-name\"\n" +
+    "                         id=\"card-holder-name\"\n" +
+    "                         placeholder=\"Card Holder's Name\">\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <!-- card number -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "              <label class=\"col-sm-3 control-label\" for=\"card-number\">Card Number</label>\n" +
+    "              <div class=\"col-sm-9\">\n" +
+    "                <input type=\"text\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       name=\"card-number\"\n" +
+    "                       id=\"card-number\"\n" +
+    "                       required\n" +
+    "                       ng-model=\"number\"\n" +
+    "                       payments-validate=\"card\"\n" +
+    "                       payments-format=\"card\"\n" +
+    "                       payments-type-model=\"type\"\n" +
+    "                       ng-class=\"type\"\n" +
+    "                       placeholder=\"Credit Card Number\">\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <!-- expiration date -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"card-expiry\">Expiration</label>\n" +
+    "               <div class=\"col-sm-3\">\n" +
+    "                  <input type=\"text\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         required\n" +
+    "                         name=\"card-expiry\"\n" +
+    "                         id=\"card-expiry\"\n" +
+    "                         ng-model=\"expiry\"\n" +
+    "                         payments-validate=\"expiry\"\n" +
+    "                         payments-format=\"expiry\"\n" +
+    "                         placeholder=\"MM/YY\">\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <!-- CVV -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"cvv\">Security code</label>\n" +
+    "              <div class=\"col-sm-3\">\n" +
+    "                <input type=\"text\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       required\n" +
+    "                       name=\"cvv\"\n" +
+    "                       id=\"cvv\"\n" +
+    "                       ng-model=\"cvc\"\n" +
+    "                       payments-validate=\"cvc\"\n" +
+    "                       payments-format=\"cvc\"\n" +
+    "                       payments-type-model=\"type\"\n" +
+    "                       placeholder=\"CVV\">\n" +
+    "              </div>\n" +
+    "              <div class=\"col-sm-2 cvv-graphic\">\n" +
+    "                 <img src=\"static/img/cvv-graphic.png\" alt=\"cvv graphic\"/>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <!-- number of annual subscriptions to get -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"num-subscriptions\">Number of subscriptions</label>\n" +
+    "               <div class=\"col-sm-3\">\n" +
+    "                  <input type=\"text\"\n" +
+    "                         ng-model=\"formData.numSubscriptions\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         required\n" +
+    "                         name=\"num-subscriptions\"\n" +
+    "                         id=\"num-subscriptions\"\n" +
+    "                         placeholder=\"10\">\n" +
+    "               </div>\n" +
+    "               <label class=\"col-sm-3 control-label\"\n" +
+    "                      ng-show=\"cost()\"\n" +
+    "                      for=\"num-subscriptions\">\n" +
+    "                  for\n" +
+    "                  <span class=\"value\">\n" +
+    "                     ${{ cost() }}\n" +
+    "                  </span>\n" +
+    "               </label>\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <div class=\"col-sm-offset-3 col-sm-9\">\n" +
+    "                     <button type=\"submit\"\n" +
+    "                             ng-disabled=\"donateForm.$invalid\"\n" +
+    "                             ng-show=\"!loading.is('subscribe')\"\n" +
+    "                             class=\"btn btn-success\">\n" +
+    "                        Purchase\n" +
+    "                     </button>\n" +
+    "                     <div class=\"working\" ng-show=\"loading.is('subscribe')\">\n" +
+    "                        <i class=\"icon-refresh icon-spin\"></i>\n" +
+    "                        <span class=\"text\">Processing&hellip;</span>\n" +
+    "                     </div>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "         </form>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
+    "   </div>\n" +
+    "</div>");
 }]);
 
 angular.module("google-scholar/google-scholar-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -7367,6 +8160,21 @@ angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).r
     "</div>");
 }]);
 
+angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("profile-map/profile-map.tpl.html",
+    "<div id=\"profile-map-page\">\n" +
+    "   <h2>Impact map</h2>\n" +
+    "\n" +
+    "   <div class=\"main-content\">\n" +
+    "      <div id=\"profile-map\"></div>\n" +
+    "\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "</div>");
+}]);
+
 angular.module("profile-single-products/profile-single-products.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-single-products/profile-single-products.tpl.html",
     "<div class=\"profile-single-products profile-subpage\" >\n" +
@@ -8491,6 +9299,13 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "            <i class=\"icon-user left\"></i>\n" +
     "            <span class=\"text\">\n" +
     "               Overview\n" +
+    "            </span>\n" +
+    "            <div class=\"arrow\"></div>\n" +
+    "         </a>\n" +
+    "         <a href=\"/{{ profileAboutService.data.url_slug }}/map\" ng-class=\"{active: page.isNamed('map')}\">\n" +
+    "            <i class=\"icon-globe left\"></i>\n" +
+    "            <span class=\"text\">\n" +
+    "               Map\n" +
     "            </span>\n" +
     "            <div class=\"arrow\"></div>\n" +
     "         </a>\n" +

@@ -11,9 +11,9 @@ angular.module("genrePage", [
 
 .config(['$routeProvider', function ($routeProvider, security) {
 
-  $routeProvider.when("/:url_slug/products/:genre_name", {
-    templateUrl:'genre-page/genre-page.tpl.html',
-    controller:'GenrePageCtrl'
+  $routeProvider.when("/:url_slug/products/country/:country_name", {
+    templateUrl:'country-page/country-page.tpl.html',
+    controller:'CountryPageCtrl'
   })
 
 }])

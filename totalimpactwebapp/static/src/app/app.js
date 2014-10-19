@@ -24,6 +24,8 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
+  'profileMap',
+  'giftSubscriptionPage',
   'productPage',
   'genrePage',
   'services.genreConfigs',
@@ -80,6 +82,10 @@ angular.module('app').run(function(security, $window, Page, $location, editableO
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
+
+
+
+
 
   editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
