@@ -768,6 +768,9 @@ def ip_deets():
     q = db.session.query(Interaction)
     cache = {}
     for interaction in windowed_query(q, Interaction.ip, 25):
+        if interaction.country:
+            continue
+            
         if interaction.ip in cache:
             interaction.country, interaction.user_type = cache[interaction.ip]
         else:

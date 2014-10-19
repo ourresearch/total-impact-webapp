@@ -256,8 +256,10 @@ class Product(db.Model):
     @cached_property
     def snaps_including_interactions(self):
         counts = Counter()
+        countries = Counter()
         for interaction in self.interactions:
             counts[(interaction.tiid, interaction.event)] += 1
+            countries[interaction.country] += 1
 
         interaction_snaps = []
         for (tiid, event) in dict(counts):
@@ -267,6 +269,14 @@ class Product(db.Model):
                             provider="impactstory", 
                             last_collected_date=datetime.datetime.utcnow())
             interaction_snaps.append(new_snap)
+
+        new_snap = Snap(tiid=self.tiid, 
+                        interaction="countries", 
+                        raw_value=dict(countries),
+                        provider="impactstory", 
+                        last_collected_date=datetime.datetime.utcnow())
+        interaction_snaps.append(new_snap)            
+
         return self.snaps + interaction_snaps
 
     @cached_property
@@ -341,9 +351,11 @@ class Product(db.Model):
                     countries[country]["mendeley:readers"] = country_data[country]
 
         # impactstory_views_metric = product.get_metric_by_name("impactstory", "countries")
-        country_data = {"GB": 33, "US": 22}
-        for country in country_data:
-            countries[country]["impactstory:views"] = country_data[country]
+        impactstory_views_metric = self.get_metric_by_name("impactstory", "countries")
+        if impactstory_views_metric:
+            country_data = impactstory_views_metric.most_recent_snap.raw_value
+            for country in country_data:
+                countries[country]["impactstory:views"] = country_data[country]
 
         return countries
 

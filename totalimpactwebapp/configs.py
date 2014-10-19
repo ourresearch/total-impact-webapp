@@ -128,7 +128,18 @@ providers = [
                 "audience": "public",
                 "engagement_type": "viewed",
                 "milestones": orders_of_magnitude()
-            }
+            },
+            "countries": {
+                "description": "the countries of the views of a product on Impactstory",
+                "display_name": "country",
+                "icon": "https://impactstory.org/static/img/favicon.ico",
+                "provider_name": "Impactstory",
+                "provider_url": "https://impactstory.org/",
+                "audience": "public",
+                "engagement_type": "viewed",
+                "hide_badge": True,
+                "milestones": orders_of_magnitude()
+            }            
         },
         "name": "impactstory",
         "provides_aliases": False,
