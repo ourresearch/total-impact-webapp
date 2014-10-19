@@ -24,6 +24,18 @@ angular.module("services.productList", [])
     }
   }
 
+
+  var removeSelectedProducts = function(){
+    console.log("removing products: ", SelectedProducts.get())
+    ProfileService.removeProducts(SelectedProducts.get())
+    SelectedProducts.removeAll()
+
+    // handle removing the last product in this particular product list
+    if (!get().length){
+      $location.path(ProfileService.getUrlSlug())
+    }
+  }
+
   var setQuery = function(dimension, value) {
     queryDimension = dimension
     queryValue = value
@@ -40,6 +52,7 @@ angular.module("services.productList", [])
 
   return {
     changeProductsGenre: changeProductsGenre,
+    removeSelectedProducts: removeSelectedProducts,
     setQuery: setQuery,
     get: get,
     genreChangeDropdown: genreChangeDropdown

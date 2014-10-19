@@ -1256,18 +1256,6 @@ angular.module("productListPage", [
       )
     });
 
-
-    $scope.removeSelectedProducts = function(){
-      console.log("removing products: ", SelectedProducts.get())
-      ProfileService.removeProducts(SelectedProducts.get())
-      SelectedProducts.removeAll()
-
-      // handle removing the last product in our current genre
-      var productsInCurrentGenre = ProfileService.productsByGenre(myGenreConfig.name)
-      if (!productsInCurrentGenre.length){
-        $location.path($routeParams.url_slug)
-      }
-    }
 })
 
 
@@ -5056,6 +5044,18 @@ angular.module("services.productList", [])
     }
   }
 
+
+  var removeSelectedProducts = function(){
+    console.log("removing products: ", SelectedProducts.get())
+    ProfileService.removeProducts(SelectedProducts.get())
+    SelectedProducts.removeAll()
+
+    // handle removing the last product in this particular product list
+    if (!get().length){
+      $location.path(ProfileService.getUrlSlug())
+    }
+  }
+
   var setQuery = function(dimension, value) {
     queryDimension = dimension
     queryValue = value
@@ -5072,6 +5072,7 @@ angular.module("services.productList", [])
 
   return {
     changeProductsGenre: changeProductsGenre,
+    removeSelectedProducts: removeSelectedProducts,
     setQuery: setQuery,
     get: get,
     genreChangeDropdown: genreChangeDropdown
@@ -7397,7 +7398,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "\n" +
     "         <span class=\"action\">\n" +
     "            <button type=\"button\"\n" +
-    "                    ng-click=\"removeSelectedProducts()\"\n" +
+    "                    ng-click=\"ProductList.removeSelectedProducts()\"\n" +
     "                    tooltip=\"Delete selected items.\"\n" +
     "                    class=\"btn btn-default btn-xs\">\n" +
     "               <i class=\"icon-trash\"></i>\n" +

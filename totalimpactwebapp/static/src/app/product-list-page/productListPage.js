@@ -95,18 +95,6 @@ angular.module("productListPage", [
       )
     });
 
-
-    $scope.removeSelectedProducts = function(){
-      console.log("removing products: ", SelectedProducts.get())
-      ProfileService.removeProducts(SelectedProducts.get())
-      SelectedProducts.removeAll()
-
-      // handle removing the last product in our current genre
-      var productsInCurrentGenre = ProfileService.productsByGenre(myGenreConfig.name)
-      if (!productsInCurrentGenre.length){
-        $location.path($routeParams.url_slug)
-      }
-    }
 })
 
 
