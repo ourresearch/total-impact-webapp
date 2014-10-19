@@ -44,7 +44,9 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 
 # set up Flask-DebugToolbar
+compress_json = os.getenv("COMPRESS_DEBUG", "False")=="True"
 if (os.getenv("FLASK_DEBUG", False) == "True"):
+    compress_json = False
     logger.info("Setting app.debug=True; Flask-DebugToolbar will display")
     app.debug = True
     app.config['DEBUG'] = True
@@ -54,7 +56,7 @@ if (os.getenv("FLASK_DEBUG", False) == "True"):
 
 # gzip responses and make it similar on staging and production
 Compress(app)
-app.config["COMPRESS_DEBUG"] = os.getenv("COMPRESS_DEBUG", "False")=="True"
+app.config["COMPRESS_DEBUG"] = compress_json
 
 # setup cache
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
