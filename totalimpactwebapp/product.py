@@ -343,6 +343,8 @@ class Product(db.Model):
                 pass
 
         mendeley_views_metric = self.get_metric_by_name("mendeley", "countries")
+        if not mendeley_views_metric:
+            mendeley_views_metric = self.get_metric_by_name("mendeley_new", "countries")
         if mendeley_views_metric:
             country_data_fullnames = mendeley_views_metric.most_recent_snap.raw_value
             if country_data_fullnames:

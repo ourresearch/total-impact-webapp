@@ -726,6 +726,27 @@ providers = [
         "url": "http://www.mendeley.com"
     },
 
+    {
+        "descr": " A research management tool for desktop and web.",
+        "metrics": {
+            "countries": {
+                "description": "Mendeley readers by country",
+                "display_name": "readers by country",
+                "icon": "http://www.mendeley.com/favicon.ico",
+                "provider_name": "Mendeley",
+                "provider_url": "http://www.mendeley.com/",
+                "value_type": "object",
+                "hide_badge": True,
+                "audience": "scholars",
+                "engagement_type": "saved",
+                "milestones": fives_then_orders_of_magnitude()
+            }
+        },
+        "name": "mendeley_new",
+        "provides_aliases": False,
+        "provides_metrics": True,
+        "url": "http://www.mendeley.com"
+    },
 
 
 
