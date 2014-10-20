@@ -342,7 +342,7 @@ class Product(db.Model):
             except KeyError:
                 pass
 
-        mendeley_views_metric = self.get_metric_by_name("mendeley_new", "countries")
+        mendeley_views_metric = self.get_metric_by_name("mendeley", "countries")
         if mendeley_views_metric:
             country_data_fullnames = mendeley_views_metric.most_recent_snap.raw_value
             if country_data_fullnames:

@@ -675,9 +675,9 @@ providers = [
     {
         "descr": " A research management tool for desktop and web.",
         "metrics": {
-            "career_stage": {
-                "description": "Percent of readers by career stage, for top three career stages (csv, api only)",
-                "display_name": "career stage, top 3 percentages",
+            "countries": {
+                "description": "Mendeley readers by country",
+                "display_name": "readers by country",
                 "icon": "http://www.mendeley.com/favicon.ico",
                 "provider_name": "Mendeley",
                 "provider_url": "http://www.mendeley.com/",
@@ -686,22 +686,10 @@ providers = [
                 "audience": "scholars",
                 "engagement_type": "saved",
                 "milestones": fives_then_orders_of_magnitude()
-            },
-            "country": {
-                "description": "Percent of readers by country, for top three countries (csv, api only)",
-                "display_name": "country, top 3 percentages",
-                "icon": "http://www.mendeley.com/favicon.ico",
-                "provider_name": "Mendeley",
-                "provider_url": "http://www.mendeley.com/",
-                "value_type": "object",
-                "hide_badge": True,
-                "audience": "scholars",
-                "engagement_type": "saved",
-                "milestones": fives_then_orders_of_magnitude()
-            },
+            }
             "discipline": {
-                "description": "Percent of readers by discipline, for top three disciplines (csv, api only)",
-                "display_name": "discipline, top 3 percentages",
+                "description": "Mendeley readers by discipline",
+                "display_name": "readers by discipline",
                 "icon": "http://www.mendeley.com/favicon.ico",
                 "provider_name": "Mendeley",
                 "provider_url": "http://www.mendeley.com/",
@@ -738,27 +726,6 @@ providers = [
         "url": "http://www.mendeley.com"
     },
 
-    {
-        "descr": " A research management tool for desktop and web.",
-        "metrics": {
-            "countries": {
-                "description": "Percent of readers by country, for top three countries (csv, api only)",
-                "display_name": "country, top 3 percentages",
-                "icon": "http://www.mendeley.com/favicon.ico",
-                "provider_name": "Mendeley",
-                "provider_url": "http://www.mendeley.com/",
-                "value_type": "object",
-                "hide_badge": True,
-                "audience": "scholars",
-                "engagement_type": "saved",
-                "milestones": fives_then_orders_of_magnitude()
-            }
-        },
-        "name": "mendeley_new",
-        "provides_aliases": False,
-        "provides_metrics": True,
-        "url": "http://www.mendeley.com"
-    },
 
 
 
