@@ -1,0 +1,25 @@
+<div class="product-list-page country-page">
+
+   <div class="header">
+      <div class="header-content country-header-content">
+
+         <h2>
+            <span class="intro-text">
+               <span class="count">
+                  {{ ProductList.get().length }} products
+               </span>
+                with impacts in
+            </span>
+            <span class="text">
+               {{ countryName }}
+            </span>
+            <span class="based-on">
+               based on tweets, Mendeley readers, and Impactstory views
+            </span>
+         </h2>
+      </div>
+   </div>
+
+   <div class="product-list-container" ng-include="'product-list-page/product-list-section.tpl.html'"></div>
+
+</div>

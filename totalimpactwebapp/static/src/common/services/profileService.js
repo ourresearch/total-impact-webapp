@@ -195,6 +195,18 @@ angular.module('services.profileService', [
       }
     }
 
+    function productsByCountry(countryCode){
+      if (typeof data.products == "undefined"){
+        return undefined
+      }
+      else {
+        var res = _.filter(data.products, function(product){
+          return _.contains(_.keys(product.countries), countryCode)
+        })
+        return res
+      }
+    }
+
     function productsByGenre(genreName){
       if (typeof data.products == "undefined"){
         return undefined
@@ -284,6 +296,7 @@ angular.module('services.profileService', [
       getFromPinId: getFromPinId,
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
+      productsByCountry: productsByCountry,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {

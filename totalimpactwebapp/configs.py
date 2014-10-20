@@ -727,7 +727,27 @@ providers = [
         "url": "http://www.mendeley.com"
     },
 
-
+    {
+        "descr": " A research management tool for desktop and web.",
+        "metrics": {
+            "countries": {
+                "description": "Percent of readers by country, for top three countries (csv, api only)",
+                "display_name": "country, top 3 percentages",
+                "icon": "http://www.mendeley.com/favicon.ico",
+                "provider_name": "Mendeley",
+                "provider_url": "http://www.mendeley.com/",
+                "value_type": "object",
+                "hide_badge": True,
+                "audience": "scholars",
+                "engagement_type": "saved",
+                "milestones": fives_then_orders_of_magnitude()
+            }
+        },
+        "name": "mendeley_new",
+        "provides_aliases": False,
+        "provides_metrics": True,
+        "url": "http://www.mendeley.com"
+    },
 
 
 
@@ -856,21 +876,10 @@ providers = [
                 "provider_name": "Altmetric.com",
                 "provider_url": "http://twitter.com",
                 "audience": "public",
+                "hide_badge": True,                
                 "engagement_type": "discussed",
                 "milestones": fives_then_orders_of_magnitude()
-            },            
-            # "news": {
-            #     "description": "Number of times the product has been mentioned in the mainstream media",
-            #     "display_name": "news mentions",
-            #     "display_provider": "",
-            #     "icon": "https://twitter.com/favicon.ico",
-            #     "provider_name": "Altmetric.com",
-            #     "provider_url": "http://altmetric.com",
-            #     "audience": "public",
-            #     "engagement_type": "discussed",
-            #     "milestones": fives_then_orders_of_magnitude(),
-            #     "metric_debut_date": "2014-09-17"                
-            # },            
+            },                       
             "impressions": {
                 "description": "Number of times a tweet about the product has appeared in someone's twitter stream",
                 "display_name": "impressions",
@@ -1106,7 +1115,7 @@ genre_icons = {
     'software': "icon-save",
     #'twitter': "icon-twitter",
     'video': "icon-facetime-video",
-    'webpage': "icon-globe",
+    'webpage': "icon-keyboard",
     'other': "icon-file-alt",
     'unknown': "icon-file-alt",
     "conference paper": "icon-list-alt",  # conference proceeding

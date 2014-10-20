@@ -24,9 +24,10 @@ angular.module('app', [
   'infopages',
   'signup',
   'passwordReset',
+  'profileMap',
   'giftSubscriptionPage',
   'productPage',
-  'genrePage',
+  'productListPage',
   'services.genreConfigs',
   'accountPage',
   'services.profileService',
@@ -35,6 +36,7 @@ angular.module('app', [
   'ui.sortable',
   'deadProfile',
   'services.pinboardService',
+  'services.countryNames',
   'settings',
   'xeditable',
   'ngProgress'
@@ -81,6 +83,10 @@ angular.module('app').run(function(security, $window, Page, $location, editableO
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
+
+
+
+
 
   editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 

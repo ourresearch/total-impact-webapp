@@ -6,7 +6,9 @@ import json
 import boto
 import requests
 from collections import Counter
+from collections import defaultdict
 import flask
+from iso3166 import countries
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -37,7 +39,7 @@ percentile_snap_creations = 0
 logger = logging.getLogger("tiwebapp.product")
 deprecated_genres = ["twitter", "blog"]
 
-ignore_snaps_older_than = arrow.utcnow().replace(days=-25).datetime
+ignore_snaps_older_than = arrow.utcnow().replace(days=-95).datetime
 
 snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
                     "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
@@ -60,6 +62,19 @@ def add_product_embed_markup(tiid):
     product.embed_markup = product.get_embed_markup() #alters an attribute, so caller should commit
     db.session.add(product)
     commit(db)
+
+def get_country_code(country_name):
+    if "Singapore" in country_name:
+        country_name = "Singapore"
+    if "Venezuela" in country_name:
+        country_name = "Venezuela, Bolivarian Republic of"
+    try:
+        code = countries.get(country_name).alpha2
+    except KeyError:
+        logger.debug(u"Couldn't find country code name for {country_name}".format(
+            country_name=country_name))
+        code = country_name
+    return code
 
 
 class Product(db.Model):
@@ -252,7 +267,6 @@ class Product(db.Model):
                             provider="impactstory", 
                             last_collected_date=datetime.datetime.utcnow())
             interaction_snaps.append(new_snap)
-
         return self.snaps + interaction_snaps
 
     @cached_property
@@ -303,6 +317,36 @@ class Product(db.Model):
     @cached_property
     def is_free_to_read(self):
         return self.has_file or self.biblio.free_fulltext_host
+
+    @cached_property
+    def countries(self):
+
+        countries = defaultdict(dict)
+
+        altmetric_twitter_metric = self.get_metric_by_name("altmetric_com", "demographics")
+        if altmetric_twitter_metric:
+            try:
+                country_data = altmetric_twitter_metric.most_recent_snap.raw_value["geo"]["twitter"]
+                for country in country_data:
+                    countries[country]["altmetric_com:tweets"] = country_data[country]
+            except KeyError:
+                pass
+
+        mendeley_views_metric = self.get_metric_by_name("mendeley_new", "countries")
+        if mendeley_views_metric:
+            country_data_fullnames = mendeley_views_metric.most_recent_snap.raw_value
+            if country_data_fullnames:
+                country_data = dict((get_country_code(k), v) for (k, v) in country_data_fullnames.iteritems())
+                for country in country_data:
+                    countries[country]["mendeley:readers"] = country_data[country]
+
+        # impactstory_views_metric = product.get_metric_by_name("impactstory", "countries")
+        country_data = {"GB": 33, "US": 22}
+        for country in country_data:
+            countries[country]["impactstory:views"] = country_data[country]
+
+        return countries
+
 
     def has_metric_this_good(self, provider, interaction, count):
         requested_metric = self.get_metric_by_name(provider, interaction)
