@@ -27,7 +27,7 @@ angular.module('app', [
   'profileMap',
   'giftSubscriptionPage',
   'productPage',
-  'genrePage',
+  'productListPage',
   'services.genreConfigs',
   'accountPage',
   'services.profileService',
@@ -36,6 +36,7 @@ angular.module('app', [
   'ui.sortable',
   'deadProfile',
   'services.pinboardService',
+  'services.countryNames',
   'settings',
   'xeditable',
   'ngProgress'

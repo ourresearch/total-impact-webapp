@@ -99,7 +99,6 @@ angular.module("profile", [
     $timeout,
     $http,
     $anchorScroll,
-    $cacheFactory,
     $window,
     $sce,
     Users,

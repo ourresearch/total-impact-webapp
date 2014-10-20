@@ -994,6 +994,12 @@ code {
       width: auto;
       background: #999;
    }
+
+   // grey (no metrics) countries shouldn't look clickable. this is
+   // kinda a hacky way to do that.
+   path[fill="#dddddd"] {
+      cursor: default;
+   }
 }
 div.jvectormap-tip {
    z-index: 999999;

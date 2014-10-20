@@ -31,7 +31,6 @@ angular.module('profileSingleProducts', [
   .controller("ImportSingleProductsFormCtrl", function($scope,
                                                        $location,
                                                        $routeParams,
-                                                       $cacheFactory,
                                                        Loading,
                                                        UsersProducts,
                                                        ProfileService,

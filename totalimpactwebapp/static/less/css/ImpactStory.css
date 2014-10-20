@@ -6880,6 +6880,9 @@ code {
   width: auto;
   background: #999;
 }
+#profile-map-page path[fill="#dddddd"] {
+  cursor: default;
+}
 div.jvectormap-tip {
   z-index: 999999;
   padding: 5px 10px;
@@ -8074,6 +8077,12 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 }
 .product div.product-margin span.select-product-controls i.icon-check {
   color: #666;
+}
+.product div.product-margin i.genre-icon {
+  display: inline-block;
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
 }
 .product-container .biblio {
   float: left;
@@ -9767,10 +9776,16 @@ div.password-reset form.password-reset div.submit {
   font-size: 80%;
   cursor: help;
 }
-div.genre-page {
+div.product-list-page {
   /*****************************************************
 
    genre header content (info about the products)
+
+   *****************************************************/
+
+  /*****************************************************
+
+   genre header product controls
 
    *****************************************************/
 
@@ -9781,21 +9796,51 @@ div.genre-page {
    *****************************************************/
 
 }
-div.genre-page div.header {
-  margin: 0 0 70px -50px;
-  /*****************************************************
-
-      genre header product controls
-
-      *****************************************************/
-
+div.product-list-page div.header {
+  margin: 0 0 0 -50px;
 }
-div.genre-page div.header div.header-content {
+div.product-list-page div.header div.header-content {
   padding: 20px 10px 10px 50px;
   border-bottom: 1px solid #eee;
   position: relative;
+  clear: both;
 }
-div.genre-page div.header div.header-content .more-button {
+div.product-list-page div.header div.header-content:before,
+div.product-list-page div.header div.header-content:after {
+  content: " ";
+  display: table;
+}
+div.product-list-page div.header div.header-content:after {
+  clear: both;
+}
+div.product-list-page div.header div.header-content:before,
+div.product-list-page div.header div.header-content:after {
+  content: " ";
+  display: table;
+}
+div.product-list-page div.header div.header-content:after {
+  clear: both;
+}
+div.product-list-page div.header div.header-content.country-header-content h2 {
+  text-transform: inherit;
+}
+div.product-list-page div.header div.header-content.country-header-content h2 .intro-text {
+  font-size: 16px;
+  display: block;
+  font-weight: 300;
+}
+div.product-list-page div.header div.header-content.country-header-content h2 .intro-text span.count {
+  font-weight: 900;
+}
+div.product-list-page div.header div.header-content.country-header-content h2 .based-on {
+  font-size: 16px;
+  font-weight: 300;
+  text-align: right;
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+}
+div.product-list-page div.header div.header-content .more-button {
   display: none;
   font-size: 14px;
   background: #fff;
@@ -9805,7 +9850,7 @@ div.genre-page div.header div.header-content .more-button {
   left: 50%;
   color: #777;
 }
-div.genre-page div.header div.header-content h2 {
+div.product-list-page div.header div.header-content h2 {
   font-size: 28px;
   line-height: 1.3;
   margin: 0 20px 0 5px;
@@ -9813,131 +9858,132 @@ div.genre-page div.header div.header-content h2 {
   color: #333;
   float: left;
 }
-div.genre-page div.header div.header-content h2 span.count {
+div.product-list-page div.header div.header-content h2 span.count {
   font-weight: normal;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top {
   margin-bottom: 20px;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .clearfix,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .container,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .container-fluid,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .row,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .form-horizontal .form-group,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .btn-toolbar,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .btn-group-vertical > .btn-group,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .nav,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar-header,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar-collapse,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .pager,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .panel-body,
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top .modal-footer {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .clearfix,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .container,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .container-fluid,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .row,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .form-horizontal .form-group,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .btn-toolbar,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .btn-group-vertical > .btn-group,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .nav,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar-header,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar-collapse,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .pager,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .panel-body,
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .modal-footer {
   clear: both;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card {
   float: right;
   margin: 0 20px 0 40px;
   line-height: 1;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls {
   margin-right: 3px;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a {
   font-size: 16px;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.unfeature-this {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.unfeature-this {
   color: #ff4000;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this {
   color: #999;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this:hover {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this:hover {
   color: #000;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner {
   font-size: 14px;
   text-align: left;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li {
   font-size: 14px;
   list-style-type: disc;
   margin-left: 25px;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .twitter-handle {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .twitter-handle {
   font-weight: bold;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .followers {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .followers {
   font-size: 10px;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data {
   cursor: default;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data img.icon {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data img.icon {
   height: 18px;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value {
   margin: 0 5px 0 0;
   font-size: 22px;
   font-weight: bold;
   display: inline-block;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value img {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value img {
   height: 20px;
   vertical-align: 0;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key {
   display: inline-block;
   margin-top: 4px;
   font-size: 16px;
 }
-div.genre-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key span.provider {
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key span.provider {
   display: block;
 }
-div.genre-page div.header div.header-controls {
+div.product-list-page div.product-list-controls {
+  margin: 0 0 30px -50px;
   padding: 10px 10px 10px 50px;
   position: relative;
 }
-div.genre-page div.header div.header-controls div.edit-controls {
+div.product-list-page div.product-list-controls div.edit-controls {
   margin-left: 5px;
 }
-div.genre-page div.header div.header-controls div.edit-controls button {
+div.product-list-page div.product-list-controls div.edit-controls button {
   padding: 5px 10px;
   opacity: .5;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.global-selection-control {
+div.product-list-page div.product-list-controls div.edit-controls span.global-selection-control {
   width: 25px;
   display: inline-block;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.global-selection-control i {
+div.product-list-page div.product-list-controls div.edit-controls span.global-selection-control i {
   font-size: 18px;
   color: #777;
   vertical-align: -2px;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.actions.has-selected-products-true button {
+div.product-list-page div.product-list-controls div.edit-controls span.actions.has-selected-products-true button {
   opacity: 1;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.actions span.action {
+div.product-list-page div.product-list-controls div.edit-controls span.actions span.action {
   margin-left: 1px;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li {
+div.product-list-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li {
   font-size: 16px;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li.instr {
+div.product-list-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li.instr {
   padding: 10px 0 0 20px;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a {
+div.product-list-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a {
   color: #333;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a i {
+div.product-list-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a i {
   color: #555;
 }
-div.genre-page div.header div.header-controls div.edit-controls span.num-selected {
+div.product-list-page div.product-list-controls div.edit-controls span.num-selected {
   font-size: 14px;
   margin-left: 10px;
   color: #555;
 }
-div.genre-page div.header div.header-controls div.sort-controls {
+div.product-list-page div.product-list-controls div.sort-controls {
   top: 0;
   right: 0;
   position: absolute;
@@ -9945,10 +9991,10 @@ div.genre-page div.header div.header-controls div.sort-controls {
   color: #555;
   font-size: 14px;
 }
-div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group {
+div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group {
   vertical-align: top;
 }
-div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
+div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
   border: none;
   box-shadow: none;
   -webkit-box-shadow: none;
@@ -9956,40 +10002,40 @@ div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-
   text-decoration: underline;
   color: #333;
 }
-div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
+div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
   color: #555;
   padding: 2px 5px 2px 0;
   font-weight: bold;
 }
-div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
+div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
   text-decoration: underline;
 }
-div.genre-page div.header div.header-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
+div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
   font-size: 14px;
 }
-div.genre-page div.products {
+div.product-list-page div.products {
   margin-top: 0;
 }
-div.genre-page div.products ul.products-list {
+div.product-list-page div.products ul.products-list {
   clear: both;
   margin-bottom: 70px;
 }
-div.genre-page div.products ul.products-list:before,
-div.genre-page div.products ul.products-list:after {
+div.product-list-page div.products ul.products-list:before,
+div.product-list-page div.products ul.products-list:after {
   content: " ";
   display: table;
 }
-div.genre-page div.products ul.products-list:after {
+div.product-list-page div.products ul.products-list:after {
   clear: both;
 }
-div.genre-page div.products ul.products-list:before,
-div.genre-page div.products ul.products-list:after {
+div.product-list-page div.products ul.products-list:before,
+div.product-list-page div.products ul.products-list:after {
   content: " ";
   display: table;
 }
-div.genre-page div.products ul.products-list:after {
+div.product-list-page div.products ul.products-list:after {
   clear: both;
 }
-div.genre-page div.products ul.products-list li.product {
+div.product-list-page div.products ul.products-list li.product {
   position: relative;
 }
