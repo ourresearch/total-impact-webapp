@@ -686,7 +686,7 @@ providers = [
                 "audience": "scholars",
                 "engagement_type": "saved",
                 "milestones": fives_then_orders_of_magnitude()
-            }
+            },
             "discipline": {
                 "description": "Mendeley readers by discipline",
                 "display_name": "readers by discipline",
