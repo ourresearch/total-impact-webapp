@@ -2,13 +2,48 @@ angular.module("services.productList", [])
 
 .factory("ProductList", function(
     $location,
+    $timeout,
+    $window,
     SelectedProducts,
     GenreConfigs,
+    PinboardService,
+    ProductListSort,
+    Loading,
+    Timer,
+    Page,
     ProfileService){
 
   var genreChangeDropdown = {}
   var queryDimension
   var queryValue
+
+  var startRender = function($scope){
+    if (!ProfileService.hasFullProducts()){
+      Loading.startPage()
+    }
+    Timer.start("productListRender")
+    SelectedProducts.removeAll()
+
+
+    // i think this stuff is not supposed to be here. not sure how else to re-use, though.
+    $scope.pinboardService = PinboardService
+    $scope.SelectedProducts = SelectedProducts
+    $scope.ProductListSort = ProductListSort
+    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+      finishRender()
+    });
+  }
+
+  var finishRender = function(){
+    Loading.finishPage()
+    $timeout(function(){
+      var lastScrollPos = Page.getLastScrollPosition($location.path())
+      $window.scrollTo(0, lastScrollPos)
+    }, 0)
+    console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
+    )
+  }
 
 
   var changeProductsGenre = function(newGenre){
@@ -45,16 +80,22 @@ angular.module("services.productList", [])
     if (queryDimension == "genre") {
       return ProfileService.productsByGenre(queryValue)
     }
+    else if (queryDimension == "country") {
+      return ProfileService.productsByCountry(queryValue)
+    }
     else {
       return []
     }
   }
+
 
   return {
     changeProductsGenre: changeProductsGenre,
     removeSelectedProducts: removeSelectedProducts,
     setQuery: setQuery,
     get: get,
+    startRender: startRender,
+    finishRender: finishRender,
     genreChangeDropdown: genreChangeDropdown
   }
 

@@ -17,11 +17,16 @@ angular.module( 'profileMap', [
                                        $location,
                                        $rootScope,
                                        $routeParams,
+                                       CountryNames,
+                                       ProfileService,
+                                       Loading,
                                        Page){
   console.log("profile map ctrl ran.")
   Page.setName("map")
   Page.setTitle("Map")
-
+  if (!ProfileService.hasFullProducts()){
+    Loading.startPage()
+  }
 
 
   function makeRegionTipHandler(countriesData){
@@ -67,7 +72,6 @@ angular.module( 'profileMap', [
       contents += "</ul>"
 
       element.html(element.html() + contents);
-  //    element.html(element.html()+' (GDP - '+gdpData[code]+')');
 
     })
   }
@@ -80,6 +84,7 @@ angular.module( 'profileMap', [
     console.log("profileService.data watch triggered from profileMap", newVal, oldVal)
     if (newVal.countries) {
       console.log("here is where we load le map", newVal.countries)
+      Loading.finishPage()
 
       var countryCounts = {}
       _.each(newVal.countries, function(myCountryCounts, myCountryCode){
@@ -107,9 +112,16 @@ angular.module( 'profileMap', [
           },
           onRegionTipShow: makeRegionTipHandler(newVal.countries),
           onRegionClick: function(event, countryCode){
+            if (!countryCounts[countryCode]) {
+              return false // no country pages for blank countries.
+            }
+
+
             console.log("country code click!", countryCode)
             $rootScope.$apply(function(){
-              $location.path($routeParams.url_slug + "/map/" + countryCode)
+              var countrySlug = CountryNames.urlFromCode(countryCode)
+              $location.path($routeParams.url_slug + "/country/" + countrySlug )
+              $(".jvectormap-tip").remove()
 
             })
           }

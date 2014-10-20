@@ -36,6 +36,7 @@ angular.module('app', [
   'ui.sortable',
   'deadProfile',
   'services.pinboardService',
+  'services.countryNames',
   'settings',
   'xeditable',
   'ngProgress'

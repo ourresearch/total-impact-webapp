@@ -531,6 +531,7 @@ angular.module('app', [
   'ui.sortable',
   'deadProfile',
   'services.pinboardService',
+  'services.countryNames',
   'settings',
   'xeditable',
   'ngProgress'
@@ -1164,97 +1165,79 @@ angular.module("productListPage", [
   'services.page',
   'ui.bootstrap',
   'security',
-  'services.loading',
-  'services.timer',
-  'services.productList',
-  'services.userMessage'
+  'services.productList'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
 
   $routeProvider.when("/:url_slug/products/:genre_name", {
-    templateUrl:'product-list-page/product-list-page-genre.tpl.html',
+    templateUrl:'product-list-page/genre-page.tpl.html',
     controller:'GenrePageCtrl'
   })
 
 }])
 
 
+.config(['$routeProvider', function ($routeProvider, security) {
+
+  $routeProvider.when("/:url_slug/country/:country_name", {
+    templateUrl:'product-list-page/country-page.tpl.html',
+    controller:'CountryPageCtrl'
+  })
+
+}])
 
 
-.controller('GenrePageCtrl', function (
+
+.controller('CountryPageCtrl', function (
     $scope,
-    $rootScope,
-    $location,
     $routeParams,
-    $modal,
-    $timeout,
-    $http,
-    $anchorScroll,
-    $window,
-    $sce,
-    Users,
-    Product,
-    TiMixpanel,
-    UserProfile,
-    UserMessage,
-    Update,
-    Loading,
-    Tour,
-    Timer,
-    security,
     GenreConfigs,
-    ProfileService,
     ProfileAboutService,
-    SelectedProducts,
-    ProductListSort,
     ProductList,
-    PinboardService,
+    CountryNames,
     Page) {
 
-    if (!ProfileService.hasFullProducts()){
-      Loading.startPage()
-    }
-    Timer.start("genreViewRender")
-    Page.setName($routeParams.genre_name)
-    SelectedProducts.removeAll()
-    var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    Page.setName("map")
+    ProductList.setQuery("country", CountryNames.codeFromUrl($routeParams.country_name))
+    ProductList.startRender($scope)
 
-
-
-
-    ProductList.setQuery("genre", myGenreConfig.name)
     $scope.ProductList = ProductList
+    $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
 
-
-
-
-
-    $scope.pinboardService = PinboardService
-    $scope.SelectedProducts = SelectedProducts
-    $scope.sortBy = "default"
-    $scope.ProductListSort = ProductListSort
-    $scope.url_slug = $routeParams.url_slug
-    $scope.genre = myGenreConfig
-
-
-    $scope.$watch('profileService.data', function(newVal, oldVal){
-      if (newVal.about) {
-        Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
+    $scope.$watch('profileAboutService.data', function(newVal, oldVal){
+      if (newVal.full_name) {
+        Page.setTitle(newVal.full_name + ": " + $routeParams.country_name)
       }
     }, true);
 
 
-    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
-      Loading.finishPage()
-      $timeout(function(){
-        var lastScrollPos = Page.getLastScrollPosition($location.path())
-        $window.scrollTo(0, lastScrollPos)
-      }, 0)
-      console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
-      )
-    });
+})
+
+
+.controller('GenrePageCtrl', function (
+    $scope,
+    $routeParams,
+    GenreConfigs,
+    ProfileAboutService,
+    ProductList,
+    Page) {
+
+    var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    Page.setName($routeParams.genre_name)
+    ProductList.setQuery("genre", myGenreConfig.name)
+    ProductList.startRender($scope)
+
+
+    $scope.ProductList = ProductList
+    $scope.myGenreConfig = myGenreConfig
+
+    $scope.$watch('profileAboutService.data', function(newVal, oldVal){
+      if (newVal.full_name) {
+        Page.setTitle(newVal.full_name + ": " + myGenreConfig.plural_name)
+      }
+    }, true);
+
 
 })
 
@@ -1733,11 +1716,16 @@ angular.module( 'profileMap', [
                                        $location,
                                        $rootScope,
                                        $routeParams,
+                                       CountryNames,
+                                       ProfileService,
+                                       Loading,
                                        Page){
   console.log("profile map ctrl ran.")
   Page.setName("map")
   Page.setTitle("Map")
-
+  if (!ProfileService.hasFullProducts()){
+    Loading.startPage()
+  }
 
 
   function makeRegionTipHandler(countriesData){
@@ -1783,7 +1771,6 @@ angular.module( 'profileMap', [
       contents += "</ul>"
 
       element.html(element.html() + contents);
-  //    element.html(element.html()+' (GDP - '+gdpData[code]+')');
 
     })
   }
@@ -1796,6 +1783,7 @@ angular.module( 'profileMap', [
     console.log("profileService.data watch triggered from profileMap", newVal, oldVal)
     if (newVal.countries) {
       console.log("here is where we load le map", newVal.countries)
+      Loading.finishPage()
 
       var countryCounts = {}
       _.each(newVal.countries, function(myCountryCounts, myCountryCode){
@@ -1823,9 +1811,16 @@ angular.module( 'profileMap', [
           },
           onRegionTipShow: makeRegionTipHandler(newVal.countries),
           onRegionClick: function(event, countryCode){
+            if (!countryCounts[countryCode]) {
+              return false // no country pages for blank countries.
+            }
+
+
             console.log("country code click!", countryCode)
             $rootScope.$apply(function(){
-              $location.path($routeParams.url_slug + "/map/" + countryCode)
+              var countrySlug = CountryNames.urlFromCode(countryCode)
+              $location.path($routeParams.url_slug + "/country/" + countrySlug )
+              $(".jvectormap-tip").remove()
 
             })
           }
@@ -4268,6 +4263,283 @@ angular.module('services.charge', [])
 
 
   })
+angular.module("services.countryNames", [])
+.factory("CountryNames", function(){
+  var isoCountries = {
+      'AF' : 'Afghanistan',
+      'AX' : 'Aland Islands',
+      'AL' : 'Albania',
+      'DZ' : 'Algeria',
+      'AS' : 'American Samoa',
+      'AD' : 'Andorra',
+      'AO' : 'Angola',
+      'AI' : 'Anguilla',
+      'AQ' : 'Antarctica',
+      'AG' : 'Antigua And Barbuda',
+      'AR' : 'Argentina',
+      'AM' : 'Armenia',
+      'AW' : 'Aruba',
+      'AU' : 'Australia',
+      'AT' : 'Austria',
+      'AZ' : 'Azerbaijan',
+      'BS' : 'Bahamas',
+      'BH' : 'Bahrain',
+      'BD' : 'Bangladesh',
+      'BB' : 'Barbados',
+      'BY' : 'Belarus',
+      'BE' : 'Belgium',
+      'BZ' : 'Belize',
+      'BJ' : 'Benin',
+      'BM' : 'Bermuda',
+      'BT' : 'Bhutan',
+      'BO' : 'Bolivia',
+      'BA' : 'Bosnia And Herzegovina',
+      'BW' : 'Botswana',
+      'BV' : 'Bouvet Island',
+      'BR' : 'Brazil',
+      'IO' : 'British Indian Ocean Territory',
+      'BN' : 'Brunei Darussalam',
+      'BG' : 'Bulgaria',
+      'BF' : 'Burkina Faso',
+      'BI' : 'Burundi',
+      'KH' : 'Cambodia',
+      'CM' : 'Cameroon',
+      'CA' : 'Canada',
+      'CV' : 'Cape Verde',
+      'KY' : 'Cayman Islands',
+      'CF' : 'Central African Republic',
+      'TD' : 'Chad',
+      'CL' : 'Chile',
+      'CN' : 'China',
+      'CX' : 'Christmas Island',
+      'CC' : 'Cocos (Keeling) Islands',
+      'CO' : 'Colombia',
+      'KM' : 'Comoros',
+      'CG' : 'Congo',
+      'CD' : 'Congo, Democratic Republic',
+      'CK' : 'Cook Islands',
+      'CR' : 'Costa Rica',
+      'CI' : 'Cote D\'Ivoire',
+      'HR' : 'Croatia',
+      'CU' : 'Cuba',
+      'CY' : 'Cyprus',
+      'CZ' : 'Czech Republic',
+      'DK' : 'Denmark',
+      'DJ' : 'Djibouti',
+      'DM' : 'Dominica',
+      'DO' : 'Dominican Republic',
+      'EC' : 'Ecuador',
+      'EG' : 'Egypt',
+      'SV' : 'El Salvador',
+      'GQ' : 'Equatorial Guinea',
+      'ER' : 'Eritrea',
+      'EE' : 'Estonia',
+      'ET' : 'Ethiopia',
+      'FK' : 'Falkland Islands (Malvinas)',
+      'FO' : 'Faroe Islands',
+      'FJ' : 'Fiji',
+      'FI' : 'Finland',
+      'FR' : 'France',
+      'GF' : 'French Guiana',
+      'PF' : 'French Polynesia',
+      'TF' : 'French Southern Territories',
+      'GA' : 'Gabon',
+      'GM' : 'Gambia',
+      'GE' : 'Georgia',
+      'DE' : 'Germany',
+      'GH' : 'Ghana',
+      'GI' : 'Gibraltar',
+      'GR' : 'Greece',
+      'GL' : 'Greenland',
+      'GD' : 'Grenada',
+      'GP' : 'Guadeloupe',
+      'GU' : 'Guam',
+      'GT' : 'Guatemala',
+      'GG' : 'Guernsey',
+      'GN' : 'Guinea',
+      'GW' : 'Guinea-Bissau',
+      'GY' : 'Guyana',
+      'HT' : 'Haiti',
+      'HM' : 'Heard Island & Mcdonald Islands',
+      'VA' : 'Holy See (Vatican City State)',
+      'HN' : 'Honduras',
+      'HK' : 'Hong Kong',
+      'HU' : 'Hungary',
+      'IS' : 'Iceland',
+      'IN' : 'India',
+      'ID' : 'Indonesia',
+      'IR' : 'Iran, Islamic Republic Of',
+      'IQ' : 'Iraq',
+      'IE' : 'Ireland',
+      'IM' : 'Isle Of Man',
+      'IL' : 'Israel',
+      'IT' : 'Italy',
+      'JM' : 'Jamaica',
+      'JP' : 'Japan',
+      'JE' : 'Jersey',
+      'JO' : 'Jordan',
+      'KZ' : 'Kazakhstan',
+      'KE' : 'Kenya',
+      'KI' : 'Kiribati',
+      'KR' : 'Korea',
+      'KW' : 'Kuwait',
+      'KG' : 'Kyrgyzstan',
+      'LA' : 'Lao People\'s Democratic Republic',
+      'LV' : 'Latvia',
+      'LB' : 'Lebanon',
+      'LS' : 'Lesotho',
+      'LR' : 'Liberia',
+      'LY' : 'Libyan Arab Jamahiriya',
+      'LI' : 'Liechtenstein',
+      'LT' : 'Lithuania',
+      'LU' : 'Luxembourg',
+      'MO' : 'Macao',
+      'MK' : 'Macedonia',
+      'MG' : 'Madagascar',
+      'MW' : 'Malawi',
+      'MY' : 'Malaysia',
+      'MV' : 'Maldives',
+      'ML' : 'Mali',
+      'MT' : 'Malta',
+      'MH' : 'Marshall Islands',
+      'MQ' : 'Martinique',
+      'MR' : 'Mauritania',
+      'MU' : 'Mauritius',
+      'YT' : 'Mayotte',
+      'MX' : 'Mexico',
+      'FM' : 'Micronesia, Federated States Of',
+      'MD' : 'Moldova',
+      'MC' : 'Monaco',
+      'MN' : 'Mongolia',
+      'ME' : 'Montenegro',
+      'MS' : 'Montserrat',
+      'MA' : 'Morocco',
+      'MZ' : 'Mozambique',
+      'MM' : 'Myanmar',
+      'NA' : 'Namibia',
+      'NR' : 'Nauru',
+      'NP' : 'Nepal',
+      'NL' : 'Netherlands',
+      'AN' : 'Netherlands Antilles',
+      'NC' : 'New Caledonia',
+      'NZ' : 'New Zealand',
+      'NI' : 'Nicaragua',
+      'NE' : 'Niger',
+      'NG' : 'Nigeria',
+      'NU' : 'Niue',
+      'NF' : 'Norfolk Island',
+      'MP' : 'Northern Mariana Islands',
+      'NO' : 'Norway',
+      'OM' : 'Oman',
+      'PK' : 'Pakistan',
+      'PW' : 'Palau',
+      'PS' : 'Palestinian Territory, Occupied',
+      'PA' : 'Panama',
+      'PG' : 'Papua New Guinea',
+      'PY' : 'Paraguay',
+      'PE' : 'Peru',
+      'PH' : 'Philippines',
+      'PN' : 'Pitcairn',
+      'PL' : 'Poland',
+      'PT' : 'Portugal',
+      'PR' : 'Puerto Rico',
+      'QA' : 'Qatar',
+      'RE' : 'Reunion',
+      'RO' : 'Romania',
+      'RU' : 'Russian Federation',
+      'RW' : 'Rwanda',
+      'BL' : 'Saint Barthelemy',
+      'SH' : 'Saint Helena',
+      'KN' : 'Saint Kitts And Nevis',
+      'LC' : 'Saint Lucia',
+      'MF' : 'Saint Martin',
+      'PM' : 'Saint Pierre And Miquelon',
+      'VC' : 'Saint Vincent And Grenadines',
+      'WS' : 'Samoa',
+      'SM' : 'San Marino',
+      'ST' : 'Sao Tome And Principe',
+      'SA' : 'Saudi Arabia',
+      'SN' : 'Senegal',
+      'RS' : 'Serbia',
+      'SC' : 'Seychelles',
+      'SL' : 'Sierra Leone',
+      'SG' : 'Singapore',
+      'SK' : 'Slovakia',
+      'SI' : 'Slovenia',
+      'SB' : 'Solomon Islands',
+      'SO' : 'Somalia',
+      'ZA' : 'South Africa',
+      'GS' : 'South Georgia And Sandwich Isl.',
+      'ES' : 'Spain',
+      'LK' : 'Sri Lanka',
+      'SD' : 'Sudan',
+      'SR' : 'Suriname',
+      'SJ' : 'Svalbard And Jan Mayen',
+      'SZ' : 'Swaziland',
+      'SE' : 'Sweden',
+      'CH' : 'Switzerland',
+      'SY' : 'Syrian Arab Republic',
+      'TW' : 'Taiwan',
+      'TJ' : 'Tajikistan',
+      'TZ' : 'Tanzania',
+      'TH' : 'Thailand',
+      'TL' : 'Timor-Leste',
+      'TG' : 'Togo',
+      'TK' : 'Tokelau',
+      'TO' : 'Tonga',
+      'TT' : 'Trinidad And Tobago',
+      'TN' : 'Tunisia',
+      'TR' : 'Turkey',
+      'TM' : 'Turkmenistan',
+      'TC' : 'Turks And Caicos Islands',
+      'TV' : 'Tuvalu',
+      'UG' : 'Uganda',
+      'UA' : 'Ukraine',
+      'AE' : 'United Arab Emirates',
+      'GB' : 'United Kingdom',
+      'US' : 'United States',
+      'UM' : 'United States Outlying Islands',
+      'UY' : 'Uruguay',
+      'UZ' : 'Uzbekistan',
+      'VU' : 'Vanuatu',
+      'VE' : 'Venezuela',
+      'VN' : 'Viet Nam',
+      'VG' : 'Virgin Islands, British',
+      'VI' : 'Virgin Islands, U.S.',
+      'WF' : 'Wallis And Futuna',
+      'EH' : 'Western Sahara',
+      'YE' : 'Yemen',
+      'ZM' : 'Zambia',
+      'ZW' : 'Zimbabwe'
+  }
+    
+  var urlName = function(fullName) {
+    return fullName.replace(/ /g, "_")
+  }
+    
+  var isoCodeFromUrl = function(myUrlName){
+    for (var isoCode in isoCountries){
+      if (myUrlName ==  urlName(isoCountries[isoCode])){
+        return isoCode
+      }
+    }
+  }
+
+
+
+
+  return {
+    urlFromCode: function(isoCode){
+      return urlName(isoCountries[isoCode])
+    },
+    humanFromUrl: function(urlName){
+      var code = isoCodeFromUrl(urlName)
+      return isoCountries[code]
+    },
+    codeFromUrl: isoCodeFromUrl
+  }
+
+})
 angular.module('services.crud', ['services.crudRouteProvider']);
 angular.module('services.crud').factory('crudEditMethods', function () {
 
@@ -5022,13 +5294,48 @@ angular.module("services.productList", [])
 
 .factory("ProductList", function(
     $location,
+    $timeout,
+    $window,
     SelectedProducts,
     GenreConfigs,
+    PinboardService,
+    ProductListSort,
+    Loading,
+    Timer,
+    Page,
     ProfileService){
 
   var genreChangeDropdown = {}
   var queryDimension
   var queryValue
+
+  var startRender = function($scope){
+    if (!ProfileService.hasFullProducts()){
+      Loading.startPage()
+    }
+    Timer.start("productListRender")
+    SelectedProducts.removeAll()
+
+
+    // i think this stuff is not supposed to be here. not sure how else to re-use, though.
+    $scope.pinboardService = PinboardService
+    $scope.SelectedProducts = SelectedProducts
+    $scope.ProductListSort = ProductListSort
+    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+      finishRender()
+    });
+  }
+
+  var finishRender = function(){
+    Loading.finishPage()
+    $timeout(function(){
+      var lastScrollPos = Page.getLastScrollPosition($location.path())
+      $window.scrollTo(0, lastScrollPos)
+    }, 0)
+    console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
+    )
+  }
 
 
   var changeProductsGenre = function(newGenre){
@@ -5065,16 +5372,22 @@ angular.module("services.productList", [])
     if (queryDimension == "genre") {
       return ProfileService.productsByGenre(queryValue)
     }
+    else if (queryDimension == "country") {
+      return ProfileService.productsByCountry(queryValue)
+    }
     else {
       return []
     }
   }
+
 
   return {
     changeProductsGenre: changeProductsGenre,
     removeSelectedProducts: removeSelectedProducts,
     setQuery: setQuery,
     get: get,
+    startRender: startRender,
+    finishRender: finishRender,
     genreChangeDropdown: genreChangeDropdown
   }
 
@@ -5434,6 +5747,18 @@ angular.module('services.profileService', [
       }
     }
 
+    function productsByCountry(countryCode){
+      if (typeof data.products == "undefined"){
+        return undefined
+      }
+      else {
+        var res = _.filter(data.products, function(product){
+          return _.contains(_.keys(product.countries), countryCode)
+        })
+        return res
+      }
+    }
+
     function productsByGenre(genreName){
       if (typeof data.products == "undefined"){
         return undefined
@@ -5523,6 +5848,7 @@ angular.module('services.profileService', [
       getFromPinId: getFromPinId,
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
+      productsByCountry: productsByCountry,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {
@@ -5909,7 +6235,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/product-list-page-country.tpl.html', 'product-list-page/product-list-page-genre.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -7217,72 +7543,27 @@ angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($t
     "");
 }]);
 
-angular.module("product-list-page/product-list-page-country.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product-list-page/product-list-page-country.tpl.html",
-    "<div class=\"product-list-page\">\n" +
+angular.module("product-list-page/country-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-list-page/country-page.tpl.html",
+    "<div class=\"product-list-page country-page\">\n" +
     "\n" +
     "   <div class=\"header\">\n" +
-    "      <div class=\"header-content\">\n" +
+    "      <div class=\"header-content country-header-content\">\n" +
     "\n" +
     "         <h2>\n" +
-    "            <span class=\"count\">\n" +
-    "               {{ profileService.productsByGenre(genre.name).length }}\n" +
+    "            <span class=\"intro-text\">\n" +
+    "               <span class=\"count\">\n" +
+    "                  {{ ProductList.get().length }} products\n" +
+    "               </span>\n" +
+    "                with impacts in\n" +
     "            </span>\n" +
     "            <span class=\"text\">\n" +
-    "               {{ genre.plural_name }}\n" +
+    "               {{ countryName }}\n" +
+    "            </span>\n" +
+    "            <span class=\"based-on\">\n" +
+    "               based on tweets, Mendeley readers, and Impactstory views\n" +
     "            </span>\n" +
     "         </h2>\n" +
-    "         <div class=\"genre-summary\">\n" +
-    "            <div class=\"genre-summary-top\">\n" +
-    "               <ul class=\"genre-cards-best\">\n" +
-    "\n" +
-    "                  <li class=\"genre-card\"\n" +
-    "                      ng-repeat=\"card in profileService.genreCards(genre.name, 3).reverse()\">\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "                  <span class=\"data\"\n" +
-    "                        tooltip-placement=\"bottom\"\n" +
-    "                        tooltip-html-unsafe=\"{{ card.tooltip }}\">\n" +
-    "                     <span class=\"img-and-value\">\n" +
-    "                        <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
-    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
-    "                        </span>\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
-    "\n" +
-    "                        <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"feature-this\">\n" +
-    "                           <i class=\"icon-star-empty\"></i>\n" +
-    "                        </a>\n" +
-    "\n" +
-    "                        <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
-    "                           class=\"unfeature-this\">\n" +
-    "                           <i class=\"icon-star\"></i>\n" +
-    "                        </a>\n" +
-    "\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                  </li>\n" +
-    "               </ul>\n" +
-    "               <div class=\"clearfix\"></div>\n" +
-    "            </div>\n" +
-    "            <div class=\"genre-summary-more\">\n" +
-    "\n" +
-    "            </div>\n" +
-    "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
@@ -7292,19 +7573,19 @@ angular.module("product-list-page/product-list-page-country.tpl.html", []).run([
     "");
 }]);
 
-angular.module("product-list-page/product-list-page-genre.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product-list-page/product-list-page-genre.tpl.html",
-    "<div class=\"product-list-page\">\n" +
+angular.module("product-list-page/genre-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-list-page/genre-page.tpl.html",
+    "<div class=\"product-list-page genre-page\">\n" +
     "\n" +
     "   <div class=\"header\">\n" +
     "      <div class=\"header-content\">\n" +
     "\n" +
     "         <h2>\n" +
     "            <span class=\"count\">\n" +
-    "               {{ profileService.productsByGenre(genre.name).length }}\n" +
+    "               {{ profileService.productsByGenre(myGenreConfig.name).length }}\n" +
     "            </span>\n" +
     "            <span class=\"text\">\n" +
-    "               {{ genre.plural_name }}\n" +
+    "               {{ myGenreConfig.plural_name }}\n" +
     "            </span>\n" +
     "         </h2>\n" +
     "         <div class=\"genre-summary\">\n" +
@@ -7312,7 +7593,7 @@ angular.module("product-list-page/product-list-page-genre.tpl.html", []).run(["$
     "               <ul class=\"genre-cards-best\">\n" +
     "\n" +
     "                  <li class=\"genre-card\"\n" +
-    "                      ng-repeat=\"card in profileService.genreCards(genre.name, 3).reverse()\">\n" +
+    "                      ng-repeat=\"card in profileService.genreCards(myGenreConfig.name, 3).reverse()\">\n" +
     "\n" +
     "\n" +
     "\n" +
@@ -7370,7 +7651,7 @@ angular.module("product-list-page/product-list-page-genre.tpl.html", []).run(["$
 angular.module("product-list-page/product-list-section.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product-list-page/product-list-section.tpl.html",
     "<div class=\"product-list-controls\">\n" +
-    "   <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(url_slug)\">\n" +
+    "   <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
     "\n" +
     "      <!-- no products are selected. allow user to select all -->\n" +
     "\n" +
@@ -7464,32 +7745,38 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "\n" +
     "\n" +
     "         <!-- users must be logged in -->\n" +
-    "         <div class=\"product-margin\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
-    "            <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
+    "         <div class=\"product-margin\" >\n" +
     "\n" +
-    "               <i class=\"icon-check-empty\"\n" +
-    "                  ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +
-    "                  ng-click=\"SelectedProducts.add(product.tiid)\"></i>\n" +
+    "            <span class=\"product-controls\" ng-show=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
+    "               <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
     "\n" +
-    "               <i class=\"icon-check\"\n" +
-    "                  ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
-    "                  ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
+    "                  <i class=\"icon-check-empty\"\n" +
+    "                     ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +
+    "                     ng-click=\"SelectedProducts.add(product.tiid)\"></i>\n" +
     "\n" +
+    "                  <i class=\"icon-check\"\n" +
+    "                     ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
+    "                     ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
+    "\n" +
+    "               </span>\n" +
+    "               <span class=\"feature-product-controls\">\n" +
+    "                  <a class=\"feature-product\"\n" +
+    "                     ng-click=\"pinboardService.pin(['product', product.tiid])\"\n" +
+    "                     ng-if=\"!pinboardService.isPinned(['product', product.tiid])\"\n" +
+    "                     tooltip=\"Feature this product on your profile front page\">\n" +
+    "                     <i class=\"icon-star-empty\"></i>\n" +
+    "                  </a>\n" +
+    "                  <a class=\"unfeature-product\"\n" +
+    "                     ng-click=\"pinboardService.unPin(['product', product.tiid])\"\n" +
+    "                     ng-if=\"pinboardService.isPinned(['product', product.tiid])\"\n" +
+    "                     tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
+    "                     <i class=\"icon-star\"></i>\n" +
+    "                  </a>\n" +
+    "               </span>\n" +
     "            </span>\n" +
-    "            <span class=\"feature-product-controls\">\n" +
-    "               <a class=\"feature-product\"\n" +
-    "                  ng-click=\"pinboardService.pin(['product', product.tiid])\"\n" +
-    "                  ng-if=\"!pinboardService.isPinned(['product', product.tiid])\"\n" +
-    "                  tooltip=\"Feature this product on your profile front page\">\n" +
-    "                  <i class=\"icon-star-empty\"></i>\n" +
-    "               </a>\n" +
-    "               <a class=\"unfeature-product\"\n" +
-    "                  ng-click=\"pinboardService.unPin(['product', product.tiid])\"\n" +
-    "                  ng-if=\"pinboardService.isPinned(['product', product.tiid])\"\n" +
-    "                  tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
-    "                  <i class=\"icon-star\"></i>\n" +
-    "               </a>\n" +
-    "            </span>\n" +
+    "            <i tooltip=\"{{ product.genre }}\"\n" +
+    "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
+    "\n" +
     "\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +

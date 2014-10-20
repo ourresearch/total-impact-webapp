@@ -6880,6 +6880,9 @@ code {
   width: auto;
   background: #999;
 }
+#profile-map-page path[fill="#dddddd"] {
+  cursor: default;
+}
 div.jvectormap-tip {
   z-index: 999999;
   padding: 5px 10px;
@@ -8074,6 +8077,12 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 }
 .product div.product-margin span.select-product-controls i.icon-check {
   color: #666;
+}
+.product div.product-margin i.genre-icon {
+  display: inline-block;
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
 }
 .product-container .biblio {
   float: left;
@@ -9794,6 +9803,42 @@ div.product-list-page div.header div.header-content {
   padding: 20px 10px 10px 50px;
   border-bottom: 1px solid #eee;
   position: relative;
+  clear: both;
+}
+div.product-list-page div.header div.header-content:before,
+div.product-list-page div.header div.header-content:after {
+  content: " ";
+  display: table;
+}
+div.product-list-page div.header div.header-content:after {
+  clear: both;
+}
+div.product-list-page div.header div.header-content:before,
+div.product-list-page div.header div.header-content:after {
+  content: " ";
+  display: table;
+}
+div.product-list-page div.header div.header-content:after {
+  clear: both;
+}
+div.product-list-page div.header div.header-content.country-header-content h2 {
+  text-transform: inherit;
+}
+div.product-list-page div.header div.header-content.country-header-content h2 .intro-text {
+  font-size: 16px;
+  display: block;
+  font-weight: 300;
+}
+div.product-list-page div.header div.header-content.country-header-content h2 .intro-text span.count {
+  font-weight: 900;
+}
+div.product-list-page div.header div.header-content.country-header-content h2 .based-on {
+  font-size: 16px;
+  font-weight: 300;
+  text-align: right;
+  position: absolute;
+  bottom: 10px;
+  right: 0;
 }
 div.product-list-page div.header div.header-content .more-button {
   display: none;

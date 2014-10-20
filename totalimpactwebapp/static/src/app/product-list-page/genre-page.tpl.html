@@ -1,14 +1,14 @@
-<div class="product-list-page">
+<div class="product-list-page genre-page">
 
    <div class="header">
       <div class="header-content">
 
          <h2>
             <span class="count">
-               {{ profileService.productsByGenre(genre.name).length }}
+               {{ profileService.productsByGenre(myGenreConfig.name).length }}
             </span>
             <span class="text">
-               {{ genre.plural_name }}
+               {{ myGenreConfig.plural_name }}
             </span>
          </h2>
          <div class="genre-summary">
@@ -16,7 +16,7 @@
                <ul class="genre-cards-best">
 
                   <li class="genre-card"
-                      ng-repeat="card in profileService.genreCards(genre.name, 3).reverse()">
+                      ng-repeat="card in profileService.genreCards(myGenreConfig.name, 3).reverse()">
 
 
 

@@ -18,6 +18,29 @@ div.product-list-page {
          padding: 20px 10px 10px @contentPaddingLeft;
          border-bottom: 1px solid #eee;
          position:relative;
+         .clearfix();
+         &.country-header-content {
+            h2 {
+               text-transform:inherit;
+               .intro-text {
+                  font-size: 16px;
+                  display:block;
+                  font-weight: 300;
+                  span.count {
+                     font-weight: 900;
+                  }
+               }
+               .based-on {
+                  font-size: 16px;
+                  font-weight: 300;
+                  text-align:right;
+                  position:absolute;
+                  bottom:10px;
+                  right:0;
+
+               }
+            }
+         }
 
          .more-button {
             display:none;

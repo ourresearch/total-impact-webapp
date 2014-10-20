@@ -3,97 +3,79 @@ angular.module("productListPage", [
   'services.page',
   'ui.bootstrap',
   'security',
-  'services.loading',
-  'services.timer',
-  'services.productList',
-  'services.userMessage'
+  'services.productList'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
 
   $routeProvider.when("/:url_slug/products/:genre_name", {
-    templateUrl:'product-list-page/product-list-page-genre.tpl.html',
+    templateUrl:'product-list-page/genre-page.tpl.html',
     controller:'GenrePageCtrl'
   })
 
 }])
 
 
+.config(['$routeProvider', function ($routeProvider, security) {
+
+  $routeProvider.when("/:url_slug/country/:country_name", {
+    templateUrl:'product-list-page/country-page.tpl.html',
+    controller:'CountryPageCtrl'
+  })
+
+}])
 
 
-.controller('GenrePageCtrl', function (
+
+.controller('CountryPageCtrl', function (
     $scope,
-    $rootScope,
-    $location,
     $routeParams,
-    $modal,
-    $timeout,
-    $http,
-    $anchorScroll,
-    $window,
-    $sce,
-    Users,
-    Product,
-    TiMixpanel,
-    UserProfile,
-    UserMessage,
-    Update,
-    Loading,
-    Tour,
-    Timer,
-    security,
     GenreConfigs,
-    ProfileService,
     ProfileAboutService,
-    SelectedProducts,
-    ProductListSort,
     ProductList,
-    PinboardService,
+    CountryNames,
     Page) {
 
-    if (!ProfileService.hasFullProducts()){
-      Loading.startPage()
-    }
-    Timer.start("genreViewRender")
-    Page.setName($routeParams.genre_name)
-    SelectedProducts.removeAll()
-    var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    Page.setName("map")
+    ProductList.setQuery("country", CountryNames.codeFromUrl($routeParams.country_name))
+    ProductList.startRender($scope)
 
-
-
-
-    ProductList.setQuery("genre", myGenreConfig.name)
     $scope.ProductList = ProductList
+    $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
 
-
-
-
-
-    $scope.pinboardService = PinboardService
-    $scope.SelectedProducts = SelectedProducts
-    $scope.sortBy = "default"
-    $scope.ProductListSort = ProductListSort
-    $scope.url_slug = $routeParams.url_slug
-    $scope.genre = myGenreConfig
-
-
-    $scope.$watch('profileService.data', function(newVal, oldVal){
-      if (newVal.about) {
-        Page.setTitle(newVal.about.full_name + "'s " + $routeParams.genre_name)
+    $scope.$watch('profileAboutService.data', function(newVal, oldVal){
+      if (newVal.full_name) {
+        Page.setTitle(newVal.full_name + ": " + $routeParams.country_name)
       }
     }, true);
 
 
-    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
-      Loading.finishPage()
-      $timeout(function(){
-        var lastScrollPos = Page.getLastScrollPosition($location.path())
-        $window.scrollTo(0, lastScrollPos)
-      }, 0)
-      console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
-      )
-    });
+})
+
+
+.controller('GenrePageCtrl', function (
+    $scope,
+    $routeParams,
+    GenreConfigs,
+    ProfileAboutService,
+    ProductList,
+    Page) {
+
+    var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
+    Page.setName($routeParams.genre_name)
+    ProductList.setQuery("genre", myGenreConfig.name)
+    ProductList.startRender($scope)
+
+
+    $scope.ProductList = ProductList
+    $scope.myGenreConfig = myGenreConfig
+
+    $scope.$watch('profileAboutService.data', function(newVal, oldVal){
+      if (newVal.full_name) {
+        Page.setTitle(newVal.full_name + ": " + myGenreConfig.plural_name)
+      }
+    }, true);
+
 
 })
 
