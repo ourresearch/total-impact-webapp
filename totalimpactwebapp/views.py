@@ -1,6 +1,6 @@
 import requests
 import os
-import ujson as json
+import json
 import logging
 import re
 import datetime
@@ -89,8 +89,7 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 def json_resp_from_thing(thing):
     my_dict = util.todict(thing)
-    # json_str = json.dumps(my_dict, sort_keys=True, indent=4)
-    json_str = json.dumps(my_dict)
+    json_str = json.dumps(my_dict, sort_keys=True, indent=4)
 
     if request.path.endswith(".json") and (os.getenv("FLASK_DEBUG", False) == "True"):
         logger.info(u"rendering output through debug_api.html template")
@@ -114,8 +113,7 @@ def abort_json(status_code, msg):
         "error": True
     }
 
-    # resp_string = json.dumps(body_dict, sort_keys=True, indent=4)
-    resp_string = json.dumps(body_dict)
+    resp_string = json.dumps(body_dict, sort_keys=True, indent=4)
     resp = make_response(resp_string, status_code)
     resp.mimetype = "application/json"
 

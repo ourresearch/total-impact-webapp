@@ -1,6 +1,6 @@
 # from https://gist.github.com/dbarnett/1730610
 
-import ujson as json
+import json
 import sqlalchemy
 from sqlalchemy import String
 from sqlalchemy.ext.mutable import Mutable
