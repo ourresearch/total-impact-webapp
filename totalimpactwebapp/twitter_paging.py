@@ -24,8 +24,16 @@ import urlparse
 from birdy.twitter import AppClient
 from birdy.twitter import TwitterRateLimitError, TwitterClientError
 from delorean import parse, epoch
+import totalimpactwebapp
 
 DEFAULT_MAX_PAGES = 10
+
+# from https://github.com/inueni/birdy/issues/7
+# to overrride JSONObject
+class AppDictClient(AppClient):
+    @staticmethod
+    def get_json_object_hook(data):
+        return data
 
 class TwitterPager(object):
     """Class to manage searches against the Twitter REST search API.
@@ -55,11 +63,12 @@ class TwitterPager(object):
     def client(self):
         if self._client is None:
             logging.debug('Creating new Twitter client.')
-            self._client = AppClient(
+            self._client = AppDictClient(
                 self.consumer_key,
                 self.consumer_secret,
                 access_token=self.app_client_access_token
             )
+
         return self._client
 
     def reset_client(self):
@@ -68,19 +77,10 @@ class TwitterPager(object):
 
     def extract_rate_limit(self, response):
         """Extract rate limit info from response/headers.
-        
-        The rate limit Twitter API request response provides bad data in the
-        headers, so check the payload first and fallback to headers for other
-        request types."""
-        try:
-            data = response.data['resources']['search']['/search/tweets']
-            self.rate_limit_remaining = data['remaining']
-            self.rate_limit_limit = data['limit']
-            self.rate_limit_reset = epoch(data['reset']).datetime
-        except (KeyError, TypeError):
-            self.rate_limit_remaining = int(response.headers['x-rate-limit-remaining'])
-            self.rate_limit_limit = int(response.headers['x-rate-limit-limit'])
-            self.rate_limit_reset = epoch(int(response.headers['x-rate-limit-reset'])).datetime
+        get it just from the response, so it is relevant to the type of query we are doing"""
+        self.rate_limit_remaining = int(response.headers['x-rate-limit-remaining'])
+        self.rate_limit_limit = int(response.headers['x-rate-limit-limit'])
+        self.rate_limit_reset = epoch(int(response.headers['x-rate-limit-reset'])).datetime
         self.twitter_date = parse(response.headers['date']).datetime
         logging.debug(
             'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
@@ -90,7 +90,7 @@ class TwitterPager(object):
     def fetch_rate_limit(self):
         """Send search rate limit info request to Twitter API."""
         response = self.client.api.application.rate_limit_status.get(
-            resources='search')
+            resources='/statuses/user_timeline')
         self.extract_rate_limit(response)
         return {
             'limit': self.rate_limit_limit,
@@ -152,10 +152,10 @@ class TwitterPager(object):
         response = self.search(**kwargs)
 
         if page_handler:
-            page_handler(response)
+            has_next_page = page_handler(response)
         # if page < max_pages and \
         #         'next_results' in response.data.search_metadata:
-        if page < max_pages:
+        if page < max_pages and has_next_page:
             try:
                 kwargs.update({ k:v for k,v in urlparse.parse_qsl(
                     response.data.search_metadata.next_results[1:]) })
@@ -167,7 +167,7 @@ class TwitterPager(object):
 
             except AttributeError:
                 try:
-                    kwargs['since_id'] = str(response.data[-1].id)
+                    kwargs['max_id'] = str(response.data[-1]["id"])
                     logging.debug('Paginating query: %s' % str(kwargs))
                     self.paginated_search(page=page+1,
                             page_handler=page_handler,
@@ -176,7 +176,7 @@ class TwitterPager(object):
                     logging.debug('IndexError, so stop')
 
         else:
-            logging.debug('reached max pages, so stop')
+            logging.debug('reached max pages or told no next page, so stop')
 
 
 

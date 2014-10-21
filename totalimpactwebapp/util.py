@@ -8,6 +8,9 @@ import datetime
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
 
+import logging
+logger = logging.getLogger('ti.webapp.util')
+
 # a slow decorator for tests, so can exclude them when necessary
 # put @slow on its own line above a slow test method
 # to exclude slow tests, run like this: nosetests -A "not slow"

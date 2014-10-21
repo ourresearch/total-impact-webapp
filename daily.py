@@ -7,6 +7,7 @@ from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
 from totalimpactwebapp.drip_email import log_drip_email
 from totalimpactwebapp.util import commit
+from totalimpactwebapp.util  import dict_from_dir
 from totalimpactwebapp import db
 import tasks
 
@@ -546,75 +547,18 @@ def run_through_twitter_pages(url_slug=None, min_url_slug=None):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.twitter_id != None).filter(Profile.url_slug==url_slug)
     else:
+        q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None)).filter(Profile.twitter_id != None)
         if min_url_slug:
-            q = db.session.query(Profile).filter(Profile.twitter_id != None).filter(Profile.url_slug>=min_url_slug)
-        else:
-            q = db.session.query(Profile).filter(Profile.twitter_id != None)
+            q = q.filter(Profile.url_slug>=min_url_slug)
 
-    start_time = datetime.datetime.utcnow()
-    number_considered = 0.0
-    number_markups = 0.0
-    
-    from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError
-    from totalimpactwebapp.twitter_paging import TwitterPager
-    from StringIO import StringIO
-    import boto
-    import pickle
-    import time
-
-    pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
-                    os.getenv("TWITTER_CONSUMER_SECRET"),
-                    os.getenv("TWITTER_ACCESS_TOKEN"), 
-                    default_max_pages=5)
-
-    conn = boto.connect_s3(os.getenv("AWS_ACCESS_KEY_ID"), os.getenv("AWS_SECRET_ACCESS_KEY"))
-    bucket_name = os.getenv("AWS_BUCKET", "impactstory-uploads-local")
-    bucket = conn.get_bucket(bucket_name, validate=False)
+    from totalimpactwebapp.tweet import save_recent_tweets
 
     for profile in windowed_query(q, Profile.url_slug, 25):
-        number_considered += 1
-        twitter_handle = profile.twitter_id
 
-        logger.info(u"{url_slug} has twitter handle {twitter_handle}".format(
-            url_slug=profile.url_slug, twitter_handle=twitter_handle))
+        logger.info(u"{url_slug} has twitter handle {twitter_handle}, now saving tweets".format(
+            url_slug=profile.url_slug, twitter_handle=profile.twitter_id))
+        save_recent_tweets(profile.id, profile.twitter_id)
 
-        def save_to_aws(r):
-            if not r.data:
-                print r.data
-                print "no data, not saving to AWS"
-                return 
-
-            print "saving to aws"
-            path = "twitter"
-            key_name = "twitter_{twitter_handle}_{start_id}.json".format(
-                twitter_handle=twitter_handle, start_id=r.data[-1].id_str)
-            full_key_name = os.path.join(path, key_name)
-            print "saving to", full_key_name
-            k = bucket.new_key(full_key_name)
-            # file_contents = r.data.items()
-            file_contents = pickle.dumps(r.data)
-            length = k.set_contents_from_file(StringIO(file_contents))
-            print "saved length", length, "with "  
-
-        try:
-            r = pager.paginated_search(
-                page_handler=save_to_aws,
-                # see birdy AppClient docs and Twitter API docs for params
-                # to pass in here:
-                screen_name=twitter_handle, 
-                count=200, 
-                contributor_details=True, 
-                include_rts=True,
-                exclude_replies=False,
-                trim_user=False
-                )
-        except TwitterApiError:
-            print "TwitterApiError error, skipping"
-            continue
-        except TwitterClientError:
-            print "TwitterClientError error, skipping"
-            continue        
-        print "done"
 
 
 def star_best_products(url_slug=None, min_url_slug=None):

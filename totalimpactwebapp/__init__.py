@@ -116,6 +116,7 @@ from totalimpactwebapp import profile
 from totalimpactwebapp import reference_set
 from totalimpactwebapp import snap
 from totalimpactwebapp import pinboard
+from totalimpactwebapp import tweet
 logger.info(u"calling create_all on SQLAlchemy database tables to make any new ones")
 db.create_all()
 commit(db)

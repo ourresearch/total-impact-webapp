@@ -8,6 +8,7 @@ from totalimpactwebapp.product_markup import MarkupFactory
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.drip_email import DripEmail
+from totalimpactwebapp.tweet import save_recent_tweets
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
 
@@ -21,6 +22,7 @@ from collections import Counter
 from collections import defaultdict
 from stripe import InvalidRequestError
 
+import threading
 import requests
 import stripe
 import json
@@ -439,28 +441,36 @@ class Profile(db.Model):
         analytics_credentials = self.get_analytics_credentials()        
         return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
 
-    def update_products_from_linked_account(self, account, update_even_removed_products):
-        account_value = getattr(self, account+"_id")
-        tiids_to_add = []        
-        if account_value:
-            try:
-                analytics_credentials = self.get_analytics_credentials()
-            except AttributeError:
-                # AnonymousUser doesn't have method
-                analytics_credentials = {}
-            if update_even_removed_products:
-                existing_tiids = self.tiids
-            else:
-                existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
-            import_response = make_products_for_linked_account(
-                    self.id,                
-                    account, 
-                    account_value, 
-                    analytics_credentials,
-                    existing_tiids)
+    def update_twitter(self):
+        t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
+        t.daemon = True
+        t.start()
 
-            tiids_to_add = import_response["products"].keys()
-        return tiids_to_add
+    def update_products_from_linked_account(self, account, update_even_removed_products):
+        if account=="twitter":
+            return self.update_twitter()
+        else:
+            account_value = getattr(self, account+"_id")
+            tiids_to_add = []        
+            if account_value:
+                try:
+                    analytics_credentials = self.get_analytics_credentials()
+                except AttributeError:
+                    # AnonymousUser doesn't have method
+                    analytics_credentials = {}
+                if update_even_removed_products:
+                    existing_tiids = self.tiids
+                else:
+                    existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
+                import_response = make_products_for_linked_account(
+                        self.id,                
+                        account, 
+                        account_value, 
+                        analytics_credentials,
+                        existing_tiids)
+
+                tiids_to_add = import_response["products"].keys()
+            return tiids_to_add
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
