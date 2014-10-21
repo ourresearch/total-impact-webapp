@@ -7,7 +7,6 @@ from totalimpactwebapp.twitter_paging import TwitterPager
 from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
 import os
 import datetime
-import json
 import datetime
 import logging
 logger = logging.getLogger('ti.webapp.tweets')
