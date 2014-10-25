@@ -788,7 +788,7 @@ def buy_coupons():
     # change the card using stripe
     # email the coupon code to the email address supplied
     # return success
-    return json_resp_from_thing({"subscriptions": 42})
+    return json_resp_from_thing({"success": True})
 
 
 

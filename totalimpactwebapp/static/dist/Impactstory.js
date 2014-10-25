@@ -747,36 +747,9 @@ angular.module( 'giftSubscriptionPage', [
                                          TiMixpanel,
                                          Loading,
                                          UserMessage) {
-    console.log("gift-subscription-page controller ran.")
-
     Page.setTitle("Buy subscriptions")
-
-
-    var subscribeUser = function(url_slug, plan, token, coupon) {
-      console.log("running subscribeUser()", url_slug, plan, token, coupon)
-      return UsersSubscription.save(
-        {id: url_slug},
-        {
-          token: token,
-          plan: plan,
-          coupon: coupon
-        },
-        function(resp){
-          console.log("we subscribed a user, huzzah!", resp)
-          security.refreshCurrentUser() // refresh the currentUser from server
-          window.scrollTo(0,0)
-          UserMessage.set("settings.subscription.subscribe.success")
-          Loading.finish("subscribe")
-          TiMixpanel.track("User subscribed")
-
-
-        },
-        function(resp){
-          console.log("we failed to subscribe a user.", resp)
-          UserMessage.set("settings.subscription.subscribe.error")
-          Loading.finish("subscribe")
-        }
-      )
+    var calculateCost = function(numSubscriptions){
+      return numSubscriptions * 60
     }
 
     var donate = function(token){
@@ -787,10 +760,44 @@ angular.module( 'giftSubscriptionPage', [
       )
     }
 
+    var clearForm = function(){
+      $scope.formData = {}
+      $scope.name = null
+      $scope.number = null
+      $scope.expiry = null
+      $scope.cvc = null
+    }
+
+
+    var buyCoupons = function(stripeToken){
+      console.log("buying teh coupons.")
+      $http.post(
+        "/coupons",
+        {
+          stripeToken: stripeToken,
+          cost:calculateCost($scope.formData.numSubscriptions),
+          email: $scope.formData.email
+        })
+      .success(
+        function(resp){
+          console.log("we done bought us some coupons!", resp)
+          window.scrollTo(0,0)
+          UserMessage.setStr("Success! Check your email for your coupon code.", "success")
+          Loading.finish("subscribe")
+        })
+      .error(
+        function(resp){
+          console.log("buyCoupons() fail")
+          UserMessage.setStr("Sorry, something went wrong with your order!", "danger")
+      })
+      .finally(function(resp){
+        clearForm()
+      })
+    }
 
     $scope.formData = {}
     $scope.cost = function(){
-      return $scope.formData.numSubscriptions * 60
+      return calculateCost($scope.formData.numSubscriptions)
     }
 
 
@@ -810,7 +817,7 @@ angular.module( 'giftSubscriptionPage', [
       }
       else {
         console.log("yay, Stripe CC token created successfully! Now let's charge the card.")
-        donate(response.id)
+        buyCoupons(response.id)
       }
     }
 
@@ -6755,6 +6762,7 @@ angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run
     "                  <input type=\"text\"\n" +
     "                         class=\"form-control\"\n" +
     "                         required\n" +
+    "                         ng-model=\"name\"\n" +
     "                         name=\"card-holder-name\"\n" +
     "                         id=\"card-holder-name\"\n" +
     "                         placeholder=\"Card holder's name\">\n" +
@@ -6768,7 +6776,7 @@ angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run
     "                  <input type=\"text\"\n" +
     "                         class=\"form-control\"\n" +
     "                         required\n" +
-    "                         ng-model=\"formData.numSubscriptions\"\n" +
+    "                         ng-model=\"formData.email\"\n" +
     "                         name=\"email\"\n" +
     "                         id=\"email\"\n" +
     "                         placeholder=\"Where shall we send your coupon code?\">\n" +
