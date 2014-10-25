@@ -43,6 +43,7 @@ angular.module( 'giftSubscriptionPage', [
 
     var buyCoupons = function(stripeToken){
       console.log("buying teh coupons.")
+      Loading.start("subscribe")
       $http.post(
         "/coupons",
         {
@@ -53,9 +54,7 @@ angular.module( 'giftSubscriptionPage', [
       .success(
         function(resp){
           console.log("we done bought us some coupons!", resp)
-          window.scrollTo(0,0)
           UserMessage.setStr("Success! Check your email for your coupon code.", "success")
-          Loading.finish("subscribe")
         })
       .error(
         function(resp){
@@ -63,7 +62,9 @@ angular.module( 'giftSubscriptionPage', [
           UserMessage.setStr("Sorry, something went wrong with your order!", "danger")
       })
       .finally(function(resp){
+        window.scrollTo(0,0)
         clearForm()
+          Loading.finish("subscribe")
       })
     }
 
