@@ -743,11 +743,14 @@ angular.module( 'giftSubscriptionPage', [
 
   .controller("giftSubscriptionPageCtrl", function($scope,
                                          $http,
+                                         $window,
                                          Page,
                                          TiMixpanel,
                                          Loading,
                                          UserMessage) {
     Page.setTitle("Buy subscriptions")
+    $window.scrollTo(0, 0)
+
     var calculateCost = function(numSubscriptions){
       return numSubscriptions * 60
     }
@@ -7142,12 +7145,19 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "   </p>\n" +
     "\n" +
     "\n" +
+    "   <h3 id=\"multi-subscribe\">Can I buy subscriptions for other people, like my lab or department?</h3>\n" +
+    "   <p>\n" +
+    "      Why yes. <a href=\"/buy-subscriptions\">Yes you can.</a>\n" +
+    "   </p>\n" +
+    "\n" +
+    "\n" +
     "   <h3 id=\"learn-more\">I've got more questions. Where can I learn more?</h3>\n" +
     "   <p>\n" +
     "      Check out our <a href=\"http://feedback.impactstory.org/knowledgebase\">knowledge base!</a>\n" +
     "      You'll find answers to dozens of other common questions, from\n" +
     "      how to customize your profile to details on individual metrics and much more.\n" +
     "   </p>\n" +
+    "   <p>\n" +
     "      You can also learn more about our mission, history, and team our <a href=\"/about\">about page</a>,\n" +
     "      and get a snapshot of all the metrics we gather on our <a href=\"/metrics\">metrics page</a>.\n" +
     "   </p>\n" +

@@ -15,11 +15,14 @@ angular.module( 'giftSubscriptionPage', [
 
   .controller("giftSubscriptionPageCtrl", function($scope,
                                          $http,
+                                         $window,
                                          Page,
                                          TiMixpanel,
                                          Loading,
                                          UserMessage) {
     Page.setTitle("Buy subscriptions")
+    $window.scrollTo(0, 0)
+
     var calculateCost = function(numSubscriptions){
       return numSubscriptions * 60
     }
