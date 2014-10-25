@@ -43,12 +43,12 @@ angular.module( 'giftSubscriptionPage', [
 
     var buyCoupons = function(stripeToken){
       console.log("buying teh coupons.")
-      Loading.start("subscribe")
       $http.post(
         "/coupons",
         {
           stripeToken: stripeToken,
-          cost:calculateCost($scope.formData.numSubscriptions),
+          numSubscriptions: $scope.formData.numSubscriptions,
+          cost: calculateCost($scope.formData.numSubscriptions),
           email: $scope.formData.email
         })
       .success(
@@ -78,8 +78,7 @@ angular.module( 'giftSubscriptionPage', [
 
 
     $scope.handleStripe = function(status, response){
-
-      console.log("handleStripe() returned stuff from Stripe:", response)
+      Loading.start("subscribe")
 
       Loading.start("donate")
       console.log("in handleStripe(), got a response back from Stripe.js's call to the Stripe server:", status, response)

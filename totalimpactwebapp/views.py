@@ -777,13 +777,15 @@ def test_pdf():
 
 @app.route("/coupons", methods=["POST"])
 def buy_coupons():
-    # needs to get:
-    #   request.json.get("cost")
-    #   request.json.get("email")
-    #   request.json.get("stripe_token")
+    util.mint_stripe_coupon(
+        request.json.get("stripeToken"),
+        request.json.get("email"),
+        request.json.get("cost"),
+        request.json.get("numSubscriptions")
+    )
 
-    # get a token
-    # mint a coupon from stripe,
+
+
     #   depending on how much money there is, set the max_redemptions
     # change the card using stripe
     # email the coupon code to the email address supplied

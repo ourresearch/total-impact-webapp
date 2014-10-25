@@ -5,8 +5,12 @@ import re
 import jinja2
 from time import sleep
 import datetime
+import stripe
+import emailer
+
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
+
 
 import logging
 logger = logging.getLogger('ti.webapp.util')
@@ -273,3 +277,60 @@ def commit(db):
         db.session.rollback()
         logger.warning(u"Error on commit, rolling back.  Message: {message}".format(
             message=e.message))    
+
+
+def random_alpha_str(length=5):
+    return ''.join(random.choice('ABCDEFGHJKLMNOPQRSTUVWXYZ') for i in range(length))
+
+
+def mint_stripe_coupon(stripe_token, email, cost, num_subscriptions):
+
+    coupon_code = "MS_" + random_alpha_str()
+    print "making a stripe coupon with this code: ", coupon_code
+    descr = "Coupon {coupon_code}: {num_subscriptions} Impactstory subscriptions for ${cost}".format(
+        coupon_code=coupon_code,
+        num_subscriptions=num_subscriptions,
+        cost=cost
+    )
+
+    # mint a coupon from stripe
+    print "making a stripe coupon with this code: ", coupon_code
+    coupon_resp = stripe.Coupon.create(
+        id=coupon_code,
+        percent_off=100,
+        duration="repeating",
+        duration_in_months=12,
+        max_redemptions=num_subscriptions,
+        metadata={"email": email}
+    )
+
+    # charge the card one time
+    charge_resp = stripe.Charge.create(
+        amount=cost*100,
+        currency="USD",
+        card=stripe_token,
+        description=descr,
+        statement_description="Impactstory",
+        receipt_email=email,
+        metadata={
+            "coupon": coupon_code
+        }
+    )
+
+    # email them their coupon code
+    emailer.send(
+        address=email,
+        subject="Your code for Impactstory subscriptions",
+        template_name="multi-subscribe",
+        context={
+            "num_subscriptions": num_subscriptions,
+            "coupon_code": coupon_code
+        }
+    )
+
+
+
+
+
+
+

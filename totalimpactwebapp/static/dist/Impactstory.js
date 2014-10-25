@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-24
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-25
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -771,12 +771,12 @@ angular.module( 'giftSubscriptionPage', [
 
     var buyCoupons = function(stripeToken){
       console.log("buying teh coupons.")
-      Loading.start("subscribe")
       $http.post(
         "/coupons",
         {
           stripeToken: stripeToken,
-          cost:calculateCost($scope.formData.numSubscriptions),
+          numSubscriptions: $scope.formData.numSubscriptions,
+          cost: calculateCost($scope.formData.numSubscriptions),
           email: $scope.formData.email
         })
       .success(
@@ -806,8 +806,7 @@ angular.module( 'giftSubscriptionPage', [
 
 
     $scope.handleStripe = function(status, response){
-
-      console.log("handleStripe() returned stuff from Stripe:", response)
+      Loading.start("subscribe")
 
       Loading.start("donate")
       console.log("in handleStripe(), got a response back from Stripe.js's call to the Stripe server:", status, response)

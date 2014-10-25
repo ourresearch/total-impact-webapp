@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Your code for Impactstory subscriptions</title>
+   <style type="text/css">
+      div.header {
+         text-align: center;
+         margin-bottom: 30px;
+      }
+      div.header img.logo {
+         width: 150px;
+         margin: 0;
+      }
+      pre {
+         background: #eee;
+         padding: 30px;
+         font-size: 30px;
+         font-family: consolas, menlo, monaco, monospace;
+         font-weight: bold;
+         border: 1px solid #ddd;
+         margin: 20px 50px;
+         -webkit-border-radius: 5px;
+         -moz-border-radius: 5px;
+         border-radius: 5px;
+         text-align: center;
+      }
+   </style>
+
+   <link rel="stylesheet" href="https://impactstory.org/static/less.emails/css/drip.css"/>
+</head>
+<body>
+   <div class="header">
+      <img class="logo" src="https://impactstory.org/static/img/impactstory-logo-sideways.png" alt="Impactstory logo"/>
+   </div>
+
+   <p>Thanks for purchasing subscriptions to Impactstory!</p>
+   <p>
+      Here's the coupon code that you can distribute; it'll allow
+      anyone who uses it to get a free profile subscription, and it's
+      good for {{ num_subscriptions }} redemptions.
+   </p>
+   <pre>{{ coupon_code }}</pre>
+   <p>
+      It's easy to use. Whoever has the code just 
+      <a href="http://impactstory.org/signup">signs up for Impactstory</a>, 
+      then goes to settings (the gear icon in the top right corner) and 
+      clicks "subscribe." They should select "annual subscription" and then,
+      instead of entering their credit card,
+      they can just enter your coupon code. That's it!
+   </p>
+   <p>
+      After their subscription is set up, folks can        
+      fill out their profile as normal; this takes 5-30 minutes, depending
+      on how many research products they've authored, and how much customization
+      they want to do. As always, our
+      <a href="http://feedback.impactstory.org/knowledgebase">knowledge base</a>
+      is there to help anyone with questions.
+      If your or anyone has any trouble, though,
+      please don't hesitate to drop us an email at team@impactstory.org,
+      and we'll get right back to you.
+   </p>
+   <p>
+      Thanks again for your purchase. Your support helps keep Impactstory
+      going as an independant, researcher-run nonprofit. We're so excited
+      about how much we can accomplish together!
+   </p>
+   <p>
+      All our best,<br> Heather Piwowar and Jason Priem (co-founders)
+   </p>
+</body>
+</html>
