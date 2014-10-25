@@ -1,10 +1,10 @@
 <div id="multiple-subscriptions-page">
    <div class="header">
       <h2 class="infopage-heading">Buy multiple subscriptions</h2>
-      <div class="more">
+      <div class="page-expl">
          <p>
-            Want to get Impactstory for your department, lab, or organization? Want
-            to give a great gift to a cutting-edge scholar you know?
+            Want to get Impactstory for your department, lab, or organization? How about
+            a great gift for a cutting-edge scholar you know?
          </p>
          <p>
             Great! You're in the right place. A few minutes after you've
@@ -29,7 +29,21 @@
                          required
                          name="card-holder-name"
                          id="card-holder-name"
-                         placeholder="Card Holder's Name">
+                         placeholder="Card holder's name">
+               </div>
+            </div>
+
+            <!-- name on card -->
+            <div class="form-group">
+               <label class="col-sm-3 control-label" for="card-holder-name">Email</label>
+               <div class="col-sm-9">
+                  <input type="text"
+                         class="form-control"
+                         required
+                         ng-model="formData.numSubscriptions"
+                         name="email"
+                         id="email"
+                         placeholder="Where shall we send your coupon code?">
                </div>
             </div>
 
@@ -47,7 +61,7 @@
                        payments-format="card"
                        payments-type-model="type"
                        ng-class="type"
-                       placeholder="Credit Card Number">
+                       placeholder="Credit card number">
               </div>
             </div>
 

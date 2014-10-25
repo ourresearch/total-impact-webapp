@@ -6729,15 +6729,15 @@ angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run
     "<div id=\"multiple-subscriptions-page\">\n" +
     "   <div class=\"header\">\n" +
     "      <h2 class=\"infopage-heading\">Buy multiple subscriptions</h2>\n" +
-    "      <div class=\"more\">\n" +
+    "      <div class=\"page-expl\">\n" +
     "         <p>\n" +
-    "            Want to get Impactstory for your department, lab, or organization? Want\n" +
-    "            to give a great gift to a cutting-edge scholar you know?\n" +
+    "            Want to get Impactstory for your department, lab, or organization? How about\n" +
+    "            a great gift for a cutting-edge scholar you know?\n" +
     "         </p>\n" +
     "         <p>\n" +
     "            Great! You're in the right place. A few minutes after you've\n" +
     "            submitted your purchase information below, you'll get a coupon code\n" +
-    "            in your inbox, redeemable for a set number of free subscriptions. \n" +
+    "            in your inbox, redeemable for a set number of free subscriptions.\n" +
     "         </p>\n" +
     "      </div>\n" +
     "\n" +
@@ -6757,7 +6757,21 @@ angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run
     "                         required\n" +
     "                         name=\"card-holder-name\"\n" +
     "                         id=\"card-holder-name\"\n" +
-    "                         placeholder=\"Card Holder's Name\">\n" +
+    "                         placeholder=\"Card holder's name\">\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <!-- name on card -->\n" +
+    "            <div class=\"form-group\">\n" +
+    "               <label class=\"col-sm-3 control-label\" for=\"card-holder-name\">Email</label>\n" +
+    "               <div class=\"col-sm-9\">\n" +
+    "                  <input type=\"text\"\n" +
+    "                         class=\"form-control\"\n" +
+    "                         required\n" +
+    "                         ng-model=\"formData.numSubscriptions\"\n" +
+    "                         name=\"email\"\n" +
+    "                         id=\"email\"\n" +
+    "                         placeholder=\"Where shall we send your coupon code?\">\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
@@ -6775,7 +6789,7 @@ angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run
     "                       payments-format=\"card\"\n" +
     "                       payments-type-model=\"type\"\n" +
     "                       ng-class=\"type\"\n" +
-    "                       placeholder=\"Credit Card Number\">\n" +
+    "                       placeholder=\"Credit card number\">\n" +
     "              </div>\n" +
     "            </div>\n" +
     "\n" +
