@@ -21,7 +21,7 @@ angular.module( 'giftSubscriptionPage', [
                                          UserMessage) {
     console.log("gift-subscription-page controller ran.")
 
-    Page.setTitle("Donate")
+    Page.setTitle("Buy subscriptions")
 
 
     var subscribeUser = function(url_slug, plan, token, coupon) {

@@ -1,9 +1,16 @@
-<div id="gift-subscription-page">
+<div id="multiple-subscriptions-page">
    <div class="header">
-      <h2>Buy multiple subscriptions</h2>
+      <h2 class="infopage-heading">Buy multiple subscriptions</h2>
       <div class="more">
-         Want to get Impactstory for your department, lab, or organization?
-         Excellent choice.
+         <p>
+            Want to get Impactstory for your department, lab, or organization? Want
+            to give a great gift to a cutting-edge scholar you know?
+         </p>
+         <p>
+            Great! You're in the right place. A few minutes after you've
+            submitted your purchase information below, you'll get a coupon code
+            in your inbox, redeemable for a set number of free subscriptions.
+         </p>
       </div>
 
       <div class="main-content">
@@ -83,25 +90,21 @@
             </div>
 
             <!-- number of annual subscriptions to get -->
-            <div class="form-group">
-               <label class="col-sm-3 control-label" for="num-subscriptions">Number of subscriptions</label>
-               <div class="col-sm-3">
-                  <input type="text"
-                         ng-model="formData.numSubscriptions"
-                         class="form-control"
-                         required
-                         name="num-subscriptions"
-                         id="num-subscriptions"
-                         placeholder="10">
+            <div class="form-group num-subscriptions">
+               <label class="control-label col-sm-3" for="num-subscriptions">Number of subscriptions</label>
+               <div class="controls col-sm-5">
+                  <div class="input-group">
+                     <input type="text"
+                            ng-model="formData.numSubscriptions"
+                            class="form-control col-sm-2"
+                            required
+                            name="num-subscriptions"
+                            id="num-subscriptions"
+                            placeholder="10">
+                     <div class="input-group-addon">@ $60 per subscription</div>
+                  </div>
+
                </div>
-               <label class="col-sm-3 control-label"
-                      ng-show="cost()"
-                      for="num-subscriptions">
-                  for
-                  <span class="value">
-                     ${{ cost() }}
-                  </span>
-               </label>
             </div>
 
 
@@ -114,6 +117,12 @@
                              ng-show="!loading.is('subscribe')"
                              class="btn btn-success">
                         Purchase
+
+                        <span class="cost-info" ng-show="cost()">
+                           {{ formData.numSubscriptions }} subscriptions for
+                           ${{ cost() }} total
+                        </span>
+
                      </button>
                      <div class="working" ng-show="loading.is('subscribe')">
                         <i class="icon-refresh icon-spin"></i>

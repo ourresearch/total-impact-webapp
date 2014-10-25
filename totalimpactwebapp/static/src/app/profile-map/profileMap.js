@@ -36,6 +36,8 @@ angular.module( 'profileMap', [
     return (function(event, element, countryCode){
 
       function makeTipMetricLine(metricName){
+        console.log("country code", countryCode)
+
         var metricValue = countriesData[countryCode][metricName]
         if (!metricValue) {
           return ""
