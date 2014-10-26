@@ -8102,12 +8102,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        <span class=\"biblio-field abstract\" ng-show=\"!userOwnsThisProfile && biblio.abstract\">\n" +
     "                           <span class=\"biblio-field-label\">Abstract:</span>\n" +
     "                           <span class=\"value\">\n" +
-    "                              {{ truncatedAbstract() }}\n" +
-    "                           </span>\n" +
-    "                           <span class=\"more-abstract\"\n" +
-    "                                 ng-hide=\"loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract\"\n" +
-    "                                 ng-click=\"userWantsFullAbstract=true\">\n" +
-    "                              (more)\n" +
+    "                              {{ biblio.abstract }}\n" +
     "                           </span>\n" +
     "                        </span>\n" +
     "                     </div>\n" +

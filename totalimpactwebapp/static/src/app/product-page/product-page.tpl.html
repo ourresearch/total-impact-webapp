@@ -212,12 +212,7 @@
                         <span class="biblio-field abstract" ng-show="!userOwnsThisProfile && biblio.abstract">
                            <span class="biblio-field-label">Abstract:</span>
                            <span class="value">
-                              {{ truncatedAbstract() }}
-                           </span>
-                           <span class="more-abstract"
-                                 ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract"
-                                 ng-click="userWantsFullAbstract=true">
-                              (more)
+                              {{ biblio.abstract }}
                            </span>
                         </span>
                      </div>
