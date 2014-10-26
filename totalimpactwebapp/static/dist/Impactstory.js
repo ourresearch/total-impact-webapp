@@ -6785,11 +6785,14 @@ angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run
     "      <h2 class=\"infopage-heading\">Buy multiple subscriptions</h2>\n" +
     "      <div class=\"page-expl\">\n" +
     "         <p>\n" +
-    "            Want to get Impactstory for your department, lab, or organization? How about\n" +
+    "            Want to purchase multiple Impactstory subscriptions for your department,\n" +
+    "            lab, or organization? Or maybe just\n" +
     "            a great gift for a cutting-edge scholar you know?\n" +
     "         </p>\n" +
     "         <p>\n" +
-    "            Great! You're in the right place. A few minutes after you've\n" +
+    "            Great! You're in the right place! (If on other hand you want\n" +
+    "            to subscribe yourself, just log in and click the gear icon at the\n" +
+    "            top right of your screen). A few minutes after you've\n" +
     "            submitted your purchase information below, you'll get a coupon code\n" +
     "            in your inbox, redeemable for a set number of free subscriptions.\n" +
     "         </p>\n" +
