@@ -170,16 +170,103 @@ div.product-page {
       // ************************************************************************
       #product-tabs-section {
          div.tabs {
-            margin-top: 50px;
+            margin: 50px 0 20px;
+            .clearfix();
             div.tab {
                float:left;
-               padding: 20px 5px;
+               font-size: 20px;
+               padding: 5px 20px;
+               cursor: pointer;
+               &.selected {
+                  background: #999;
+                  .rounded(25px);
+                  color: #fff;
+               }
 
             }
          }
 
          div.tabs-content {
-            clear: both;
+            .tab-summary {
+               #citation {
+                  margin-top: 35px;
+                  h4 {
+                     font-size: 20px;
+                  }
+                  .key {
+                     text-align: right;
+                     padding-right: 5px;
+                     color: #555;
+                     font-size: 12px;
+                     font-weight: bold;
+                  }
+                  div.text-citation {
+                     .key {
+                     }
+                     .value {
+                        font-family: Monaco, Consolas, monospace;
+                        font-size: 12px;
+                        color: #777;
+                        .host {
+                           font-style: italic;
+                        }
+                     }
+
+                  }
+                  ul.aliases {
+                     margin-top: 10px;
+                     margin-bottom: 0;
+                     li {
+                        font-size: 12px;
+                        span.key {
+                           color: #777;
+                        }
+                        a {
+                           color: #777;
+                           &:hover {
+                              color: @linkColor;
+                           }
+
+                        }
+                     }
+                  }
+               }
+            }
+
+            .tab-fulltext {
+               .embed-picture {
+                  width: 90%;
+               }
+               .embed-dryad {
+                  min-height: 70px;
+                  padding: 0 20px;
+                  margin-top: 50px;
+                  width: 90%;
+                  border: 1px solid #eee;
+               }
+               .embed-dryad table {
+                  padding-top: 20px;
+               }
+               .embed-github {
+                  min-height: 70px;
+                  margin-top: 50px;
+                  width: 90%;
+                  border: 1px solid #eee;
+                  h3:first-child {
+                     background: #eee;
+                     font-family: Consolas, Monaco, monospace;
+                     margin: 0;
+                     font-size: 20px;
+                     padding: 15px 15px 10px;
+                  }
+                  article {
+                     padding: 15px;
+                     h1, h2, h3, h4 { font-size: 20px;}
+                  }
+
+               }
+            }
+
          }
 
 
@@ -201,37 +288,6 @@ div.product-page {
          padding-bottom: 100px;
          width: @productMainWidth - 30px;
 
-         .embed-picture {
-            width: 90%;
-         }
-         .embed-dryad {
-            min-height: 70px;
-            padding: 0 20px;
-            margin-top: 50px;
-            width: 90%;
-            border: 1px solid #eee;
-         }
-         .embed-dryad table {
-            padding-top: 20px;
-         }
-         .embed-github {
-            min-height: 70px;
-            margin-top: 50px;
-            width: 90%;
-            border: 1px solid #eee;
-            h3:first-child {
-               background: #eee;
-               font-family: Consolas, Monaco, monospace;
-               margin: 0;
-               font-size: 20px;
-               padding: 15px 15px 10px;
-            }
-            article {
-               padding: 15px;
-               h1, h2, h3, h4 { font-size: 20px;}
-            }
-
-         }
 
 
          .upload-cta {
@@ -344,55 +400,6 @@ div.product-page {
          }
 
       }
-
-      // CITATION INFO
-      // ************************************************************************
-      // ************************************************************************
-
-      #citation {
-         margin-top: 35px;
-         h4 {
-            font-size: 20px;
-         }
-         .key {
-            text-align: right;
-            padding-right: 5px;
-            color: #555;
-            font-size: 12px;
-            font-weight: bold;
-         }
-         div.text-citation {
-            .key {
-            }
-            .value {
-               font-family: Monaco, Consolas, monospace;
-               font-size: 12px;
-               color: #777;
-               .host {
-                  font-style: italic;
-               }
-            }
-
-         }
-         ul.aliases {
-            margin-top: 10px;
-            margin-bottom: 0;
-            li {
-               font-size: 12px;
-               span.key {
-                  color: #777;
-               }
-               a {
-                  color: #777;
-                  &:hover {
-                     color: @linkColor;
-                  }
-
-               }
-            }
-         }
-      }
-
    }
 
 }

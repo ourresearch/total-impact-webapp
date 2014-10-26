@@ -138,23 +138,35 @@
 
          <div id="product-tabs-section">
             <div class="tabs">
-               <div class="tab tab-default">
+               <div class="tab tab-default"
+                    ng-class="{selected: currentTab.name=='summary'}"
+                    ng-click="currentTab.name='summary'">
+                  <i class="icon-list-ul left"></i>
                   Summary
                </div>
-               <div class="tab tab-metrics">
+               <div class="tab tab-metrics"
+                    ng-class="{selected: currentTab.name=='fulltext'}"
+                    ng-click="currentTab.name='fulltext'">
+                  <i class="icon-file-text-alt left"></i>
                   Full text
                </div>
-               <div class="tab tab-metrics">
+               <div class="tab tab-metrics"
+                    ng-class="{selected: currentTab.name=='metrics'}"
+                    ng-click="currentTab.name='metrics'">
+                  <i class="icon-bar-chart left"></i>
                   Metrics
                </div>
-               <div class="tab tab-map">
+               <div class="tab tab-map"
+                    ng-class="{selected: currentTab.name=='map'}"
+                    ng-click="currentTab.name='map'">
+                  <i class="icon-globe left"></i>
                   Map
                </div>
             </div>
 
             <div class="tabs-content">
-               <div class="tab-content tab-default">
-                  <div class="optional-biblio">
+               <div class="tab-content tab-summary" ng-show="currentTab.name=='summary'">
+                  <div class="optional-biblio biblio">
                      <!-- abstract line -->
                      <div class="biblio-line abstract">
                         <span class="biblio-field abstract" ng-show="userOwnsThisProfile">
@@ -221,38 +233,33 @@
                            </span>
                         </span>
                      </div>
-                  </div><!-- end of the optional biblio part of the default tab -->
+                  </div><!-- end of the optional biblio part of the summary tab -->
 
+                  <div id="citation">
+                     <ul class="aliases">
+                        <li class="doi" ng-show="aliases.display_best_url && !aliases.display_doi">
+                           <span class="key">URL:</span>
+                           <a class="value" href="{{ aliases.display_best_url }}">{{ aliases.display_best_url }} <i class="icon-external-link"></i></a>
+                        </li>
 
-                  <div id="resource">
+                        <li class="doi" ng-show="aliases.display_doi">
+                           <span class="key">DOI:</span>
+                           <a class="value" href="http://dx.doi.org/{{ aliases.display_doi }}">{{ aliases.display_doi }}<i class="icon-external-link right"></i></a>
+                        </li>
+                        <li class="pmid" ng-show="aliases.display_pmid">
+                           <span class="key">PubMed ID:</span>
+                           <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_doi }}<i class="icon-external-link"></i></a>
+                        </li>
+                     </ul>
 
-                     <div id="citation">
-                        <ul class="aliases">
-                           <li class="doi" ng-show="aliases.display_best_url && !aliases.display_doi">
-                              <span class="key">URL:</span>
-                              <a class="value" href="{{ aliases.display_best_url }}">{{ aliases.display_best_url }} <i class="icon-external-link"></i></a>
-                           </li>
-
-                           <li class="doi" ng-show="aliases.display_doi">
-                              <span class="key">DOI:</span>
-                              <a class="value" href="http://dx.doi.org/{{ aliases.display_doi }}">{{ aliases.display_doi }}<i class="icon-external-link right"></i></a>
-                           </li>
-                           <li class="pmid" ng-show="aliases.display_pmid">
-                              <span class="key">PubMed ID:</span>
-                              <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_doi }}<i class="icon-external-link"></i></a>
-                           </li>
-                        </ul>
-
-                        <div class="text-citation">
-                           <span class="key">Citation:</span>
-                           <span class="value">
-                              <span class="authors">{{ biblio.authors }}</span>
-                              <span class="year">({{ biblio.display_year }}).</span>
-                              <span class="title">{{ biblio.display_title }}.</span>
-                              <span class="host"> {{ biblio.display_host }}</span>
-                           </span>
-                        </div>
-
+                     <div class="text-citation">
+                        <span class="key">Citation:</span>
+                        <span class="value">
+                           <span class="authors">{{ biblio.authors }}</span>
+                           <span class="year">({{ biblio.display_year }}).</span>
+                           <span class="title">{{ biblio.display_title }}.</span>
+                           <span class="host"> {{ biblio.display_host }}</span>
+                        </span>
                      </div>
 
                   </div>
@@ -267,7 +274,7 @@
 
 
 
-               <div class="tab-fulltext tab-content">
+               <div class="tab-fulltext tab-content" ng-show="currentTab.name=='fulltext'">
 
                   <div id="file" ng-show="hasEmbeddedFile">
                      <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
@@ -355,7 +362,7 @@
 
 
 
-               <div class="tab-content tab-map">
+               <div class="tab-content tab-map" ng-show="currentTab.name=='map'">
                </div><!-- end of the Maps Tab section -->
 
 
@@ -366,7 +373,7 @@
 
 
 
-               <div class="tab-content tab-metrics">
+               <div class="tab-content tab-metrics" ng-show="currentTab.name=='metrics'">
                   <div id="metrics">
                      <ul class="metric-details-list">
 

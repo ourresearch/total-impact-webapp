@@ -6045,6 +6045,9 @@ h4,
 h5,
 h6 {
   font-family: Lato, Helvetica, sans-serif;
+}
+h2 {
+  font-family: Lato, Helvetica, sans-serif;
   font-weight: 300;
   font-size: 35px;
   color: #0053b0;
@@ -8116,20 +8119,24 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   width: 420px;
 }
 .product-container .biblio h5 {
-  margin-top: 0;
+  margin: 0 0 5px;
 }
 .product-container .biblio h5 a.title-text {
   font-size: 16px;
+  font-weight: bold;
   color: #333;
   margin: 0 0 -3px 0;
   padding: 0 5px 0 0;
 }
 .product-container .biblio h5 a.title-text:hover {
   color: #000;
-  text-decoration: underline;
+  text-decoration: none;
 }
 .product-container .biblio h5 a.has-fulltext {
   color: #777;
+}
+.product-container .biblio h5 a.has-fulltext i {
+  font-size: 16px;
 }
 .product-container .biblio h5 a.has-fulltext:hover {
   color: #ff4000;
@@ -8494,54 +8501,117 @@ div.product-page div.main-content .biblio div.share-buttons a.btn:hover {
   color: #333;
 }
 div.product-page div.main-content #product-tabs-section div.tabs {
-  margin-top: 50px;
+  margin: 50px 0 20px;
+  clear: both;
+}
+div.product-page div.main-content #product-tabs-section div.tabs:before,
+div.product-page div.main-content #product-tabs-section div.tabs:after {
+  content: " ";
+  display: table;
+}
+div.product-page div.main-content #product-tabs-section div.tabs:after {
+  clear: both;
+}
+div.product-page div.main-content #product-tabs-section div.tabs:before,
+div.product-page div.main-content #product-tabs-section div.tabs:after {
+  content: " ";
+  display: table;
+}
+div.product-page div.main-content #product-tabs-section div.tabs:after {
+  clear: both;
 }
 div.product-page div.main-content #product-tabs-section div.tabs div.tab {
   float: left;
-  padding: 20px 5px;
+  font-size: 20px;
+  padding: 5px 20px;
+  cursor: pointer;
 }
-div.product-page div.main-content #product-tabs-section div.tabs-content {
-  clear: both;
+div.product-page div.main-content #product-tabs-section div.tabs div.tab.selected {
+  background: #999;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  border-radius: 25px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  color: #fff;
 }
-div.product-page div.main-content #resource {
-  margin-top: 20px;
-  padding-bottom: 100px;
-  width: 550px;
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation {
+  margin-top: 35px;
 }
-div.product-page div.main-content #resource .embed-picture {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation h4 {
+  font-size: 20px;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation .key {
+  text-align: right;
+  padding-right: 5px;
+  color: #555;
+  font-size: 12px;
+  font-weight: bold;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation div.text-citation .value {
+  font-family: Monaco, Consolas, monospace;
+  font-size: 12px;
+  color: #777;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation div.text-citation .value .host {
+  font-style: italic;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation ul.aliases {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation ul.aliases li {
+  font-size: 12px;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation ul.aliases li span.key {
+  color: #777;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation ul.aliases li a {
+  color: #777;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary #citation ul.aliases li a:hover {
+  color: #ff4000;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-picture {
   width: 90%;
 }
-div.product-page div.main-content #resource .embed-dryad {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-dryad {
   min-height: 70px;
   padding: 0 20px;
   margin-top: 50px;
   width: 90%;
   border: 1px solid #eee;
 }
-div.product-page div.main-content #resource .embed-dryad table {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-dryad table {
   padding-top: 20px;
 }
-div.product-page div.main-content #resource .embed-github {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-github {
   min-height: 70px;
   margin-top: 50px;
   width: 90%;
   border: 1px solid #eee;
 }
-div.product-page div.main-content #resource .embed-github h3:first-child {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-github h3:first-child {
   background: #eee;
   font-family: Consolas, Monaco, monospace;
   margin: 0;
   font-size: 20px;
   padding: 15px 15px 10px;
 }
-div.product-page div.main-content #resource .embed-github article {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-github article {
   padding: 15px;
 }
-div.product-page div.main-content #resource .embed-github article h1,
-div.product-page div.main-content #resource .embed-github article h2,
-div.product-page div.main-content #resource .embed-github article h3,
-div.product-page div.main-content #resource .embed-github article h4 {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-github article h1,
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-github article h2,
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-github article h3,
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-github article h4 {
   font-size: 20px;
+}
+div.product-page div.main-content #resource {
+  margin-top: 20px;
+  padding-bottom: 100px;
+  width: 550px;
 }
 div.product-page div.main-content #resource .upload-cta {
   text-align: center;
@@ -8660,43 +8730,6 @@ div.product-page div.main-content #resource #linkout .content div.oa-version a {
 }
 div.product-page div.main-content #resource #linkout .content div.oa-version a:hover {
   text-decoration: underline;
-  color: #ff4000;
-}
-div.product-page div.main-content #citation {
-  margin-top: 35px;
-}
-div.product-page div.main-content #citation h4 {
-  font-size: 20px;
-}
-div.product-page div.main-content #citation .key {
-  text-align: right;
-  padding-right: 5px;
-  color: #555;
-  font-size: 12px;
-  font-weight: bold;
-}
-div.product-page div.main-content #citation div.text-citation .value {
-  font-family: Monaco, Consolas, monospace;
-  font-size: 12px;
-  color: #777;
-}
-div.product-page div.main-content #citation div.text-citation .value .host {
-  font-style: italic;
-}
-div.product-page div.main-content #citation ul.aliases {
-  margin-top: 10px;
-  margin-bottom: 0;
-}
-div.product-page div.main-content #citation ul.aliases li {
-  font-size: 12px;
-}
-div.product-page div.main-content #citation ul.aliases li span.key {
-  color: #777;
-}
-div.product-page div.main-content #citation ul.aliases li a {
-  color: #777;
-}
-div.product-page div.main-content #citation ul.aliases li a:hover {
   color: #ff4000;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {

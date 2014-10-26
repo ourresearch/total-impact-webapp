@@ -249,6 +249,10 @@ angular.module("productPage", [
       console.log("running after save.")
     }
 
+    $scope.currentTab = {
+      name: "summary"
+    }
+
     $scope.truncatedAbstract = function(){
 
       if (!product.biblio.abstract) {

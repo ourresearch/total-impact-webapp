@@ -1508,6 +1508,10 @@ angular.module("productPage", [
       console.log("running after save.")
     }
 
+    $scope.currentTab = {
+      name: "summary"
+    }
+
     $scope.truncatedAbstract = function(){
 
       if (!product.biblio.abstract) {
@@ -8037,23 +8041,35 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "         <div id=\"product-tabs-section\">\n" +
     "            <div class=\"tabs\">\n" +
-    "               <div class=\"tab tab-default\">\n" +
+    "               <div class=\"tab tab-default\"\n" +
+    "                    ng-class=\"{selected: currentTab.name=='summary'}\"\n" +
+    "                    ng-click=\"currentTab.name='summary'\">\n" +
+    "                  <i class=\"icon-list-ul left\"></i>\n" +
     "                  Summary\n" +
     "               </div>\n" +
-    "               <div class=\"tab tab-metrics\">\n" +
+    "               <div class=\"tab tab-metrics\"\n" +
+    "                    ng-class=\"{selected: currentTab.name=='fulltext'}\"\n" +
+    "                    ng-click=\"currentTab.name='fulltext'\">\n" +
+    "                  <i class=\"icon-file-text-alt left\"></i>\n" +
     "                  Full text\n" +
     "               </div>\n" +
-    "               <div class=\"tab tab-metrics\">\n" +
+    "               <div class=\"tab tab-metrics\"\n" +
+    "                    ng-class=\"{selected: currentTab.name=='metrics'}\"\n" +
+    "                    ng-click=\"currentTab.name='metrics'\">\n" +
+    "                  <i class=\"icon-bar-chart left\"></i>\n" +
     "                  Metrics\n" +
     "               </div>\n" +
-    "               <div class=\"tab tab-map\">\n" +
+    "               <div class=\"tab tab-map\"\n" +
+    "                    ng-class=\"{selected: currentTab.name=='map'}\"\n" +
+    "                    ng-click=\"currentTab.name='map'\">\n" +
+    "                  <i class=\"icon-globe left\"></i>\n" +
     "                  Map\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"tabs-content\">\n" +
-    "               <div class=\"tab-content tab-default\">\n" +
-    "                  <div class=\"optional-biblio\">\n" +
+    "               <div class=\"tab-content tab-summary\" ng-show=\"currentTab.name=='summary'\">\n" +
+    "                  <div class=\"optional-biblio biblio\">\n" +
     "                     <!-- abstract line -->\n" +
     "                     <div class=\"biblio-line abstract\">\n" +
     "                        <span class=\"biblio-field abstract\" ng-show=\"userOwnsThisProfile\">\n" +
@@ -8120,38 +8136,33 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           </span>\n" +
     "                        </span>\n" +
     "                     </div>\n" +
-    "                  </div><!-- end of the optional biblio part of the default tab -->\n" +
+    "                  </div><!-- end of the optional biblio part of the summary tab -->\n" +
     "\n" +
+    "                  <div id=\"citation\">\n" +
+    "                     <ul class=\"aliases\">\n" +
+    "                        <li class=\"doi\" ng-show=\"aliases.display_best_url && !aliases.display_doi\">\n" +
+    "                           <span class=\"key\">URL:</span>\n" +
+    "                           <a class=\"value\" href=\"{{ aliases.display_best_url }}\">{{ aliases.display_best_url }} <i class=\"icon-external-link\"></i></a>\n" +
+    "                        </li>\n" +
     "\n" +
-    "                  <div id=\"resource\">\n" +
+    "                        <li class=\"doi\" ng-show=\"aliases.display_doi\">\n" +
+    "                           <span class=\"key\">DOI:</span>\n" +
+    "                           <a class=\"value\" href=\"http://dx.doi.org/{{ aliases.display_doi }}\">{{ aliases.display_doi }}<i class=\"icon-external-link right\"></i></a>\n" +
+    "                        </li>\n" +
+    "                        <li class=\"pmid\" ng-show=\"aliases.display_pmid\">\n" +
+    "                           <span class=\"key\">PubMed ID:</span>\n" +
+    "                           <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_doi }}<i class=\"icon-external-link\"></i></a>\n" +
+    "                        </li>\n" +
+    "                     </ul>\n" +
     "\n" +
-    "                     <div id=\"citation\">\n" +
-    "                        <ul class=\"aliases\">\n" +
-    "                           <li class=\"doi\" ng-show=\"aliases.display_best_url && !aliases.display_doi\">\n" +
-    "                              <span class=\"key\">URL:</span>\n" +
-    "                              <a class=\"value\" href=\"{{ aliases.display_best_url }}\">{{ aliases.display_best_url }} <i class=\"icon-external-link\"></i></a>\n" +
-    "                           </li>\n" +
-    "\n" +
-    "                           <li class=\"doi\" ng-show=\"aliases.display_doi\">\n" +
-    "                              <span class=\"key\">DOI:</span>\n" +
-    "                              <a class=\"value\" href=\"http://dx.doi.org/{{ aliases.display_doi }}\">{{ aliases.display_doi }}<i class=\"icon-external-link right\"></i></a>\n" +
-    "                           </li>\n" +
-    "                           <li class=\"pmid\" ng-show=\"aliases.display_pmid\">\n" +
-    "                              <span class=\"key\">PubMed ID:</span>\n" +
-    "                              <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_doi }}<i class=\"icon-external-link\"></i></a>\n" +
-    "                           </li>\n" +
-    "                        </ul>\n" +
-    "\n" +
-    "                        <div class=\"text-citation\">\n" +
-    "                           <span class=\"key\">Citation:</span>\n" +
-    "                           <span class=\"value\">\n" +
-    "                              <span class=\"authors\">{{ biblio.authors }}</span>\n" +
-    "                              <span class=\"year\">({{ biblio.display_year }}).</span>\n" +
-    "                              <span class=\"title\">{{ biblio.display_title }}.</span>\n" +
-    "                              <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
-    "                           </span>\n" +
-    "                        </div>\n" +
-    "\n" +
+    "                     <div class=\"text-citation\">\n" +
+    "                        <span class=\"key\">Citation:</span>\n" +
+    "                        <span class=\"value\">\n" +
+    "                           <span class=\"authors\">{{ biblio.authors }}</span>\n" +
+    "                           <span class=\"year\">({{ biblio.display_year }}).</span>\n" +
+    "                           <span class=\"title\">{{ biblio.display_title }}.</span>\n" +
+    "                           <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
+    "                        </span>\n" +
     "                     </div>\n" +
     "\n" +
     "                  </div>\n" +
@@ -8166,7 +8177,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
-    "               <div class=\"tab-fulltext tab-content\">\n" +
+    "               <div class=\"tab-fulltext tab-content\" ng-show=\"currentTab.name=='fulltext'\">\n" +
     "\n" +
     "                  <div id=\"file\" ng-show=\"hasEmbeddedFile\">\n" +
     "                     <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
@@ -8254,7 +8265,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
-    "               <div class=\"tab-content tab-map\">\n" +
+    "               <div class=\"tab-content tab-map\" ng-show=\"currentTab.name=='map'\">\n" +
     "               </div><!-- end of the Maps Tab section -->\n" +
     "\n" +
     "\n" +
@@ -8265,7 +8276,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
-    "               <div class=\"tab-content tab-metrics\">\n" +
+    "               <div class=\"tab-content tab-metrics\" ng-show=\"currentTab.name=='metrics'\">\n" +
     "                  <div id=\"metrics\">\n" +
     "                     <ul class=\"metric-details-list\">\n" +
     "\n" +
