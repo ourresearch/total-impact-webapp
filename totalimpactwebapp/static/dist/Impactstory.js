@@ -532,6 +532,7 @@ angular.module('app', [
   'deadProfile',
   'services.pinboardService',
   'services.countryNames',
+  'services.map',
   'settings',
   'xeditable',
   'ngProgress'
@@ -1314,6 +1315,7 @@ angular.module("productPage", [
     ProductWithoutProfile,
     ProfileAboutService,
     ProfileService,
+    MapService,
     Page) {
 
     Page.setName(product.genre_url_key)
@@ -1391,6 +1393,45 @@ angular.module("productPage", [
       
     }
 
+
+    if (product.countries) {
+      console.log("here is where we load le map", product.countries)
+      Loading.finishPage()
+
+      var countryCounts = {}
+      _.each(product.countries, function(myCountryCounts, myCountryCode){
+        countryCounts[myCountryCode] = myCountryCounts.sum
+      })
+
+      console.log("preparing to run the map", countryCounts)
+
+      $(function(){
+        console.log("running the map", countryCounts)
+        $("#product-map").vectorMap({
+          map: 'world_mill_en',
+          backgroundColor: "#fff",
+          regionStyle: {
+            initial: {
+              fill: "#dddddd"
+            }
+          },
+          series: {
+            regions: [{
+              values: countryCounts,
+              scale: ['#C8EEFF', '#0071A4'],
+              normalizeFunction: 'polynomial'
+            }]
+          },
+          onRegionTipShow: MapService.makeRegionTipHandler(product.countries),
+          onRegionClick: function(event, countryCode){
+            if (!countryCounts[countryCode]) {
+              return false // no country pages for blank countries.
+            }
+            console.log("country code click!", countryCode)
+          }
+        })
+      })
+    }
 
 
 
@@ -1719,6 +1760,7 @@ angular.module( 'profileMap', [
                                        $routeParams,
                                        CountryNames,
                                        ProfileService,
+                                       MapService,
                                        Loading,
                                        Page){
   console.log("profile map ctrl ran.")
@@ -1728,55 +1770,6 @@ angular.module( 'profileMap', [
     Loading.startPage()
   }
 
-
-  function makeRegionTipHandler(countriesData){
-    console.log("making the region tip handler with", countriesData)
-
-
-    return (function(event, element, countryCode){
-
-      function makeTipMetricLine(metricName){
-        console.log("country code", countryCode)
-
-        var metricValue = countriesData[countryCode][metricName]
-        if (!metricValue) {
-          return ""
-        }
-        var iconPath
-        var metricLabel
-        if (metricName == "altmetric_com:tweets") {
-          iconPath = '/static/img/favicons/altmetric_com_tweets.ico'
-          metricLabel = "Tweets"
-        }
-        else if (metricName == "impactstory:views"){
-          iconPath = '/static/img/favicons/impactstory_views.ico'
-          metricLabel = "Impactstory views"
-        }
-        else if (metricName == "mendeley:readers"){
-          iconPath = '/static/img/favicons/mendeley_readers.ico'
-          metricLabel = "Mendeley readers"
-        }
-
-        var ret = ("<li>" +
-          "<img src='" + iconPath + "'>" +
-          "<span class='val'>" + metricValue + "</span>" +
-          "<span class='name'>"+ metricLabel +"</span>" +
-          "</li>")
-
-        return ret
-      }
-
-
-      var contents = "<ul>"
-      contents += makeTipMetricLine("altmetric_com:tweets")
-      contents += makeTipMetricLine("impactstory:views")
-      contents += makeTipMetricLine("mendeley:readers")
-      contents += "</ul>"
-
-      element.html(element.html() + contents);
-
-    })
-  }
 
 
 
@@ -1812,7 +1805,7 @@ angular.module( 'profileMap', [
               normalizeFunction: 'polynomial'
             }]
           },
-          onRegionTipShow: makeRegionTipHandler(newVal.countries),
+          onRegionTipShow: MapService.makeRegionTipHandler(newVal.countries),
           onRegionClick: function(event, countryCode){
             if (!countryCounts[countryCode]) {
               return false // no country pages for blank countries.
@@ -4909,6 +4902,62 @@ angular.module("services.loading")
     isPage: function(){
       return pageLoading
     }
+  }
+})
+angular.module("services.map", [])
+.factory("MapService", function(){
+
+  function makeRegionTipHandler(countriesData){
+    console.log("making the region tip handler with", countriesData)
+
+    return (function(event, element, countryCode){
+
+      function makeTipMetricLine(metricName){
+        console.log("country code", countryCode)
+
+        var metricValue = countriesData[countryCode][metricName]
+        if (!metricValue) {
+          return ""
+        }
+        var iconPath
+        var metricLabel
+        if (metricName == "altmetric_com:tweets") {
+          iconPath = '/static/img/favicons/altmetric_com_tweets.ico'
+          metricLabel = "Tweets"
+        }
+        else if (metricName == "impactstory:views"){
+          iconPath = '/static/img/favicons/impactstory_views.ico'
+          metricLabel = "Impactstory views"
+        }
+        else if (metricName == "mendeley:readers"){
+          iconPath = '/static/img/favicons/mendeley_readers.ico'
+          metricLabel = "Mendeley readers"
+        }
+
+        var ret = ("<li>" +
+          "<img src='" + iconPath + "'>" +
+          "<span class='val'>" + metricValue + "</span>" +
+          "<span class='name'>"+ metricLabel +"</span>" +
+          "</li>")
+
+        return ret
+      }
+
+
+      var contents = "<ul>"
+      contents += makeTipMetricLine("altmetric_com:tweets")
+      contents += makeTipMetricLine("impactstory:views")
+      contents += makeTipMetricLine("mendeley:readers")
+      contents += "</ul>"
+
+      element.html(element.html() + contents);
+
+    })
+  }
+
+
+  return {
+    makeRegionTipHandler: makeRegionTipHandler
   }
 })
 angular.module("services.page", [
@@ -8306,8 +8355,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "               <div class=\"tab-content tab-map\" ng-show=\"currentTab.name=='map'\">\n" +
-    "                  <p>map coming soon...</p>\n" +
-    "\n" +
+    "                  <div id=\"product-map\" class=\"impact-map\"></div>\n" +
     "               </div><!-- end of the Maps Tab section -->\n" +
     "\n" +
     "\n" +
@@ -8411,7 +8459,7 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "   <h2>Impact map</h2>\n" +
     "\n" +
     "   <div class=\"main-content\">\n" +
-    "      <div id=\"profile-map\"></div>\n" +
+    "      <div id=\"profile-map\" class=\"impact-map\"></div>\n" +
     "\n" +
     "\n" +
     "   </div>\n" +

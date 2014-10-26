@@ -37,6 +37,7 @@ angular.module('app', [
   'deadProfile',
   'services.pinboardService',
   'services.countryNames',
+  'services.map',
   'settings',
   'xeditable',
   'ngProgress'

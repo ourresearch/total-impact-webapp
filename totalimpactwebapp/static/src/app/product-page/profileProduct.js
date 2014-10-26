@@ -55,6 +55,7 @@ angular.module("productPage", [
     ProductWithoutProfile,
     ProfileAboutService,
     ProfileService,
+    MapService,
     Page) {
 
     Page.setName(product.genre_url_key)
@@ -132,6 +133,45 @@ angular.module("productPage", [
       
     }
 
+
+    if (product.countries) {
+      console.log("here is where we load le map", product.countries)
+      Loading.finishPage()
+
+      var countryCounts = {}
+      _.each(product.countries, function(myCountryCounts, myCountryCode){
+        countryCounts[myCountryCode] = myCountryCounts.sum
+      })
+
+      console.log("preparing to run the map", countryCounts)
+
+      $(function(){
+        console.log("running the map", countryCounts)
+        $("#product-map").vectorMap({
+          map: 'world_mill_en',
+          backgroundColor: "#fff",
+          regionStyle: {
+            initial: {
+              fill: "#dddddd"
+            }
+          },
+          series: {
+            regions: [{
+              values: countryCounts,
+              scale: ['#C8EEFF', '#0071A4'],
+              normalizeFunction: 'polynomial'
+            }]
+          },
+          onRegionTipShow: MapService.makeRegionTipHandler(product.countries),
+          onRegionClick: function(event, countryCode){
+            if (!countryCounts[countryCode]) {
+              return false // no country pages for blank countries.
+            }
+            console.log("country code click!", countryCode)
+          }
+        })
+      })
+    }
 
 
 

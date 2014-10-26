@@ -6909,18 +6909,18 @@ code {
   margin-top: 20px;
   color: #333;
 }
-#profile-map-page #profile-map {
+.impact-map {
   width: 800px;
   height: 500px;
   margin-top: 50px;
 }
-#profile-map-page .jvectormap-zoomout,
-#profile-map-page .jvectormap-zoomin {
+.impact-map .jvectormap-zoomout,
+.impact-map .jvectormap-zoomin {
   height: auto;
   width: auto;
   background: #999;
 }
-#profile-map-page path[fill="#dddddd"] {
+.impact-map path[fill="#dddddd"] {
   cursor: default;
 }
 div.jvectormap-tip {
