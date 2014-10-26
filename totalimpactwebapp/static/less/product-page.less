@@ -15,7 +15,7 @@ div.product-page {
             line-height: 1.3;
             margin: 0 0 5px;
             span.editable-click {
-               color: #333;
+               color: @accentColor;
             }
 
 
@@ -170,7 +170,7 @@ div.product-page {
       // ************************************************************************
       #product-tabs-section {
          div.tabs {
-            margin: 50px 0 20px;
+            margin: 50px 0 40px;
             .clearfix();
             div.tab {
                float:left;
@@ -265,140 +265,67 @@ div.product-page {
                   }
 
                }
-            }
-
-         }
-
-
-
-
-      }
-
-
-
-
-
-
-      // RESOURCE (link or embedded file)
-      // ************************************************************************
-      // ************************************************************************
-
-      #resource {
-         margin-top: 20px;
-         padding-bottom: 100px;
-         width: @productMainWidth - 30px;
-
-
-
-         .upload-cta {
-            text-align: center;
-            margin-top: 50px;
-            width: @productMainWidth - 30px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            background: #eee;
-            h4 {
-               font-size: 26px;
-            }
-            h5 {
-               font-size: 19px;
-               font-weight: 300;
-               padding: 0 50px;
-               strong {
-                  font-weight: normal;
-               }
-            }
-            div.file-upload-container {
-               text-align:center;
-               margin: 20px auto 30px;
-               div.file-upload-button {
-                  display:inline-block;
-               }
-               input {
-                  display:none;
-               }
-               span.or {
-                  font-size: 14px;
-                  margin: 0 5px 0 10px;
-               }
-               a.embed-from-url {
-                  color: #428bca;
-                  &:hover {
-                     color: #428bca;
-                     text-decoration: underline;
+               .upload-cta {
+                  text-align: center;
+                  margin: 50px;
+                  padding: 10px;
+                  border: 1px solid #ddd;
+                  background: #eee;
+                  h4 {
+                     font-size: 26px;
                   }
-               }
-            }
-            div.notes {
-               text-align:right;
-               font-size: 12px;
-               color: #777;
-            }
-            div.uploading-now {
-               margin: 50px auto;
-               font-size: 30px;
-               color: #777;
-               font-weight: bold;
-            }
-
-         }
-
-         #linkout {
-            min-height: 70px;
-            padding: 0 20px;
-            .clearfix();
-            border: 1px solid #eee;
-
-            div.icon {
-               float: left;
-               font-size: 40px;
-               padding: 10px 20px;
-               color: @linkColor;
-            }
-            .content {
-               padding: 15px;
-               h3 {
-                  font-size: 25px;
-                  margin-top: 5px;
-                  font-weight: 300;
-                  color: #777;
-                  margin-bottom: 0;
-                  a.product-host {
+                  h5 {
+                     font-size: 19px;
+                     font-weight: 300;
+                     padding: 0 50px;
+                     strong {
+                        font-weight: normal;
+                     }
+                  }
+                  div.file-upload-container {
+                     text-align:center;
+                     margin: 20px auto 30px;
+                     div.file-upload-button {
+                        display:inline-block;
+                     }
+                     input {
+                        display:none;
+                     }
+                     span.or {
+                        font-size: 14px;
+                        margin: 0 5px 0 10px;
+                     }
+                     a.embed-from-url {
+                        color: #428bca;
+                        &:hover {
+                           color: #428bca;
+                           text-decoration: underline;
+                        }
+                     }
+                  }
+                  div.notes {
+                     text-align:right;
+                     font-size: 12px;
+                     color: #777;
+                  }
+                  div.uploading-now {
+                     margin: 50px auto;
+                     font-size: 30px;
+                     color: #777;
                      font-weight: bold;
-                     color: #777;
-                     &:hover {
-                        color: @linkColor;
-                     }
                   }
+
                }
 
-               a.full-url {
-                  font-wieght: 300;
-                  font-size: 14px;
-                  color: @gray-light;
-                  &:hover {
-                     color: @linkColor;
-                  }
-               }
-
-               div.oa-version {
-                  margin-top: 10px;
-                  font-weight: 300;
-                  i {
-                     color: #777;
-                     margin-right: 5px;
-                  }
-                  a {
-                     font-weight: normal;
-                     &:hover {
-                        text-decoration: underline;
-                        color: @linkColor;
-                     }
-                  }
+               div#linkout {
+                  text-align: center;
+                  background: #eee;
+                  padding: 50px;
+                  margin: 50px;
+                  border: 1px solid #ddd;
                }
             }
          }
-
       }
    }
 

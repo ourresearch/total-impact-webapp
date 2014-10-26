@@ -6046,6 +6046,9 @@ h5,
 h6 {
   font-family: Lato, Helvetica, sans-serif;
 }
+h1 {
+  font-weight: 900;
+}
 h2 {
   font-family: Lato, Helvetica, sans-serif;
   font-weight: 300;
@@ -8384,7 +8387,7 @@ div.product-page div.main-content #main-biblio h2.title {
   margin: 0 0 5px;
 }
 div.product-page div.main-content #main-biblio h2.title span.editable-click {
-  color: #333;
+  color: #0053b0;
 }
 div.product-page div.main-content #main-biblio h2.title textarea {
   width: 510px;
@@ -8501,7 +8504,7 @@ div.product-page div.main-content .biblio div.share-buttons a.btn:hover {
   color: #333;
 }
 div.product-page div.main-content #product-tabs-section div.tabs {
-  margin: 50px 0 20px;
+  margin: 50px 0 40px;
   clear: both;
 }
 div.product-page div.main-content #product-tabs-section div.tabs:before,
@@ -8608,129 +8611,62 @@ div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fu
 div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .embed-github article h4 {
   font-size: 20px;
 }
-div.product-page div.main-content #resource {
-  margin-top: 20px;
-  padding-bottom: 100px;
-  width: 550px;
-}
-div.product-page div.main-content #resource .upload-cta {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta {
   text-align: center;
-  margin-top: 50px;
-  width: 550px;
+  margin: 50px;
   padding: 10px;
   border: 1px solid #ddd;
   background: #eee;
 }
-div.product-page div.main-content #resource .upload-cta h4 {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta h4 {
   font-size: 26px;
 }
-div.product-page div.main-content #resource .upload-cta h5 {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta h5 {
   font-size: 19px;
   font-weight: 300;
   padding: 0 50px;
 }
-div.product-page div.main-content #resource .upload-cta h5 strong {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta h5 strong {
   font-weight: normal;
 }
-div.product-page div.main-content #resource .upload-cta div.file-upload-container {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta div.file-upload-container {
   text-align: center;
   margin: 20px auto 30px;
 }
-div.product-page div.main-content #resource .upload-cta div.file-upload-container div.file-upload-button {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta div.file-upload-container div.file-upload-button {
   display: inline-block;
 }
-div.product-page div.main-content #resource .upload-cta div.file-upload-container input {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta div.file-upload-container input {
   display: none;
 }
-div.product-page div.main-content #resource .upload-cta div.file-upload-container span.or {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta div.file-upload-container span.or {
   font-size: 14px;
   margin: 0 5px 0 10px;
 }
-div.product-page div.main-content #resource .upload-cta div.file-upload-container a.embed-from-url {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta div.file-upload-container a.embed-from-url {
   color: #428bca;
 }
-div.product-page div.main-content #resource .upload-cta div.file-upload-container a.embed-from-url:hover {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta div.file-upload-container a.embed-from-url:hover {
   color: #428bca;
   text-decoration: underline;
 }
-div.product-page div.main-content #resource .upload-cta div.notes {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta div.notes {
   text-align: right;
   font-size: 12px;
   color: #777;
 }
-div.product-page div.main-content #resource .upload-cta div.uploading-now {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext .upload-cta div.uploading-now {
   margin: 50px auto;
   font-size: 30px;
   color: #777;
   font-weight: bold;
 }
-div.product-page div.main-content #resource #linkout {
-  min-height: 70px;
-  padding: 0 20px;
-  clear: both;
-  border: 1px solid #eee;
-}
-div.product-page div.main-content #resource #linkout:before,
-div.product-page div.main-content #resource #linkout:after {
-  content: " ";
-  display: table;
-}
-div.product-page div.main-content #resource #linkout:after {
-  clear: both;
-}
-div.product-page div.main-content #resource #linkout:before,
-div.product-page div.main-content #resource #linkout:after {
-  content: " ";
-  display: table;
-}
-div.product-page div.main-content #resource #linkout:after {
-  clear: both;
-}
-div.product-page div.main-content #resource #linkout div.icon {
-  float: left;
-  font-size: 40px;
-  padding: 10px 20px;
-  color: #ff4000;
-}
-div.product-page div.main-content #resource #linkout .content {
-  padding: 15px;
-}
-div.product-page div.main-content #resource #linkout .content h3 {
-  font-size: 25px;
-  margin-top: 5px;
-  font-weight: 300;
-  color: #777;
-  margin-bottom: 0;
-}
-div.product-page div.main-content #resource #linkout .content h3 a.product-host {
-  font-weight: bold;
-  color: #777;
-}
-div.product-page div.main-content #resource #linkout .content h3 a.product-host:hover {
-  color: #ff4000;
-}
-div.product-page div.main-content #resource #linkout .content a.full-url {
-  font-wieght: 300;
-  font-size: 14px;
-  color: #999999;
-}
-div.product-page div.main-content #resource #linkout .content a.full-url:hover {
-  color: #ff4000;
-}
-div.product-page div.main-content #resource #linkout .content div.oa-version {
-  margin-top: 10px;
-  font-weight: 300;
-}
-div.product-page div.main-content #resource #linkout .content div.oa-version i {
-  color: #777;
-  margin-right: 5px;
-}
-div.product-page div.main-content #resource #linkout .content div.oa-version a {
-  font-weight: normal;
-}
-div.product-page div.main-content #resource #linkout .content div.oa-version a:hover {
-  text-decoration: underline;
-  color: #ff4000;
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-fulltext div#linkout {
+  text-align: center;
+  background: #eee;
+  padding: 50px;
+  margin: 50px;
+  border: 1px solid #ddd;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;

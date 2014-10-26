@@ -8178,48 +8178,9 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "               <div class=\"tab-fulltext tab-content\" ng-show=\"currentTab.name=='fulltext'\">\n" +
-    "\n" +
     "                  <div id=\"file\" ng-show=\"hasEmbeddedFile\">\n" +
     "                     <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
     "                  </div>\n" +
-    "\n" +
-    "\n" +
-    "                  <div id=\"linkout\" ng-show=\"!hasEmbeddedFile\">\n" +
-    "                     <div class=\"icon\">\n" +
-    "                        <i class=\"icon-link\"></i>\n" +
-    "                     </div>\n" +
-    "\n" +
-    "                     <div class=\"content\">\n" +
-    "                        <h3>{{ genre }} available via\n" +
-    "                           <a href=\"{{ aliases.resolved_url }}\" class=\"product-host\">\n" +
-    "                              {{ productHost }}\n" +
-    "                           </a>\n" +
-    "                           <span class=\"locked-icon\" ng-show=\"!biblio.free_fulltext_url\">\n" +
-    "                              <i class=\"icon-lock\"\n" +
-    "                                 ng-show=\"!userOwnsThisProfile\"\n" +
-    "                                 tooltip=\"{{ genre }} may be paywalled.\"></i>\n" +
-    "\n" +
-    "                              <i class=\"icon-lock\"\n" +
-    "                                 ng-show=\"userOwnsThisProfile\"\n" +
-    "                                 tooltip=\"{{ genre }} may be paywalled. To improve visibility, consider uploading a freely-readable copy.\"></i>\n" +
-    "                           </span>\n" +
-    "                        </h3>\n" +
-    "                        <!--\n" +
-    "                        <a class=\"full-url\" href=\"{{ aliases.resolved_url }}\">\n" +
-    "                           {{ aliases.resolved_url }}\n" +
-    "                        </a>\n" +
-    "                        -->\n" +
-    "                        <div class=\"oa-version\" ng-show=\"biblio.free_fulltext_url\">\n" +
-    "                           <div class=\"oa-version-label\">\n" +
-    "                              <i class=\"icon-unlock-alt\"></i>\n" +
-    "                              Open access version via\n" +
-    "                              <a href=\"{{ biblio.free_fulltext_url }}\">{{ freeFulltextHost }}</a>\n" +
-    "                           </div>\n" +
-    "                        </div>\n" +
-    "\n" +
-    "                     </div>\n" +
-    "                  </div>\n" +
-    "\n" +
     "\n" +
     "                  <div class=\"upload-cta\"\n" +
     "                       ng-show=\"!hasEmbeddedFile && userOwnsThisProfile && uploadableHost\"\n" +
@@ -8254,10 +8215,29 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           Uploading {{ genre }}&hellip;\n" +
     "                        </div>\n" +
     "                     </div>\n" +
-    "\n" +
     "                  </div>\n" +
     "\n" +
-    "               </div>\n" +
+    "                  <div id=\"linkout\" ng-show=\"!hasEmbeddedFile\">\n" +
+    "                     <div class=\"content\">\n" +
+    "                        <p class=\"paywalled-linkout\" ng-show=\"!biblio.free_fulltext_url\">\n" +
+    "                           The fulltext of this {{ genre }} isn't currently available here.\n" +
+    "                           But you can view it at\n" +
+    "                           <a href=\"{{ aliases.resolved_url }}\" class=\"product-host\">\n" +
+    "                              {{ productHost }}\n" +
+    "                           </a> (although it may be paywalled).\n" +
+    "\n" +
+    "                           <!-- would be awesome to put a \"request this article\" button here -->\n" +
+    "                        </p>\n" +
+    "\n" +
+    "                        <p class=\"oa-linkout\" ng-show=\"biblio.free_fulltext_url\">\n" +
+    "                           The fulltext of this {{ genre }} isn't currently available here.\n" +
+    "                           But since it's an Open Access resource, you can view it at\n" +
+    "                           <a href=\"{{ biblio.free_fulltext_url }}\">{{ freeFulltextHost }}</a>\n" +
+    "                        </p>\n" +
+    "                     </div>\n" +
+    "                  </div>\n" +
+    "\n" +
+    "               </div><!-- end of the fulltext tab -->\n" +
     "\n" +
     "\n" +
     "\n" +

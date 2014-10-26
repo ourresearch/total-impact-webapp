@@ -275,48 +275,9 @@
 
 
                <div class="tab-fulltext tab-content" ng-show="currentTab.name=='fulltext'">
-
                   <div id="file" ng-show="hasEmbeddedFile">
                      <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
                   </div>
-
-
-                  <div id="linkout" ng-show="!hasEmbeddedFile">
-                     <div class="icon">
-                        <i class="icon-link"></i>
-                     </div>
-
-                     <div class="content">
-                        <h3>{{ genre }} available via
-                           <a href="{{ aliases.resolved_url }}" class="product-host">
-                              {{ productHost }}
-                           </a>
-                           <span class="locked-icon" ng-show="!biblio.free_fulltext_url">
-                              <i class="icon-lock"
-                                 ng-show="!userOwnsThisProfile"
-                                 tooltip="{{ genre }} may be paywalled."></i>
-
-                              <i class="icon-lock"
-                                 ng-show="userOwnsThisProfile"
-                                 tooltip="{{ genre }} may be paywalled. To improve visibility, consider uploading a freely-readable copy."></i>
-                           </span>
-                        </h3>
-                        <!--
-                        <a class="full-url" href="{{ aliases.resolved_url }}">
-                           {{ aliases.resolved_url }}
-                        </a>
-                        -->
-                        <div class="oa-version" ng-show="biblio.free_fulltext_url">
-                           <div class="oa-version-label">
-                              <i class="icon-unlock-alt"></i>
-                              Open access version via
-                              <a href="{{ biblio.free_fulltext_url }}">{{ freeFulltextHost }}</a>
-                           </div>
-                        </div>
-
-                     </div>
-                  </div>
-
 
                   <div class="upload-cta"
                        ng-show="!hasEmbeddedFile && userOwnsThisProfile && uploadableHost"
@@ -351,10 +312,29 @@
                            Uploading {{ genre }}&hellip;
                         </div>
                      </div>
-
                   </div>
 
-               </div>
+                  <div id="linkout" ng-show="!hasEmbeddedFile">
+                     <div class="content">
+                        <p class="paywalled-linkout" ng-show="!biblio.free_fulltext_url">
+                           The fulltext of this {{ genre }} isn't currently available here.
+                           But you can view it at
+                           <a href="{{ aliases.resolved_url }}" class="product-host">
+                              {{ productHost }}
+                           </a> (although it may be paywalled).
+
+                           <!-- would be awesome to put a "request this article" button here -->
+                        </p>
+
+                        <p class="oa-linkout" ng-show="biblio.free_fulltext_url">
+                           The fulltext of this {{ genre }} isn't currently available here.
+                           But since it's an Open Access resource, you can view it at
+                           <a href="{{ biblio.free_fulltext_url }}">{{ freeFulltextHost }}</a>
+                        </p>
+                     </div>
+                  </div>
+
+               </div><!-- end of the fulltext tab -->
 
 
 
