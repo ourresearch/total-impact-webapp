@@ -8165,6 +8165,9 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                     </div>\n" +
     "\n" +
     "                  </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "               </div><!-- end Summary Tab content -->\n" +
     "\n" +
     "\n" +
