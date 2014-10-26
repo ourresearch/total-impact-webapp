@@ -5571,6 +5571,7 @@ angular.module('services.profileService', [
                                       UserMessage,
                                       TiMixpanel,
                                       Product,
+                                      Loading,
                                       PinboardService,
                                       ProfileAboutService,
                                       GenreConfigs,
@@ -5610,7 +5611,6 @@ angular.module('services.profileService', [
           console.log("ProfileService got a response", resp)
           _.each(data, function(v, k){delete data[k]})
           angular.extend(data, resp) // this sets the url_slug too
-          loading = false
 
 
           // got the new stuff. but does the server say it's
@@ -5632,9 +5632,13 @@ angular.module('services.profileService', [
           if (resp.status == 404){
             data.is404 = true
           }
-          loading = false
         }
+
       ).$promise
+        .finally(function(resp){ // runs whether succeeds or fails
+            Loading.finishPage()
+            loading = false
+      })
     }
 
 
