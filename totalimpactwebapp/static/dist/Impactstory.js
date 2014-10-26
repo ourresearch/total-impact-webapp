@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-25
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-26
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1512,19 +1512,6 @@ angular.module("productPage", [
       name: "summary"
     }
 
-    $scope.truncatedAbstract = function(){
-
-      if (!product.biblio.abstract) {
-        return ""
-      }
-
-      if ($scope.userWantsFullAbstract) {
-        return product.biblio.abstract
-      }
-      else {
-        return product.biblio.abstract.substr(0, 75) + "..."
-      }
-    }
 
 
 
@@ -7936,7 +7923,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "                  <span class=\"value\"\n" +
     "                        tooltip=\"click to edit\"\n" +
-    "                        tooltip-placement=\"right\"\n" +
+    "                        tooltip-placement=\"left\"\n" +
     "                        onaftersave=\"updateBiblio('authors')\"\n" +
     "                        ng-show=\"!loading.is('updateBiblio.authors') && userOwnsThisProfile\"\n" +
     "                        editable-text=\"biblio.authors\">\n" +
@@ -8069,6 +8056,28 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "            <div class=\"tabs-content\">\n" +
     "               <div class=\"tab-content tab-summary\" ng-show=\"currentTab.name=='summary'\">\n" +
+    "                  <div class=\"summary-metrics\">\n" +
+    "                     <ul class=\"metric-details-list\">\n" +
+    "                        <li class=\"metric-detail\"\n" +
+    "                            ng-click=\"currentTab.name='metrics'\"\n" +
+    "                            ng-repeat=\"metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}\">\n" +
+    "                           <span class=\"metric-text\">\n" +
+    "                              <a class=\"value-and-name\" tooltip=\"{{ metric.display_count }} {{ metric.display_provider }} {{ metric.display_interaction }}. Click for details.\">\n" +
+    "\n" +
+    "                                 <img ng-src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico'\n" +
+    "                                      class='icon' >\n" +
+    "                                 <span class=\"raw-value\">{{ metric.display_count }}</span>\n" +
+    "                              </a>\n" +
+    "\n" +
+    "                              <span class=\"new-metrics\"\n" +
+    "                                    ng-show=\"metric.diff_value > 0\"\n" +
+    "                                    tooltip=\"{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week\">\n" +
+    "                               +{{ metric.diff_value }}\n" +
+    "                              </span>\n" +
+    "                           </span>\n" +
+    "                        </li>\n" +
+    "                     </ul>\n" +
+    "                  </div>\n" +
     "                  <div class=\"optional-biblio biblio\">\n" +
     "                     <!-- abstract line -->\n" +
     "                     <div class=\"biblio-line abstract\">\n" +
@@ -8076,17 +8085,11 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           <span class=\"biblio-field-label\">Abstract:</span>\n" +
     "                           <span class=\"value\"\n" +
     "                              tooltip=\"click to edit\"\n" +
-    "                              tooltip-placement=\"right\"\n" +
+    "                              tooltip-placement=\"left\"\n" +
     "                              ng-show=\"!loading.is('updateBiblio.abstract')\"\n" +
     "                              editable-textarea=\"biblio.abstract\"\n" +
     "                              onaftersave=\"updateBiblio('abstract')\">\n" +
-    "                              {{ truncatedAbstract() || 'click to enter abstract'}}\n" +
-    "                           </span>\n" +
-    "\n" +
-    "                           <span class=\"more-abstract\"\n" +
-    "                                 ng-hide=\"loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract\"\n" +
-    "                                 ng-click=\"userWantsFullAbstract=true\">\n" +
-    "                              (more)\n" +
+    "                              {{ biblio.abstract || 'click to enter abstract'}}\n" +
     "                           </span>\n" +
     "\n" +
     "                           <span class=\"loading\" ng-show=\"loading.is('updateBiblio.abstract')\">\n" +
@@ -8137,6 +8140,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        </span>\n" +
     "                     </div>\n" +
     "                  </div><!-- end of the optional biblio part of the summary tab -->\n" +
+    "\n" +
     "\n" +
     "                  <div id=\"citation\">\n" +
     "                     <ul class=\"aliases\">\n" +
@@ -8245,13 +8249,6 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
-    "               <div class=\"tab-content tab-map\" ng-show=\"currentTab.name=='map'\">\n" +
-    "               </div><!-- end of the Maps Tab section -->\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "\n" +
     "\n" +
     "\n" +
@@ -8267,18 +8264,19 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                                 target=\"_blank\"\n" +
     "                                 tooltip-placement=\"left\"\n" +
     "                                 tooltip=\"{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.\">\n" +
+    "\n" +
     "                                 <img ng-src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >\n" +
     "                                 <span class=\"raw-value\">{{ metric.display_count }}</span>\n" +
     "                                 <span class=\"environment\">{{ metric.display_provider }}</span>\n" +
     "                                 <span class=\"interaction\">{{ metric.display_interaction }}</span>\n" +
     "                                 <i class=\"icon-external-link-sign\"></i>\n" +
+    "                                 <span class=\"new-metrics\"\n" +
+    "                                       ng-show=\"metric.diff_value > 0\"\n" +
+    "                                       tooltip=\"{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week\">\n" +
+    "                                  +{{ metric.diff_value }}\n" +
+    "                                 </span>\n" +
     "                              </a>\n" +
     "\n" +
-    "                              <span class=\"new-metrics\"\n" +
-    "                                    ng-show=\"metric.diff_value > 0\"\n" +
-    "                                    tooltip=\"{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week\">\n" +
-    "                               +{{ metric.diff_value }}\n" +
-    "                              </span>\n" +
     "\n" +
     "                              <a class=\"percentile\"\n" +
     "                                 ng-show=\"metric.percentile\"\n" +
@@ -8286,11 +8284,11 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                                 target=\"_self\"\n" +
     "                                 tooltip-placement=\"left\"\n" +
     "                                 tooltip=\"Compared to other {{ metric.percentile.mendeley_discipline_str }} {{ displayGenrePlural }} from {{ biblio.display_year }}. Click to read more about how we determine percentiles.\">\n" +
-    "                                 <span class=\"values\">\n" +
-    "                                    <span class=\"value\">{{ metric.percentile_value_string }}</span>\n" +
+    "                                 <span class=\"value\">{{ metric.percentile_value_string }}</span>\n" +
+    "                                 <span class=\"descr\">\n" +
     "                                    <span class=\"unit\">percentile</span>\n" +
+    "                                    <span class=\"where\">on Impactstory</span>\n" +
     "                                 </span>\n" +
-    "                                 <span class=\"descr\">on Impactstory.</span>\n" +
     "                              </a>\n" +
     "\n" +
     "                           </span>\n" +
@@ -8300,6 +8298,19 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "               </div><!-- end of the Metrics Tab section -->\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "               <div class=\"tab-content tab-map\" ng-show=\"currentTab.name=='map'\">\n" +
+    "                  <p>map coming soon...</p>\n" +
+    "\n" +
+    "               </div><!-- end of the Maps Tab section -->\n" +
     "\n" +
     "\n" +
     "            </div>\n" +

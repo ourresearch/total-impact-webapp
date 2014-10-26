@@ -170,12 +170,12 @@ div.product-page {
       // ************************************************************************
       #product-tabs-section {
          div.tabs {
-            margin: 50px 0 40px;
+            margin: 70px 0 40px;
             .clearfix();
             div.tab {
                float:left;
-               font-size: 20px;
-               padding: 5px 20px;
+               font-size: 16px;
+               padding: 5px 15px;
                cursor: pointer;
                &.selected {
                   background: #999;
@@ -187,9 +187,37 @@ div.product-page {
          }
 
          div.tabs-content {
+            margin-bottom: 100px;
             .tab-summary {
+               div.summary-metrics {
+                  margin-top: 20px;
+                  li.metric-detail {
+                     display: inline-block;
+                     margin-right: 20px;
+                     img.icon {
+                        height: 16px;
+                     }
+                     span.raw-value {
+                        color: #333;
+                        font-weight: bold;
+                        font-size: 20px;
+                        vertical-align: -2px;
+                     }
+                     span.new-metrics {
+                        background: #5cb85c;
+                        color: #fff;
+                        font-size: 12px;
+                        cursor: default;
+                        margin-left: 5px;
+                        padding: 0 5px;
+                        .rounded(3px);
+                     }
+                  }
+               }
+
+
                #citation {
-                  margin-top: 35px;
+                  margin: 35px 0 100px;
                   h4 {
                      font-size: 20px;
                   }
@@ -325,6 +353,105 @@ div.product-page {
                   border: 1px solid #ddd;
                }
             }
+
+
+            .tab-metrics {
+
+
+               #metrics {
+                  ul.metric-details-list {
+                     li.metric-detail {
+                        font-size:  15px;
+                        margin: 0 0 30px 30px;
+                        clear:both;
+                        .clearfix;
+                        .product-page-badge-container {
+                           width: 250px;
+                           margin-top: 8px;
+                           display:inline-block;
+                        }
+                        span.metric-text {
+                           margin-left: 10px;
+                           padding-top: 5px;
+                           font-size: 20px;
+                           a.value-and-name {
+
+                              color:  #333;
+                              display: inline-block;
+                              min-width: 330px;
+                              &:hover {
+                                 text-decoration: none;
+                                 color:  @linkColor;
+                                 i {color:  @linkColor;}
+                              }
+                              span.raw-value {
+                                 margin-left:2px;
+                                 display: inline-block;
+                                 text-align: right;
+                                 font-weight: bold;
+                                 font-size:  30px;
+                              }
+                              span.environment {
+                              }
+                              span.interaction {
+                              }
+                              img {
+                                 height: 16px;
+                                 margin: 0 3px 0 0;
+                                 vertical-align: 0;
+                              }
+                              i {color:  #ddd;}
+
+                           }
+
+                           span.new-metrics {
+                              background: #5cb85c;
+                              color: #fff;
+                              font-size: 15px;
+                              cursor: default;
+                              margin-left: 5px;
+                              padding: 0 5px;
+                              .border-radius(3px, 3px, 3px, 3px);
+                           }
+
+                           .percentile {
+                              font-size: 20px;
+                              margin-left: 20px;
+                              color: #555;
+                              span.value {
+                                 font-weight: bold;
+                                 font-size: 25px;
+                              }
+                              span.descr {
+                                 display: inline-block;
+                                 width: 100px;
+                                 line-height: 1;
+                                 font-size: 12px;
+                                 font-weight: normal;
+                                 span.unit {
+                                 }
+                                 span.where {
+                                 }
+                                 i {
+                                    opacity: .5;
+                                    cursor: pointer;
+                                    &:hover {opacity: .8;}
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+
+            .tab-map {
+               p {
+                  text-align: center;
+
+               }
+            }
+
          }
       }
    }

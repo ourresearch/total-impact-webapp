@@ -253,19 +253,6 @@ angular.module("productPage", [
       name: "summary"
     }
 
-    $scope.truncatedAbstract = function(){
-
-      if (!product.biblio.abstract) {
-        return ""
-      }
-
-      if ($scope.userWantsFullAbstract) {
-        return product.biblio.abstract
-      }
-      else {
-        return product.biblio.abstract.substr(0, 75) + "..."
-      }
-    }
 
 
 

@@ -33,7 +33,7 @@
 
                   <span class="value"
                         tooltip="click to edit"
-                        tooltip-placement="right"
+                        tooltip-placement="left"
                         onaftersave="updateBiblio('authors')"
                         ng-show="!loading.is('updateBiblio.authors') && userOwnsThisProfile"
                         editable-text="biblio.authors">
@@ -166,6 +166,28 @@
 
             <div class="tabs-content">
                <div class="tab-content tab-summary" ng-show="currentTab.name=='summary'">
+                  <div class="summary-metrics">
+                     <ul class="metric-details-list">
+                        <li class="metric-detail"
+                            ng-click="currentTab.name='metrics'"
+                            ng-repeat="metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}">
+                           <span class="metric-text">
+                              <a class="value-and-name" tooltip="{{ metric.display_count }} {{ metric.display_provider }} {{ metric.display_interaction }}. Click for details.">
+
+                                 <img ng-src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico'
+                                      class='icon' >
+                                 <span class="raw-value">{{ metric.display_count }}</span>
+                              </a>
+
+                              <span class="new-metrics"
+                                    ng-show="metric.diff_value > 0"
+                                    tooltip="{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
+                               +{{ metric.diff_value }}
+                              </span>
+                           </span>
+                        </li>
+                     </ul>
+                  </div>
                   <div class="optional-biblio biblio">
                      <!-- abstract line -->
                      <div class="biblio-line abstract">
@@ -173,17 +195,11 @@
                            <span class="biblio-field-label">Abstract:</span>
                            <span class="value"
                               tooltip="click to edit"
-                              tooltip-placement="right"
+                              tooltip-placement="left"
                               ng-show="!loading.is('updateBiblio.abstract')"
                               editable-textarea="biblio.abstract"
                               onaftersave="updateBiblio('abstract')">
-                              {{ truncatedAbstract() || 'click to enter abstract'}}
-                           </span>
-
-                           <span class="more-abstract"
-                                 ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract"
-                                 ng-click="userWantsFullAbstract=true">
-                              (more)
+                              {{ biblio.abstract || 'click to enter abstract'}}
                            </span>
 
                            <span class="loading" ng-show="loading.is('updateBiblio.abstract')">
@@ -234,6 +250,7 @@
                         </span>
                      </div>
                   </div><!-- end of the optional biblio part of the summary tab -->
+
 
                   <div id="citation">
                      <ul class="aliases">
@@ -342,13 +359,6 @@
 
 
 
-               <div class="tab-content tab-map" ng-show="currentTab.name=='map'">
-               </div><!-- end of the Maps Tab section -->
-
-
-
-
-
 
 
 
@@ -364,18 +374,19 @@
                                  target="_blank"
                                  tooltip-placement="left"
                                  tooltip="{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.">
+
                                  <img ng-src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
                                  <span class="raw-value">{{ metric.display_count }}</span>
                                  <span class="environment">{{ metric.display_provider }}</span>
                                  <span class="interaction">{{ metric.display_interaction }}</span>
                                  <i class="icon-external-link-sign"></i>
+                                 <span class="new-metrics"
+                                       ng-show="metric.diff_value > 0"
+                                       tooltip="{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
+                                  +{{ metric.diff_value }}
+                                 </span>
                               </a>
 
-                              <span class="new-metrics"
-                                    ng-show="metric.diff_value > 0"
-                                    tooltip="{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
-                               +{{ metric.diff_value }}
-                              </span>
 
                               <a class="percentile"
                                  ng-show="metric.percentile"
@@ -383,11 +394,11 @@
                                  target="_self"
                                  tooltip-placement="left"
                                  tooltip="Compared to other {{ metric.percentile.mendeley_discipline_str }} {{ displayGenrePlural }} from {{ biblio.display_year }}. Click to read more about how we determine percentiles.">
-                                 <span class="values">
-                                    <span class="value">{{ metric.percentile_value_string }}</span>
+                                 <span class="value">{{ metric.percentile_value_string }}</span>
+                                 <span class="descr">
                                     <span class="unit">percentile</span>
+                                    <span class="where">on Impactstory</span>
                                  </span>
-                                 <span class="descr">on Impactstory.</span>
                               </a>
 
                            </span>
@@ -397,6 +408,19 @@
 
 
                </div><!-- end of the Metrics Tab section -->
+
+
+
+
+
+
+
+
+
+               <div class="tab-content tab-map" ng-show="currentTab.name=='map'">
+                  <p>map coming soon...</p>
+
+               </div><!-- end of the Maps Tab section -->
 
 
             </div>
