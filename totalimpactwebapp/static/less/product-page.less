@@ -6,50 +6,9 @@ div.product-page {
    margin-top: 20px;
 
    div.main-content {
-      width: @productMainWidth;
       float: left;
-      #biblio {
 
-         // general stuff in biblio ************
-
-         .editable-click {
-            color: #333;
-            border: none;
-            &:hover {
-               color: #428bca;
-            }
-         }
-
-         form.editable-text {
-            margin-top: -5px;
-            margin-bottom: -5px;
-         }
-
-         .loading {
-            color: #999;
-            font-size: 16px;
-            font-weight: normal;
-            margin: 0 5px;
-            i {
-               margin-right: 3px;
-            }
-         }
-
-         span.biblio-field-label {
-            font-weight: bold;
-            margin-right: 5px;
-            font-size: 16px;
-         }
-
-         .tooltip-inner {
-            background: #428bca;
-         }
-         .tooltip-arrow {
-            border-right-color: #428bca;
-            border-left-color: #428bca;
-         }
-
-         // specific biblio sections ***********
+      #main-biblio {
 
          h2.title {
             font-size: 28px;
@@ -59,15 +18,6 @@ div.product-page {
                color: #333;
             }
 
-            span.return-to-profile-link-container {
-               .tooltip-inner {
-                  background: #000;
-               }
-               .tooltip-arrow {
-                  border-color: transparent;
-                  border-top-color: #000;
-               }
-            }
 
             textarea {
                width: @productMainWidth - 70px;
@@ -111,7 +61,49 @@ div.product-page {
                }
             }
          }
+      }
 
+
+      .biblio { // for general editable stuff in biblio sections
+
+         .editable-click {
+            color: #333;
+            border: none;
+            &:hover {
+               color: #428bca;
+            }
+         }
+
+         form.editable-text {
+            margin-top: -5px;
+            margin-bottom: -5px;
+         }
+
+         .loading {
+            color: #999;
+            font-size: 16px;
+            font-weight: normal;
+            margin: 0 5px;
+            i {
+               margin-right: 3px;
+            }
+         }
+
+         span.biblio-field-label {
+            font-weight: bold;
+            margin-right: 5px;
+            font-size: 16px;
+         }
+
+         .tooltip-inner {
+            background: #428bca;
+         }
+         .tooltip-arrow {
+            border-right-color: #428bca;
+            border-left-color: #428bca;
+         }
+
+         // specific biblio sections ***********
          div.biblio-line.abstract {
             font-size: 16px;
             margin-top: 15px;
@@ -166,8 +158,39 @@ div.product-page {
                }
             }
          }
+      }
+
+
+
+
+
+
+      // TABBED SECTION
+      // ************************************************************************
+      // ************************************************************************
+      #product-tabs-section {
+         div.tabs {
+            margin-top: 50px;
+            div.tab {
+               float:left;
+               padding: 20px 5px;
+
+            }
+         }
+
+         div.tabs-content {
+            clear: both;
+         }
+
+
+
 
       }
+
+
+
+
+
 
       // RESOURCE (link or embedded file)
       // ************************************************************************
@@ -179,17 +202,17 @@ div.product-page {
          width: @productMainWidth - 30px;
 
          .embed-picture {
-              width: 90%;         
+            width: 90%;
          }
          .embed-dryad {
-              min-height: 70px;
-              padding: 0 20px;
-              margin-top: 50px;
-              width: 90%;
-              border: 1px solid #eee; 
-         } 
+            min-height: 70px;
+            padding: 0 20px;
+            margin-top: 50px;
+            width: 90%;
+            border: 1px solid #eee;
+         }
          .embed-dryad table {
-              padding-top: 20px;
+            padding-top: 20px;
          }
          .embed-github {
             min-height: 70px;
@@ -208,7 +231,7 @@ div.product-page {
                h1, h2, h3, h4 { font-size: 20px;}
             }
 
-         }          
+         }
 
 
          .upload-cta {
@@ -407,7 +430,7 @@ div.modal-body.free-fulltext-url {
 div.modal-body.change-product-genre {
    text-align: center;
    label{
-     margin-right: 10px;
+      margin-right: 10px;
    }
 
 }

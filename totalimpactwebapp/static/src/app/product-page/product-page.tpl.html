@@ -4,7 +4,7 @@
 
       <div class="main-content">
 
-         <div id="biblio">
+         <div id="main-biblio" class="biblio">
             <h2 class="title">
                <span class="title-text"
                      tooltip="click to edit"
@@ -26,305 +26,399 @@
                </span>
             </h2>
 
-            <div class="optional-biblio">
 
-               <!-- authors line -->
-               <div class="biblio-line">
-                  <span class="biblio-field authors">
+            <!-- authors line -->
+            <div class="biblio-line">
+               <span class="biblio-field authors">
 
-                     <span class="value"
-                           tooltip="click to edit"
-                           tooltip-placement="right"
-                           onaftersave="updateBiblio('authors')"
-                           ng-show="!loading.is('updateBiblio.authors') && userOwnsThisProfile"
-                           editable-text="biblio.authors">
-                     {{ biblio.display_authors || "click to enter authors" }}
-                     </span>
-                     <span class="value" ng-show="!userOwnsThisProfile">
-                     {{ biblio.display_authors }}
-                     </span>
-
-                     <span class="loading" ng-show="loading.is('updateBiblio.authors')">
-                        <i class="icon-refresh icon-spin"></i>
-                        updating authors...
-                     </span>
-                  </span>
-
-               </div>
-
-
-               <!-- date and journal/repo line -->
-               <div class="biblio-line date-and-source">
-                  <span class="biblio-field year">
-
-                     <span class="value biblio-year"
-                           tooltip="click to edit"
-                           tooltip-placement="left"
-                           ng-show="!loading.is('updateBiblio.year') && userOwnsThisProfile"
-                           onaftersave="updateBiblio('year')"
-                           editable-text="biblio.year">
-                        {{ biblio.display_year || "click to enter publication year" }}
-                     </span>
-                     <span class="value biblio-year" ng-show="!userOwnsThisProfile">
-                        {{ biblio.display_year }}
-                     </span>
-
-                     <span class="loading" ng-show="loading.is('updateBiblio.year')">
-                        <i class="icon-refresh icon-spin"></i>
-                        updating publication year...
-                     </span>
-                  </span>
-
-                  <span class="biblio-field repository"
-                        ng-show="biblio.repository && !biblio.journal">
-
-                     <span class="value"
+                  <span class="value"
                         tooltip="click to edit"
                         tooltip-placement="right"
-                        editable-text="biblio.repository"
-                        onaftersave="updateBiblio('repository')"
-                        ng-show="!loading.is('updateBiblio.repository') && userOwnsThisProfile">
-                        {{ biblio.repository || 'click to enter repository' }}.
-                     </span>
-                     <span class="value" ng-show="!userOwnsThisProfile">
-                        {{ biblio.repository }}.
-                     </span>
-
-                     <span class="loading" ng-show="loading.is('updateBiblio.repository')">
-                        <i class="icon-refresh icon-spin"></i>
-                        updating repository...
-                     </span>
+                        onaftersave="updateBiblio('authors')"
+                        ng-show="!loading.is('updateBiblio.authors') && userOwnsThisProfile"
+                        editable-text="biblio.authors">
+                  {{ biblio.display_authors || "click to enter authors" }}
+                  </span>
+                  <span class="value" ng-show="!userOwnsThisProfile">
+                  {{ biblio.display_authors }}
                   </span>
 
-                  <span class="biblio-field journal" ng-show="biblio.journal">
-
-                     <span class="value"
-                        tooltip="click to edit"
-                        tooltip-placement="right"
-                        editable-text="biblio.journal"
-                        onaftersave="updateBiblio('journal')"
-                        ng-show="!loading.is('updateBiblio.journal') && userOwnsThisProfile">
-                        {{ biblio.journal || 'click to enter journal' }}
-                     </span>
-                     <span class="value" ng-show="!userOwnsThisProfile">
-                        {{ biblio.journal }}
-                     </span>
-
-                     <span class="loading" ng-show="loading.is('updateBiblio.journal')">
-                        <i class="icon-refresh icon-spin"></i>
-                        updating journal...
-                     </span>
+                  <span class="loading" ng-show="loading.is('updateBiblio.authors')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating authors...
                   </span>
+               </span>
 
-               </div>
-
-
-               <!-- abstract line -->
-               <div class="biblio-line abstract">
-                  <span class="biblio-field abstract" ng-show="userOwnsThisProfile">
-                     <span class="biblio-field-label">Abstract:</span>
-                     <span class="value"
-                        tooltip="click to edit"
-                        tooltip-placement="right"
-                        ng-show="!loading.is('updateBiblio.abstract')"
-                        editable-textarea="biblio.abstract"
-                        onaftersave="updateBiblio('abstract')">
-                        {{ truncatedAbstract() || 'click to enter abstract'}}
-                     </span>
-
-                     <span class="more-abstract"
-                           ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract"
-                           ng-click="userWantsFullAbstract=true">
-                        (more)
-                     </span>
-
-                     <span class="loading" ng-show="loading.is('updateBiblio.abstract')">
-                        <i class="icon-refresh icon-spin"></i>
-                        updating abstract...
-                     </span>
-                  </span>
-
-                  <!-- show this abstract markup if the user doesn't own this profile -->
-                  <span class="biblio-field abstract" ng-show="!userOwnsThisProfile && biblio.abstract">
-                     <span class="biblio-field-label">Abstract:</span>
-                     <span class="value">
-                        {{ truncatedAbstract() }}
-                     </span>
-                     <span class="more-abstract"
-                           ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract"
-                           ng-click="userWantsFullAbstract=true">
-                        (more)
-                     </span>
-                  </span>
-
-
-               </div>
-
-
-               <!-- keywords line -->
-               <div class="biblio-line keywords">
-
-                  <span class="biblio-field keywords" ng-show="userOwnsThisProfile">
-                     <span class="biblio-field-label">Keywords:</span>
-                     <span class="value"
-                        tooltip="click to edit"
-                        tooltip-placement="right"
-                        editable-text="biblio.keywords"
-                        onaftersave="updateBiblio('keywords')"
-                        ng-show="!loading.is('updateBiblio.keywords')">
-                        {{ biblio.keywords || 'click to enter keywords (separate with semicolons)'}}
-                     </span>
-                     <span class="loading" ng-show="loading.is('updateBiblio.keywords')">
-                        <i class="icon-refresh icon-spin"></i>
-                        updating keywords...
-                     </span>
-                  </span>
-
-                  <span class="biblio-field keywords" ng-show="!userOwnsThisProfile && biblio.keywords">
-                     <span class="biblio-field-label">Keywords:</span>
-
-                     <span class="value">
-                        {{ biblio.keywords }}
-                     </span>
-                  </span>
-
-
-
-               </div>
             </div>
 
 
-            <div class="share-buttons">
-               <!--
-               <a class="btn btn-xs btn-default" ng-click="openChangeGenreModal()">
-                  <i class="{{ genre_icon }}"></i>
-                  Change genre
-               </a>
-               -->
-               <a href="/product/{{ tiid }}" class="download-json btn btn-default btn-xs" target="_blank">Download JSON</a>
-               <a class="twitter"
-                  tooltip="Share this {{ genre }} on Twitter"
-                  href="https://twitter.com/share?text={{ biblio.display_title }}&url={{ page.getUrl() }}"
-                  target="_blank">
-                  <img ng-src="/static/img/favicons/twitter.ico" />
-               </a>
+            <!-- date and journal/repo line -->
+            <div class="biblio-line date-and-source">
+               <span class="biblio-field year">
+
+                  <span class="value biblio-year"
+                        tooltip="click to edit"
+                        tooltip-placement="left"
+                        ng-show="!loading.is('updateBiblio.year') && userOwnsThisProfile"
+                        onaftersave="updateBiblio('year')"
+                        editable-text="biblio.year">
+                     {{ biblio.display_year || "click to enter publication year" }}
+                  </span>
+                  <span class="value biblio-year" ng-show="!userOwnsThisProfile">
+                     {{ biblio.display_year }}
+                  </span>
+
+                  <span class="loading" ng-show="loading.is('updateBiblio.year')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating publication year...
+                  </span>
+               </span>
+
+               <span class="biblio-field repository"
+                     ng-show="biblio.repository && !biblio.journal">
+
+                  <span class="value"
+                     tooltip="click to edit"
+                     tooltip-placement="right"
+                     editable-text="biblio.repository"
+                     onaftersave="updateBiblio('repository')"
+                     ng-show="!loading.is('updateBiblio.repository') && userOwnsThisProfile">
+                     {{ biblio.repository || 'click to enter repository' }}.
+                  </span>
+                  <span class="value" ng-show="!userOwnsThisProfile">
+                     {{ biblio.repository }}.
+                  </span>
+
+                  <span class="loading" ng-show="loading.is('updateBiblio.repository')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating repository...
+                  </span>
+               </span>
+
+               <span class="biblio-field journal" ng-show="biblio.journal">
+
+                  <span class="value"
+                     tooltip="click to edit"
+                     tooltip-placement="right"
+                     editable-text="biblio.journal"
+                     onaftersave="updateBiblio('journal')"
+                     ng-show="!loading.is('updateBiblio.journal') && userOwnsThisProfile">
+                     {{ biblio.journal || 'click to enter journal' }}
+                  </span>
+                  <span class="value" ng-show="!userOwnsThisProfile">
+                     {{ biblio.journal }}
+                  </span>
+
+                  <span class="loading" ng-show="loading.is('updateBiblio.journal')">
+                     <i class="icon-refresh icon-spin"></i>
+                     updating journal...
+                  </span>
+               </span>
+
             </div>
 
-
-         </div><!-- end biblio section -->
-
-
-         <div id="resource">
+         </div> <!-- end biblio -->
 
 
-            <div id="file" ng-show="hasEmbeddedFile">
-               <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
-            </div>
 
 
-            <div id="linkout" ng-show="!hasEmbeddedFile">
-               <div class="icon">
-                  <i class="icon-link"></i>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+         <div id="product-tabs-section">
+            <div class="tabs">
+               <div class="tab tab-default">
+                  Summary
                </div>
+               <div class="tab tab-metrics">
+                  Full text
+               </div>
+               <div class="tab tab-metrics">
+                  Metrics
+               </div>
+               <div class="tab tab-map">
+                  Map
+               </div>
+            </div>
 
-               <div class="content">
-                  <h3>{{ genre }} available via
-                     <a href="{{ aliases.resolved_url }}" class="product-host">
-                        {{ productHost }}
-                     </a>
-                     <span class="locked-icon" ng-show="!biblio.free_fulltext_url">
-                        <i class="icon-lock"
-                           ng-show="!userOwnsThisProfile"
-                           tooltip="{{ genre }} may be paywalled."></i>
+            <div class="tabs-content">
+               <div class="tab-content tab-default">
+                  <div class="optional-biblio">
+                     <!-- abstract line -->
+                     <div class="biblio-line abstract">
+                        <span class="biblio-field abstract" ng-show="userOwnsThisProfile">
+                           <span class="biblio-field-label">Abstract:</span>
+                           <span class="value"
+                              tooltip="click to edit"
+                              tooltip-placement="right"
+                              ng-show="!loading.is('updateBiblio.abstract')"
+                              editable-textarea="biblio.abstract"
+                              onaftersave="updateBiblio('abstract')">
+                              {{ truncatedAbstract() || 'click to enter abstract'}}
+                           </span>
 
-                        <i class="icon-lock"
-                           ng-show="userOwnsThisProfile"
-                           tooltip="{{ genre }} may be paywalled. To improve visibility, consider uploading a freely-readable copy."></i>
-                     </span>
-                  </h3>
-                  <!--
-                  <a class="full-url" href="{{ aliases.resolved_url }}">
-                     {{ aliases.resolved_url }}
-                  </a>
-                  -->
-                  <div class="oa-version" ng-show="biblio.free_fulltext_url">
-                     <div class="oa-version-label">
-                        <i class="icon-unlock-alt"></i>
-                        Open access version via
-                        <a href="{{ biblio.free_fulltext_url }}">{{ freeFulltextHost }}</a>
+                           <span class="more-abstract"
+                                 ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract"
+                                 ng-click="userWantsFullAbstract=true">
+                              (more)
+                           </span>
+
+                           <span class="loading" ng-show="loading.is('updateBiblio.abstract')">
+                              <i class="icon-refresh icon-spin"></i>
+                              updating abstract...
+                           </span>
+                        </span>
+
+                        <!-- show this abstract markup if the user doesn't own this profile -->
+                        <span class="biblio-field abstract" ng-show="!userOwnsThisProfile && biblio.abstract">
+                           <span class="biblio-field-label">Abstract:</span>
+                           <span class="value">
+                              {{ truncatedAbstract() }}
+                           </span>
+                           <span class="more-abstract"
+                                 ng-hide="loading.is('updateBiblio.abstract') || userWantsFullAbstract || !biblio.abstract"
+                                 ng-click="userWantsFullAbstract=true">
+                              (more)
+                           </span>
+                        </span>
+                     </div>
+
+                     <!-- keywords line -->
+                     <div class="biblio-line keywords">
+
+                        <span class="biblio-field keywords" ng-show="userOwnsThisProfile">
+                           <span class="biblio-field-label">Keywords:</span>
+                           <span class="value"
+                              tooltip="click to edit"
+                              tooltip-placement="right"
+                              editable-text="biblio.keywords"
+                              onaftersave="updateBiblio('keywords')"
+                              ng-show="!loading.is('updateBiblio.keywords')">
+                              {{ biblio.keywords || 'click to enter keywords (separate with semicolons)'}}
+                           </span>
+                           <span class="loading" ng-show="loading.is('updateBiblio.keywords')">
+                              <i class="icon-refresh icon-spin"></i>
+                              updating keywords...
+                           </span>
+                        </span>
+
+                        <span class="biblio-field keywords" ng-show="!userOwnsThisProfile && biblio.keywords">
+                           <span class="biblio-field-label">Keywords:</span>
+
+                           <span class="value">
+                              {{ biblio.keywords }}
+                           </span>
+                        </span>
+                     </div>
+                  </div><!-- end of the optional biblio part of the default tab -->
+
+
+                  <div id="resource">
+
+                     <div id="citation">
+                        <ul class="aliases">
+                           <li class="doi" ng-show="aliases.display_best_url && !aliases.display_doi">
+                              <span class="key">URL:</span>
+                              <a class="value" href="{{ aliases.display_best_url }}">{{ aliases.display_best_url }} <i class="icon-external-link"></i></a>
+                           </li>
+
+                           <li class="doi" ng-show="aliases.display_doi">
+                              <span class="key">DOI:</span>
+                              <a class="value" href="http://dx.doi.org/{{ aliases.display_doi }}">{{ aliases.display_doi }}<i class="icon-external-link right"></i></a>
+                           </li>
+                           <li class="pmid" ng-show="aliases.display_pmid">
+                              <span class="key">PubMed ID:</span>
+                              <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_doi }}<i class="icon-external-link"></i></a>
+                           </li>
+                        </ul>
+
+                        <div class="text-citation">
+                           <span class="key">Citation:</span>
+                           <span class="value">
+                              <span class="authors">{{ biblio.authors }}</span>
+                              <span class="year">({{ biblio.display_year }}).</span>
+                              <span class="title">{{ biblio.display_title }}.</span>
+                              <span class="host"> {{ biblio.display_host }}</span>
+                           </span>
+                        </div>
+
+                     </div>
+
+                  </div>
+               </div><!-- end Summary Tab content -->
+
+
+
+
+
+
+
+
+
+
+               <div class="tab-fulltext tab-content">
+
+                  <div id="file" ng-show="hasEmbeddedFile">
+                     <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
+                  </div>
+
+
+                  <div id="linkout" ng-show="!hasEmbeddedFile">
+                     <div class="icon">
+                        <i class="icon-link"></i>
+                     </div>
+
+                     <div class="content">
+                        <h3>{{ genre }} available via
+                           <a href="{{ aliases.resolved_url }}" class="product-host">
+                              {{ productHost }}
+                           </a>
+                           <span class="locked-icon" ng-show="!biblio.free_fulltext_url">
+                              <i class="icon-lock"
+                                 ng-show="!userOwnsThisProfile"
+                                 tooltip="{{ genre }} may be paywalled."></i>
+
+                              <i class="icon-lock"
+                                 ng-show="userOwnsThisProfile"
+                                 tooltip="{{ genre }} may be paywalled. To improve visibility, consider uploading a freely-readable copy."></i>
+                           </span>
+                        </h3>
+                        <!--
+                        <a class="full-url" href="{{ aliases.resolved_url }}">
+                           {{ aliases.resolved_url }}
+                        </a>
+                        -->
+                        <div class="oa-version" ng-show="biblio.free_fulltext_url">
+                           <div class="oa-version-label">
+                              <i class="icon-unlock-alt"></i>
+                              Open access version via
+                              <a href="{{ biblio.free_fulltext_url }}">{{ freeFulltextHost }}</a>
+                           </div>
+                        </div>
+
                      </div>
                   </div>
 
-               </div>
-            </div>
 
+                  <div class="upload-cta"
+                       ng-show="!hasEmbeddedFile && userOwnsThisProfile && uploadableHost"
+                       ng-controller="productUploadCtrl">
 
-            <div class="upload-cta"
-                 ng-show="!hasEmbeddedFile && userOwnsThisProfile && uploadableHost"
-                 ng-controller="productUploadCtrl">
+                     <div class="not-uploaded-yet" ng-show="!loading.is('productUpload')">
+                        <h4>Make this {{ genre }} more visible</h4>
+                        <h5>
+                           Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.
+                        </h5>
+                        <div class="file-upload-container">
+                           <div class="file-upload-button btn btn-primary"
+                                onclick="document.getElementById('file-upload-button').click();">
+                              <span class="text">Share your {{ genre }}</span>
+                           </div>
+                           <input id="file-upload-button" type="file" ng-file-select="onFileSelect($files)">
+                           <span class="or">or</span>
+                           <a class="embed-from-url" ng-click="openFulltextLocationModal()">embed from url</a>
+                        </div>
 
-               <div class="not-uploaded-yet" ng-show="!loading.is('productUpload')">
-                  <h4>Make this {{ genre }} more visible</h4>
-                  <h5>
-                     Upload a copy here to make it freely available to everyone&mdash;and get readership stats you can use.
-                  </h5>
-                  <div class="file-upload-container">
-                     <div class="file-upload-button btn btn-primary"
-                          onclick="document.getElementById('file-upload-button').click();">
-                        <span class="text">Share your {{ genre }}</span>
+                        <div class="notes">
+                           <span class="sherpa-romeo">
+                              Learn more about your uploading rights and responsibilities at
+                              <a href="http://www.sherpa.ac.uk/romeo/" target="_blank">SHERPA/RoMEO</a>
+                           </span>
+                        </div>
                      </div>
-                     <input id="file-upload-button" type="file" ng-file-select="onFileSelect($files)">
-                     <span class="or">or</span>
-                     <a class="embed-from-url" ng-click="openFulltextLocationModal()">embed from url</a>
+
+                     <div class="uploading-now" ng-show="loading.is('productUpload')">
+                        <div class="content">
+                           <i class="icon-refresh icon-spin left"></i>
+                           Uploading {{ genre }}&hellip;
+                        </div>
+                     </div>
+
                   </div>
 
-                  <div class="notes">
-                     <span class="sherpa-romeo">
-                        Learn more about your uploading rights and responsibilities at
-                        <a href="http://www.sherpa.ac.uk/romeo/" target="_blank">SHERPA/RoMEO</a>
-                     </span>
-                  </div>
                </div>
 
-               <div class="uploading-now" ng-show="loading.is('productUpload')">
-                  <div class="content">
-                     <i class="icon-refresh icon-spin left"></i>
-                     Uploading {{ genre }}&hellip;
+
+
+
+
+
+
+               <div class="tab-content tab-map">
+               </div><!-- end of the Maps Tab section -->
+
+
+
+
+
+
+
+
+
+               <div class="tab-content tab-metrics">
+                  <div id="metrics">
+                     <ul class="metric-details-list">
+
+                        <li class="metric-detail" ng-repeat="metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}">
+                           <span class="metric-text">
+                              <a class="value-and-name"
+                                 href="{{ metric.drilldown_url }}"
+                                 target="_blank"
+                                 tooltip-placement="left"
+                                 tooltip="{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.">
+                                 <img ng-src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
+                                 <span class="raw-value">{{ metric.display_count }}</span>
+                                 <span class="environment">{{ metric.display_provider }}</span>
+                                 <span class="interaction">{{ metric.display_interaction }}</span>
+                                 <i class="icon-external-link-sign"></i>
+                              </a>
+
+                              <span class="new-metrics"
+                                    ng-show="metric.diff_value > 0"
+                                    tooltip="{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
+                               +{{ metric.diff_value }}
+                              </span>
+
+                              <a class="percentile"
+                                 ng-show="metric.percentile"
+                                 href="http://feedback.impactstory.org/knowledgebase/articles/400281--highly-cited-and-other-impact-badges"
+                                 target="_self"
+                                 tooltip-placement="left"
+                                 tooltip="Compared to other {{ metric.percentile.mendeley_discipline_str }} {{ displayGenrePlural }} from {{ biblio.display_year }}. Click to read more about how we determine percentiles.">
+                                 <span class="values">
+                                    <span class="value">{{ metric.percentile_value_string }}</span>
+                                    <span class="unit">percentile</span>
+                                 </span>
+                                 <span class="descr">on Impactstory.</span>
+                              </a>
+
+                           </span>
+                        </li>
+                     </ul>
                   </div>
-               </div>
+
+
+               </div><!-- end of the Metrics Tab section -->
+
 
             </div>
-
-            <div id="citation">
-               <ul class="aliases">
-                  <li class="doi" ng-show="aliases.display_best_url && !aliases.display_doi">
-                     <span class="key">URL:</span>
-                     <a class="value" href="{{ aliases.display_best_url }}">{{ aliases.display_best_url }} <i class="icon-external-link"></i></a>
-                  </li>
-
-                  <li class="doi" ng-show="aliases.display_doi">
-                     <span class="key">DOI:</span>
-                     <a class="value" href="http://dx.doi.org/{{ aliases.display_doi }}">{{ aliases.display_doi }}<i class="icon-external-link right"></i></a>
-                  </li>
-                  <li class="pmid" ng-show="aliases.display_pmid">
-                     <span class="key">PubMed ID:</span>
-                     <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_doi }}<i class="icon-external-link"></i></a>
-                  </li>
-               </ul>
-
-               <div class="text-citation">
-                  <span class="key">Citation:</span>
-                  <span class="value">
-                     <span class="authors">{{ biblio.authors }}</span>
-                     <span class="year">({{ biblio.display_year }}).</span>
-                     <span class="title">{{ biblio.display_title }}.</span>
-                     <span class="host"> {{ biblio.display_host }}</span>
-                  </span>
-               </div>
-
-            </div>
-
          </div>
+
+
+
+
+
 
       </div><!-- end main-content -->
 
@@ -335,52 +429,6 @@
 
       <div id="product-page-sidebar">
 
-         <!--
-         <div class="download-button-container">
-            <div class="btn btn-default" ng-click="downloadFile()">Download</div>
-         </div>
-         -->
-
-         <div id="metrics">
-            <ul class="metric-details-list">
-
-               <li class="metric-detail" ng-repeat="metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}">
-                  <span class="metric-text">
-                     <a class="value-and-name"
-                        href="{{ metric.drilldown_url }}"
-                        target="_blank"
-                        tooltip-placement="left"
-                        tooltip="{{ metric.config.description }} Click to see more details on {{ metric.display_provider }}.">
-                        <img ng-src='/static/img/favicons/{{ metric.provider_name }}_{{ metric.interaction }}.ico' class='icon' >
-                        <span class="raw-value">{{ metric.display_count }}</span>
-                        <span class="environment">{{ metric.display_provider }}</span>
-                        <span class="interaction">{{ metric.display_interaction }}</span>
-                        <i class="icon-external-link-sign"></i>
-                     </a>
-
-                     <span class="new-metrics"
-                           ng-show="metric.diff_value > 0"
-                           tooltip="{{ metric.diff_value }} new {{ metric.display_provider }} {{ metric.display_interaction }} in the last week">
-                      +{{ metric.diff_value }}
-                     </span>
-
-                     <a class="percentile"
-                        ng-show="metric.percentile"
-                        href="http://feedback.impactstory.org/knowledgebase/articles/400281--highly-cited-and-other-impact-badges"
-                        target="_self"
-                        tooltip-placement="left"
-                        tooltip="Compared to other {{ metric.percentile.mendeley_discipline_str }} {{ displayGenrePlural }} from {{ biblio.display_year }}. Click to read more about how we determine percentiles.">
-                        <span class="values">
-                           <span class="value">{{ metric.percentile_value_string }}</span>
-                           <span class="unit">percentile</span>
-                        </span>
-                        <span class="descr">on Impactstory.</span>
-                     </a>
-
-                  </span>
-               </li>
-            </ul>
-         </div>
       </div><!-- end sidebar -->
 
    </div>
