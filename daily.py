@@ -572,12 +572,12 @@ def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
 
     from totalimpactwebapp.tweet import save_product_tweets
 
+    total_tweets_saved = 0
+    total_products_saved = 0
     for profile in windowed_query(q, Profile.url_slug, 25):
         logger.info(u"{url_slug}".format(
             url_slug=profile.url_slug))
 
-        number_tweets_saved = 0
-        number_products_saved = 0
         for product in profile.display_products:
             metric = product.get_metric_by_name("altmetric_com", "posts")
             # logger.info(u"{url_slug} has tweet".format(
@@ -586,9 +586,9 @@ def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
                 print ".",
                 twitter_details = metric.most_recent_snap.raw_value["twitter"]
                 save_product_tweets(profile.id, metric.tiid, twitter_details)
-                number_tweets_saved += len(twitter_details)
-                number_products_saved += 1
-        print "number_tweets_saved", number_tweets_saved, "number_products_saved", number_products_saved
+                total_tweets_saved += len(twitter_details)
+                total_products_saved += 1
+        print "total_tweets_saved", total_tweets_saved, "total_products_saved", total_products_saved
 
 
 def get_tweet_text(min_tiid=None):
