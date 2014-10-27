@@ -582,7 +582,7 @@ def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
             metric = product.get_metric_by_name("altmetric_com", "posts")
             # logger.info(u"{url_slug} has tweet".format(
             #     url_slug=profile.url_slug))
-            if metric:
+            if metric and "twitter" in metric.most_recent_snap.raw_value:
                 print ".",
                 twitter_details = metric.most_recent_snap.raw_value["twitter"]
                 save_product_tweets(profile.id, metric.tiid, twitter_details)
