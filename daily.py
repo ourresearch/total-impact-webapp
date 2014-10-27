@@ -545,8 +545,13 @@ def refresh_tweeted_products(min_tiid=None):
 
 def run_through_altmetric_tweets(min_tiid=None):
     from sqlalchemy.sql import text
-    snaps = db.engine.execute(
-                text("select * from snap where provider='altmetric_com' and interaction='posts'"))
+    sql = """select count(*) from snap, item, profile 
+                where snap.tiid=item.tiid
+                and item.profile_id = profile.id
+                and (profile.is_advisor=true or profile.stripe_id is not null or profile.created > '2014-09-01'::date)
+                and provider='altmetric_com' and interaction='posts'"""
+
+    snaps = db.engine.execute(text(sql))
 
     from totalimpactwebapp.tweet import save_product_tweets
 
@@ -562,14 +567,15 @@ def get_tweet_text(min_tiid=None):
 
     from sqlalchemy.sql import text
     # q = db.session.query(Tweet).filter(Tweet.payload==None).limit(100)
-    has_more = True
-    while has_more:
+    had_tweets = True
+    while had_tweets:
         tweets = db.engine.execute(
-                    text("select * from tweet where payload is null limit 100"))
+                    text("select * from tweet where payload is null and is_deleted is null limit 100"))
         # tweets = q.all()
         tweet_ids = [tweet.tweet_id for tweet in tweets]
-        save_specific_tweets(tweet_ids)
-        has_more = len(tweet_ids) > 0
+        had_tweets = len(tweet_ids) > 0
+        if had_tweets:
+            save_specific_tweets(tweet_ids)
 
 
 def run_through_twitter_pages(url_slug=None, min_url_slug=None):
@@ -790,6 +796,8 @@ def main(function, args):
         ip_deets()
     elif function=="run_through_altmetric_tweets":
         run_through_altmetric_tweets()
+    elif function=="tweet_text":
+        get_tweet_text()
 
 
 
