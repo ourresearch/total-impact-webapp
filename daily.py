@@ -545,7 +545,7 @@ def refresh_tweeted_products(min_tiid=None):
 
 def run_through_altmetric_tweets(min_tiid=None):
     from sqlalchemy.sql import text
-    sql = """select * from snap, item, profile 
+    sql = """select snap.* from snap, item, profile 
                 where snap.tiid=item.tiid
                 and item.profile_id = profile.id
                 and (profile.is_advisor=true or profile.stripe_id is not null or profile.created > '2014-09-01'::date)
