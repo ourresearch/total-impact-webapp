@@ -1,3 +1,4 @@
+from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import refresh_products_from_tiids
@@ -542,6 +543,34 @@ def refresh_tweeted_products(min_tiid=None):
             pass
 
 
+def run_through_altmetric_tweets(min_tiid=None):
+    from sqlalchemy.sql import text
+    snaps = db.engine.execute(
+                text("select * from snap where provider='altmetric_com' and interaction='posts'"))
+
+    from totalimpactwebapp.tweet import save_product_tweets
+
+    for snap in snaps:
+        if "twitter" in snap.raw_value:
+            twitter_details = json.loads(snap.raw_value)["twitter"]
+            save_product_tweets(None, snap.tiid, twitter_details)
+
+
+def get_tweet_text(min_tiid=None):
+    from totalimpactwebapp.tweet import Tweet
+    from totalimpactwebapp.tweet import save_specific_tweets
+
+    from sqlalchemy.sql import text
+    # q = db.session.query(Tweet).filter(Tweet.payload==None).limit(100)
+    has_more = True
+    while has_more:
+        tweets = db.engine.execute(
+                    text("select * from tweet where payload is null limit 100"))
+        # tweets = q.all()
+        tweet_ids = [tweet.tweet_id for tweet in tweets]
+        save_specific_tweets(tweet_ids)
+        has_more = len(tweet_ids) > 0
+
 
 def run_through_twitter_pages(url_slug=None, min_url_slug=None):
     if url_slug:
@@ -759,6 +788,8 @@ def main(function, args):
         collect_new_mendeley(args["url_slug"], args["min_url_slug"])
     elif function=="ip_deets":
         ip_deets()
+    elif function=="run_through_altmetric_tweets":
+        run_through_altmetric_tweets()
 
 
 
