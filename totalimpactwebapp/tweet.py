@@ -117,7 +117,7 @@ def save_product_tweets(profile_id, tiid, twitter_posts):
         tweeter.image_url = post["author"].get("image", None)
         db.session.add(tweeter)
 
-        commit(db)
+    commit(db)
 
 
 class Tweeter(db.Model):
