@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-26
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-27
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1276,7 +1276,7 @@ angular.module("productPage", [
 
   .config(['$routeProvider', function ($routeProvider) {
 
-    $routeProvider.when("/:url_slug/product/:tiid", {
+    $routeProvider.when("/:url_slug/product/:tiid/:tabName?", {
       templateUrl:'product-page/product-page.tpl.html',
       controller:'ProductPageCtrl',
       resolve: {
@@ -1290,9 +1290,15 @@ angular.module("productPage", [
 
   }])
 
-  .factory('productPage', function(){
+  .factory('ProductPage', function(){
+    var tab = "summary"
     return {
-
+      tabIs: function(tabName){
+        return tab == tabName
+      },
+      setTab: function(tabName){
+        tab = tabName
+      }
     }
   })
 
@@ -1306,6 +1312,7 @@ angular.module("productPage", [
     security,
     UsersProduct,
     UserProfile,
+    ProductPage,
     Product,
     Loading,
     TiMixpanel,
@@ -1325,6 +1332,7 @@ angular.module("productPage", [
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
     $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
+    $scope.ProductPage = ProductPage
 
 
     security.isLoggedInPromise(slug).then(
@@ -1345,6 +1353,10 @@ angular.module("productPage", [
       }
     )
     renderProduct(product)
+
+    $scope.$on("currentTab.name", function(newVal, oldVal){
+      console.log("tab changed", newVal, oldVal)
+    })
 
 
 
@@ -1484,17 +1496,6 @@ angular.module("productPage", [
       $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
     }
 
-    $scope.openChangeGenreModal = function(){
-      $modal.open({
-        templateUrl: "product-page/change-genre-modal.tpl.html",
-        controller: "productUploadCtrl",
-        resolve: {
-          tiid: function(){
-            return product.tiid
-          }
-        }
-      })
-    }
 
     $scope.openFulltextLocationModal = function(){
       UserProfile.useCache(false)
@@ -6291,7 +6292,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/change-genre-modal.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -7875,33 +7876,6 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "</div>");
 }]);
 
-angular.module("product-page/change-genre-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("product-page/change-genre-modal.tpl.html",
-    "<div class=\"modal-header\">\n" +
-    "   <h4>Change product genre</h4>\n" +
-    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
-    "</div>\n" +
-    "<div class=\"modal-body change-product-genre\">\n" +
-    "   <label for=\"change-genre-input\">\n" +
-    "      Select a new genre:\n" +
-    "   </label>\n" +
-    "   <select ng-model=\"myGenre.input\"\n" +
-    "           id=\"change-genre-input\"\n" +
-    "           ng-options=\"config.name for config in genreConfigs\">\n" +
-    "   </select>\n" +
-    "</div>\n" +
-    "<div class=\"modal-footer\">\n" +
-    "   <span class=\"btn btn-primary\"\n" +
-    "      ng-click=\"foo()\"\n" +
-    "      ng-show=\"myGenre.input.name\">\n" +
-    "      <i class=\"{{ myGenre.input.icon }} left\"></i>\n" +
-    "      Change genre to '{{ myGenre.input.name }}'\n" +
-    "   </span>\n" +
-    "\n" +
-    "</div>\n" +
-    "");
-}]);
-
 angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product-page/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -8081,37 +8055,37 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "         <div id=\"product-tabs-section\">\n" +
     "            <div class=\"tabs\">\n" +
     "               <div class=\"tab tab-default\"\n" +
-    "                    ng-class=\"{selected: currentTab.name=='summary'}\"\n" +
-    "                    ng-click=\"currentTab.name='summary'\">\n" +
+    "                    ng-class=\"{selected: ProductPage.tabIs('summary')}\"\n" +
+    "                    ng-click=\"ProductPage.setTab('summary')\">\n" +
     "                  <i class=\"icon-list-ul left\"></i>\n" +
     "                  Summary\n" +
     "               </div>\n" +
     "               <div class=\"tab tab-metrics\"\n" +
-    "                    ng-class=\"{selected: currentTab.name=='fulltext'}\"\n" +
-    "                    ng-click=\"currentTab.name='fulltext'\">\n" +
+    "                    ng-class=\"{selected: ProductPage.tabIs('fulltext')}\"\n" +
+    "                    ng-click=\"ProductPage.setTab('fulltext')\">\n" +
     "                  <i class=\"icon-file-text-alt left\"></i>\n" +
     "                  Full text\n" +
     "               </div>\n" +
     "               <div class=\"tab tab-metrics\"\n" +
-    "                    ng-class=\"{selected: currentTab.name=='metrics'}\"\n" +
-    "                    ng-click=\"currentTab.name='metrics'\">\n" +
+    "                    ng-class=\"{selected: ProductPage.tabIs('metrics')}\"\n" +
+    "                    ng-click=\"ProductPage.setTab('metrics')\">\n" +
     "                  <i class=\"icon-bar-chart left\"></i>\n" +
     "                  Metrics\n" +
     "               </div>\n" +
     "               <div class=\"tab tab-map\"\n" +
-    "                    ng-class=\"{selected: currentTab.name=='map'}\"\n" +
-    "                    ng-click=\"currentTab.name='map'\">\n" +
+    "                    ng-class=\"{selected: ProductPage.tabIs('map')}\"\n" +
+    "                    ng-click=\"ProductPage.setTab('map')\">\n" +
     "                  <i class=\"icon-globe left\"></i>\n" +
     "                  Map\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"tabs-content\">\n" +
-    "               <div class=\"tab-content tab-summary\" ng-show=\"currentTab.name=='summary'\">\n" +
+    "               <div class=\"tab-content tab-summary\" ng-show=\"ProductPage.tabIs('summary')\">\n" +
     "                  <div class=\"summary-metrics\">\n" +
     "                     <ul class=\"metric-details-list\">\n" +
     "                        <li class=\"metric-detail\"\n" +
-    "                            ng-click=\"currentTab.name='metrics'\"\n" +
+    "                            ng-click=\"ProductPage.setTab('summary')\"\n" +
     "                            ng-repeat=\"metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}\">\n" +
     "                           <span class=\"metric-text\">\n" +
     "                              <a class=\"value-and-name\" tooltip=\"{{ metric.display_count }} {{ metric.display_provider }} {{ metric.display_interaction }}. Click for details.\">\n" +
@@ -8231,7 +8205,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
-    "               <div class=\"tab-fulltext tab-content\" ng-show=\"currentTab.name=='fulltext'\">\n" +
+    "               <div class=\"tab-fulltext tab-content\" ng-show=\"ProductPage.tabIs('fulltext')\">\n" +
     "                  <div id=\"file\" ng-show=\"hasEmbeddedFile\">\n" +
     "                     <div class=\"iframe-wrapper\" dynamic=\"iframeToEmbed\"></div>\n" +
     "                  </div>\n" +
@@ -8303,7 +8277,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
-    "               <div class=\"tab-content tab-metrics\" ng-show=\"currentTab.name=='metrics'\">\n" +
+    "               <div class=\"tab-content tab-metrics\" ng-show=\"ProductPage.tabIs('metrics')\">\n" +
     "                  <div id=\"metrics\">\n" +
     "                     <ul class=\"metric-details-list\">\n" +
     "\n" +
@@ -8357,7 +8331,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "\n" +
     "\n" +
-    "               <div class=\"tab-content tab-map\" ng-show=\"currentTab.name=='map'\">\n" +
+    "               <div class=\"tab-content tab-map\" ng-show=\"ProductPage.tabIs('map')\">\n" +
     "                  <div id=\"product-map\" class=\"impact-map\"></div>\n" +
     "               </div><!-- end of the Maps Tab section -->\n" +
     "\n" +

@@ -139,37 +139,37 @@
          <div id="product-tabs-section">
             <div class="tabs">
                <div class="tab tab-default"
-                    ng-class="{selected: currentTab.name=='summary'}"
-                    ng-click="currentTab.name='summary'">
+                    ng-class="{selected: ProductPage.tabIs('summary')}"
+                    ng-click="ProductPage.setTab('summary')">
                   <i class="icon-list-ul left"></i>
                   Summary
                </div>
                <div class="tab tab-metrics"
-                    ng-class="{selected: currentTab.name=='fulltext'}"
-                    ng-click="currentTab.name='fulltext'">
+                    ng-class="{selected: ProductPage.tabIs('fulltext')}"
+                    ng-click="ProductPage.setTab('fulltext')">
                   <i class="icon-file-text-alt left"></i>
                   Full text
                </div>
                <div class="tab tab-metrics"
-                    ng-class="{selected: currentTab.name=='metrics'}"
-                    ng-click="currentTab.name='metrics'">
+                    ng-class="{selected: ProductPage.tabIs('metrics')}"
+                    ng-click="ProductPage.setTab('metrics')">
                   <i class="icon-bar-chart left"></i>
                   Metrics
                </div>
                <div class="tab tab-map"
-                    ng-class="{selected: currentTab.name=='map'}"
-                    ng-click="currentTab.name='map'">
+                    ng-class="{selected: ProductPage.tabIs('map')}"
+                    ng-click="ProductPage.setTab('map')">
                   <i class="icon-globe left"></i>
                   Map
                </div>
             </div>
 
             <div class="tabs-content">
-               <div class="tab-content tab-summary" ng-show="currentTab.name=='summary'">
+               <div class="tab-content tab-summary" ng-show="ProductPage.tabIs('summary')">
                   <div class="summary-metrics">
                      <ul class="metric-details-list">
                         <li class="metric-detail"
-                            ng-click="currentTab.name='metrics'"
+                            ng-click="ProductPage.setTab('summary')"
                             ng-repeat="metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}">
                            <span class="metric-text">
                               <a class="value-and-name" tooltip="{{ metric.display_count }} {{ metric.display_provider }} {{ metric.display_interaction }}. Click for details.">
@@ -289,7 +289,7 @@
 
 
 
-               <div class="tab-fulltext tab-content" ng-show="currentTab.name=='fulltext'">
+               <div class="tab-fulltext tab-content" ng-show="ProductPage.tabIs('fulltext')">
                   <div id="file" ng-show="hasEmbeddedFile">
                      <div class="iframe-wrapper" dynamic="iframeToEmbed"></div>
                   </div>
@@ -361,7 +361,7 @@
 
 
 
-               <div class="tab-content tab-metrics" ng-show="currentTab.name=='metrics'">
+               <div class="tab-content tab-metrics" ng-show="ProductPage.tabIs('metrics')">
                   <div id="metrics">
                      <ul class="metric-details-list">
 
@@ -415,7 +415,7 @@
 
 
 
-               <div class="tab-content tab-map" ng-show="currentTab.name=='map'">
+               <div class="tab-content tab-map" ng-show="ProductPage.tabIs('map')">
                   <div id="product-map" class="impact-map"></div>
                </div><!-- end of the Maps Tab section -->
 
