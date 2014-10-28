@@ -224,17 +224,6 @@ angular.module("productPage", [
       $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
     }
 
-    $scope.openChangeGenreModal = function(){
-      $modal.open({
-        templateUrl: "product-page/change-genre-modal.tpl.html",
-        controller: "productUploadCtrl",
-        resolve: {
-          tiid: function(){
-            return product.tiid
-          }
-        }
-      })
-    }
 
     $scope.openFulltextLocationModal = function(){
       UserProfile.useCache(false)
