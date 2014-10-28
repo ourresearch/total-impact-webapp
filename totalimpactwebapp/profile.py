@@ -1,6 +1,5 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import profile_award
-from totalimpactwebapp import util
 from totalimpactwebapp import configs
 from totalimpactwebapp.account import account_factory
 from totalimpactwebapp.product_markup import Markup
@@ -11,6 +10,7 @@ from totalimpactwebapp.drip_email import DripEmail
 from totalimpactwebapp.tweet import save_recent_tweets
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
+from totalimpactwebapp.util import dict_from_dir
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError, DataError
@@ -97,7 +97,7 @@ class RefreshStatus(object):
         return int(precise)
 
     def to_dict(self):
-        return util.dict_from_dir(self, "products")
+        return dict_from_dir(self, "products")
 
 
 

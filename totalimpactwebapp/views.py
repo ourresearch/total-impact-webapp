@@ -49,6 +49,8 @@ from totalimpactwebapp.pinboard import write_to_pinboard
 
 from totalimpactwebapp.interaction import log_interaction_event
 
+from totalimpactwebapp.tweet import get_product_tweets
+
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
@@ -583,7 +585,12 @@ def profile_products_modify(id):
     return json_resp_from_thing(resp)
 
 
-
+@app.route("/profile/<id>/tweets", methods=["GET"])
+@app.route("/profile/<id>/tweets.json", methods=["GET"])
+def profile_tweets(id):
+    profile = get_user_for_response(id, request, include_products=False)
+    resp = get_product_tweets(profile.id)
+    return json_resp_from_thing(resp)
 
 
 @app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])

@@ -1,16 +1,20 @@
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp.util import commit
 from totalimpactwebapp.util import cached_property
+from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp.twitter_paging import TwitterPager
 
 from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
 import os
 import datetime
-import datetime
 import logging
 logger = logging.getLogger('ti.webapp.tweets')
 
+def get_product_tweets(profile_id):
+    tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile_id).all()
+    response = {(tweet.tiid, tweet) for tweet in tweets}
+    return response
 
 def save_specific_tweets(tweet_ids, max_pages=1, pager=None):
 
@@ -145,7 +149,12 @@ class Tweeter(db.Model):
         return u'<Tweet {screen_name} {followers}>'.format(
             screen_name=self.screen_name, 
             followers=self.followers)
-
+    
+    def to_dict(self):
+        attributes_to_ignore = [
+        ]
+        ret = dict_from_dir(self, attributes_to_ignore)
+        return ret
 
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
@@ -177,12 +186,11 @@ class Tweet(db.Model):
         return tweet_id
 
     @cached_property
-    def retweeted(self):
-        return self.payload["retweeted"]
-
-    @cached_property
     def text(self):
-        return self.payload["text"]
+        try:
+            return self.payload["text"]
+        except TypeError:
+            return None
 
     def __repr__(self):
         return u'<Tweet {tweet_id} {profile_id} {screen_name} {timestamp} {text}>'.format(
@@ -191,6 +199,12 @@ class Tweet(db.Model):
             screen_name=self.screen_name, 
             timestamp=self.tweet_timestamp, 
             text=self.text)
+
+    def to_dict(self):
+        attributes_to_ignore = [
+        ]
+        ret = dict_from_dir(self, attributes_to_ignore)
+        return ret
 
 
 example_contents = {u'contributors': None,

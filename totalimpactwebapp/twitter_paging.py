@@ -156,6 +156,7 @@ class TwitterPager(object):
 
         if page_handler:
             has_next_page = page_handler(response)
+
         if page < max_pages and has_next_page:
             try:
                 kwargs.update({ k:v for k,v in urlparse.parse_qsl(
