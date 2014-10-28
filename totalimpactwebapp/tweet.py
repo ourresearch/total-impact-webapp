@@ -13,7 +13,7 @@ logger = logging.getLogger('ti.webapp.tweets')
 
 def get_product_tweets(profile_id):
     tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile_id).all()
-    response = {(tweet.tiid, tweet) for tweet in tweets}
+    response = dict([(tweet.tiid, tweet) for tweet in tweets])
     return response
 
 def save_specific_tweets(tweet_ids, max_pages=1, pager=None):
