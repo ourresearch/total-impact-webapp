@@ -12,21 +12,33 @@ import logging
 logger = logging.getLogger('ti.webapp.tweets')
 
 
-def save_specific_tweets(tweet_ids, max_pages=1):
+def save_specific_tweets(tweet_ids, max_pages=1, pager=None):
 
-    pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
-                    os.getenv("TWITTER_CONSUMER_SECRET"),
-                    os.getenv("TWITTER_ACCESS_TOKEN"), 
-                    default_max_pages=max_pages)
+    if not pager:
+        pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
+                        os.getenv("TWITTER_CONSUMER_SECRET"),
+                        os.getenv("TWITTER_ACCESS_TOKEN"), 
+                        default_max_pages=max_pages)
 
-    print "length tweet_ids", len(tweet_ids)
     tweet_id_string = ",".join(tweet_ids)
 
     def store_all_tweets(r):
+        data = r.data
+        if not data:
+            data = []
+
+        store_tweets(profile_id=None, tiid=None, payload_dicts=data)
+
+        tweet_ids_with_response = [tweet["id_str"] for tweet in data]
+        tweet_ids_without_response = [tweet for tweet in tweet_ids if tweet not in tweet_ids_with_response]
+        for tweet_id in tweet_ids_without_response:
+            logger.debug("deleted tweet {tweet_id}".format(
+                tweet_id=tweet_id))
+            tweet = Tweet.query.get(tweet_id)
+            tweet.is_deleted = True
+            db.session.add(tweet)
+        commit(db)
         return True
-        # print "r.data len", len(r.data)
-        # print [d["user"]["screen_name"] for d in r.data]
-        # return store_tweets(profile_id=None, tiid=None, payload_dicts=r.data)
 
     try:
         r = pager.paginated_search(
@@ -36,11 +48,9 @@ def save_specific_tweets(tweet_ids, max_pages=1):
             query_type="statuses_lookup"
             )
     except TwitterApiError:
-        print "TwitterApiError error, skipping"
+        logger.warning("TwitterApiError error, skipping")
     except TwitterClientError:
-        print "TwitterClientError error, skipping"
-
-    store_tweets(profile_id=None, tiid=None, payload_dicts=r.data)
+        logger.warning("TwitterClientError error, skipping")
 
 
 def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=200):
@@ -68,14 +78,16 @@ def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=
             query_type="user_timeline"            
             )
     except TwitterApiError:
-        print "TwitterApiError error, skipping"
+        logger.warning("TwitterApiError error, skipping")
     except TwitterClientError:
-        print "TwitterClientError error, skipping"
+        logger.warning("TwitterClientError error, skipping")
 
 
 def store_tweets(profile_id, tiid, payload_dicts):
     for payload_dict in payload_dicts:
         tweet_id = payload_dict["id_str"]
+        logger.debug("saving tweet {tweet_id}".format(
+            tweet_id=tweet_id))
         tweet = Tweet.query.get(tweet_id)
         if tweet:
             if not tweet.payload:
@@ -85,9 +97,8 @@ def store_tweets(profile_id, tiid, payload_dicts):
             tweet = Tweet(profile_id=profile_id, tiid=tiid, payload=payload_dict)
             db.session.add(tweet)
     commit(db)
-    has_next_page = len(payload_dicts)
-    print "has_next_page", has_next_page
-    return has_next_page
+    num_saved_tweets = len(payload_dicts)
+    return num_saved_tweets
 
 
 
@@ -95,7 +106,7 @@ def save_product_tweets(profile_id, tiid, twitter_posts):
     for post in twitter_posts:
         tweet_id = post["tweet_id"]
         screen_name = post["author"]["id_on_source"]
-        print ".",
+        # print ".",
 
         tweet = Tweet.query.get(tweet_id)
         if not tweet:
@@ -143,6 +154,7 @@ class Tweet(db.Model):
     tweet_timestamp = db.Column(db.DateTime())
     payload = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
     tiid = db.Column(db.Text)  # alter table tweet add tiid text
+    is_deleted = db.Column(db.Boolean)  # alter table tweet add is_deleted bool
 
     def __init__(self, **kwargs):
         if "payload" in kwargs:

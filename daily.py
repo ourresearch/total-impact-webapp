@@ -594,18 +594,23 @@ def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
 def get_tweet_text(min_tiid=None):
     from totalimpactwebapp.tweet import Tweet
     from totalimpactwebapp.tweet import save_specific_tweets
+    from totalimpactwebapp.tweet import TwitterPager
 
     from sqlalchemy.sql import text
-    # q = db.session.query(Tweet).filter(Tweet.payload==None).limit(100)
-    had_tweets = True
-    while had_tweets:
-        tweets = db.engine.execute(
-                    text("select * from tweet where payload is null and is_deleted is null limit 100"))
-        # tweets = q.all()
-        tweet_ids = [tweet.tweet_id for tweet in tweets]
-        had_tweets = len(tweet_ids) > 0
-        if had_tweets:
-            save_specific_tweets(tweet_ids)
+    q = db.session.query(Tweet).filter(Tweet.payload==None, Tweet.is_deleted==None)
+
+    pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
+                        os.getenv("TWITTER_CONSUMER_SECRET"),
+                        os.getenv("TWITTER_ACCESS_TOKEN"), 
+                        default_max_pages=1)
+
+    tweet_batch = []
+    for tweet in windowed_query(q, Tweet.tweet_id, 100):
+        tweet_batch.append(tweet)
+        if len(tweet_batch) >= 100:
+            tweet_ids = [tweet.tweet_id for tweet in tweet_batch]
+            save_specific_tweets(tweet_ids, pager=pager)
+            tweet_batch = []
 
 
 def run_through_twitter_pages(url_slug=None, min_url_slug=None):

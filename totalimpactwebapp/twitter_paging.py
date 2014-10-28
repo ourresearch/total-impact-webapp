@@ -78,14 +78,17 @@ class TwitterPager(object):
     def extract_rate_limit(self, response):
         """Extract rate limit info from response/headers.
         get it just from the response, so it is relevant to the type of query we are doing"""
-        self.rate_limit_remaining = int(response.headers['x-rate-limit-remaining'])
-        self.rate_limit_limit = int(response.headers['x-rate-limit-limit'])
-        self.rate_limit_reset = epoch(int(response.headers['x-rate-limit-reset'])).datetime
-        self.twitter_date = parse(response.headers['date']).datetime
-        logging.debug(
-            'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
-            'reset: %s, current-time: %s' % (self.rate_limit_limit,
-            self.rate_limit_remaining, self.rate_limit_reset, self.twitter_date))
+        try:
+            self.rate_limit_remaining = int(response.headers['x-rate-limit-remaining'])
+            self.rate_limit_limit = int(response.headers['x-rate-limit-limit'])
+            self.rate_limit_reset = epoch(int(response.headers['x-rate-limit-reset'])).datetime
+            self.twitter_date = parse(response.headers['date']).datetime
+            logging.debug(
+                'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
+                'reset: %s, current-time: %s' % (self.rate_limit_limit,
+                self.rate_limit_remaining, self.rate_limit_reset, self.twitter_date))
+        except KeyError:
+            pass
 
     def fetch_rate_limit(self):
         """Send search rate limit info request to Twitter API."""
@@ -104,7 +107,7 @@ class TwitterPager(object):
         logging.info('Waiting %d seconds for Twitter rate limit reset.' % t)
         time.sleep(t)
 
-    def search(self, **kwargs):
+    def query(self, **kwargs):
         """Passes kwargs to search.tweets.get of the AppClient.
         For kwargs requirements, see docs for birdy AppClient."""
         if self.first_request:
@@ -114,11 +117,11 @@ class TwitterPager(object):
             logging.info('Reached Twitter rate limit.')
             self.wait_for_reset()
         try:
-
-
-            # response = self.client.api.search.tweets.get(**kwargs)
-            response = self.client.api.statuses.user_timeline.get(**kwargs)
-
+            query_type = kwargs.get("query_type", "user_timeline")
+            if query_type=="user_timeline":
+                response = self.client.api.statuses.user_timeline.get(**kwargs)
+            elif query_type=="statuses_lookup":
+                response = self.client.api.statuses.lookup.post(**kwargs)
 
             logging.debug('Received twitter search response: %s' % str(response))
             self.extract_rate_limit(response)
@@ -130,14 +133,14 @@ class TwitterPager(object):
             # object, so we need to get the wait time from Twitter.
             self.fetch_rate_limit()
             self.wait_for_reset()
-            return self.search(**kwargs)
+            return self.query(**kwargs)
         except TwitterClientError, e:
             # requests library is not propagating connection pool session
             # disconnects. Hence the need to look at the string.
             if str(e).startswith('HTTPSConnectionPool'):
                 logging.debug('Connection pool disconnect. Reconnecting.')
                 self.reset_client()
-                return self.search(**kwargs)
+                return self.query(**kwargs)
             else:
                 raise e
 
@@ -149,12 +152,10 @@ class TwitterPager(object):
         if max_pages is None:
             max_pages = self.default_max_pages
 
-        response = self.search(**kwargs)
+        response = self.query(**kwargs)
 
         if page_handler:
             has_next_page = page_handler(response)
-        # if page < max_pages and \
-        #         'next_results' in response.data.search_metadata:
         if page < max_pages and has_next_page:
             try:
                 kwargs.update({ k:v for k,v in urlparse.parse_qsl(
@@ -172,11 +173,12 @@ class TwitterPager(object):
                     self.paginated_search(page=page+1,
                             page_handler=page_handler,
                             max_pages=max_pages, **kwargs)
-                except IndexError:
-                    logging.debug('IndexError, so stop')
+                except (IndexError, TypeError):
+                    logging.debug('error paging, so stop')
 
         else:
             logging.debug('reached max pages or told no next page, so stop')
+        return response
 
 
 
