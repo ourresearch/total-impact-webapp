@@ -1,3 +1,4 @@
+from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import refresh_products_from_tiids
@@ -543,6 +544,70 @@ def refresh_tweeted_products(min_tiid=None):
 
 
 
+# def run_through_altmetric_tweets(min_tiid=None):
+#     from sqlalchemy.sql import text
+#     sql = """select snap.* from snap, item, profile 
+#                 where snap.tiid=item.tiid
+#                 and item.profile_id = profile.id
+#                 and (profile.is_advisor=true or profile.stripe_id is not null or profile.created > '2014-09-01'::date)
+#                 and provider='altmetric_com' and interaction='posts'"""
+
+#     snaps = db.engine.execute(text(sql))
+
+#     from totalimpactwebapp.tweet import save_product_tweets
+
+#     for snap in snaps:
+#         if "twitter" in snap.raw_value:
+#             twitter_details = json.loads(snap.raw_value)["twitter"]
+#             save_product_tweets(None, snap.tiid, twitter_details)
+
+
+def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None))
+        if min_url_slug:
+            q = q.filter(Profile.url_slug>=min_url_slug)
+
+    from totalimpactwebapp.tweet import save_product_tweets
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.info(u"{url_slug}".format(
+            url_slug=profile.url_slug))
+
+        number_tweets_saved = 0
+        number_products_saved = 0
+        for product in profile.display_products:
+            metric = product.get_metric_by_name("altmetric_com", "posts")
+            # logger.info(u"{url_slug} has tweet".format(
+            #     url_slug=profile.url_slug))
+            if metric and "twitter" in metric.most_recent_snap.raw_value:
+                print ".",
+                twitter_details = metric.most_recent_snap.raw_value["twitter"]
+                save_product_tweets(profile.id, metric.tiid, twitter_details)
+                number_tweets_saved += len(twitter_details)
+                number_products_saved += 1
+        print "number_tweets_saved", number_tweets_saved, "number_products_saved", number_products_saved
+
+
+def get_tweet_text(min_tiid=None):
+    from totalimpactwebapp.tweet import Tweet
+    from totalimpactwebapp.tweet import save_specific_tweets
+
+    from sqlalchemy.sql import text
+    # q = db.session.query(Tweet).filter(Tweet.payload==None).limit(100)
+    had_tweets = True
+    while had_tweets:
+        tweets = db.engine.execute(
+                    text("select * from tweet where payload is null and is_deleted is null limit 100"))
+        # tweets = q.all()
+        tweet_ids = [tweet.tweet_id for tweet in tweets]
+        had_tweets = len(tweet_ids) > 0
+        if had_tweets:
+            save_specific_tweets(tweet_ids)
+
+
 def run_through_twitter_pages(url_slug=None, min_url_slug=None):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.twitter_id != None).filter(Profile.url_slug==url_slug)
@@ -759,6 +824,10 @@ def main(function, args):
         collect_new_mendeley(args["url_slug"], args["min_url_slug"])
     elif function=="ip_deets":
         ip_deets()
+    elif function=="run_through_altmetric_tweets":
+        run_through_altmetric_tweets(args["url_slug"], args["min_url_slug"])
+    elif function=="tweet_text":
+        get_tweet_text()
 
 
 

@@ -12,6 +12,36 @@ import logging
 logger = logging.getLogger('ti.webapp.tweets')
 
 
+def save_specific_tweets(tweet_ids, max_pages=1):
+
+    pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
+                    os.getenv("TWITTER_CONSUMER_SECRET"),
+                    os.getenv("TWITTER_ACCESS_TOKEN"), 
+                    default_max_pages=max_pages)
+
+    print "length tweet_ids", len(tweet_ids)
+    tweet_id_string = ",".join(tweet_ids)
+
+    def store_all_tweets(r):
+        return True
+        # print "r.data len", len(r.data)
+        # print [d["user"]["screen_name"] for d in r.data]
+        # return store_tweets(profile_id=None, tiid=None, payload_dicts=r.data)
+
+    try:
+        r = pager.paginated_search(
+            page_handler=store_all_tweets,
+            id=tweet_id_string,
+            trim_user=False,
+            query_type="statuses_lookup"
+            )
+    except TwitterApiError:
+        print "TwitterApiError error, skipping"
+    except TwitterClientError:
+        print "TwitterClientError error, skipping"
+
+    store_tweets(profile_id=None, tiid=None, payload_dicts=r.data)
+
 
 def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=200):
 
@@ -23,7 +53,7 @@ def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=
     most_recent_tweet_id = Tweet.most_recent_tweet_id(twitter_handle)
 
     def store_all_tweets_with_profile_id(r):
-        return store_tweets(profile_id, r.data)
+        return store_tweets(profile_id, tiid=None, payload_dicts=r.data)
 
     try:
         r = pager.paginated_search(
@@ -35,6 +65,7 @@ def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=
             exclude_replies=False,
             trim_user=False,
             since_id=most_recent_tweet_id,
+            query_type="user_timeline"            
             )
     except TwitterApiError:
         print "TwitterApiError error, skipping"
@@ -42,19 +73,67 @@ def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=
         print "TwitterClientError error, skipping"
 
 
-
-def store_tweets(profile_id, payload_dicts):
+def store_tweets(profile_id, tiid, payload_dicts):
     for payload_dict in payload_dicts:
         tweet_id = payload_dict["id_str"]
-        if not db.session.query(Tweet).filter(Tweet.tweet_id==tweet_id).count():
-            print "saving tweet", tweet_id
-            new_tweet = Tweet(profile_id=profile_id, payload=payload_dict)
-            db.session.add(new_tweet)
-            saved_a_tweet = True
+        tweet = Tweet.query.get(tweet_id)
+        if tweet:
+            if not tweet.payload:
+                tweet.payload = payload_dict
+                db.session.add(tweet)
+        else:
+            tweet = Tweet(profile_id=profile_id, tiid=tiid, payload=payload_dict)
+            db.session.add(tweet)
     commit(db)
     has_next_page = len(payload_dicts)
     print "has_next_page", has_next_page
     return has_next_page
+
+
+
+def save_product_tweets(profile_id, tiid, twitter_posts):
+    for post in twitter_posts:
+        tweet_id = post["tweet_id"]
+        screen_name = post["author"]["id_on_source"]
+        print ".",
+
+        tweet = Tweet.query.get(tweet_id)
+        if not tweet:
+            tweet = Tweet(
+                screen_name=screen_name, 
+                tweet_id=tweet_id,
+                tweet_timestamp=post["posted_on"],
+                profile_id=profile_id,
+                tiid=tiid)
+            db.session.add(tweet)
+        
+        #overwrite with new info even if already there
+        tweeter = Tweeter.query.get(screen_name)
+        if not tweeter:
+            tweeter = Tweeter(screen_name=screen_name)
+        tweeter.followers = post["author"].get("followers", 0)
+        tweeter.name = post["author"].get("name", screen_name)
+        tweeter.description = post["author"].get("description", "")
+        tweeter.image_url = post["author"].get("image", None)
+        db.session.add(tweeter)
+
+    commit(db)
+
+
+class Tweeter(db.Model):
+    screen_name = db.Column(db.Text, primary_key=True)
+    followers = db.Column(db.Integer)
+    name = db.Column(db.Text)
+    description = db.Column(db.Text)
+    image_url = db.Column(db.Text)
+
+    def __init__(self, **kwargs):
+        super(Tweeter, self).__init__(**kwargs)
+
+    def __repr__(self):
+        return u'<Tweet {screen_name} {followers}>'.format(
+            screen_name=self.screen_name, 
+            followers=self.followers)
 
 
 class Tweet(db.Model):
@@ -63,13 +142,15 @@ class Tweet(db.Model):
     screen_name = db.Column(db.Text)
     tweet_timestamp = db.Column(db.DateTime())
     payload = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
+    tiid = db.Column(db.Text)  # alter table tweet add tiid text
 
     def __init__(self, **kwargs):
-        payload_dict = kwargs["payload"]
-        kwargs["tweet_id"] = payload_dict["id_str"]
-        kwargs["screen_name"] = payload_dict["user"]["screen_name"]
-        kwargs["tweet_timestamp"] = datetime.datetime.strptime(payload_dict["created_at"], r"%a %b %d %H:%M:%S +0000 %Y")
-        kwargs["payload"] = payload_dict
+        if "payload" in kwargs:
+            payload_dict = kwargs["payload"]
+            kwargs["tweet_id"] = payload_dict["id_str"]
+            kwargs["screen_name"] = payload_dict["user"]["screen_name"]
+            kwargs["payload"] = payload_dict
+            kwargs["tweet_timestamp"] = datetime.datetime.strptime(payload_dict["created_at"], r"%a %b %d %H:%M:%S +0000 %Y")
         super(Tweet, self).__init__(**kwargs)
 
     @classmethod

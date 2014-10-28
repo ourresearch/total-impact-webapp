@@ -903,7 +903,20 @@ providers = [
                 "engagement_type": "discussed",
                 "milestones": fives_then_orders_of_magnitude(),
                 "metric_debut_date": "2014-09-17"
-            }                               
+            },
+            "posts": {
+                "hide_badge": True,            
+                "description": "",
+                "display_name": "",
+                "display_provider": "",
+                "icon": "",
+                "provider_name": "",
+                "provider_url": "",
+                "audience": "",
+                "engagement_type": "",
+                "milestones": None,
+                "metric_debut_date": "2014-09-17"
+            }                                             
         },
         "name": "altmetric_com",
         "provides_aliases": True,
