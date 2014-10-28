@@ -704,8 +704,8 @@ angular.module('app').controller('AppCtrl', function($scope,
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    ProductPage.loadingBar()
-//    Page.setProfileUrl(false)
+    ProductPage.loadingBar(next, current)
+    Page.setProfileUrl(false)
     Loading.clear()
   })
 
@@ -1327,6 +1327,7 @@ angular.module("productPage", [
 
     return {
       loadingBar: function(nextRoute, currentRoute){
+        console.log("calling ProductPage.loadingBar()", nextRoute, currentRoute)
         if (!isProductPageUrl(nextRoute)){ // not going to a product page
           return false
         }
