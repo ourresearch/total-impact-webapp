@@ -30,13 +30,21 @@ angular.module("productPage", [
 
   }])
 
-  .factory('ProductPage', function(){
+  .factory('ProductPage', function($routeParams, $location){
     var tab = "summary"
     return {
       tabIs: function(tabName){
         return tab == tabName
       },
       setTab: function(tabName){
+        var newPath = "/"
+          + $routeParams.url_slug
+          + "/product/"
+          + $routeParams.tiid
+          + "/" + tabName
+
+        $location.path(newPath, false)
+        console.log("routeParams.tabName", $routeParams.tabName)
         tab = tabName
       }
     }

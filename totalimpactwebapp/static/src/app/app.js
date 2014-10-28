@@ -80,11 +80,22 @@ angular.module('app').config(function ($routeProvider,
 });
 
 
-angular.module('app').run(function(security, $window, Page, $location, editableOptions) {
+angular.module('app').run(function($route, $rootScope, security, $window, Page, $location, editableOptions) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
 
+  var original = $location.path;
+  $location.path = function (path, reload) {
+      if (reload === false) {
+          var lastRoute = $route.current;
+          var un = $rootScope.$on('$locationChangeSuccess', function () {
+              $route.current = lastRoute;
+              un();
+          });
+      }
+      return original.apply($location, [path]);
+  };
 
 
 
