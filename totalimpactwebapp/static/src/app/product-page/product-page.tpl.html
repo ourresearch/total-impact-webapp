@@ -169,7 +169,7 @@
                   <div class="summary-metrics">
                      <ul class="metric-details-list">
                         <li class="metric-detail"
-                            ng-click="ProductPage.setTab('summary')"
+                            ng-click="ProductPage.setTab('metrics')"
                             ng-repeat="metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}">
                            <span class="metric-text">
                               <a class="value-and-name" tooltip="{{ metric.display_count }} {{ metric.display_provider }} {{ metric.display_interaction }}. Click for details.">

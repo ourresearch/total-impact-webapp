@@ -194,7 +194,6 @@ angular.module('app').controller('AppCtrl', function($scope,
     security.requestCurrentUser().then(function(currentUser){
       Page.sendPageloadToSegmentio()
     })
-
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){

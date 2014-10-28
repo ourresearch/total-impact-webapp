@@ -689,7 +689,6 @@ angular.module('app').controller('AppCtrl', function($scope,
     security.requestCurrentUser().then(function(currentUser){
       Page.sendPageloadToSegmentio()
     })
-
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
@@ -1301,22 +1300,26 @@ angular.module("productPage", [
 
   }])
 
-  .factory('ProductPage', function($routeParams, $location){
+  .factory('ProductPage', function($rootScope, $routeParams, $location){
     var tab = "summary"
+
     return {
       tabIs: function(tabName){
         return tab == tabName
       },
       setTab: function(tabName){
-        var newPath = "/"
-          + $routeParams.url_slug
-          + "/product/"
-          + $routeParams.tiid
-          + "/" + tabName
+        var newPath = "/" + $routeParams.url_slug + "/product/" + $routeParams.tiid
 
-        $location.path(newPath, false)
-        console.log("routeParams.tabName", $routeParams.tabName)
+        if (!tabName){
+          tabName = "summary"
+        }
+
+        if (tabName !== "summary") {
+          newPath += "/" + tabName
+        }
+
         tab = tabName
+        $location.path(newPath, false)
       }
     }
   })
@@ -1350,6 +1353,7 @@ angular.module("productPage", [
 
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
+    ProductPage.setTab($routeParams.tabName)
     $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
     $scope.ProductPage = ProductPage
 
@@ -8104,7 +8108,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <div class=\"summary-metrics\">\n" +
     "                     <ul class=\"metric-details-list\">\n" +
     "                        <li class=\"metric-detail\"\n" +
-    "                            ng-click=\"ProductPage.setTab('summary')\"\n" +
+    "                            ng-click=\"ProductPage.setTab('metrics')\"\n" +
     "                            ng-repeat=\"metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}\">\n" +
     "                           <span class=\"metric-text\">\n" +
     "                              <a class=\"value-and-name\" tooltip=\"{{ metric.display_count }} {{ metric.display_provider }} {{ metric.display_interaction }}. Click for details.\">\n" +

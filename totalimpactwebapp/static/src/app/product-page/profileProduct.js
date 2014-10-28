@@ -30,22 +30,26 @@ angular.module("productPage", [
 
   }])
 
-  .factory('ProductPage', function($routeParams, $location){
+  .factory('ProductPage', function($rootScope, $routeParams, $location){
     var tab = "summary"
+
     return {
       tabIs: function(tabName){
         return tab == tabName
       },
       setTab: function(tabName){
-        var newPath = "/"
-          + $routeParams.url_slug
-          + "/product/"
-          + $routeParams.tiid
-          + "/" + tabName
+        var newPath = "/" + $routeParams.url_slug + "/product/" + $routeParams.tiid
 
-        $location.path(newPath, false)
-        console.log("routeParams.tabName", $routeParams.tabName)
+        if (!tabName){
+          tabName = "summary"
+        }
+
+        if (tabName !== "summary") {
+          newPath += "/" + tabName
+        }
+
         tab = tabName
+        $location.path(newPath, false)
       }
     }
   })
@@ -79,6 +83,7 @@ angular.module("productPage", [
 
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
+    ProductPage.setTab($routeParams.tabName)
     $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
     $scope.ProductPage = ProductPage
 
