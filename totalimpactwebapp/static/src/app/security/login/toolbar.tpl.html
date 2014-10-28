@@ -30,6 +30,19 @@
             <i class="icon-plus"></i>
          </span>
       </a>
+
+
+      <div class="user-is-trialing" ng-show="!security.getCurrentUser('is_subscribed')">
+         <a class="add-products control"
+            href="settings/subscription">
+            <span class="tip">Subscribe</span>
+            <span class="icon-container">
+               <i class="fa fa-usd"></i>
+            </span>
+         </a>
+
+      </div>
+
    </div>
 
    <div ng-hide="currentUser" class="not-logged-in">

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-28
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -8949,6 +8949,19 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "            <i class=\"icon-plus\"></i>\n" +
     "         </span>\n" +
     "      </a>\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"user-is-trialing\" ng-show=\"!security.getCurrentUser('is_subscribed')\">\n" +
+    "         <a class=\"add-products control\"\n" +
+    "            href=\"settings/subscription\">\n" +
+    "            <span class=\"tip\">Subscribe</span>\n" +
+    "            <span class=\"icon-container\">\n" +
+    "               <i class=\"fa fa-usd\"></i>\n" +
+    "            </span>\n" +
+    "         </a>\n" +
+    "\n" +
+    "      </div>\n" +
+    "\n" +
     "   </div>\n" +
     "\n" +
     "   <div ng-hide=\"currentUser\" class=\"not-logged-in\">\n" +

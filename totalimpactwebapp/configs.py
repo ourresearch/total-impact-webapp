@@ -1161,16 +1161,16 @@ genre_config_dict = {
         "plural_name": "slide decks"
     },
     "software": {
-        "icon": "icon-desktop",
+        "icon": "fa fa-floppy-o",
         "fulltext_cta": "view readme",
         "plural_name": "software products"
     },
     "video": {
-        "icon": "icon-facetime-video",
+        "icon": "fa fa-film",
         "fulltext_cta": "watch video"
     },
     "webpage": {
-        "icon": "icon-facetime-video",
+        "icon": "fa fa-laptop",
         "fulltext_cta": "view webpage"
     },
     "other": {
