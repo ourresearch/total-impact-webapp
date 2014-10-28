@@ -30,10 +30,36 @@ angular.module("productPage", [
 
   }])
 
-  .factory('ProductPage', function($rootScope, $routeParams, $location){
+  .factory('ProductPage', function($rootScope,
+                                   $routeParams,
+                                   $location,
+                                   Loading){
     var tab = "summary"
+    var isProductPageUrl = function(url){
+      if (!url){
+        return false
+      }
+      return url.indexOf("/product/") > -1
+    }
 
     return {
+      loadingBar: function(nextRoute, currentRoute){
+        if (!isProductPageUrl(nextRoute)){ // not going to a product page
+          return false
+        }
+        else { // we are going to a product page
+          if (nextRoute == currentRoute){ // first page upon loading the site
+            Loading.startPage()
+          }
+
+          // going from elsewhere on the site to a product page
+          if (isProductPageUrl(nextRoute) && !isProductPageUrl(currentRoute)){
+            Loading.startPage()
+          }
+
+        }
+        return false
+      },
       tabIs: function(tabName){
         return tab == tabName
       },
