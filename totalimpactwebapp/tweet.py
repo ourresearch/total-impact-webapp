@@ -6,6 +6,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp.twitter_paging import TwitterPager
 
 from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
+from collections import defaultdict
 import os
 import datetime
 import logging
@@ -13,7 +14,10 @@ logger = logging.getLogger('ti.webapp.tweets')
 
 def get_product_tweets(profile_id):
     tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile_id).all()
-    response = dict([(tweet.tiid, tweet) for tweet in tweets if tweet.tiid])
+    response = defaultdict(list)
+    for tweet in tweets:
+        if tweet.tiid:
+            response[tweet.tiid].append(tweet)
     return response
 
 def save_specific_tweets(tweet_ids, max_pages=1, pager=None):
