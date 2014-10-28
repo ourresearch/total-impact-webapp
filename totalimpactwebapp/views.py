@@ -678,6 +678,7 @@ def product_interaction(tiid):
 
 @app.route("/product/<tiid>", methods=["GET"])
 def product_without_needing_profile(tiid):
+    local_sleep(2)
     product = get_product(tiid)
     return json_resp_from_thing(product)
 
