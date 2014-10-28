@@ -40,7 +40,7 @@ percentile_snap_creations = 0
 logger = logging.getLogger("tiwebapp.product")
 deprecated_genres = ["twitter", "blog"]
 
-ignore_snaps_older_than = arrow.utcnow().replace(days=-122).datetime
+ignore_snaps_older_than = arrow.utcnow().replace(days=-22).datetime
 
 snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
                     "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
