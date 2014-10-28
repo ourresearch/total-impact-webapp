@@ -8135,16 +8135,6 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   color: #000;
   text-decoration: none;
 }
-.product-container .biblio h5 a.has-fulltext {
-  color: #777;
-}
-.product-container .biblio h5 a.has-fulltext i {
-  font-size: 16px;
-}
-.product-container .biblio h5 a.has-fulltext:hover {
-  color: #ff4000;
-  text-decoration: none;
-}
 .product-container .biblio div.optional-biblio {
   clear: both;
   font-size: 13px;
@@ -8156,6 +8146,21 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 }
 .product-container .biblio div.optional-biblio span.journal {
   font-style: italic;
+}
+.product-container .biblio div.under-biblio a.has-fulltext {
+  color: #555;
+  white-space: nowrap;
+  line-height: 1;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  font-size: 12px;
+}
+.product-container .biblio div.under-biblio a.has-fulltext:hover {
+  text-decoration: underline;
 }
 .product-container .biblio div.mendeley-reader-breakdowns {
   display: none;

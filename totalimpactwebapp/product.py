@@ -27,6 +27,7 @@ from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
+from totalimpactwebapp.configs import get_genre_config
 
 from totalimpactwebapp import db
 from totalimpactwebapp import configs
@@ -222,12 +223,17 @@ class Product(db.Model):
 
     @cached_property
     def display_genre_plural(self):
-        return configs.pluralize_genre(self.genre)
+        return get_genre_config(self.genre)["plural_name"]
 
 
     @cached_property
     def genre_url_key(self):
-        return self.display_genre_plural.replace(" ", "-")
+        return get_genre_config(self.genre)["url_representation"]
+
+
+    @cached_property
+    def fulltext_cta(self):
+        return get_genre_config(self.genre)["fulltext_cta"]
 
 
 

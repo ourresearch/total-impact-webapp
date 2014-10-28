@@ -15,14 +15,6 @@
          {{biblio.display_title}}
 
       </a>
-      {% if embed_markup %}
-      <a class="has-fulltext"
-         href="/{{ profile.url_slug }}/product/{{ tiid }}"
-         title="Free fulltext available"
-         data-toggle='tooltip'>
-         <i class="icon-file-text-alt"></i>
-      </a>
-      {% endif %}
 
 
       {% if aliases.best_url %}
@@ -59,6 +51,16 @@
 
       {% if biblio.description %}
       <span class="description">{{ biblio.description }}</span>
+      {% endif %}
+   </div>
+
+   <div class="under-biblio">
+     {% if embed_markup %}
+      <a class="has-fulltext"
+         href="/{{ profile.url_slug }}/product/{{ tiid }}/fulltext">
+         <i class="icon-unlock-alt"></i>
+         {{ fulltext_cta }}
+      </a>
       {% endif %}
    </div>
 </div>
