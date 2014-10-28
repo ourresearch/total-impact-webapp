@@ -4,8 +4,7 @@ from totalimpactwebapp.cards_factory import make_genre_cards
 from totalimpactwebapp.cards_factory import make_genre_new_metrics_cards
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
-from totalimpactwebapp.configs import pluralize_genre
-from totalimpactwebapp.configs import genre_icons
+from totalimpactwebapp.configs import get_genre_config
 
 
 logger = logging.getLogger("tiwebapp.genre")
@@ -41,18 +40,15 @@ class Genre(object):
 
     @cached_property
     def plural_name(self):
-        return pluralize_genre(self.name)
+        return get_genre_config(self.name)["plural_name"]
 
     @cached_property
     def url_representation(self):
-        return self.plural_name.replace(" ", "-")
+        return get_genre_config(self.name)["url_representation"]
 
     @cached_property
     def icon(self):
-        try:
-            return genre_icons[self.name]
-        except KeyError:
-            return genre_icons["other"]
+        return get_genre_config(self.name)["icon"]
 
     @cached_property
     def cards(self):

@@ -1117,6 +1117,7 @@ def metrics(this_key_only=None):
 #*
 #***************************************************************************
 
+# not using this any more
 genre_icons = {
     'article': "icon-file-text-alt",
     #'blog': "icon-comments",
@@ -1137,39 +1138,102 @@ genre_icons = {
     "peer review": "icon-comment-alt",
 }
 
-
-
+genre_config_dict = {
+    "article": {
+        "icon": "icon-file-text-alt",
+        "fulltext_cta": "read fulltext"
+    },
+    "dataset": {
+        "icon": "icon-table",
+        "fulltext_cta": "view dataset"
+    },
+    "figure": {
+        "icon": "icon-bar-chart",
+        "fulltext_cta": "view figure"
+    },
+    "poster": {
+        "icon": "icon-picture",
+        "fulltext_cta": "view poster"
+    },
+    "slides": {
+        "icon": "icon-desktop",
+        "fulltext_cta": "view slides",
+        "plural_name": "slide decks"
+    },
+    "software": {
+        "icon": "icon-desktop",
+        "fulltext_cta": "view code",
+        "plural_name": "software products"
+    },
+    "video": {
+        "icon": "icon-facetime-video",
+        "fulltext_cta": "watch video"
+    },
+    "webpage": {
+        "icon": "icon-facetime-video",
+        "fulltext_cta": "view webpage"
+    },
+    "other": {
+        "icon": "icon-file-alt",
+        "fulltext_cta": "view resource",
+        "plural_name": "other products"
+    },
+    "unknown": {
+        "icon": "icon-file-alt",
+        "fulltext_cta": "view resource"
+    },
+    "conference paper": {
+        "icon": "icon-list-alt",
+        "fulltext_cta": "read fulltext"
+    },
+    "book": {
+        "icon": "icon-book",
+        "fulltext_cta": "read full book"
+    },
+    "book chapter": {
+        "icon": "icon-bookmark-empty",
+        "fulltext_cta": "read full chapter"
+    },
+    "thesis": {
+        "icon": "icon-align-center",
+        "fulltext_cta": "read full thesis",
+        "plural_name": "theses"
+    },
+    "peer review": {
+        "icon": "icon-comment-alt",
+        "fulltext_cta": "read review"
+    },
+}
 
 def pluralize_genre(genre):
     # for use in phrases like "79 - 91 percentile of articles from 2013"
-    # this is a dumb way to do it. refactor later.
     genre_plural = genre + u"s"
-
     if genre_plural.endswith("ys"):
         genre_plural = genre[:-1] + u"ies"
-    if genre == "thesis":
-        genre_plural = "theses"
-
-    if genre_plural.startswith("other"):
-        genre_plural = "other products"
-    elif genre_plural.startswith("slides"):
-        genre_plural = "slide decks"
-    elif genre_plural.startswith("software"):
-        genre_plural = "software products"
     return genre_plural
 
 
+def get_genre_config(genre_name):
+    try:
+        ret = genre_config_dict[genre_name]
+    except KeyError:
+        genre_name = "other"
+        ret = genre_config_dict[genre_name]
+
+    ret["name"] = genre_name
+
+    if "plural_name" not in ret.keys():
+        ret["plural_name"] = pluralize_genre(genre_name)
+
+    if "url_representation" not in ret:
+        ret["url_representation"] = ret["plural_name"].replace(" ", "-")
+
+    return ret
+
 def genre_configs():
     ret = []
-    for name, icon in genre_icons.iteritems():
-        my_plural = pluralize_genre(name)
-        my_config_dict = {
-            "name": name,
-            "icon": icon,
-            "plural_name": my_plural,
-            "url_representation": my_plural.replace(" ", "-")
-        }
-        ret.append(my_config_dict)
+    for name in genre_config_dict:
+        ret.append(get_genre_config(name))
 
     return ret
 

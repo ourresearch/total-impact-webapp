@@ -6,6 +6,7 @@ import numpy
 
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp.configs import get_genre_config
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp import db
 from totalimpactwebapp import configs
@@ -85,7 +86,7 @@ class ProductLevelReferenceSet(object):
         response = {  
             "value": percentile,
             "mendeley_discipline_str": lookup_mendeley_discipline,
-            "genre_plural": configs.pluralize_genre(self.genre)
+            "genre_plural": get_genre_config(self.genre)["plural_name"]
             }
 
         return response
