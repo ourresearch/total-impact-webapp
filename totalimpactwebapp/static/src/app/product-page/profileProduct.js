@@ -16,7 +16,7 @@ angular.module("productPage", [
 
   .config(['$routeProvider', function ($routeProvider) {
 
-    $routeProvider.when("/:url_slug/product/:tiid", {
+    $routeProvider.when("/:url_slug/product/:tiid/:tabName?", {
       templateUrl:'product-page/product-page.tpl.html',
       controller:'ProductPageCtrl',
       resolve: {
@@ -30,9 +30,53 @@ angular.module("productPage", [
 
   }])
 
-  .factory('productPage', function(){
-    return {
+  .factory('ProductPage', function($rootScope,
+                                   $routeParams,
+                                   $location,
+                                   Loading){
+    var tab = "summary"
+    var isProductPageUrl = function(url){
+      if (!url){
+        return false
+      }
+      return url.indexOf("/product/") > -1
+    }
 
+    return {
+      loadingBar: function(nextRoute, currentRoute){
+        if (!isProductPageUrl(nextRoute)){ // not going to a product page
+          return false
+        }
+        else { // we are going to a product page
+          if (nextRoute == currentRoute){ // first page upon loading the site
+            Loading.startPage()
+          }
+
+          // going from elsewhere on the site to a product page
+          if (isProductPageUrl(nextRoute) && !isProductPageUrl(currentRoute)){
+            Loading.startPage()
+          }
+
+        }
+        return false
+      },
+      tabIs: function(tabName){
+        return tab == tabName
+      },
+      setTab: function(tabName){
+        var newPath = "/" + $routeParams.url_slug + "/product/" + $routeParams.tiid
+
+        if (!tabName){
+          tabName = "summary"
+        }
+
+        if (tabName !== "summary") {
+          newPath += "/" + tabName
+        }
+
+        tab = tabName
+        $location.path(newPath, false)
+      }
     }
   })
 
@@ -46,6 +90,7 @@ angular.module("productPage", [
     security,
     UsersProduct,
     UserProfile,
+    ProductPage,
     Product,
     Loading,
     TiMixpanel,
@@ -64,7 +109,9 @@ angular.module("productPage", [
 
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
+    ProductPage.setTab($routeParams.tabName)
     $scope.uploadableHost = !_.contains(["dryad", "github", "figshare"], product.host)
+    $scope.ProductPage = ProductPage
 
 
     security.isLoggedInPromise(slug).then(
@@ -85,6 +132,10 @@ angular.module("productPage", [
       }
     )
     renderProduct(product)
+
+    $scope.$on("currentTab.name", function(newVal, oldVal){
+      console.log("tab changed", newVal, oldVal)
+    })
 
 
 
@@ -224,17 +275,6 @@ angular.module("productPage", [
       $modal.open({templateUrl: "product-page/percentilesInfoModal.tpl.html"})
     }
 
-    $scope.openChangeGenreModal = function(){
-      $modal.open({
-        templateUrl: "product-page/change-genre-modal.tpl.html",
-        controller: "productUploadCtrl",
-        resolve: {
-          tiid: function(){
-            return product.tiid
-          }
-        }
-      })
-    }
 
     $scope.openFulltextLocationModal = function(){
       UserProfile.useCache(false)

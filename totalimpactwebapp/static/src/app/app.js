@@ -80,11 +80,33 @@ angular.module('app').config(function ($routeProvider,
 });
 
 
-angular.module('app').run(function(security, $window, Page, $location, editableOptions) {
+angular.module('app').run(function($route,
+                                   $rootScope,
+                                   $window,
+                                   $timeout,
+                                   security,
+                                   Page,
+                                   $location,
+                                   editableOptions) {
   // Get the current user when the application starts
   // (in case they are still logged in from a previous session)
   security.requestCurrentUser();
 
+  // from https://github.com/angular/angular.js/issues/1699#issuecomment-59283973
+  // and http://joelsaupe.com/programming/angularjs-change-path-without-reloading/
+  // and https://github.com/angular/angular.js/issues/1699#issuecomment-60532290
+  var original = $location.path;
+  $location.path = function (path, reload) {
+      if (reload === false) {
+          var lastRoute = $route.current;
+          var un = $rootScope.$on('$locationChangeSuccess', function () {
+              $route.current = lastRoute;
+              un();
+          });
+        $timeout(un, 500)
+      }
+      return original.apply($location, [path]);
+  };
 
 
 
@@ -114,6 +136,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      ProfileService,
                                                      ProfileAboutService,
+                                                     ProductPage,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
@@ -183,11 +206,11 @@ angular.module('app').controller('AppCtrl', function($scope,
     security.requestCurrentUser().then(function(currentUser){
       Page.sendPageloadToSegmentio()
     })
-
   })
 
   $scope.$on('$locationChangeStart', function(event, next, current){
-    Page.setProfileUrl(false)
+    ProductPage.loadingBar()
+//    Page.setProfileUrl(false)
     Loading.clear()
   })
 
