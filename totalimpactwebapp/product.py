@@ -231,6 +231,11 @@ class Product(db.Model):
         return get_genre_config(self.genre)["url_representation"]
 
 
+    @cached_property
+    def fulltext_cta(self):
+        return get_genre_config(self.genre)["fulltext_cta"]
+
+
 
     def get_metric_by_name(self, provider, interaction):
         for metric in self.metrics:

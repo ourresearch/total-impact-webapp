@@ -1162,7 +1162,7 @@ genre_config_dict = {
     },
     "software": {
         "icon": "icon-desktop",
-        "fulltext_cta": "view code",
+        "fulltext_cta": "view readme",
         "plural_name": "software products"
     },
     "video": {
