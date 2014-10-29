@@ -2104,7 +2104,7 @@ angular.module("profile", [
     $scope.sortableOptions = {
     }
 
-    if (!ProfileService.hasFullProducts()){
+    if (ProfileService.isLoading()){
       console.log("no full products!")
       Loading.startPage()
     }
@@ -5740,8 +5740,8 @@ angular.module('services.profileService', [
 
       ).$promise
         .finally(function(resp){ // runs whether succeeds or fails
-            Loading.finishPage()
-            loading = false
+          Loading.finishPage()
+          loading = false
       })
     }
 
@@ -6854,11 +6854,13 @@ angular.module("gift-subscription-page/gift-subscription-page.tpl.html", []).run
     "            a great gift for a cutting-edge scholar you know?\n" +
     "         </p>\n" +
     "         <p>\n" +
-    "            Great! You're in the right place! (If on other hand you want\n" +
-    "            to subscribe yourself, just log in and click the gear icon at the\n" +
-    "            top right of your screen). A few minutes after you've\n" +
+    "            Great, you're in the right place! A few minutes after you've\n" +
     "            submitted your purchase information below, you'll get a coupon code\n" +
     "            in your inbox, redeemable for a set number of free subscriptions.\n" +
+    "         </p>\n" +
+    "         <p>\n" +
+    "            You can find more details on our <a href=\"http://feedback.impactstory.org/knowledgebase/articles/447028-gift-subscriptions\">knowledge base</a>,\n" +
+    "            or feel free to just <a href=\"mailto:team@impactstory.org\">drop us a line!</a>\n" +
     "         </p>\n" +
     "      </div>\n" +
     "\n" +
@@ -7059,12 +7061,14 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <p>Impactstory is an open-source, web-based tool that helps scientists explore and share the diverse impacts of all their research products&mdash;from traditional ones like journal articles, to emerging products like blog posts, datasets, and software. By helping scientists tell data-driven stories about their impacts, we're helping to build a new scholarly reward system that values and encourages web-native scholarship. We’re funded by the National Science Foundation and the Alfred P. Sloan Foundation and incorporated as a 501(c)(3) nonprofit corporation.\n" +
     "\n" +
+    "      <!--\n" +
     "      <p>Impactstory delivers <em>open metrics</em>, with <em>context</em>, for <em>diverse products</em>:</p>\n" +
     "      <ul>\n" +
     "         <li><b>Open metrics</b>: Our data (to the extent allowed by providers’ terms of service), <a href=\"https://github.com/total-impact\">code</a>, and <a href=\"http://blog.impactstory.org/2012/03/01/18535014681/\">governance</a> are all open.</li>\n" +
     "         <li><b>With context</b>: To help scientists move from raw <a href=\"http://altmetrics.org/manifesto/\">altmetrics</a> data to <a href=\"http://asis.org/Bulletin/Apr-13/AprMay13_Piwowar_Priem.html\">impact profiles</a> that tell data-driven stories, we sort metrics by <em>engagement type</em> and <em>audience</em>. We also normalize based on comparison sets: an evaluator may not know if 5 forks on GitHub is a lot of attention, but they can understand immediately if their project ranked in the 95th percentile of all GitHub repos created that year.</li>\n" +
     "         <li><b>Diverse products</b>: Datasets, software, slides, and other research products are presented as an integrated section of a comprehensive impact report, alongside articles&mdash;each genre a first-class citizen, each making its own kind of impact.</li>\n" +
     "      </ul>\n" +
+    "      -->\n" +
     "\n" +
     "      <h3 id=\"team\">team</h3>\n" +
     "\n" +
@@ -7258,7 +7262,11 @@ angular.module("infopages/faq.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <h3 id=\"multi-subscribe\">Can I buy subscriptions for other people, like my lab or department?</h3>\n" +
     "   <p>\n" +
-    "      Why yes. <a href=\"/buy-subscriptions\">Yes you can.</a>\n" +
+    "      Why yes. <a href=\"/buy-subscriptions\">Yes you can.</a> You may also\n" +
+    "      want to <a href=\"/signup\">sign up for a free trial account</a> yourself if you\n" +
+    "      haven't yet. (Or if you've got a trial account and you'd like to subscribe, you can do\n" +
+    "      that <a href=\"/settings/subscription\">here.</a>)\n" +
+    "\n" +
     "   </p>\n" +
     "\n" +
     "\n" +
@@ -7427,8 +7435,10 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "   <div class=\"landing-page-footer\">\n" +
     "      <a href=\"/about\">about</a>\n" +
     "      <a href=\"/faq\">faq</a>\n" +
+    "      <a href=\"/signup\">pricing</a>\n" +
+    "      <a href=\"/settings/subscription\">subscribe</a>\n" +
+    "\n" +
     "      <a href=\"https://github.com/total-impact\">source code</a>\n" +
-    "      <a href=\"/legal\">legal</a>\n" +
     "      <a href=\"http://blog.impactstory.org\">blog</a>\n" +
     "      <a href=\"http://twitter.com/impactstory\">twitter</a>\n" +
     "   </div>\n" +
@@ -9774,10 +9784,10 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "\n" +
     "   <div class=\"signup-main-page\">\n" +
     "      <div class=\"form-container\">\n" +
-    "         <h1>Try us free for 30 days.</h1>\n" +
+    "         <h1>Try us free for 30 days</h1>\n" +
     "         <span class=\"more\">Then pay just $60/year. There's no credit card required, and no strings attached--if you\n" +
     "         don't fall in love with Impactstory, your account will cancel after 30 days.</span>\n" +
-    "         <h2 class=\"cta\">Start discovering your full scholarly impact in under 60 seconds.</h2>\n" +
+    "         <h2 class=\"cta\">Start discovering your full impact in under 60 seconds.</h2>\n" +
     "         <form novalidate\n" +
     "               name=\"signupForm\"\n" +
     "               ng-controller=\"signupFormCtrl\"\n" +
@@ -9840,7 +9850,11 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "                  <i class=\"icon-refresh icon-spin\"></i>\n" +
     "                  <span class=\"text\">Creating your profile...</span>\n" +
     "               </div>\n" +
+    "            </div>\n" +
     "\n" +
+    "            <div class=\"or-subscribe\">\n" +
+    "               Already trialing?\n" +
+    "               <a href=\"settings/subscription\">subscribe here</a>\n" +
     "            </div>\n" +
     "         </form>\n" +
     "\n" +

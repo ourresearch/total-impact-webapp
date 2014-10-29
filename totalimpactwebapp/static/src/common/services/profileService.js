@@ -72,8 +72,8 @@ angular.module('services.profileService', [
 
       ).$promise
         .finally(function(resp){ // runs whether succeeds or fails
-            Loading.finishPage()
-            loading = false
+          Loading.finishPage()
+          loading = false
       })
     }
 

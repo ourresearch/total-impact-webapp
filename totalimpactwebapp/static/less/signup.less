@@ -10,18 +10,19 @@ div.signup-page {
 
    div.signup-main-page {
       div.form-container {
-         margin: 70px 0 0 0;
+         margin: 50px 0 0 0;
          position:absolute;
          padding-right: 100px;
          top:0;
          right:0;
-         width:@contentWidth - 400px;
+         width:@contentWidth - 300px;
          h1 {
-            margin-bottom:0;
-            font-size: 35px;
+            margin-bottom: 20px;
+            font-size: 45px;
+            font-weight: 300;
          }
          span.more {
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1;
             color: #777;
          }
@@ -62,12 +63,14 @@ div.signup-page {
 
             }
             div.submit-button {
+               text-align: center;
                button.btn {
                   &[disabled] {
                      opacity: .8;
                   }
-                  font-weight: 900;
-                  padding: 15px 20px;
+                  font-weight: normal;
+                  padding: 12px 20px;
+                  font-size: 24px;
                   margin-top: 20px;
                   i {
                      margin-left: 10px;
@@ -75,11 +78,18 @@ div.signup-page {
                }
                div.working {
                   padding-top: 20px;
-                  font-weight: 900;
+                  font-weight: 300;
                   font-size: 25px;
                   color: @gray-light;
                }
 
+            }
+            div.or-subscribe {
+               text-align:center;
+               font-size: 14px;
+               color: #999;
+               font-weight: 300;
+               margin-top: 15px;
             }
          }
       }

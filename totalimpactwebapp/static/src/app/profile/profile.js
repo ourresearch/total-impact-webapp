@@ -124,7 +124,7 @@ angular.module("profile", [
     $scope.sortableOptions = {
     }
 
-    if (!ProfileService.hasFullProducts()){
+    if (ProfileService.isLoading()){
       console.log("no full products!")
       Loading.startPage()
     }
