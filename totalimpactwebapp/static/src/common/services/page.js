@@ -219,7 +219,6 @@ angular.module("services.page")
       },
 
       setName: function(name){
-        console.log("setting page name", name)
         pageName = name
       },
 

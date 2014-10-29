@@ -44,7 +44,6 @@ angular.module("productPage", [
 
     return {
       loadingBar: function(nextRoute, currentRoute){
-        console.log("calling ProductPage.loadingBar()", nextRoute, currentRoute)
         if (!isProductPageUrl(nextRoute)){ // not going to a product page
           return false
         }

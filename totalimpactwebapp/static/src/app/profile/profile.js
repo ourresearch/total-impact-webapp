@@ -202,6 +202,11 @@ angular.module("profile", [
       return num;
     }
 
+    $scope.$watch('profileAboutService.data', function(newVal, oldVal){
+      console.log("profilesAboutService.data loaded", newVal)
+      Page.setTitle(newVal.full_name)
+    }, true)
+
     $scope.$watch('profileService.data', function(newVal, oldVal){
 
       if (ProfileService.hasFullProducts()){
@@ -209,7 +214,6 @@ angular.module("profile", [
       }
 
       if (newVal.full_name) {
-        Page.setTitle(newVal.about.full_name)
         security.isLoggedInPromise(url_slug).then(
           function(){
             TiMixpanel.track("viewed own profile", {
