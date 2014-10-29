@@ -2182,7 +2182,6 @@ angular.module("profile", [
     }
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
-      console.log("profilesAboutService.data loaded", newVal)
       Page.setTitle(newVal.full_name)
     }, true)
 
@@ -2192,7 +2191,7 @@ angular.module("profile", [
         Loading.finishPage()
       }
 
-      if (newVal.full_name) {
+      if (newVal.about) {
         security.isLoggedInPromise(url_slug).then(
           function(){
             TiMixpanel.track("viewed own profile", {
@@ -5683,8 +5682,7 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
-                                      SelfCancellingProfileResource,
-                                      Users){
+                                      SelfCancellingProfileResource){
 
     var loading = true
     var data = {}
@@ -5693,7 +5691,6 @@ angular.module('services.profileService', [
       UsersProducts.query(
         {id: url_slug, stubs: true},
         function(resp){
-//          console.log("got response from stubs call", resp)
           data.products = resp
         },
         function(resp){

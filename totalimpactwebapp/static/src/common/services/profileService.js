@@ -13,8 +13,7 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
-                                      SelfCancellingProfileResource,
-                                      Users){
+                                      SelfCancellingProfileResource){
 
     var loading = true
     var data = {}
@@ -23,7 +22,6 @@ angular.module('services.profileService', [
       UsersProducts.query(
         {id: url_slug, stubs: true},
         function(resp){
-//          console.log("got response from stubs call", resp)
           data.products = resp
         },
         function(resp){
