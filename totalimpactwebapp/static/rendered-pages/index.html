@@ -1,212 +1,451 @@
-<html ng-app="app" ng-controller="AppCtrl" lang="en" xmlns="http://www.w3.org/1999/html" class="ng-scope"><head>
+<html ng-app="app" ng-controller="AppCtrl" lang="en" xmlns="http://www.w3.org/1999/html" class="ng-scope"><head><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}.ng-animate-block-transitions{transition:0s all!important;-webkit-transition:0s all!important;}</style>
    <base href="/"> <!-- needed for html5 pretty urls -->
    <meta charset="utf-8">
-   <title class="ng-binding">ImpactStory: Share the full story of your research impact.</title>
-   <meta name="google-site-verification" content="eBr2vhkz1SYB5e6B7QDhFu7vazuGo_lI_mf3EaRdHZ8"><!-- verification for production GA -->
+   <title ng-bind="page.getTitle()" class="ng-binding">Impactstory: Share the full story of your research impact.</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
+   <!-- site verifications -->
+   <meta name="google-site-verification" content="eBr2vhkz1SYB5e6B7QDhFu7vazuGo_lI_mf3EaRdHZ8">
+   <meta name="google-site-verification" content="0URqWAccD8UTQk8C0ObGnInWWn6t_GpLhKggFCVeLE4">
+   <meta property="twitter:account_id" content="4503599628513816">
+   <meta name="msvalidate.01" content="BAD67C681687625C7781BE0C1DA9C721">
 
    <!-- Load stylesheets -->
    <!-------------------------------------------------------------------------->
    <!--[if lt IE 9]>
-   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+   <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
    <![endif]-->
-
-   <link href="http://fonts.googleapis.com/css?family=Rokkitt:400" rel="stylesheet" type="text/css">
    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 
    <!-- stylesheet is in less/css dir; it's a hack to get around limitations of CodeKit -->
    <link rel="stylesheet" type="text/css" href="/static/less/css/ImpactStory.css">
-   <link rel="icon" type="image/ico" href="/static/dist/img/favicon.ico">
+   <link rel="icon" type="image/ico" href="/static/img/favicon.ico">
+
+
+
+
 
 
 
 
    <!-- Load scripts -->
    <!-------------------------------------------------------------------------->
-   <!-- logging stuff -->
-    <!-- newrelic logging, needs server stuff in it -->
-   <script src="//beacon.errorception.com/51ef3db2db2bef20770003e2.js" async=""></script><script type="text/javascript" async="" src="http://d2dq2ahtl5zl1z.cloudfront.net/segment.js/v1/segment.min.js"></script><script type="text/javascript" async="" src="http://cdn.mxpnl.com/libs/mixpanel-2.2.min.js"></script><script type="text/javascript" async="" src="http://dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js"></script><script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script><script type="text/javascript" async="" src="//widget.uservoice.com/OQC1qQJBAPv28X1VBsYbw.js"></script><script type="text/javascript" async="" src="http://d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/smphpvtema/analytics.min.js"></script><script type="text/javascript" src="/static/js/top-of-page.js"></script>
+   <script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script><script type="application/javascript" async="" defer="" src="https://by.uservoice.com/t/140309/x/p/2Ggd53iygkZeF4V7/track.js?_=1414737350658&amp;s=0&amp;c=__uvSessionData0&amp;d=eyJlIjp7InUiOiJodHRwczovL2ltcGFjdHN0b3J5Lm9yZy8iLCJyIjoiIn19"></script><script type="text/javascript" async="" src="//widget.uservoice.com/OQC1qQJBAPv28X1VBsYbw.js"></script><script id="twitter-wjs" src="https://platform.twitter.com/widgets.js"></script><script type="text/javascript" async="" src="https://d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/na1r5jvuym/analytics.min.js"></script><script type="text/javascript" async="" src="//cdn.mxpnl.com/libs/mixpanel-2.2.min.js"></script><script src="/top.js"></script>
 
    <!-- external libs -->
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.string/2.3.3/underscore.string.min.js"></script>
-   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js"></script><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none;}ng\:form{display:block;}</style>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+
+   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-route.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-resource.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-cookies.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-sanitize.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-animate.min.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+   <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>
+   <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-sortable/0.12.8/sortable.js"></script>
+
+
+   <!-- Stripe stuff -->
+   <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+   <script type="text/javascript">
+      Stripe.setPublishableKey(stripePublishableKey);
+   </script>
 
    <!-- compiled scripts from our sources -->
-   <script type="text/javascript" src="/static/dist/bootstrap.js"></script>
-   <script type="text/javascript" src="/static/dist/angular.js"></script> <!-- extra Angular modules -->
-   <script type="text/javascript" src="/static/js/browser-fixes.js"></script> <!-- get rid of this -->
-   <script type="text/javascript" src="/static/dist/ImpactStory.js"></script>
+   <script type="text/javascript" src="/static/dist/angular-libs.js"></script> <!-- extra Angular modules -->
+   <script type="text/javascript" src="/static/dist/Impactstory.js"></script>
 
 
-<style type="text/css" media="screen">.uv-icon{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:inline-block;cursor:pointer;position:relative;-webkit-transition:all 300ms;-moz-transition:all 300ms;-o-transition:all 300ms;transition:all 300ms;width:39px;height:39px;position:fixed;z-index:100002;opacity:0.8;-webkit-transition:opacity 100ms;-moz-transition:opacity 100ms;-o-transition:opacity 100ms;transition:opacity 100ms}.uv-icon.uv-bottom-right{bottom:10px;right:12px}.uv-icon.uv-top-right{top:10px;right:12px}.uv-icon.uv-bottom-left{bottom:10px;left:12px}.uv-icon.uv-top-left{top:10px;left:12px}.uv-icon.uv-is-selected{opacity:1}.uv-icon svg{width:39px;height:39px}.uv-popover{font-family:sans-serif;font-weight:100;font-size:13px;color:black;position:fixed;z-index:100001}.uv-popover-content{-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;background:white;position:relative;width:325px;height:325px;-webkit-transition:background 200ms;-moz-transition:background 200ms;-o-transition:background 200ms;transition:background 200ms}.uv-bottom .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-top .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-left .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-right .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-ie8 .uv-popover-content{position:relative}.uv-ie8 .uv-popover-content .uv-popover-content-shadow{display:block;background:black;content:'';position:absolute;left:-15px;top:-15px;width:100%;height:100%;filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius=15,MakeShadow=true,ShadowOpacity=0.30);z-index:-1}.uv-popover-tail{border:8px solid transparent;width:0;z-index:10;position:absolute;-webkit-transition:border-top-color 200ms;-moz-transition:border-top-color 200ms;-o-transition:border-top-color 200ms;transition:border-top-color 200ms}.uv-top .uv-popover-tail{bottom:-20px;border-top:12px solid white}.uv-bottom .uv-popover-tail{top:-20px;border-bottom:12px solid white}.uv-left .uv-popover-tail{right:-20px;border-left:12px solid white}.uv-right .uv-popover-tail{left:-20px;border-right:12px solid white}.uv-popover-loading{background:white;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;position:absolute;width:100%;height:100%;left:0;top:0}.uv-popover-loading-text{position:absolute;top:50%;margin-top:-0.5em;width:100%;text-align:center}.uv-popover-iframe-container{height:100%}.uv-popover-iframe{-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;overflow:hidden}.uv-is-hidden{display:none}.uv-is-invisible{display:block !important;visibility:hidden !important}.uv-is-transitioning{display:block !important}.uv-no-transition{-moz-transition:none !important;-webkit-transition:none !important;-o-transition:color 0 ease-in !important;transition:none !important}.uv-fade{opacity:1;-webkit-transition:opacity 200ms ease-out;-moz-transition:opacity 200ms ease-out;-o-transition:opacity 200ms ease-out;transition:opacity 200ms ease-out}.uv-fade.uv-is-hidden{opacity:0}.uv-scale-top,.uv-scale-top-left,.uv-scale-top-right,.uv-scale-bottom,.uv-scale-bottom-left,.uv-scale-bottom-right,.uv-scale-right,.uv-scale-right-top,.uv-scale-right-bottom,.uv-scale-left,.uv-scale-left-top,.uv-scale-left-bottom,.uv-slide-top,.uv-slide-bottom,.uv-slide-left,.uv-slide-right{opacity:1;-webkit-transition:all 80ms ease-out;-moz-transition:all 80ms ease-out;-o-transition:all 80ms ease-out;transition:all 80ms ease-out}.uv-scale-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%);-moz-transform:scale(0.8) translateY(-15%);-ms-transform:scale(0.8) translateY(-15%);-o-transform:scale(0.8) translateY(-15%);transform:scale(0.8) translateY(-15%)}.uv-scale-top-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%) translateX(-10%);-moz-transform:scale(0.8) translateY(-15%) translateX(-10%);-ms-transform:scale(0.8) translateY(-15%) translateX(-10%);-o-transform:scale(0.8) translateY(-15%) translateX(-10%);transform:scale(0.8) translateY(-15%) translateX(-10%)}.uv-scale-top-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%) translateX(10%);-moz-transform:scale(0.8) translateY(-15%) translateX(10%);-ms-transform:scale(0.8) translateY(-15%) translateX(10%);-o-transform:scale(0.8) translateY(-15%) translateX(10%);transform:scale(0.8) translateY(-15%) translateX(10%)}.uv-scale-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%);-moz-transform:scale(0.8) translateY(15%);-ms-transform:scale(0.8) translateY(15%);-o-transform:scale(0.8) translateY(15%);transform:scale(0.8) translateY(15%)}.uv-scale-bottom-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%) translateX(-10%);-moz-transform:scale(0.8) translateY(15%) translateX(-10%);-ms-transform:scale(0.8) translateY(15%) translateX(-10%);-o-transform:scale(0.8) translateY(15%) translateX(-10%);transform:scale(0.8) translateY(15%) translateX(-10%)}.uv-scale-bottom-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%) translateX(10%);-moz-transform:scale(0.8) translateY(15%) translateX(10%);-ms-transform:scale(0.8) translateY(15%) translateX(10%);-o-transform:scale(0.8) translateY(15%) translateX(10%);transform:scale(0.8) translateY(15%) translateX(10%)}.uv-scale-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%);-moz-transform:scale(0.8) translateX(15%);-ms-transform:scale(0.8) translateX(15%);-o-transform:scale(0.8) translateX(15%);transform:scale(0.8) translateX(15%)}.uv-scale-right-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%) translateY(-10%);-moz-transform:scale(0.8) translateX(15%) translateY(-10%);-ms-transform:scale(0.8) translateX(15%) translateY(-10%);-o-transform:scale(0.8) translateX(15%) translateY(-10%);transform:scale(0.8) translateX(15%) translateY(-10%)}.uv-scale-right-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%) translateY(10%);-moz-transform:scale(0.8) translateX(15%) translateY(10%);-ms-transform:scale(0.8) translateX(15%) translateY(10%);-o-transform:scale(0.8) translateX(15%) translateY(10%);transform:scale(0.8) translateX(15%) translateY(10%)}.uv-scale-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%);-moz-transform:scale(0.8) translateX(-15%);-ms-transform:scale(0.8) translateX(-15%);-o-transform:scale(0.8) translateX(-15%);transform:scale(0.8) translateX(-15%)}.uv-scale-left-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%) translateY(-10%);-moz-transform:scale(0.8) translateX(-15%) translateY(-10%);-ms-transform:scale(0.8) translateX(-15%) translateY(-10%);-o-transform:scale(0.8) translateX(-15%) translateY(-10%);transform:scale(0.8) translateX(-15%) translateY(-10%)}.uv-scale-left-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%) translateY(10%);-moz-transform:scale(0.8) translateX(-15%) translateY(10%);-ms-transform:scale(0.8) translateX(-15%) translateY(10%);-o-transform:scale(0.8) translateX(-15%) translateY(10%);transform:scale(0.8) translateX(-15%) translateY(10%)}.uv-slide-top.uv-is-hidden{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.uv-slide-bottom.uv-is-hidden{-webkit-transform:translateY(100%);-moz-transform:translateY(100%);-ms-transform:translateY(100%);-o-transform:translateY(100%);transform:translateY(100%)}.uv-slide-left.uv-is-hidden{-webkit-transform:translateX(-100%);-moz-transform:translateX(-100%);-ms-transform:translateX(-100%);-o-transform:translateX(-100%);transform:translateX(-100%)}.uv-slide-right.uv-is-hidden{-webkit-transform:translateX(100%);-moz-transform:translateX(100%);-ms-transform:translateX(100%);-o-transform:translateX(100%);transform:translateX(100%)}
-</style><style type="text/css" media="print">#uvTab,.uv-tray,.uv-icon,.uv-popover,.uv-bubble{display:none!important}</style><style>[touch-action="none"]{ -ms-touch-action: none; touch-action: none; }[touch-action="pan-x"]{ -ms-touch-action: pan-x; touch-action: pan-x; }[touch-action="pan-y"]{ -ms-touch-action: pan-y; touch-action: pan-y; }[touch-action="scroll"],[touch-action="pan-x pan-y"],[touch-action="pan-y pan-x"]{ -ms-touch-action: pan-x pan-y; touch-action: pan-x pan-y; }</style><style type="text/css"></style></head>
+<style type="text/css" media="screen">.uv-icon{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:inline-block;cursor:pointer;position:relative;-webkit-transition:all 300ms;-moz-transition:all 300ms;-o-transition:all 300ms;transition:all 300ms;width:39px;height:39px;position:fixed;z-index:100002;opacity:0.8;-webkit-transition:opacity 100ms;-moz-transition:opacity 100ms;-o-transition:opacity 100ms;transition:opacity 100ms}.uv-icon.uv-bottom-right{bottom:10px;right:12px}.uv-icon.uv-top-right{top:10px;right:12px}.uv-icon.uv-bottom-left{bottom:10px;left:12px}.uv-icon.uv-top-left{top:10px;left:12px}.uv-icon.uv-is-selected{opacity:1}.uv-icon svg{width:39px;height:39px}.uv-popover{font-family:sans-serif;font-weight:100;font-size:13px;color:black;position:fixed;z-index:100001}.uv-popover-content{-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;background:white;position:relative;width:325px;height:325px;-webkit-transition:background 200ms;-moz-transition:background 200ms;-o-transition:background 200ms;transition:background 200ms}.uv-bottom .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 0 -10px 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-top .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 0 10px 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-left .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) 10px 0 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-right .uv-popover-content{-webkit-box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;-moz-box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px;box-shadow:rgba(0,0,0,0.3) -10px 0 60px,rgba(0,0,0,0.1) 0 0 20px}.uv-ie8 .uv-popover-content{position:relative}.uv-ie8 .uv-popover-content .uv-popover-content-shadow{display:block;background:black;content:'';position:absolute;left:-15px;top:-15px;width:100%;height:100%;filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius=15,MakeShadow=true,ShadowOpacity=0.30);z-index:-1}.uv-popover-tail{border:9px solid transparent;width:0;z-index:10;position:absolute;-webkit-transition:border-top-color 200ms;-moz-transition:border-top-color 200ms;-o-transition:border-top-color 200ms;transition:border-top-color 200ms}.uv-top .uv-popover-tail{bottom:-20px;border-top:11px solid white}.uv-bottom .uv-popover-tail{top:-20px;border-bottom:11px solid white}.uv-left .uv-popover-tail{right:-20px;border-left:11px solid white}.uv-right .uv-popover-tail{left:-20px;border-right:11px solid white}.uv-popover-loading{background:white;-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;position:absolute;width:100%;height:100%;left:0;top:0}.uv-popover-loading-text{position:absolute;top:50%;margin-top:-0.5em;width:100%;text-align:center}.uv-popover-iframe-container{height:100%}.uv-popover-iframe{-webkit-border-radius:5px;-moz-border-radius:5px;-ms-border-radius:5px;-o-border-radius:5px;border-radius:5px;overflow:hidden}.uv-is-hidden{display:none}.uv-is-invisible{display:block !important;visibility:hidden !important}.uv-is-transitioning{display:block !important}.uv-no-transition{-moz-transition:none !important;-webkit-transition:none !important;-o-transition:color 0 ease-in !important;transition:none !important}.uv-fade{opacity:1;-webkit-transition:opacity 200ms ease-out;-moz-transition:opacity 200ms ease-out;-o-transition:opacity 200ms ease-out;transition:opacity 200ms ease-out}.uv-fade.uv-is-hidden{opacity:0}.uv-scale-top,.uv-scale-top-left,.uv-scale-top-right,.uv-scale-bottom,.uv-scale-bottom-left,.uv-scale-bottom-right,.uv-scale-right,.uv-scale-right-top,.uv-scale-right-bottom,.uv-scale-left,.uv-scale-left-top,.uv-scale-left-bottom,.uv-slide-top,.uv-slide-bottom,.uv-slide-left,.uv-slide-right{opacity:1;-webkit-transition:all 80ms ease-out;-moz-transition:all 80ms ease-out;-o-transition:all 80ms ease-out;transition:all 80ms ease-out}.uv-scale-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%);-moz-transform:scale(0.8) translateY(-15%);-ms-transform:scale(0.8) translateY(-15%);-o-transform:scale(0.8) translateY(-15%);transform:scale(0.8) translateY(-15%)}.uv-scale-top-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%) translateX(-10%);-moz-transform:scale(0.8) translateY(-15%) translateX(-10%);-ms-transform:scale(0.8) translateY(-15%) translateX(-10%);-o-transform:scale(0.8) translateY(-15%) translateX(-10%);transform:scale(0.8) translateY(-15%) translateX(-10%)}.uv-scale-top-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(-15%) translateX(10%);-moz-transform:scale(0.8) translateY(-15%) translateX(10%);-ms-transform:scale(0.8) translateY(-15%) translateX(10%);-o-transform:scale(0.8) translateY(-15%) translateX(10%);transform:scale(0.8) translateY(-15%) translateX(10%)}.uv-scale-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%);-moz-transform:scale(0.8) translateY(15%);-ms-transform:scale(0.8) translateY(15%);-o-transform:scale(0.8) translateY(15%);transform:scale(0.8) translateY(15%)}.uv-scale-bottom-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%) translateX(-10%);-moz-transform:scale(0.8) translateY(15%) translateX(-10%);-ms-transform:scale(0.8) translateY(15%) translateX(-10%);-o-transform:scale(0.8) translateY(15%) translateX(-10%);transform:scale(0.8) translateY(15%) translateX(-10%)}.uv-scale-bottom-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateY(15%) translateX(10%);-moz-transform:scale(0.8) translateY(15%) translateX(10%);-ms-transform:scale(0.8) translateY(15%) translateX(10%);-o-transform:scale(0.8) translateY(15%) translateX(10%);transform:scale(0.8) translateY(15%) translateX(10%)}.uv-scale-right.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%);-moz-transform:scale(0.8) translateX(15%);-ms-transform:scale(0.8) translateX(15%);-o-transform:scale(0.8) translateX(15%);transform:scale(0.8) translateX(15%)}.uv-scale-right-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%) translateY(-10%);-moz-transform:scale(0.8) translateX(15%) translateY(-10%);-ms-transform:scale(0.8) translateX(15%) translateY(-10%);-o-transform:scale(0.8) translateX(15%) translateY(-10%);transform:scale(0.8) translateX(15%) translateY(-10%)}.uv-scale-right-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(15%) translateY(10%);-moz-transform:scale(0.8) translateX(15%) translateY(10%);-ms-transform:scale(0.8) translateX(15%) translateY(10%);-o-transform:scale(0.8) translateX(15%) translateY(10%);transform:scale(0.8) translateX(15%) translateY(10%)}.uv-scale-left.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%);-moz-transform:scale(0.8) translateX(-15%);-ms-transform:scale(0.8) translateX(-15%);-o-transform:scale(0.8) translateX(-15%);transform:scale(0.8) translateX(-15%)}.uv-scale-left-top.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%) translateY(-10%);-moz-transform:scale(0.8) translateX(-15%) translateY(-10%);-ms-transform:scale(0.8) translateX(-15%) translateY(-10%);-o-transform:scale(0.8) translateX(-15%) translateY(-10%);transform:scale(0.8) translateX(-15%) translateY(-10%)}.uv-scale-left-bottom.uv-is-hidden{opacity:0;-webkit-transform:scale(0.8) translateX(-15%) translateY(10%);-moz-transform:scale(0.8) translateX(-15%) translateY(10%);-ms-transform:scale(0.8) translateX(-15%) translateY(10%);-o-transform:scale(0.8) translateX(-15%) translateY(10%);transform:scale(0.8) translateX(-15%) translateY(10%)}.uv-slide-top.uv-is-hidden{-webkit-transform:translateY(-100%);-moz-transform:translateY(-100%);-ms-transform:translateY(-100%);-o-transform:translateY(-100%);transform:translateY(-100%)}.uv-slide-bottom.uv-is-hidden{-webkit-transform:translateY(100%);-moz-transform:translateY(100%);-ms-transform:translateY(100%);-o-transform:translateY(100%);transform:translateY(100%)}.uv-slide-left.uv-is-hidden{-webkit-transform:translateX(-100%);-moz-transform:translateX(-100%);-ms-transform:translateX(-100%);-o-transform:translateX(-100%);transform:translateX(-100%)}.uv-slide-right.uv-is-hidden{-webkit-transform:translateX(100%);-moz-transform:translateX(100%);-ms-transform:translateX(100%);-o-transform:translateX(100%);transform:translateX(100%)}
+</style></head>
 
-<body ng-class="page.getBodyClasses()" class="show-tab-on-right"><div id="uvTab" style="background-image: url(http://widget.uservoice.com/images/clients/widget2/tab-right-dark.png); border-top-width: 1px; border-bottom-width: 1px; border-left-width: 1px; border-style: solid none solid solid; border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); border-left-color: rgb(255, 255, 255); border-top-left-radius: 4px; border-top-right-radius: 0px; border-bottom-right-radius: 0px; border-bottom-left-radius: 4px; -webkit-box-shadow: rgba(255, 255, 255, 0.247059) 1px 1px 1px inset, rgba(0, 0, 0, 0.498039) 0px 1px 2px; box-shadow: rgba(255, 255, 255, 0.247059) 1px 1px 1px inset, rgba(0, 0, 0, 0.498039) 0px 1px 2px; font-style: normal; font-variant: normal; font-weight: bold; font-size: 14px; line-height: 1em; font-family: Arial, sans-serif; position: fixed; right: 0px; top: 50%; z-index: 9999; background-color: rgb(255, 77, 0); margin-top: -101px; background-position: 50% 0px; background-repeat: no-repeat no-repeat;" class="uv-tab uv-slide-right "><a id="uvTabLabel" style="background-color: transparent; display:block;padding:39px 5px 10px 5px;text-decoration:none;" href="javascript:return false;"><img src="http://widget.uservoice.com/dcache/widget/feedback-tab.png?t=Feedback%20%26%20Support&amp;c=ffffff&amp;r=90" alt="Feedback &amp; Support" style="border:0; background-color: transparent; padding:0; margin:0;"></a></div><div id="uvTab" style="background:red url(http://widget.uservoice.com/images/clients/widget2/tab-horizontal-dark.png) 0 50% no-repeat;border:1px solid #FFF;border-bottom:none;-moz-border-radius:4px 4px 0 0;-webkit-border-radius:4px 4px 0 0;border-radius:4px 4px 0 0;-moz-box-shadow:inset rgba(255,255,255,.25) 1px 1px 1px, rgba(0,0,0,.5) 0 1px 2px;-webkit-box-shadow:inset rgba(255,255,255,.25) 1px 1px 1px, rgba(0,0,0,.5) 0 1px 2px;box-shadow:inset rgba(255,255,255,.25) 1px 1px 1px, rgba(0,0,0,.5) 0 1px 2px;font:normal normal bold 14px/1em Arial, sans-serif;position:fixed;left:10px;bottom:0;z-index:9999;background-color:#999999;" class="uv-tab uv-slide-bottom uv-is-transitioning"><a id="uvTabLabel" style="background-color: transparent; display:block;padding:6px 10px 2px 42px;text-decoration:none;" href="javascript:return false;"><img src="http://widget.uservoice.com/dcache/widget/feedback-tab.png?t=Feedback%20%26%20Support&amp;c=ffffff&amp;r=0" alt="Feedback &amp; Support" style="border:0; background-color: transparent; padding:0; margin:0;"></a></div>
-<div class="staging-warning"><div class="content"><span>staging, yo</span></div></div>
-<div ng-include="page.getTemplate('header')"><div class="main-header header ng-scope big" ng-class="{big: page.isLandingPage()}">
-   <div class="wrapper">
-      <a class="brand" href="/">
-         <img src="/static/img/impactstory-logo.png" alt="ImpactStory">
-      </a>
-      <ul class="main-nav">
-   <li ng-show="currentUser" class="logged-in-user nav-item" style="display: none;">
-      <span class="context">Welcome back, </span>
-      <a class="current-user ng-binding" href="/"></a>
-   </li>
-
-   <li ng-show="currentUser" class="divider-vertical nav-item" style="display: none;"></li>
-
-   <li ng-show="currentUser" class="logged-in preferences dropdown nav-item" style="display: none;">
-      <a href="#" class="preferences dropdown-toggle" data-toggle="dropdown" title="Change URL and other preferences">
-         <i class="icon-cog"></i>
-      </a>
-      <ul class="preferences-actions dropdown-menu">
-         <li><a href="/settings/profile" class="profile"><i class="icon-cogs"></i>Preferences</a></li>
-         <li class="divider"></li>
-         <li><a class="logout" ng-click="logout()"><i class="icon-off"></i>Log out</a></li>
-      </ul>
-   </li>
-
-   <li ng-show="!currentUser" class="login-and-signup nav-item">
-      <span ng-show="page.isLandingPage()" class="context" style="">Already have a profile?</span>
-      <a ng-show="!page.isLandingPage()" class="signup" href="/signup/name" style="display: none;">Sign up</a>
-      <span ng-show="!page.isLandingPage()" class="or" style="display: none;"></span>
-      <a class="login" ng-click="login()">Log in<i class="icon-signin"></i></a>
-   </li>
-</ul>
+<body class="page-name-landing" jq-popover="" jq-tooltip="" data-twttr-rendered="true">
+   <!-- ngInclude: 'under-construction.tpl.html' --><div ng-include="'under-construction.tpl.html'" ng-show="showUnderConstruction" class="ng-scope ng-hide"><div id="under-construction-curtain" class="ng-scope">
+   <div class="top">
+      <div class="logo"><img src="/static/img/impactstory-logo.png" alt="ImpactStory"></div>
+      <h1>We're down for maintenance...</h1>
+   </div>
+   <div class="bottom">
+      <h2>but hang tight, we'll be back soon.</h2>
+      <p>In the meantime, you can keep updated on our progress via our <a href="http://www.twitter.com/ImpactStory_now">status feed</a>.</p>
+   </div>
+   <div class="hide-curtain" ng-click="showUnderConstruction=false">
+      <i class="icon-heart-empty"></i>
    </div>
 </div>
-<div ng-show="page.showNotificationsIn('header')" ng-include="'notifications.tpl.html'" class="container-fluid ng-scope"><ul class="notifications ng-scope">
-   <!-- ngRepeat: notification in notifications.getCurrent() -->
-</ul>
+</div>
+
+   <div id="header">
+      <div class="account-nav">
+   <div class="logged-in ng-hide" ng-show="currentUser">
+      <a class="current-user" href="/">
+         <span class="tip">View your profile</span>
+         <img class="gravatar" ng-src="//www.gravatar.com/avatar/?s=110&amp;d=mm" src="//www.gravatar.com/avatar/?s=110&amp;d=mm">
+      </a>
+
+      <a class="logout control" ng-click="logout()">
+         <span class="tip">Log out</span>
+         <span class="icon-container">
+            <i class="icon-signout"></i>
+         </span>
+      </a>
+
+      <a class="preferences control" href="/settings/profile">
+         <span class="tip">Change settings</span>
+         <span class="icon-container">
+            <i class="icon-cog"></i>
+         </span>
+      </a>
+
+
+      <a class="add-products control" href="/accounts">
+         <span class="tip">Import things</span>
+         <span class="icon-container">
+            <i class="icon-plus"></i>
+         </span>
+      </a>
+
+
+      <div class="user-is-trialing" ng-show="!security.getCurrentUser('is_subscribed')">
+         <a class="add-products control" href="settings/subscription">
+            <span class="tip">Subscribe</span>
+            <span class="icon-container">
+               <i class="fa fa-usd"></i>
+            </span>
+         </a>
+
+      </div>
+
+   </div>
+
+   <div ng-hide="currentUser" class="not-logged-in">
+      <a class="login" ng-click="login()">
+         <span class="tip">Log in</span>
+         <span class="icon-container">
+            <i class="icon-user"></i>
+         </span>
+      </a>
+      <!--
+      <a  class="signup" href="/signup">Sign up</a>
+      -->
+   </div>
+
+   <a class="help control" href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950" data-uv-scanned="true" id="uv-1">
+         <span class="tip">Get help</span>
+         <span class="icon-container">
+            <i class="icon-question"></i>
+         </span>
+   </a>
+</div>
+   </div>
+
+   <div id="wrapper">
+      <div id="sidebar">
+         <!-- ngInclude: 'sidebar/sidebar.tpl.html' --><div ng-include="'sidebar/sidebar.tpl.html'" class="ng-scope"><div class="main-sidebar ng-scope">
+
+   <div class="profile-sidebar ng-hide" ng-show="profileAboutService.data.is_live">
+
+      <h1>
+         <a href="/">
+            <span class="given-name ng-binding"></span>
+            <span class="surname ng-binding"></span>
+         </a>
+      </h1>
+
+
+      <!-- ngIf: profileService.data.products -->
+   </div>
+
+
+   <div class="infopage-sidebar" ng-show="!page.isProfilePage() || profileAboutService.data.is_live===false">
+      <h1>
+         <a href="/" class="logo">
+            <img src="static/img/impactstory-logo-sideways.png" alt="">
+         </a>
+      </h1>
+
+      <div class="nav">
+         <div class="nav-group sidebar-accounts">
+            <li><a href="/about">About us</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/CarlBoettiger">Example profile</a></li>
+            <li><a href="/signup">Free trial</a></li>
+         </div>
+
+         <div class="nav-group sidebar-accounts">
+            <li><a href="http://eepurl.com/RaRZ1"><i class="icon-envelope-alt left"></i>Newsletter</a></li>
+            <li><a href="http://twitter.com/Impactstory"><i class="icon-twitter left"></i>Twitter</a></li>
+            <li><a href="http://blog.impactstory.org"><i class="icon-rss left"></i>Blog</a></li>
+         </div>
+
+
+      </div>
+
+   </div>
+
+
+
+   <div class="sidebar-footer">
+      <a href="/" class="logo ng-hide" ng-show="page.isProfilePage()  &amp;&amp; profileAboutService.data.is_live===true">
+         <img src="static/img/impactstory-logo-sideways.png" alt="">
+      </a>
+
+      <div ng-show="!profileAboutService.data.is_live" class="sidebar-funders">
+         <h3>Supported by</h3>
+         <a href="http://nsf.gov" id="footer-nsf-link">
+            <img src="/static/img/logos/nsf-seal.png">
+         </a>
+         <a href="http://sloan.org/" id="footer-sloan-link">
+            <img src="/static/img/logos/sloan-seal.png">
+         </a>
+         <a href="http://www.jisc.ac.uk/" id="footer-jisc-link">
+            <img src="/static/img/logos/jisc.png">
+         </a>
+      </div>
+
+
+
+      <i class="icon-reorder show-footer-button" ng-mouseover="footer.show=true"></i>
+
+   </div>
+
 </div>
 </div>
-<div ng-view="" class="main-view"><div class="main infopage landing ng-scope">
-   <div id="tagline">
-      <div class="wrapper">
-         <h1>Share the full story of your <br>research impact.</h1>
-         <p class="subtagline">ImpactStory is your impact profile on the web: we reveal the diverse impacts of your articles, datasets, software, and more.</p>
-         <div id="call-to-action">
-            <a href="/signup" class="btn btn-large btn-primary primary-action" id="create-collection">Make my impact profile</a>
-            <a href="/CarlBoettiger" class="btn btn-large btn-primary secondary-action" id="view-sample-collection">View a sample profile</a>
+      </div>
+      <div id="not-sidebar">
+         <!-- ngInclude: 'user-message.tpl.html' --><div ng-include="'user-message.tpl.html'" id="user-message" class="ng-scope"><!-- ngIf: userMessage.get().message && userMessage.showOnTop() -->
+</div>
+         <div id="main-view-container">
+            <!-- ngView:  --><div ng-view="" class="main-view ng-scope"><div class="main infopage landing ng-scope">
+   <div class="top-screen" fullscreen="" style="height: 829px;"> <!-- this needs to be set to the viewport height-->
+
+      <div class="top-logo">
+         <img src="/static/img/impactstory-logo-sideways.png" alt="">
+      </div>
+
+      <div id="tagline">
+         <div class="wrapper">
+            <img class="big-logo" src="/static/img/impactstory-logo-no-type.png" alt="">
+
+            <div class="landing-page main" ng-show="landingPageType=='main'">
+               <h1>Your CV, but better.</h1>
+               <div class="main-testimonial">
+                  <q>
+                     Impactstory looks great and works beautifully. The new standard for scientific CVs.
+                  </q>
+                  <div class="quote-source">
+                     –
+                     <span class="name">Pietro Gatti Lafranconi,</span>
+                     <span class="affiliation">Cambridge University</span>
+                  </div>
+               </div>
+
+            </div>
+
+            <div class="landing-page main ng-hide" ng-show="landingPageType=='h-index'">
+               <h1>You're more than your h-index.</h1>
+               <h2>Discover the full impact of your research</h2>
+            </div>
+
+            <div class="landing-page main ng-hide" ng-show="landingPageType=='open-science'">
+               <h1>For open scientists.</h1>
+               <h2>Discover the full impact of all your open science</h2>
+            </div>
+
+
+
+            <div id="call-to-action">
+               <a href="/signup" class="btn btn-xlarge btn-primary primary-action" id="signup-button">Try it for free</a>
+               <!--<a href="/CarlBoettiger"
+                  ng-show="abTesting.getTestState['link to sample profile from landing page']=='yes'"
+                  class="btn btn-xlarge btn-default"
+                  id="secondary-cta-button">See an example</a>-->
+            </div>
          </div>
       </div>
 
+      <div class="bottom-of-top-screen">
+         <div class="featured-and-supported">
+            <h3>featured in and funded by</h3>
+            <img src="/static/img/logos/bbc.png">
+            <img src="/static/img/logos/nature.png">
+            <img src="/static/img/logos/chronicle.png">
+
+            <span class="divider"></span>
+
+            <img src="/static/img/logos/jisc.png">
+            <img src="/static/img/logos/sloan.png">
+            <img src="/static/img/logos/nsf.png">
+         </div>
+
+         <div class="ask-for-more">
+            <span>more <i class="icon-chevron-down"></i></span>
+         </div>
+
+
+      </div>
+
    </div>
+
+
 
    <div id="selling-points">
-      <ul class="wrapper">
-         <li>
-            <h3 id="metrics-in-seconds"><i class="icon-time icon-2x"></i><span class="text">View metrics in seconds</span></h3>
-            <p>Point us to your slides, code, datasets, and articles. In a few seconds, you'll have a report detailing your impacts: citations, bookmarks, downloads, tweets, and more.</p>
-         </li>
-         <li class="middle">
-            <h3 id="embed-metrics-anywhere"><i class="icon-suitcase icon-2x"></i><span class="text">Embed them anywhere</span></h3>
-            <p>Drop ImpactStory's embeddable code into your own online CV or website to show the impacts of your work.</p>
-         </li>
-         <li>
-            <h3 id="its-open"><i class="icon-wrench icon-2x"></i><span class="text">Open data,<br> open source.</span></h3>
-            <p>Our data, like our <a href="http://github.com/total-impact">source code</a>, is wide open.  As a non-profit, we're built around supporting open tools to nurture Web-native scholarship.</p>
-         </li>
-      </ul>
-   </div>
+      <div class="selling-point">
+         <div class="img">
+            <i class="icon-unlock-alt"></i>
+         </div>
+         <h3>For open scientists</h3>
+         <div class="copy">
+            <p>
+              As researchers, we publish in open places like PLOS, GitHub, ArXiv, PeerJ, and Figshare. If you do too, you’re going to love it here. And of course we’re an open-source nonprofit ourselves.
+            </p>
+         </div>
+      </div>
 
+      <div class="selling-point">
+         <div class="img">
+            <i class="icon-trophy"></i>
+         </div>
+         <h3>Demonstrate your impact</h3>
+         <div class="copy">
+            <p>
+               Discover and share how your research is read, cited, tweeted, bookmarked, and more. And stay up to date with weekly email updates on new impacts.
+            </p>
+         </div>
+      </div>
 
-   <div id="sources">
-      <div class="wrapper">
-         <h2>Uncover your impacts from all across the Web: </h2>
-         <ul id="source-logos">
-            <li><img src="/static/img/logos/citeulike.png"></li>
-            <li><img src="/static/img/logos/crossref.jpg"></li>
-            <li><img src="/static/img/logos/delicious.jpg"></li>
-            <li><img src="/static/img/logos/dryad.png"></li>
-            <li><img src="/static/img/logos/f1000.png"></li>
-            <li><img src="/static/img/logos/figshare.png"></li>
-            <li><img src="/static/img/logos/github.png"></li>
-            <li><img src="/static/img/logos/mendeley.png"></li>
-            <li><img src="/static/img/logos/orcid.png"></li>
-            <li><img src="/static/img/logos/plos.png"></li>
-            <li><img src="/static/img/logos/pmc.gif"></li>
-            <li><img src="/static/img/logos/pubmed.png"></li>
-            <li><img src="/static/img/logos/scienceseeker.png"></li>
-            <li><img src="/static/img/logos/scopus.jpg"></li>
-            <li><img src="/static/img/logos/slideshare.png"></li>
-            <li><img src="/static/img/logos/twitter.png"></li>
-            <li><img src="/static/img/logos/vimeo.png"></li>
-            <li><img src="/static/img/logos/wikipedia.png"></li>
-            <li><img src="/static/img/logos/wordpress-circle.png"></li>
-            <li><img src="/static/img/logos/youtube.png"></li>
-         </ul>
+      <div class="selling-point">
+         <div class="img">
+            <i class="icon-bullhorn"></i>
+         </div>
+         <h3>Reach more readers</h3>
+         <div class="copy">
+            <p>
+               Help colleagues find and read your preprints, articles, slides and other work by uploading research products straight your profile.
+            </p>
+         </div>
+      </div>
+
+      <div class="selling-point">
+         <div class="img">
+            <i class="icon-lightbulb"></i>
+         </div>
+         <h3>Your latest work</h3>
+         <div class="copy">
+            <p>
+               Your Impactstory profile stays up-to-date automatically for most kinds of products. You can also add new products with a simple email
+            </p>
+         </div>
       </div>
    </div>
-</div>
-</div>
-<div ng-include="page.getTemplate('footer')"><div id="footer" class="ng-scope">
-   <div class="wrapper">
-      <div id="footer-branding" class="footer-col">
-         <a class="brand" href="/"><img src="/static/img/impactstory-logo.png" alt="ImpactStory"></a>
 
-         <p>We're your impact profile on the web, revealing diverse impacts of your articles, datasets, software, and more.</p>
-         <p class="license">
-            <!--<a rel="license" href="http://creativecommons.org/licenses/by/2.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/2.0/80x15.png" /></a>-->
-            <span class="text">Except where otherwise noted, content on this site is licensed under the
-               <a rel="license" href="http://creativecommons.org/licenses/by/2.0/">CC-BY license</a>.
+   <div class="testimonials">
+      <div class="testimonial">
+         <q>
+            Promotion with tenure is now official. Thank you Impactstory!
+         </q>
+         <cite>
+            <img src="http://i.imgur.com/3nd9FfW.png" alt="">
+            <span class="name">
+               Ahmed Moustafa, American University in Cairo
             </span>
-         </p>
+         </cite>
       </div>
-
-
-      <div id="footer-follow" class="footer-col">
-         <h3>Follow</h3>
-         <ul>
-            <li><a href="http://twitter.com/#!/ImpactStory">Twitter</a></li>
-            <li><a href="http://twitter.com/#!/ImpactStory_now">Site status</a></li>
-            <li><a href="http://blog.impactstory.org">Blog</a></li>
-            <li><a href="https://groups.google.com/forum/?fromgroups#!forum/total-impact">Newsgroup</a></li>
-            <li><a href="https://github.com/total-impact">GitHub</a></li>
-
-         </ul>
-      </div>
-
-      <div id="footer-about" class="footer-col">
-         <h3>About</h3>
-         <ul>
-            <li><a href="/about">About us</a></li>
-            <li><a href="http://feedback.impactstory.org" target="_blank">Feedback</a></li>
-            <li>
-               <a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950" data-uv-scanned="true" id="uv-3">Support</a>
-            </li>
-
-
-            <li><a href="/faq">FAQ</a></li>
-            <!--<li><a href="/about#contact">Contact us</a></li>-->
-            <li><a href="/faq#tos" target="_self">Terms of use</a></li>
-         </ul>
-      </div>
-
-
-      <div id="footer-funders" class="footer-col">
-         <h3>Supported by</h3>
-         <a href="http://sloan.org/" id="footer-sloan-link">
-            <img src="/static/img/sloan-logo.png" width="200">
-         </a>
-         <a href="http://nsf.gov" id="footer-nsf-link">
-            <img src="/static/img/logos/nsf.png" width="200">
-         </a>
-      </div>
-
-
    </div>
-</div> <!-- end footer -->
+
+
+   <div class="bottom-cta">
+      <a href="/signup" class="btn btn-large btn-primary primary-action" id="create-collection">Try it free</a>
+      <a href="/hollybik" class="btn btn-large btn-default secondary-action" id="view-sample-collection">See an example profile</a>
+   </div>
+
+
+   <div class="landing-page-footer">
+      <a href="/about">about</a>
+      <a href="/faq">faq</a>
+      <a href="/signup">pricing</a>
+      <a href="/settings/subscription">subscribe</a>
+
+      <a href="https://github.com/total-impact">source code</a>
+      <a href="http://blog.impactstory.org">blog</a>
+      <a href="http://twitter.com/impactstory">twitter</a>
+   </div>
+
+
 </div>
+</div>
+         </div>
+      </div>
+      <!-- ngInclude: 'footer/footer.tpl.html' --><div ng-include="'footer/footer.tpl.html'" class="ng-scope"><div id="page-footer-container" class="ng-scope">
+
+   <div id="page-footer" ng-show="footer.show" ng-mouseleave="footer.show=false" class="animated slideInUp slideOutDown ng-hide">
+      <div class="wrapper">
+
+         <div id="footer-about" class="footer-col">
+            <h3>About</h3>
+            <ul>
+               <li><a href="/about">About us</a></li>
+               <li><a href="/metrics">Our metrics</a></li>
+               <li><a href="https://github.com/total-impact">Our code</a></li>
+               <li><a href="/legal">Legal</a></li>
+            </ul>
+         </div>
+
+         <div id="footer-follow" class="footer-col">
+            <h3>Community</h3>
+            <ul>
+               <li><a href="http://eepurl.com/RaRZ1">Newsletter</a></li>
+               <li><a href="http://twitter.com/Impactstory">Twitter</a></li>
+               <li><a href="http://blog.impactstory.org">Blog</a></li>
+               <li><a href="/advisors">Advisors</a></li>
+               <li><a href="https://docs.google.com/forms/d/1gpIGnifvh0YBGgMAGozBEWhBUP1EZGMYRn2X6U25XzM/viewform?usp=send_form" target="_blank">Free stickers!</a></li>
+
+            </ul>
+         </div>
+
+         <div id="footer-help" class="footer-col">
+            <h3>Help</h3>
+            <ul>
+               <li><a href="http://feedback.impactstory.org" target="_blank">Suggestions</a></li>
+               <li>
+                     <a class="help control" href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-trigger="" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="166950" data-uv-scanned="true" id="uv-3">
+                           Report bug
+                     </a>
+               </li>
+               <li><a href="/faq">FAQ</a></li>
+               <li><a href="/CarlBoettiger">Example profile</a></li>
+            </ul>
+         </div>
 
 
+         <div id="footer-funders" class="footer-col">
+            <h3>Supported by</h3>
+            <a href="http://nsf.gov" id="footer-nsf-link">
+               <img src="/static/img/logos/nsf-seal.png">
+            </a>
+            <a href="http://sloan.org/" id="footer-sloan-link">
+               <img src="/static/img/logos/sloan-seal.png">
+            </a>
+            <a href="http://www.jisc.ac.uk/" id="footer-jisc-link">
+               <img src="/static/img/logos/jisc.png">
+            </a>
+         </div>
 
 
-<script src="/static/js/bottom-of-page.js" type="text/javascript"></script>
+      </div>
+   </div> <!-- end footer -->
+</div>
+</div>
+   </div>
 
 
-</body></html>
+   <script src="/bottom.js"></script>
+
+
+<div id="ngProgress-container" class="ng-scope"><div id="ngProgress" style="height: 2px; color: rgb(178, 34, 34); width: 0%; background-color: rgb(178, 34, 34);"></div></div></body></html>

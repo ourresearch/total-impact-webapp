@@ -932,22 +932,14 @@ def redirect_to_profile(page="index"):
     EVERYTHING not explicitly routed to another view function will end up here.
     """
 
-    # first, serve pre-rendered pages to search engines:
-    commented_out = """
+    # first, serve pre-rendered index page for Bing
     useragent = request.headers.get("User-Agent", "").lower()
-    crawer_useragent_fragments = ["googlebot", "bingbot"]
+    crawer_useragent_fragments = ["bingbot"]
 
     for useragent_fragment in crawer_useragent_fragments:
-        if useragent_fragment in useragent:
-            page = page.replace("/", "_")
+        if useragent_fragment in useragent and page == "index":
             file_template = u"static/rendered-pages/{page}.html"
-            try:
-                return send_file(file_template.format(page=page))
-            except (IOError, UnicodeEncodeError):
-                # eventually, render the page on the fly
-                # for now, just return what the user sees
-                return render_template('index.html')
-    """
+            return send_file(file_template.format(page=page))
 
     # not a search engine?  return the page
     return render_template('index.html')
