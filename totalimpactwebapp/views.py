@@ -933,6 +933,7 @@ def redirect_to_profile(page="index"):
     """
 
     # first, serve pre-rendered pages to search engines:
+    commented_out = """
     useragent = request.headers.get("User-Agent", "").lower()
     crawer_useragent_fragments = ["googlebot", "bingbot"]
 
@@ -945,7 +946,8 @@ def redirect_to_profile(page="index"):
             except (IOError, UnicodeEncodeError):
                 # eventually, render the page on the fly
                 # for now, just return what the user sees
-                return render_template('index.html')  
+                return render_template('index.html')
+    """
 
     # not a search engine?  return the page
     return render_template('index.html')
