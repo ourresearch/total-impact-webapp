@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-30
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-31
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -2197,9 +2197,9 @@ angular.module("profile", [
             TiMixpanel.track("viewed own profile", {
               "Number of products": newVal.products.length
             })
-            if (newVal.products.length === 0){
-              console.log("logged-in user looking at own profile with no products. showing tour.")
-              Tour.start(newVal.about)
+            if (!newVal.products.length){
+              console.log("No products to show! Redirecting to import page.")
+              $location.path(url_slug + "/accounts")
             }
           }
         )
@@ -5672,6 +5672,7 @@ angular.module('services.profileService', [
 ])
   .factory("ProfileService", function($q,
                                       $timeout,
+                                      $location,
                                       Update,
                                       UserMessage,
                                       TiMixpanel,

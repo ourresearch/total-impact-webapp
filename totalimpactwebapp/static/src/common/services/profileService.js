@@ -3,6 +3,7 @@ angular.module('services.profileService', [
 ])
   .factory("ProfileService", function($q,
                                       $timeout,
+                                      $location,
                                       Update,
                                       UserMessage,
                                       TiMixpanel,
