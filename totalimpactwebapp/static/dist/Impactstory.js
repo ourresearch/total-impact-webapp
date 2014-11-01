@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-10-31
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-01
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -639,9 +639,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-  $rootScope.$watch("security.currentUser", function(newVal, oldVal){
-    console.log("security.currentUser done changed", newVal, oldVal)
-  })
+
 
 
 
@@ -2390,14 +2388,6 @@ angular.module('security.login.toolbar', [
 
       }
 
-      $scope.dismissProfileNewProductsNotification = function(){
-
-        $http.get("/profile/current/notifications/new_metrics_notification_dismissed?action=dismiss").success(function(data, status){
-          console.log("new metrics notification dismissed", data.user)
-          security.setCurrentUser(data.user)
-        })
-
-      }
 
       $scope.$watch(function() {
         return security.getCurrentUser();
@@ -2424,7 +2414,10 @@ angular.module('security.service', [
                                 TiMixpanel,
                                 UserMessage) {
     var useCachedUser = true
-    var currentUser = globalCurrentUser || null
+    var currentUser = null
+    setCurrentUser(globalCurrentUser)
+
+
     console.log("logging in from object: ", currentUser)
     TiMixpanel.registerFromUserObject(currentUser)
 
@@ -2448,6 +2441,12 @@ angular.module('security.service', [
       loginDialog.result.then();
     }
 
+    function setCurrentUser(newCurrentUser){
+      currentUser = newCurrentUser
+      if (currentUser && currentUser.is_trialing){
+        console.log("setting the user. they're trialing. days left:", currentUser.days_left_in_trial)
+      }
+    }
 
 
     var currentUrlSlug = function(){
@@ -2470,7 +2469,7 @@ angular.module('security.service', [
       login: function(email, password) {
         return $http.post('/profile/current/login', {email: email, password: password})
           .success(function(data, status) {
-            currentUser = data.user;
+            setCurrentUser(data.user)
             console.log("user just logged in: ", currentUser)
             TiMixpanel.identify(currentUser.id)
             TiMixpanel.registerFromUserObject(currentUser)
@@ -2558,7 +2557,7 @@ angular.module('security.service', [
         return $http.get('/profile/current')
           .success(function(data, status, headers, config) {
             useCachedUser = true
-            currentUser = data.user;
+            currentUser = data.user
             console.log("successfully logged in from cookie.")
             TiMixpanel.identify(currentUser.id)
             TiMixpanel.registerFromUserObject(currentUser)
@@ -2569,8 +2568,7 @@ angular.module('security.service', [
 
       logout: function() {
         console.log("logging out user.", currentUser)
-
-        currentUser = null;
+        setCurrentUser(null)
         $http.get('/profile/current/logout').success(function(data, status, headers, config) {
           UserMessage.set("logout.success")
           TiMixpanel.clearCookie()
@@ -2611,7 +2609,7 @@ angular.module('security.service', [
       },
 
       clearCachedUser: function(){
-        currentUser = null
+        setCurrentUser(null)
         useCachedUser = false
       },
 
@@ -2658,6 +2656,8 @@ angular.module('security.service', [
       },
 
       setCurrentUser: function(user){
+        // not using setCurrentUser() function defined above because this
+        // is really more of a "refresh" than a "set" when other things use it.
         currentUser = user
       },
 

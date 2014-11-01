@@ -144,9 +144,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-  $rootScope.$watch("security.currentUser", function(newVal, oldVal){
-    console.log("security.currentUser done changed", newVal, oldVal)
-  })
+
 
 
 

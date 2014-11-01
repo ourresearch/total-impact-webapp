@@ -41,14 +41,6 @@ angular.module('security.login.toolbar', [
 
       }
 
-      $scope.dismissProfileNewProductsNotification = function(){
-
-        $http.get("/profile/current/notifications/new_metrics_notification_dismissed?action=dismiss").success(function(data, status){
-          console.log("new metrics notification dismissed", data.user)
-          security.setCurrentUser(data.user)
-        })
-
-      }
 
       $scope.$watch(function() {
         return security.getCurrentUser();

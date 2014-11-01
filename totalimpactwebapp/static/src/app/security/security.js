@@ -14,7 +14,10 @@ angular.module('security.service', [
                                 TiMixpanel,
                                 UserMessage) {
     var useCachedUser = true
-    var currentUser = globalCurrentUser || null
+    var currentUser = null
+    setCurrentUser(globalCurrentUser)
+
+
     console.log("logging in from object: ", currentUser)
     TiMixpanel.registerFromUserObject(currentUser)
 
@@ -38,6 +41,12 @@ angular.module('security.service', [
       loginDialog.result.then();
     }
 
+    function setCurrentUser(newCurrentUser){
+      currentUser = newCurrentUser
+      if (currentUser && currentUser.is_trialing){
+        console.log("setting the user. they're trialing. days left:", currentUser.days_left_in_trial)
+      }
+    }
 
 
     var currentUrlSlug = function(){
@@ -60,7 +69,7 @@ angular.module('security.service', [
       login: function(email, password) {
         return $http.post('/profile/current/login', {email: email, password: password})
           .success(function(data, status) {
-            currentUser = data.user;
+            setCurrentUser(data.user)
             console.log("user just logged in: ", currentUser)
             TiMixpanel.identify(currentUser.id)
             TiMixpanel.registerFromUserObject(currentUser)
@@ -148,7 +157,7 @@ angular.module('security.service', [
         return $http.get('/profile/current')
           .success(function(data, status, headers, config) {
             useCachedUser = true
-            currentUser = data.user;
+            currentUser = data.user
             console.log("successfully logged in from cookie.")
             TiMixpanel.identify(currentUser.id)
             TiMixpanel.registerFromUserObject(currentUser)
@@ -159,8 +168,7 @@ angular.module('security.service', [
 
       logout: function() {
         console.log("logging out user.", currentUser)
-
-        currentUser = null;
+        setCurrentUser(null)
         $http.get('/profile/current/logout').success(function(data, status, headers, config) {
           UserMessage.set("logout.success")
           TiMixpanel.clearCookie()
@@ -201,7 +209,7 @@ angular.module('security.service', [
       },
 
       clearCachedUser: function(){
-        currentUser = null
+        setCurrentUser(null)
         useCachedUser = false
       },
 
@@ -248,6 +256,8 @@ angular.module('security.service', [
       },
 
       setCurrentUser: function(user){
+        // not using setCurrentUser() function defined above because this
+        // is really more of a "refresh" than a "set" when other things use it.
         currentUser = user
       },
 
