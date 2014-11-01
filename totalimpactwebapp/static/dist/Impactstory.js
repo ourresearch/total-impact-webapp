@@ -526,7 +526,7 @@ angular.module('app', [
   'services.genreConfigs',
   'accountPage',
   'services.profileService',
-  'services.profileAboutService',
+  'services.profileAboutService',  
   'profileSidebar',
   'ui.sortable',
   'deadProfile',
@@ -2442,10 +2442,15 @@ angular.module('security.service', [
     }
 
     function setCurrentUser(newCurrentUser){
-      currentUser = newCurrentUser
-      if (currentUser && currentUser.is_trialing){
-        console.log("setting the user. they're trialing. days left:", currentUser.days_left_in_trial)
+
+      // when i log in, if i’m trialing, i see a modal
+      // when i show up, if i’m logged in, and i’m trialing, i see a modal
+      if (!currentUser && newCurrentUser && newCurrentUser.is_trialing){
+          console.log("this user is trialing. days left:", newCurrentUser.days_left_in_trial)
       }
+
+      return currentUser = newCurrentUser
+
     }
 
 
@@ -2557,7 +2562,7 @@ angular.module('security.service', [
         return $http.get('/profile/current')
           .success(function(data, status, headers, config) {
             useCachedUser = true
-            currentUser = data.user
+            setCurrentUser(data.user)
             console.log("successfully logged in from cookie.")
             TiMixpanel.identify(currentUser.id)
             TiMixpanel.registerFromUserObject(currentUser)
@@ -2656,9 +2661,7 @@ angular.module('security.service', [
       },
 
       setCurrentUser: function(user){
-        // not using setCurrentUser() function defined above because this
-        // is really more of a "refresh" than a "set" when other things use it.
-        currentUser = user
+        setCurrentUser(user)
       },
 
       // Is the current user authenticated?
