@@ -51,6 +51,8 @@ angular.module('security.service', [
     // The public API of the service
     var service = {
 
+      currentUser: currentUser,  // helpful for setting $watch on
+
       showLogin: function() {
         openLoginDialog();
       },

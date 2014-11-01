@@ -53,7 +53,7 @@ angular.module( 'signup', [
         },
         function(resp, headers){
           security.clearCachedUser()
-          $location.path(resp.user.url_slug)
+          $location.path(resp.user.url_slug + "/accounts")
 
           // so mixpanel will start tracking this user via her userid from here
           // on out.

@@ -144,10 +144,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-//  $scope.showUnderConstruction = (_.contains(
-//    ["impactstory.org", "www.impactstory.org"],
-//    $location.host()
-//  ))
+  $rootScope.$watch("security.currentUser", function(newVal, oldVal){
+    console.log("security.currentUser done changed", newVal, oldVal)
+  })
+
 
 
   // init the genre configs service

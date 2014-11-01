@@ -639,10 +639,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-//  $scope.showUnderConstruction = (_.contains(
-//    ["impactstory.org", "www.impactstory.org"],
-//    $location.host()
-//  ))
+  $rootScope.$watch("security.currentUser", function(newVal, oldVal){
+    console.log("security.currentUser done changed", newVal, oldVal)
+  })
+
 
 
   // init the genre configs service
@@ -2461,6 +2461,8 @@ angular.module('security.service', [
     // The public API of the service
     var service = {
 
+      currentUser: currentUser,  // helpful for setting $watch on
+
       showLogin: function() {
         openLoginDialog();
       },
@@ -3109,7 +3111,7 @@ angular.module( 'signup', [
         },
         function(resp, headers){
           security.clearCachedUser()
-          $location.path(resp.user.url_slug)
+          $location.path(resp.user.url_slug + "/accounts")
 
           // so mixpanel will start tracking this user via her userid from here
           // on out.
