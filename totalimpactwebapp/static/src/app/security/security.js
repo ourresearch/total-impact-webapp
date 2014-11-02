@@ -15,7 +15,7 @@ angular.module('security.service', [
     var useCachedUser = true
     var currentUser = null
     setCurrentUser(globalCurrentUser)
-
+    var userJustSignedUp
 
     console.log("logging in from object: ", currentUser)
     TiMixpanel.registerFromUserObject(currentUser)
@@ -63,7 +63,7 @@ angular.module('security.service', [
     }
 
     function showDaysLeftModal(currentUser){
-      if ($location.path() == "/settings/subscription"){
+      if ($location.path() == "/settings/subscription" || userJustSignedUp){
         return false
       }
 
@@ -190,7 +190,7 @@ angular.module('security.service', [
 
       logout: function() {
         console.log("logging out user.", currentUser)
-        setCurrentUser(null)
+        service.clearCachedUser()
         $http.get('/profile/current/logout').success(function(data, status, headers, config) {
           UserMessage.set("logout.success")
           TiMixpanel.clearCookie()
@@ -232,6 +232,7 @@ angular.module('security.service', [
 
       clearCachedUser: function(){
         setCurrentUser(null)
+        userJustSignedUp = false
         useCachedUser = false
       },
 
@@ -266,6 +267,10 @@ angular.module('security.service', [
           return currentUser
         }
 
+      },
+
+      setUserJustSignedUp:function(trueOrFalse){
+        userJustSignedUp = trueOrFalse
       },
 
       getCurrentUserSlug: function() {

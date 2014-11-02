@@ -6269,11 +6269,11 @@ div.modal.creds .modal-dialog .modal-footer a {
   font-size: 14px;
 }
 div.days-graphic {
-  font-size: 14px;
+  font-size: 10px;
   text-align: center;
 }
 div.days-graphic i.fa-circle {
-  color: #999;
+  color: #ccc;
 }
 div.days-graphic i.fa-circle-o {
   color: #ccc;
