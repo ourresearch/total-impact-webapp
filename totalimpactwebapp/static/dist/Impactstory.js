@@ -6666,7 +6666,7 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "                     </a>\n" +
     "               </li>\n" +
     "               <li><a href=\"/faq\">FAQ</a></li>\n" +
-    "               <li><a href=\"/CarlBoettiger\">Example profile</a></li>\n" +
+    "               <li><a href=\"/HollyBik\">Example profile</a></li>\n" +
     "            </ul>\n" +
     "         </div>\n" +
     "\n" +
@@ -8911,7 +8911,7 @@ angular.module("security/days-left-modal.tpl.html", []).run(["$templateCache", f
     "\n" +
     "<div class=\"modal-footer\">\n" +
     "   <a class=\"btn btn-primary\" ng-click=\"$close()\" href=\"/settings/subscription\">Subscribe now</a>\n" +
-    "   <a class=\"btn btn-default\" ng-click=\"$close()\">Not yet</a>\n" +
+    "   <a class=\"btn btn-default\" ng-click=\"$close()\">Not now, thanks</a>\n" +
     "</div>");
 }]);
 
