@@ -214,32 +214,33 @@ internet_users = {
 }
 
 
-def events_per_1m_pop(event_counts, adjust_for_access=False):  # { <country_code>: <event_count>, ...}
+def events_per_1m_internet_users(event_counts, adjust_for_access=False):  # { <country_code>: <event_count>, ...}
     ret = {}
     for country_code, my_event_count in event_counts.iteritems():
-        my_population_millions = get_population_millions(country_code, adjust_for_access)
-        if my_population_millions is not None:
-            ret[country_code] = my_event_count / my_population_millions
+        my_internet_users_millions = get_internet_users_millions(country_code, adjust_for_access)
+        if my_internet_users_millions is not None:
+            ret[country_code] = my_event_count / my_internet_users_millions
 
     return ret
 
 
-def get_population_millions(country_code, adjust_for_access=False):
+def get_internet_users_millions(country_code, adjust_for_access=False):
     try:
-        my_population = internet_users[country_code]
+        my_internet_users = internet_users[country_code]
     except KeyError:
         return None
 
     if adjust_for_access and country_code == "CN":
-        my_population *= .001  # adjust for Great Firewall
+        my_internet_users *= .001  # adjust for Great Firewall
 
-    return math.ceil(my_population / 1000000.0)
+    return math.ceil(my_internet_users / 1000000.0)
 
 
 
 
 def global_reach(event_counts):
-    counts_dict = events_per_1m_pop(event_counts, True)
+    counts_dict = events_per_1m_internet_users(event_counts, True)
+
     counts = counts_dict.values()
     num_countries = len(internet_users.keys())
 

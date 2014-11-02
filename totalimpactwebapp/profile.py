@@ -329,8 +329,8 @@ class Profile(db.Model):
         return {k: v["sum"] for k, v in self.countries.iteritems()}
 
     @cached_property
-    def events_per_1m_pop(self):
-        return countries.events_per_1m_pop(self.event_sums_by_country)
+    def events_per_1m_internet_users(self):
+        return countries.events_per_1m_internet_users(self.event_sums_by_country)
 
     @cached_property
     def global_reach(self):
@@ -676,7 +676,7 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["account_products_dict"] = profile.account_products_dict
     profile_dict["drip_emails"] = profile.drip_emails
     profile_dict["countries"] = profile.countries
-    profile_dict["events_per_1m_pop"] = profile.events_per_1m_pop
+    profile_dict["events_per_1m_internet_users"] = profile.events_per_1m_internet_users
     profile_dict["global_reach"] = profile.global_reach
 
     if not "about" in hide_keys:
