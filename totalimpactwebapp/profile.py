@@ -1,6 +1,7 @@
 from totalimpactwebapp import db
 from totalimpactwebapp import profile_award
 from totalimpactwebapp import configs
+from totalimpactwebapp import countries
 from totalimpactwebapp.account import account_factory
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product_markup import MarkupFactory
@@ -11,6 +12,7 @@ from totalimpactwebapp.tweet import save_recent_tweets
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
 from totalimpactwebapp.util import dict_from_dir
+
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError, DataError
@@ -321,6 +323,18 @@ class Profile(db.Model):
     def is_trialing(self):
         in_trial_period = self.days_left_in_trial > 0
         return in_trial_period and not self.is_subscribed
+
+    @cached_property
+    def event_sums_by_country(self):
+        return {k: v["sum"] for k, v in self.countries.iteritems()}
+
+    @cached_property
+    def events_per_1m_pop(self):
+        return countries.events_per_1m_pop(self.event_sums_by_country)
+
+    @cached_property
+    def global_reach(self):
+        return countries.global_reach(self.event_sums_by_country)
 
     @cached_property
     def awards(self):
@@ -662,6 +676,8 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["account_products_dict"] = profile.account_products_dict
     profile_dict["drip_emails"] = profile.drip_emails
     profile_dict["countries"] = profile.countries
+    profile_dict["events_per_1m_pop"] = profile.events_per_1m_pop
+    profile_dict["global_reach"] = profile.global_reach
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)
