@@ -6114,6 +6114,9 @@ input#card-number.discover {
 div.modal-backdrop {
   opacity: .7;
 }
+div.modal {
+  margin-top: 100px;
+}
 div.modal div.modal-content {
   -webkit-border-top-right-radius: 0;
   -webkit-border-bottom-right-radius: 0;
