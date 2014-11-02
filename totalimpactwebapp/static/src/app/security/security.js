@@ -9,7 +9,6 @@ angular.module('security.service', [
   .factory('security', function($http,
                                 $q,
                                 $location,
-                                $location,
                                 $modal,
                                 TiMixpanel,
                                 UserMessage) {
@@ -46,7 +45,9 @@ angular.module('security.service', [
       // when i log in, if i’m trialing, i see a modal
       // when i show up, if i’m logged in, and i’m trialing, i see a modal
       if (!currentUser && newCurrentUser && newCurrentUser.is_trialing){
-          console.log("this user is trialing. days left:", newCurrentUser.days_left_in_trial)
+//        showDaysLeftModal(newCurrentUser)
+        showDaysLeftModal(newCurrentUser)
+        console.log("this user is trialing. days left:", newCurrentUser.days_left_in_trial)
       }
 
       return currentUser = newCurrentUser
@@ -59,6 +60,22 @@ angular.module('security.service', [
       var current_slug = (m) ? m[2] : false;
       console.log("current slug is", current_slug)
       return current_slug
+    }
+
+    function showDaysLeftModal(currentUser){
+      if ($location.path() == "/settings/subscription"){
+        return false
+      }
+
+      $modal.open({
+        templateUrl: "security/days-left-modal.tpl.html",
+        controller: "daysLeftModalCtrl",
+        resolve: {
+          user: function($q){
+            return $q.when(currentUser)
+          }
+        }
+      })
     }
 
 
@@ -272,4 +289,37 @@ angular.module('security.service', [
     };
 
     return service;
-  });
+  })
+
+
+.controller("daysLeftModalCtrl", function($scope, user){
+
+    console.log("daysleftmodalctrl running",user)
+    $scope.user = user
+    $scope.days = listLiveDays()
+
+
+    function listLiveDays(){
+      var days = []
+      _.each(_.range(30), function(dayNumber){
+        console.log("day number", dayNumber)
+        console.log("days left in trial", user.days_left_in_trial)
+        if (dayNumber < user.days_left_in_trial) {
+          days.push({
+            stillLive: true
+          })
+        }
+        else {
+          console.log("dead day", dayNumber)
+          days.push({
+            stillLive: false
+          })
+        }
+      })
+      return days
+    }
+
+
+})
+
+

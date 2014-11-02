@@ -44,7 +44,7 @@ angular.module("productListPage", [
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
-      if (newVal.full_name) {
+      if (newVal && newVal.full_name) {
         Page.setTitle(newVal.full_name + ": " + $routeParams.country_name)
       }
     }, true);
@@ -71,7 +71,7 @@ angular.module("productListPage", [
     $scope.myGenreConfig = myGenreConfig
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
-      if (newVal.full_name) {
+      if (newVal && newVal.full_name) {
         Page.setTitle(newVal.full_name + ": " + myGenreConfig.plural_name)
       }
     }, true);

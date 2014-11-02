@@ -526,7 +526,7 @@ angular.module('app', [
   'services.genreConfigs',
   'accountPage',
   'services.profileService',
-  'services.profileAboutService',  
+  'services.profileAboutService',
   'profileSidebar',
   'ui.sortable',
   'deadProfile',
@@ -1238,7 +1238,7 @@ angular.module("productListPage", [
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
-      if (newVal.full_name) {
+      if (newVal && newVal.full_name) {
         Page.setTitle(newVal.full_name + ": " + $routeParams.country_name)
       }
     }, true);
@@ -1265,7 +1265,7 @@ angular.module("productListPage", [
     $scope.myGenreConfig = myGenreConfig
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
-      if (newVal.full_name) {
+      if (newVal && newVal.full_name) {
         Page.setTitle(newVal.full_name + ": " + myGenreConfig.plural_name)
       }
     }, true);
@@ -2180,6 +2180,7 @@ angular.module("profile", [
     }
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
+      console.log("profile.js watch on profileAboutService triggered", newVal, oldVal)
       Page.setTitle(newVal.full_name)
     }, true)
 
@@ -2409,7 +2410,6 @@ angular.module('security.service', [
   .factory('security', function($http,
                                 $q,
                                 $location,
-                                $location,
                                 $modal,
                                 TiMixpanel,
                                 UserMessage) {
@@ -2446,7 +2446,9 @@ angular.module('security.service', [
       // when i log in, if i’m trialing, i see a modal
       // when i show up, if i’m logged in, and i’m trialing, i see a modal
       if (!currentUser && newCurrentUser && newCurrentUser.is_trialing){
-          console.log("this user is trialing. days left:", newCurrentUser.days_left_in_trial)
+//        showDaysLeftModal(newCurrentUser)
+        showDaysLeftModal(newCurrentUser)
+        console.log("this user is trialing. days left:", newCurrentUser.days_left_in_trial)
       }
 
       return currentUser = newCurrentUser
@@ -2459,6 +2461,22 @@ angular.module('security.service', [
       var current_slug = (m) ? m[2] : false;
       console.log("current slug is", current_slug)
       return current_slug
+    }
+
+    function showDaysLeftModal(currentUser){
+      if ($location.path() == "/settings/subscription"){
+        return false
+      }
+
+      $modal.open({
+        templateUrl: "security/days-left-modal.tpl.html",
+        controller: "daysLeftModalCtrl",
+        resolve: {
+          user: function($q){
+            return $q.when(currentUser)
+          }
+        }
+      })
     }
 
 
@@ -2672,7 +2690,41 @@ angular.module('security.service', [
     };
 
     return service;
-  });
+  })
+
+
+.controller("daysLeftModalCtrl", function($scope, user){
+
+    console.log("daysleftmodalctrl running",user)
+    $scope.user = user
+    $scope.days = listLiveDays()
+
+
+    function listLiveDays(){
+      var days = []
+      _.each(_.range(30), function(dayNumber){
+        console.log("day number", dayNumber)
+        console.log("days left in trial", user.days_left_in_trial)
+        if (dayNumber < user.days_left_in_trial) {
+          days.push({
+            stillLive: true
+          })
+        }
+        else {
+          console.log("dead day", dayNumber)
+          days.push({
+            stillLive: false
+          })
+        }
+      })
+      return days
+    }
+
+
+})
+
+
+
 angular.module("settings.pageDescriptions", [])
 angular.module('settings.pageDescriptions')
 .factory('SettingsPageDescriptions', function(){
@@ -6360,7 +6412,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -8836,6 +8888,27 @@ angular.module("profile/tour-start-modal.tpl.html", []).run(["$templateCache", f
     "");
 }]);
 
+angular.module("security/days-left-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("security/days-left-modal.tpl.html",
+    "<div class=\"modal-header\">\n" +
+    "   <h4>\n" +
+    "      There are {{ user.days_left_in_trial }} days left in your free trial\n" +
+    "   </h4>\n" +
+    "   <div class=\"days-graphic\">\n" +
+    "      <span class=\"day\" ng-repeat=\"day in days\">\n" +
+    "         <i class=\"fa fa-circle-o\" ng-show=\"!day.stillLive\"></i>\n" +
+    "         <i class=\"fa fa-circle\" ng-show=\"day.stillLive\"></i>\n" +
+    "      </span>\n" +
+    "   </div>\n" +
+    "   <a class=\"dismiss\" ng-click=\"$close()\">&times;</a>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"modal-footer\">\n" +
+    "   <a class=\"btn btn-primary\" ng-click=\"$close()\" href=\"/settings/subscription\">Subscribe now</a>\n" +
+    "   <a class=\"btn btn-default\" ng-click=\"$close()\">Not yet</a>\n" +
+    "</div>");
+}]);
+
 angular.module("security/login/form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("security/login/form.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -8866,7 +8939,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
-    "         <label class=\"sr-only\">Password</label>\n" +
+    "         <label class=\"sr-only\">Password foo</label>\n" +
     "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "            <input name=\"pass\" required\n" +

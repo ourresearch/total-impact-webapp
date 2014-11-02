@@ -1,0 +1,17 @@
+<div class="modal-header">
+   <h4>
+      There are {{ user.days_left_in_trial }} days left in your free trial
+   </h4>
+   <div class="days-graphic">
+      <span class="day" ng-repeat="day in days">
+         <i class="fa fa-circle-o" ng-show="!day.stillLive"></i>
+         <i class="fa fa-circle" ng-show="day.stillLive"></i>
+      </span>
+   </div>
+   <a class="dismiss" ng-click="$close()">&times;</a>
+</div>
+
+<div class="modal-footer">
+   <a class="btn btn-primary" ng-click="$close()" href="/settings/subscription">Subscribe now</a>
+   <a class="btn btn-default" ng-click="$close()">Not yet</a>
+</div>
