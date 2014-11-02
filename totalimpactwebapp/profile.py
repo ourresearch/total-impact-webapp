@@ -352,14 +352,26 @@ class Profile(db.Model):
                     number_interactions = product.countries[country][source]
                     country_dict[country][source] += number_interactions
 
-        #calculate sums
-        for product in self.display_products:
-            for country in product.countries:
-               for source in product.countries[country]:
-                    if not "sum" in country_dict[country]:
-                        country_dict[country]["sum"] = 0
-                    country_dict[country]["sum"] += product.countries[country][source]
 
+
+        for country_code, event_counts in country_dict.iteritems():
+            my_sum = 0
+            for event_type, count in event_counts.iteritems():
+                if event_type != "sum":
+                    my_sum += count
+
+            country_dict[country_code]["sum"] = my_sum
+
+
+        #calculate sums
+        #for product in self.display_products:
+        #    for country in product.countries:
+        #       for source in product.countries[country]:
+        #            if not "sum" in country_dict[country]:
+        #                country_dict[country]["sum"] = 0
+        #            country_dict[country]["sum"] += product.countries[country][source]
+
+        print country_dict
         return country_dict
 
 
