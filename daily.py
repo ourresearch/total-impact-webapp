@@ -797,6 +797,40 @@ def ip_deets():
         commit(db)
 
 
+
+
+def countries_for_all_profiles(url_slug=None, min_created_date=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None))
+        if min_created_date:
+            q = q.filter(Profile.created >= min_created_date)
+
+    countries = {}
+    start_time = datetime.datetime.utcnow()
+    number_profiles = 0.0
+    total_refreshes = 0
+    for profile in windowed_query(q, Profile.created, 25):  # sort by created
+
+        if number_profiles > 500:
+            print "ok, got country data for 500 profiles. quitting."
+            return True
+
+        number_profiles += 1
+        number_refreshes = 0.0
+        print "getting countries for", profile.url_slug, profile.id, profile.created
+
+        for my_country in profile.countries:
+            pass
+
+
+
+
+
+
+
+
 def main(function, args):
     if function=="emailreports":
         if "url_slug" in args and args["url_slug"]:

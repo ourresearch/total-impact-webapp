@@ -238,7 +238,7 @@ def get_internet_users_millions(country_code, adjust_for_access=False):
 
 
 
-def global_reach(event_counts):
+def internationality(event_counts):
     counts_dict = events_per_1m_internet_users(event_counts, True)
 
     counts = counts_dict.values()

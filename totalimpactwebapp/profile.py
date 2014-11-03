@@ -42,7 +42,6 @@ import arrow
 
 
 logger = logging.getLogger("tiwebapp.profile")
-redis_client = redis.from_url(os.getenv("REDIS_URL"), db=0)  #REDIS_MAIN_DATABASE_NUMBER=0
 
 default_free_trial_days = 30
 
@@ -333,8 +332,8 @@ class Profile(db.Model):
         return countries.events_per_1m_internet_users(self.event_sums_by_country)
 
     @cached_property
-    def global_reach(self):
-        return countries.global_reach(self.event_sums_by_country)
+    def internationality(self):
+        return countries.internationality(self.event_sums_by_country)
 
     @cached_property
     def awards(self):
@@ -689,7 +688,7 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["drip_emails"] = profile.drip_emails
     profile_dict["countries"] = profile.countries
     profile_dict["events_per_1m_internet_users"] = profile.events_per_1m_internet_users
-    profile_dict["global_reach"] = profile.global_reach
+    profile_dict["internationality"] = profile.internationality
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)
