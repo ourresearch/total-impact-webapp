@@ -225,8 +225,10 @@ class Product(db.Model):
 
 
     def get_metric_by_name(self, provider, interaction):
+        print "we are looking for", provider, interaction
         for metric in self.metrics:
             if metric.provider==provider and metric.interaction==interaction:
+                print "ok i'm returning a metric now:", provider, interaction
                 return metric
         return None
 
@@ -338,9 +340,9 @@ class Product(db.Model):
             except KeyError:
                 pass
 
-        mendeley_views_metric = self.get_metric_by_name("mendeley", "my_countries")
+        mendeley_views_metric = self.get_metric_by_name("mendeley", "countries")
         if not mendeley_views_metric:
-            mendeley_views_metric = self.get_metric_by_name("mendeley_new", "my_countries")
+            mendeley_views_metric = self.get_metric_by_name("mendeley_new", "countries")
         if mendeley_views_metric:
             country_data_fullnames = mendeley_views_metric.most_recent_snap.raw_value
             if country_data_fullnames:
@@ -353,7 +355,7 @@ class Product(db.Model):
                     )
 
         # impactstory_views_metric = product.get_metric_by_name("impactstory", "my_countries")
-        impactstory_views_metric = self.get_metric_by_name("impactstory", "my_countries")
+        impactstory_views_metric = self.get_metric_by_name("impactstory", "countries")
         if impactstory_views_metric:
             country_data = impactstory_views_metric.most_recent_snap.raw_value
             for country in country_data:

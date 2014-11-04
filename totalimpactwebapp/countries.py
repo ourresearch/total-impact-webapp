@@ -294,13 +294,8 @@ def common_name_from_iso_code(iso_code):
     try:
         return country_names[iso_code]
     except KeyError:
-        # sometimes the data has the country name instead of the ISO code.
-        # if so, we just use that.
-        lowercase_countries = [c.lower() for c in country_names.values()]
-        if iso_code.lower() in lowercase_countries:
-            return iso_code
-        else:
-            return None
+        logger.debug(u"ISO country fail: couldn't get name from {iso_code}".format(
+            iso_code=iso_code))
 
 def make_countries_list(products):
     countries_dict = {}
@@ -310,6 +305,9 @@ def make_countries_list(products):
             pass
 
 def simplify_name(name):
+    if name is None:
+        return None
+
     # remove any accented characters, spaces, dashes, etc. Keep only ASCII letters.
     regex = re.compile("[^A-Za-z]]")
     regex.sub("", name)
@@ -340,8 +338,7 @@ def iso_code_from_name(name):
         if simplify_name(name) in simplified_name_versions:
             return country["cca2"]
 
-    print "couldn't find an iso code for ", name
-    logger.debug(u"Couldn't find country code name for {country_name}".format(
+    logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
         country_name=name))
     return None
 
@@ -389,7 +386,8 @@ class CountryList(object):
 
 
     def to_dict(self):
-        return [c.to_dict() for c in self.countries_dict.values()]
+
+        return [c.to_dict() for c in self.countries_dict.values() if c.name is not None]
 
 
 
