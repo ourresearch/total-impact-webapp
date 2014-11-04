@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-03
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-04
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1803,6 +1803,7 @@ angular.module('profileLinkedAccounts', [
 angular.module( 'profileMap', [
     'security',
     'services.page',
+    'services.countriesInfo',
     'services.tiMixpanel'
   ])
 
@@ -1822,6 +1823,7 @@ angular.module( 'profileMap', [
                                        CountryNames,
                                        ProfileService,
                                        MapService,
+                                       CountriesInfo,
                                        Loading,
                                        Page){
   console.log("profile map ctrl ran.")
@@ -1835,12 +1837,13 @@ angular.module( 'profileMap', [
 
 
 
-
   $scope.$watch('profileService.data', function(newVal, oldVal){
     console.log("profileService.data watch triggered from profileMap", newVal, oldVal)
     if (newVal.countries) {
       console.log("here is where we load le map", newVal.countries)
       Loading.finishPage()
+
+      $scope.countries = CountriesInfo.countriesList(newVal.countries)
 
       var countryCounts = {}
       _.each(newVal.countries, function(myCountryCounts, myCountryCode){
@@ -4394,10 +4397,34 @@ angular.module('services.countriesInfo', [])
   .factory("CountriesInfo", function(){
     var names = globalCountryNames
 
+
+
+    function countriesList(countriesDict){
+      ret = []
+      if (countriesDict){
+        console.log("countries list!")
+        _.each(countriesDict, function(countsDict, isoCode){
+          var countryName = globalCountryNames[isoCode]
+          if (!countryName){
+            return false
+          }
+          ret.push({
+            isoCode: isoCode,
+            name: countryName,
+            sum: countsDict.sum
+          })
+        })
+      }
+      console.log("trying to return this countries list: ", ret)
+      return ret
+    }
+
     return {
       nameFromCode:function(code){
         return names[code]
-      }
+      },
+      countriesList: countriesList
+
     }
 
 
@@ -6030,6 +6057,9 @@ angular.module('services.profileService', [
       }
       return _.extend(pinnedCard, extraData)
     }
+
+
+
 
 
 
@@ -8587,10 +8617,6 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "<div id=\"profile-map-page\">\n" +
     "   <h2>Impact map</h2>\n" +
     "\n" +
-    "   <pre>\n" +
-    "      {{ profileService.data.countries | json }}\n" +
-    "   </pre>\n" +
-    "\n" +
     "   <div class=\"main-content\">\n" +
     "      <div id=\"profile-map\" class=\"impact-map\"></div>\n" +
     "\n" +
@@ -8600,6 +8626,11 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "               <th>Country</th>\n" +
     "               <th>Impact events</th>\n" +
     "               <th>Impact concentration</th>\n" +
+    "            </tr>\n" +
+    "            <tr ng-repeat=\"country in countries\">\n" +
+    "               <td>{{ country.name }}</td>\n" +
+    "               <td>{{ country.sum }}</td>\n" +
+    "               <td>{{ country.isoCode }}</td>\n" +
     "            </tr>\n" +
     "\n" +
     "\n" +

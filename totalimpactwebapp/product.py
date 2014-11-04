@@ -8,7 +8,6 @@ import requests
 from collections import Counter
 from collections import defaultdict
 import flask
-from iso3166 import countries
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -19,6 +18,7 @@ from totalimpactwebapp import reference_set
 
 # regular ol' imports
 from totalimpactwebapp import embed_markup
+from totalimpactwebapp import countries
 from totalimpactwebapp.metric import make_metrics_list
 from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
@@ -63,19 +63,6 @@ def add_product_embed_markup(tiid):
     product.embed_markup = product.get_embed_markup() #alters an attribute, so caller should commit
     db.session.add(product)
     commit(db)
-
-def get_country_code(country_name):
-    if "Singapore" in country_name:
-        country_name = "Singapore"
-    if "Venezuela" in country_name:
-        country_name = "Venezuela, Bolivarian Republic of"
-    try:
-        code = countries.get(country_name).alpha2
-    except KeyError:
-        logger.debug(u"Couldn't find country code name for {country_name}".format(
-            country_name=country_name))
-        code = country_name
-    return code
 
 
 class Product(db.Model):
@@ -336,39 +323,47 @@ class Product(db.Model):
 
     @cached_property
     def countries(self):
-
-        countries = defaultdict(dict)
+        my_countries = countries.CountryList()
 
         altmetric_twitter_metric = self.get_metric_by_name("altmetric_com", "demographics")
         if altmetric_twitter_metric:
             try:
                 country_data = altmetric_twitter_metric.most_recent_snap.raw_value["geo"]["twitter"]
                 for country in country_data:
-                    countries[country]["altmetric_com:tweets"] = country_data[country]
+                    my_countries.add_from_metric(
+                        country,
+                        "altmetric_com:tweets",
+                        country_data[country]
+                    )
             except KeyError:
                 pass
 
-        mendeley_views_metric = self.get_metric_by_name("mendeley", "countries")
+        mendeley_views_metric = self.get_metric_by_name("mendeley", "my_countries")
         if not mendeley_views_metric:
-            mendeley_views_metric = self.get_metric_by_name("mendeley_new", "countries")
+            mendeley_views_metric = self.get_metric_by_name("mendeley_new", "my_countries")
         if mendeley_views_metric:
             country_data_fullnames = mendeley_views_metric.most_recent_snap.raw_value
             if country_data_fullnames:
-                country_data = dict((get_country_code(k), v) for (k, v) in country_data_fullnames.iteritems())
+                country_data = dict((k, v) for (k, v) in country_data_fullnames.iteritems())
                 for country in country_data:
-                    countries[country]["mendeley:readers"] = country_data[country]
+                    my_countries.add_from_metric(
+                        country,
+                        "mendeley:readers",
+                        country_data[country]
+                    )
 
-        # impactstory_views_metric = product.get_metric_by_name("impactstory", "countries")
-        impactstory_views_metric = self.get_metric_by_name("impactstory", "countries")
+        # impactstory_views_metric = product.get_metric_by_name("impactstory", "my_countries")
+        impactstory_views_metric = self.get_metric_by_name("impactstory", "my_countries")
         if impactstory_views_metric:
             country_data = impactstory_views_metric.most_recent_snap.raw_value
             for country in country_data:
-                countries[country]["impactstory:views"] = country_data[country]
+                my_countries.add_from_metric(
+                    country,
+                    "impactstory:views",
+                    country_data[country]
+                )
 
-        for country_code, country_counts_dict in countries.iteritems():
-            country_counts_dict["sum"] = sum(country_counts_dict.values())
-
-        return countries
+        return my_countries.to_dict()
 
 
     def has_metric_this_good(self, provider, interaction, count):

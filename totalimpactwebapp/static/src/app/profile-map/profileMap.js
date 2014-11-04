@@ -1,6 +1,7 @@
 angular.module( 'profileMap', [
     'security',
     'services.page',
+    'services.countriesInfo',
     'services.tiMixpanel'
   ])
 
@@ -20,6 +21,7 @@ angular.module( 'profileMap', [
                                        CountryNames,
                                        ProfileService,
                                        MapService,
+                                       CountriesInfo,
                                        Loading,
                                        Page){
   console.log("profile map ctrl ran.")
@@ -33,12 +35,13 @@ angular.module( 'profileMap', [
 
 
 
-
   $scope.$watch('profileService.data', function(newVal, oldVal){
     console.log("profileService.data watch triggered from profileMap", newVal, oldVal)
     if (newVal.countries) {
       console.log("here is where we load le map", newVal.countries)
       Loading.finishPage()
+
+      $scope.countries = CountriesInfo.countriesList(newVal.countries)
 
       var countryCounts = {}
       _.each(newVal.countries, function(myCountryCounts, myCountryCode){

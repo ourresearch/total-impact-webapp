@@ -1,7 +1,14 @@
 import math
+import re
+import logging
 
 # this is from https://github.com/mledoze/countries
 from totalimpactwebapp import countries_info
+
+from totalimpactwebapp.util import dict_from_dir
+
+logger = logging.getLogger("tiwebapp.countries")
+
 
 internet_users = {
     'BD': 10178672,
@@ -279,6 +286,121 @@ def get_country_names():
         ret[iso2_code] = country["name"]["common"]
 
     return ret
+
+
+
+def common_name_from_iso_code(iso_code):
+    country_names = get_country_names()
+    try:
+        return country_names[iso_code]
+    except KeyError:
+        # sometimes the data has the country name instead of the ISO code.
+        # if so, we just use that.
+        lowercase_countries = [c.lower() for c in country_names.values()]
+        if iso_code.lower() in lowercase_countries:
+            return iso_code
+        else:
+            return None
+
+def make_countries_list(products):
+    countries_dict = {}
+
+    for product in products:
+        for country in product.countries:
+            pass
+
+def simplify_name(name):
+    # remove any accented characters, spaces, dashes, etc. Keep only ASCII letters.
+    regex = re.compile("[^A-Za-z]]")
+    regex.sub("", name)
+    return name.lower()
+
+
+# singapore
+# venezuala
+
+def iso_code_from_name(name):
+    """
+    Gets the ISO alpha2 code from a common name.
+
+    Makes a few guesses based on alternate versions found in the country_info.py
+    file. If you give it an ISO code it just gives you that back.
+    """
+    if name in [c["cca2"] for c in countries_info.countries_info]:
+        return name  # we got an ISO code, give it back.
+
+
+    for country in countries_info.countries_info:
+        name_versions = [c for c in country["altSpellings"]]
+        name_versions.append(country["name"]["common"])
+        name_versions.append(country["name"]["official"])
+
+        simplified_name_versions = [simplify_name(n) for n in name_versions]
+
+        if simplify_name(name) in simplified_name_versions:
+            return country["cca2"]
+
+    print "couldn't find an iso code for ", name
+    logger.debug(u"Couldn't find country code name for {country_name}".format(
+        country_name=name))
+    return None
+
+
+class Country(object):
+    def __init__(self, iso_code):
+        self.iso_code = iso_code
+        self.name = common_name_from_iso_code(iso_code)
+        self.event_counts = {}
+
+    def add_event(self, metric_name, count):
+        if metric_name not in self.event_counts:
+            self.event_counts[metric_name] = 0
+
+        self.event_counts[metric_name] += count
+
+
+    @property
+    def event_sum(self):
+        ret = 0
+        for metric, count in self.event_counts.iteritems():
+            ret += count
+        return ret
+
+    @property
+    def impact_per_million_internet_users(self):
+        internet_user_millions = get_internet_users_millions(self.iso_code, True)
+        return self.event_sum / internet_user_millions
+
+    def to_dict(self):
+        ignore = ["to_dict", "add_event"]
+        return dict_from_dir(self, keys_to_ignore=ignore)
+
+
+class CountryList(object):
+    def __init__(self):
+        self.countries_dict = {}
+
+    def add_from_metric(self, id_or_iso_code, metric_name, count):
+        iso_code = iso_code_from_name(id_or_iso_code)
+        if iso_code not in self.countries_dict:
+            self.countries_dict[iso_code] = Country(iso_code)
+
+        self.countries_dict[iso_code].add_event(metric_name, count)
+
+
+    def to_dict(self):
+        return [c.to_dict() for c in self.countries_dict.values()]
+
+
+
+
+
+
+
+
+
+
+
 
 
 

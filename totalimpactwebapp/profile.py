@@ -361,16 +361,6 @@ class Profile(db.Model):
 
             country_dict[country_code]["sum"] = my_sum
 
-
-        #calculate sums
-        #for product in self.display_products:
-        #    for country in product.countries:
-        #       for source in product.countries[country]:
-        #            if not "sum" in country_dict[country]:
-        #                country_dict[country]["sum"] = 0
-        #            country_dict[country]["sum"] += product.countries[country][source]
-
-        print country_dict
         return country_dict
 
 

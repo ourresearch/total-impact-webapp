@@ -1,10 +1,6 @@
 <div id="profile-map-page">
    <h2>Impact map</h2>
 
-   <pre>
-      {{ profileService.data.countries | json }}
-   </pre>
-
    <div class="main-content">
       <div id="profile-map" class="impact-map"></div>
 
@@ -14,6 +10,11 @@
                <th>Country</th>
                <th>Impact events</th>
                <th>Impact concentration</th>
+            </tr>
+            <tr ng-repeat="country in countries">
+               <td>{{ country.name }}</td>
+               <td>{{ country.sum }}</td>
+               <td>{{ country.isoCode }}</td>
             </tr>
 
 
