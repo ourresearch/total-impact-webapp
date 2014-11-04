@@ -229,16 +229,6 @@ internet_users = {
 }
 
 
-def events_per_1m_internet_users(event_counts, adjust_for_access=False):  # { <country_code>: <event_count>, ...}
-    ret = {}
-    for country_code, my_event_count in event_counts.iteritems():
-        my_internet_users_millions = get_internet_users_millions(country_code, adjust_for_access)
-        if my_internet_users_millions is not None:
-            ret[country_code] = my_event_count / my_internet_users_millions
-
-    return ret
-
-
 def get_internet_users_millions(country_code, adjust_for_access=False):
     try:
         my_internet_users = internet_users[country_code]
@@ -350,8 +340,10 @@ class Country(object):
 
     @property
     def impact_per_million_internet_users(self):
-
         internet_user_millions = get_internet_users_millions(self.iso_code, True)
+        if internet_user_millions is None:
+            return 0
+
         return self.event_sum / internet_user_millions
 
     def to_dict(self):
