@@ -8625,12 +8625,15 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "      <div class=\"map-stats\">\n" +
     "         <table>\n" +
     "            <tr>\n" +
-    "               <th>Country</th>\n" +
-    "               <th>Impact events</th>\n" +
-    "               <th>Impact concentration</th>\n" +
+    "               <th>Country <i class=\"fa fa-sort\"></i></th>\n" +
+    "               <th>Impact events <i class=\"fa fa-sort\"></i></th>\n" +
+    "               <th>Impact concentration <i class=\"fa fa-sort\"></i></th>\n" +
     "            </tr>\n" +
     "            <tr ng-repeat=\"country in countries\">\n" +
-    "               <td>{{ country.name }}</td>\n" +
+    "               <td class=\"f16\">\n" +
+    "                  <span class=\"flag {{ country.iso_code.toLowerCase() }}\"></span>\n" +
+    "                  {{ country.name }}\n" +
+    "               </td>\n" +
     "               <td>{{ country.event_sum }}</td>\n" +
     "               <td>{{ country.impact_per_million_internet_users.toFixed(2) }}</td>\n" +
     "            </tr>\n" +
