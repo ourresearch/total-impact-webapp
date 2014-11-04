@@ -228,7 +228,6 @@ class Product(db.Model):
         print "we are looking for", provider, interaction
         for metric in self.metrics:
             if metric.provider==provider and metric.interaction==interaction:
-                print "ok i'm returning a metric now:", provider, interaction
                 return metric
         return None
 
@@ -364,8 +363,7 @@ class Product(db.Model):
                     "impactstory:views",
                     country_data[country]
                 )
-
-        return my_countries.to_dict()
+        return my_countries
 
 
     def has_metric_this_good(self, provider, interaction, count):

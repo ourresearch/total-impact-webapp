@@ -134,9 +134,12 @@ def todict(obj, classkey=None):
         return data
 
     elif hasattr(obj, "to_dict"):
-        data = dict([(key, todict(value, classkey))
+        data = dict([
+            (key, todict(value, classkey))
             for key, value in obj.to_dict().iteritems()
-            if not callable(value) and not key.startswith('_')])
+            if not callable(value) and not key.startswith('_')
+        ])
+
         if classkey is not None and hasattr(obj, "__class__"):
             data[classkey] = obj.__class__.__name__
         return data

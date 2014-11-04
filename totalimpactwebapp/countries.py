@@ -6,6 +6,7 @@ import logging
 from totalimpactwebapp import countries_info
 
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp.util import cached_property
 
 logger = logging.getLogger("tiwebapp.countries")
 
@@ -221,7 +222,10 @@ internet_users = {
     'ID': 39528742,
     'UA': 20376020,
     'QA': 1849878,
-    'MZ': 1395022
+    'MZ': 1395022,
+
+    # from http://en.wikipedia.org/wiki/List_of_countries_by_number_of_Internet_users
+    'TW': 17656414
 }
 
 
@@ -248,23 +252,6 @@ def get_internet_users_millions(country_code, adjust_for_access=False):
 
 
 
-
-def internationality(event_counts):
-    counts_dict = events_per_1m_internet_users(event_counts, True)
-
-    counts = counts_dict.values()
-    num_countries = len(internet_users.keys())
-
-    # pad list with zeros so there's one item per country
-    # from http://stackoverflow.com/a/3438818
-    padded_counts = counts + [0] * (num_countries - len(counts))
-
-    try:
-        gini_as_percent = (1 - gini(padded_counts)) * 100
-    except ZeroDivisionError:
-        gini_as_percent = None
-
-    return gini_as_percent
 
 
 # from http://planspace.org/2013/06/21/how-to-calculate-gini-coefficient-from-raw-data-in-python/
@@ -314,8 +301,6 @@ def simplify_name(name):
     return name.lower()
 
 
-# singapore
-# venezuala
 
 def iso_code_from_name(name):
     """
@@ -365,6 +350,7 @@ class Country(object):
 
     @property
     def impact_per_million_internet_users(self):
+
         internet_user_millions = get_internet_users_millions(self.iso_code, True)
         return self.event_sum / internet_user_millions
 
@@ -384,10 +370,44 @@ class CountryList(object):
 
         self.countries_dict[iso_code].add_event(metric_name, count)
 
+    def add_from_products(self, products):
+        for product in products:
+            for country in product.countries.countries:
+                for metric_name, count in country.event_counts.iteritems():
+                    self.add_from_metric(
+                        country.iso_code,
+                        metric_name,
+                        count
+                    )
+
+    @cached_property
+    def internationality(self):
+        counts = [c.impact_per_million_internet_users for c in self.countries]
+        num_countries = len(internet_users.keys())
+
+        # pad list with zeros so there's one item per country
+        # from http://stackoverflow.com/a/3438818
+        padded_counts = counts + [0] * (num_countries - len(counts))
+
+        try:
+            gini_as_percent = (1 - gini(padded_counts)) * 100
+        except ZeroDivisionError:
+            gini_as_percent = None
+
+        return gini_as_percent
+
+
+    @cached_property
+    def countries(self):
+        return [c for c in self.countries_dict.values() if c.name is not None]
+
 
     def to_dict(self):
+        return {
+            "list": self.countries,
+            "internationality": self.internationality
+        }
 
-        return [c.to_dict() for c in self.countries_dict.values() if c.name is not None]
 
 
 

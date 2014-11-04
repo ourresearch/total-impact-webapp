@@ -328,12 +328,9 @@ class Profile(db.Model):
         return {k: v["sum"] for k, v in self.countries.iteritems()}
 
     @cached_property
-    def events_per_1m_internet_users(self):
-        return countries.events_per_1m_internet_users(self.event_sums_by_country)
-
-    @cached_property
     def internationality(self):
-        return countries.internationality(self.event_sums_by_country)
+        return 42
+        return self.countries.internationality
 
     @cached_property
     def awards(self):
@@ -341,27 +338,10 @@ class Profile(db.Model):
 
     @cached_property
     def countries(self):
-        # aggregate into format like {"US": {"altmetric_com:tweets":2, "sum":2}}
-        country_dict = defaultdict(dict)
-        for product in self.display_products:
-            for country in product.countries:
-               for source in product.countries[country]:
-                    if not source in country_dict[country]:
-                        country_dict[country][source] = 0
-                    number_interactions = product.countries[country][source]
-                    country_dict[country][source] += number_interactions
+        country_list = countries.CountryList()
+        country_list.add_from_products(self.display_products)
+        return country_list
 
-
-
-        for country_code, event_counts in country_dict.iteritems():
-            my_sum = 0
-            for event_type, count in event_counts.iteritems():
-                if event_type != "sum":
-                    my_sum += count
-
-            country_dict[country_code]["sum"] = my_sum
-
-        return country_dict
 
 
     def make_url_slug(self, surname, given_name):
@@ -677,7 +657,6 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["account_products_dict"] = profile.account_products_dict
     profile_dict["drip_emails"] = profile.drip_emails
     profile_dict["countries"] = profile.countries
-    profile_dict["events_per_1m_internet_users"] = profile.events_per_1m_internet_users
     profile_dict["internationality"] = profile.internationality
 
     if not "about" in hide_keys:
