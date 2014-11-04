@@ -41,6 +41,9 @@ var globalCurrentUser = {{ current_user | tojson | safe }}
 // load genre configs
 var globalGenreConfigs = {{ genre_configs | tojson | safe }}
 
+// load the country configs
+var globalCountryNames = {{ country_names | tojson | safe }}
+
 
 // set the Stripe publishable key. Different on staging and prod
 var stripePublishableKey = "{{ stripe_publishable_key }}"

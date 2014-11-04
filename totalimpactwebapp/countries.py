@@ -1,4 +1,8 @@
 import math
+
+# this is from https://github.com/mledoze/countries
+from totalimpactwebapp import countries_info
+
 internet_users = {
     'BD': 10178672,
     'BE': 9199067,
@@ -265,4 +269,17 @@ def gini(list_of_values):
         area += height - value / 2.
     fair_area = height * len(list_of_values) / 2
     return (fair_area - area) / fair_area
+
+
+def get_country_names():
+    ret = {}
+    info = countries_info.countries_info
+    for country in info:
+        iso2_code = country["cca2"]
+        ret[iso2_code] = country["name"]["common"]
+
+    return ret
+
+
+
 

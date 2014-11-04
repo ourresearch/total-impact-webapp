@@ -1,9 +1,28 @@
 <div id="profile-map-page">
    <h2>Impact map</h2>
 
+   <pre>
+      {{ profileService.data.countries | json }}
+   </pre>
+
    <div class="main-content">
       <div id="profile-map" class="impact-map"></div>
 
+      <div class="map-stats">
+         <table>
+            <tr>
+               <th>Country</th>
+               <th>Impact events</th>
+               <th>Impact concentration</th>
+            </tr>
+
+
+
+         </table>
+
+
+
+      </div>
 
    </div>
 

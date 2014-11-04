@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-01
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-03
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -4388,6 +4388,22 @@ angular.module('services.charge', [])
 
 
   })
+globalCountryNames = globalCountryNames || []
+
+angular.module('services.countriesInfo', [])
+  .factory("CountriesInfo", function(){
+    var names = globalCountryNames
+
+    return {
+      nameFromCode:function(code){
+        return names[code]
+      }
+    }
+
+
+
+
+  })
 angular.module("services.countryNames", [])
 .factory("CountryNames", function(){
   var isoCountries = {
@@ -8571,9 +8587,28 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "<div id=\"profile-map-page\">\n" +
     "   <h2>Impact map</h2>\n" +
     "\n" +
+    "   <pre>\n" +
+    "      {{ profileService.data.countries | json }}\n" +
+    "   </pre>\n" +
+    "\n" +
     "   <div class=\"main-content\">\n" +
     "      <div id=\"profile-map\" class=\"impact-map\"></div>\n" +
     "\n" +
+    "      <div class=\"map-stats\">\n" +
+    "         <table>\n" +
+    "            <tr>\n" +
+    "               <th>Country</th>\n" +
+    "               <th>Impact events</th>\n" +
+    "               <th>Impact concentration</th>\n" +
+    "            </tr>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "         </table>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "      </div>\n" +
     "\n" +
     "   </div>\n" +
     "\n" +

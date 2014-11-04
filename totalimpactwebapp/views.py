@@ -21,7 +21,7 @@ from boto.s3.connection import S3ResponseError
 from totalimpactwebapp import app
 from totalimpactwebapp import db
 from totalimpactwebapp import login_manager
-from totalimpactwebapp import cache
+from totalimpactwebapp import countries
 
 from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.password_reset import reset_password_from_token
@@ -996,7 +996,8 @@ def get_js_top():
         stripe_publishable_key=os.getenv("STRIPE_PUBLISHABLE_KEY"),
         newrelic_header=newrelic_header,
         current_user=current_user_dict,
-        genre_configs=configs.genre_configs()
+        genre_configs=configs.genre_configs(),
+        country_names=countries.get_country_names()
     )
 
 
@@ -1087,7 +1088,9 @@ def get_configs():
 def get_genre_configs():
     return json_resp_from_thing(configs.genre_configs())
 
-
+@app.route("/configs/countries")
+def get_country_info():
+    return json_resp_from_thing(countries_info.countries_info)
 
 
 ###############################################################################
