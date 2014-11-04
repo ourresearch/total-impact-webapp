@@ -13,8 +13,8 @@
             </tr>
             <tr ng-repeat="country in countries">
                <td>{{ country.name }}</td>
-               <td>{{ country.sum }}</td>
-               <td>{{ country.isoCode }}</td>
+               <td>{{ country.event_sum }}</td>
+               <td>{{ country.impact_per_million_internet_users.toFixed(2) }}</td>
             </tr>
 
 

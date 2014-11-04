@@ -41,11 +41,11 @@ angular.module( 'profileMap', [
       console.log("here is where we load le map", newVal.countries)
       Loading.finishPage()
 
-      $scope.countries = CountriesInfo.countriesList(newVal.countries)
+      $scope.countries = newVal.countries.list
 
       var countryCounts = {}
-      _.each(newVal.countries, function(myCountryCounts, myCountryCode){
-        countryCounts[myCountryCode] = myCountryCounts.sum
+      _.each(newVal.countries.list, function(countryObj){
+        countryCounts[countryObj.iso_code] = countryObj.event_sum
       })
 
       console.log("preparing to run the map", countryCounts)
@@ -67,7 +67,7 @@ angular.module( 'profileMap', [
               normalizeFunction: 'polynomial'
             }]
           },
-          onRegionTipShow: MapService.makeRegionTipHandler(newVal.countries),
+          onRegionTipShow: MapService.makeRegionTipHandler(newVal.countries.list),
           onRegionClick: function(event, countryCode){
             if (!countryCounts[countryCode]) {
               return false // no country pages for blank countries.

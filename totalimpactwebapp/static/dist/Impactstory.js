@@ -1843,11 +1843,11 @@ angular.module( 'profileMap', [
       console.log("here is where we load le map", newVal.countries)
       Loading.finishPage()
 
-      $scope.countries = CountriesInfo.countriesList(newVal.countries)
+      $scope.countries = newVal.countries.list
 
       var countryCounts = {}
-      _.each(newVal.countries, function(myCountryCounts, myCountryCode){
-        countryCounts[myCountryCode] = myCountryCounts.sum
+      _.each(newVal.countries.list, function(countryObj){
+        countryCounts[countryObj.iso_code] = countryObj.event_sum
       })
 
       console.log("preparing to run the map", countryCounts)
@@ -1869,7 +1869,7 @@ angular.module( 'profileMap', [
               normalizeFunction: 'polynomial'
             }]
           },
-          onRegionTipShow: MapService.makeRegionTipHandler(newVal.countries),
+          onRegionTipShow: MapService.makeRegionTipHandler(newVal.countries.list),
           onRegionClick: function(event, countryCode){
             if (!countryCounts[countryCode]) {
               return false // no country pages for blank countries.
@@ -5087,7 +5087,9 @@ angular.module("services.map", [])
       function makeTipMetricLine(metricName){
         console.log("country code", countryCode)
 
-        var metricValue = countriesData[countryCode][metricName]
+        var country = _.findWhere(countriesData, {iso_code: countryCode})
+
+        var metricValue = country.event_counts[metricName]
         if (!metricValue) {
           return ""
         }
@@ -8629,8 +8631,8 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "            </tr>\n" +
     "            <tr ng-repeat=\"country in countries\">\n" +
     "               <td>{{ country.name }}</td>\n" +
-    "               <td>{{ country.sum }}</td>\n" +
-    "               <td>{{ country.isoCode }}</td>\n" +
+    "               <td>{{ country.event_sum }}</td>\n" +
+    "               <td>{{ country.impact_per_million_internet_users.toFixed(2) }}</td>\n" +
     "            </tr>\n" +
     "\n" +
     "\n" +

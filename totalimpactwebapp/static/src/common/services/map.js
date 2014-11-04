@@ -9,7 +9,9 @@ angular.module("services.map", [])
       function makeTipMetricLine(metricName){
         console.log("country code", countryCode)
 
-        var metricValue = countriesData[countryCode][metricName]
+        var country = _.findWhere(countriesData, {iso_code: countryCode})
+
+        var metricValue = country.event_counts[metricName]
         if (!metricValue) {
           return ""
         }
