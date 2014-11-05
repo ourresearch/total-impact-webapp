@@ -9,19 +9,19 @@
          <div class="numbers">
             <div class="num-events">
                <div class="event-type tweets-events"
-                    tooltip="{{ MapService.getEventSum('altmetric_com:tweets') }} total tweets"
+                    tooltip="Showing {{ MapService.getEventSum('altmetric_com:tweets') }} total tweets"
                     ng-show="MapService.getEventSum('altmetric_com:tweets')">
                   <i class="fa fa-twitter"></i>
                   <span class="val">{{ MapService.getEventSum('altmetric_com:tweets') }}</span>
                </div>
                <div class="event-type mendeley-events"
-                    tooltip="{{ MapService.getEventSum('mendeley:readers') }} total bookmarks in Mendeley"
+                    tooltip="Showing {{ MapService.getEventSum('mendeley:readers') }} total bookmarks in Mendeley"
                     ng-show="MapService.getEventSum('mendeley:readers')">
                   <img src="static/img/logos/mendeley-icon-big.png" alt=""/>
                   <span class="val">{{ MapService.getEventSum('mendeley:readers') }}</span>
                </div>
                <div class="event-type impactstory-view-events"
-                    tooltip="{{ MapService.getEventSum('impactstory:views') }} total views of research products embedded here on Impactstory"
+                    tooltip="Showing {{ MapService.getEventSum('impactstory:views') }} total views of research products embedded here on Impactstory"
                     ng-show="MapService.getEventSum('impactstory:views')">
                   <i class="fa fa-eye"></i>
                   <span class="val">{{ MapService.getEventSum('impactstory:views') }}</span>

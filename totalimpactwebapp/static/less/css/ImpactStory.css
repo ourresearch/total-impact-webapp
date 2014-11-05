@@ -6926,6 +6926,7 @@ code {
   width: 800px;
   height: 500px;
   margin-top: 50px;
+  margin-bottom: 30px;
 }
 .impact-map .jvectormap-zoomout,
 .impact-map .jvectormap-zoomin {
@@ -6958,7 +6959,7 @@ div.jvectormap-tip ul li span.val {
 }
 div.map-stats div.numbers {
   width: 350px;
-  margin-right: 50px;
+  margin-right: 70px;
   margin-top: 20px;
   float: left;
   text-align: right;

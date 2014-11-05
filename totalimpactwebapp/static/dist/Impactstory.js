@@ -8390,19 +8390,19 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "         <div class=\"numbers\">\n" +
     "            <div class=\"num-events\">\n" +
     "               <div class=\"event-type tweets-events\"\n" +
-    "                    tooltip=\"{{ MapService.getEventSum('altmetric_com:tweets') }} total tweets\"\n" +
+    "                    tooltip=\"Showing {{ MapService.getEventSum('altmetric_com:tweets') }} total tweets\"\n" +
     "                    ng-show=\"MapService.getEventSum('altmetric_com:tweets')\">\n" +
     "                  <i class=\"fa fa-twitter\"></i>\n" +
     "                  <span class=\"val\">{{ MapService.getEventSum('altmetric_com:tweets') }}</span>\n" +
     "               </div>\n" +
     "               <div class=\"event-type mendeley-events\"\n" +
-    "                    tooltip=\"{{ MapService.getEventSum('mendeley:readers') }} total bookmarks in Mendeley\"\n" +
+    "                    tooltip=\"Showing {{ MapService.getEventSum('mendeley:readers') }} total bookmarks in Mendeley\"\n" +
     "                    ng-show=\"MapService.getEventSum('mendeley:readers')\">\n" +
     "                  <img src=\"static/img/logos/mendeley-icon-big.png\" alt=\"\"/>\n" +
     "                  <span class=\"val\">{{ MapService.getEventSum('mendeley:readers') }}</span>\n" +
     "               </div>\n" +
     "               <div class=\"event-type impactstory-view-events\"\n" +
-    "                    tooltip=\"{{ MapService.getEventSum('impactstory:views') }} total views of research products embedded here on Impactstory\"\n" +
+    "                    tooltip=\"Showing {{ MapService.getEventSum('impactstory:views') }} total views of research products embedded here on Impactstory\"\n" +
     "                    ng-show=\"MapService.getEventSum('impactstory:views')\">\n" +
     "                  <i class=\"fa fa-eye\"></i>\n" +
     "                  <span class=\"val\">{{ MapService.getEventSum('impactstory:views') }}</span>\n" +
