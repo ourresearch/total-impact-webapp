@@ -2,12 +2,25 @@ angular.module("services.map", [
   "services.countryNames"
   ])
 .factory("MapService", function($location, CountryNames){
-  var table = {
-    sortBy: "name"
+  var data = {
+    sortBy: "name",
+    countries: []
   }
 
   function goToCountryPage(url_slug, isoCode){
     $location.path(url_slug + "/country/" + CountryNames.urlFromCode(isoCode))
+  }
+
+  function sum(arr){
+    var len = arr.length
+    var sum = 0
+    for (var i = 0; i < len; i++) {
+      if (arr[i]) {  // undefined or NaN will kill the whole sum
+        sum += arr[i]
+      }
+    }
+
+    return sum
   }
 
   function makeRegionTipHandler(countriesData){
@@ -65,6 +78,24 @@ angular.module("services.map", [
   return {
     makeRegionTipHandler: makeRegionTipHandler,
     goToCountryPage: goToCountryPage,
-    table: table
+    data: data,
+    setCountries: function(myCountries){
+      data.countries.length = 0
+      _.each(myCountries, function(thisCountry){
+        data.countries.push(thisCountry)
+      })
+    },
+    getEventSum: function(metricName){
+      var counts
+      if (metricName){
+        counts = _.map(data.countries, function(country){
+          return country.event_counts[metricName]
+        })
+      }
+      else {
+        counts = _.pluck(data.countries, "event_sum")
+      }
+      return sum(counts)
+    }
   }
 })

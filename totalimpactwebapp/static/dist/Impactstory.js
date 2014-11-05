@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-04
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-05
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1844,6 +1844,8 @@ angular.module( 'profileMap', [
       Loading.finishPage()
 
       $scope.countries = newVal.countries.list
+      MapService.setCountries(newVal.countries.list)
+
 
       var countryCounts = {}
       _.each(newVal.countries.list, function(countryObj){
@@ -4797,12 +4799,25 @@ angular.module("services.map", [
   "services.countryNames"
   ])
 .factory("MapService", function($location, CountryNames){
-  var table = {
-    sortBy: "name"
+  var data = {
+    sortBy: "name",
+    countries: []
   }
 
   function goToCountryPage(url_slug, isoCode){
     $location.path(url_slug + "/country/" + CountryNames.urlFromCode(isoCode))
+  }
+
+  function sum(arr){
+    var len = arr.length
+    var sum = 0
+    for (var i = 0; i < len; i++) {
+      if (arr[i]) {  // undefined or NaN will kill the whole sum
+        sum += arr[i]
+      }
+    }
+
+    return sum
   }
 
   function makeRegionTipHandler(countriesData){
@@ -4860,7 +4875,25 @@ angular.module("services.map", [
   return {
     makeRegionTipHandler: makeRegionTipHandler,
     goToCountryPage: goToCountryPage,
-    table: table
+    data: data,
+    setCountries: function(myCountries){
+      data.countries.length = 0
+      _.each(myCountries, function(thisCountry){
+        data.countries.push(thisCountry)
+      })
+    },
+    getEventSum: function(metricName){
+      var counts
+      if (metricName){
+        counts = _.map(data.countries, function(country){
+          return country.event_counts[metricName]
+        })
+      }
+      else {
+        counts = _.pluck(data.countries, "event_sum")
+      }
+      return sum(counts)
+    }
   }
 })
 angular.module("services.page", [
@@ -8354,6 +8387,35 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "\n" +
     "      <div class=\"map-stats\">\n" +
     "\n" +
+    "         <div class=\"numbers\">\n" +
+    "            <div class=\"num-events\">\n" +
+    "               <div class=\"total-events\">\n" +
+    "                  <span class=\"val\">{{ MapService.getEventSum() }}</span>\n" +
+    "                  <span class=\"descr\">geotagged events total</span>\n" +
+    "               </div>\n" +
+    "               <div class=\"event-type tweets-events\">\n" +
+    "                  <i class=\"fa fa-twitter\"></i>\n" +
+    "                  <span class=\"val\">{{ MapService.getEventSum('altmetric_com:tweets') }}</span>\n" +
+    "               </div>\n" +
+    "               <div class=\"event-type mendeley-events\">\n" +
+    "                  <img src=\"static/img/logos/mendeley-icon-big.png\" alt=\"\"/>\n" +
+    "                  <span class=\"val\">{{ MapService.getEventSum('mendeley:readers') }}</span>\n" +
+    "               </div>\n" +
+    "               <div class=\"event-type impactstory-view-events\">\n" +
+    "                  <i class=\"fa fa-eye\"></i>\n" +
+    "                  <span class=\"val\">{{ MapService.getEventSum('impactstory:views') }}</span>\n" +
+    "               </div>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"num-countries\">\n" +
+    "               <span class=\"val\">{{ countries.length }}</span>\n" +
+    "               <span class=\"descr\">countries <i class=\"fa fa-chevron-right\"></i></span>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "         <table class=\"table table-hover table-condensed\">\n" +
     "            <col class=\"country\"/>\n" +
     "            <col class=\"events\"/>\n" +
@@ -8361,28 +8423,28 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "\n" +
     "            <thead>\n" +
     "               <tr>\n" +
-    "                  <th ng-class=\"{selected: MapService.table.sortBy=='name'}\"\n" +
-    "                      ng-click=\"MapService.table.sortBy='name'\">\n" +
+    "                  <th ng-class=\"{selected: MapService.data.sortBy=='name'}\"\n" +
+    "                      ng-click=\"MapService.data.sortBy='name'\">\n" +
     "                     <span class=\"text\">\n" +
     "                        Country\n" +
     "                     </span>\n" +
     "                     <i class=\"fa fa-sort\"></i>\n" +
     "                     <i class=\"fa fa-sort-down\"></i>\n" +
     "                  </th>\n" +
-    "                  <th ng-class=\"{selected: MapService.table.sortBy=='-event_sum'}\"\n" +
+    "                  <th ng-class=\"{selected: MapService.data.sortBy=='-event_sum'}\"\n" +
     "                      tooltip=\"Total tweets, Impactstory views, and Mendeley saves\"\n" +
     "                      tooltip-append-to-body=\"true\"\n" +
-    "                      ng-click=\"MapService.table.sortBy='-event_sum'\">\n" +
+    "                      ng-click=\"MapService.data.sortBy='-event_sum'\">\n" +
     "                     <span class=\"text\">\n" +
     "                        Impact events\n" +
     "                     </span>\n" +
     "                     <i class=\"fa fa-sort\"></i>\n" +
     "                     <i class=\"fa fa-sort-down\"></i>\n" +
     "                  </th>\n" +
-    "                  <th ng-class=\"{selected: MapService.table.sortBy=='-impact_per_million_internet_users'}\"\n" +
+    "                  <th ng-class=\"{selected: MapService.data.sortBy=='-impact_per_million_internet_users'}\"\n" +
     "                      tooltip=\"Impact events per one million national internet users\"\n" +
     "                      tooltip-append-to-body=\"true\"\n" +
-    "                      ng-click=\"MapService.table.sortBy='-impact_per_million_internet_users'\">\n" +
+    "                      ng-click=\"MapService.data.sortBy='-impact_per_million_internet_users'\">\n" +
     "                     <span class=\"text\">\n" +
     "                        Population impact\n" +
     "                     </span>\n" +
@@ -8394,7 +8456,7 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "               </tr>\n" +
     "            </thead>\n" +
     "            <tbody>\n" +
-    "               <tr ng-repeat=\"country in countries | orderBy: MapService.table.sortBy\"\n" +
+    "               <tr ng-repeat=\"country in countries | orderBy: MapService.data.sortBy\"\n" +
     "                   ng-click=\"MapService.goToCountryPage(profileService.getUrlSlug(), country.iso_code)\">\n" +
     "                  <td class=\"f16\">\n" +
     "                     <span class=\"flag {{ country.iso_code.toLowerCase() }}\"></span>\n" +

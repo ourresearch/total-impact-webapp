@@ -6956,6 +6956,37 @@ div.jvectormap-tip ul li span.name {
 div.jvectormap-tip ul li span.val {
   font-weight: bold;
 }
+div.map-stats div.numbers {
+  width: 400px;
+  float: left;
+}
+div.map-stats div.numbers div.num-events div.event-type {
+  float: left;
+  padding: 0 30px 20px 0;
+  text-align: center;
+}
+div.map-stats div.numbers div.num-events div.event-type i {
+  font-size: 40px;
+}
+div.map-stats div.numbers div.num-events div.event-type img {
+  height: 40px;
+}
+div.map-stats div.numbers div.num-events div.event-type i,
+div.map-stats div.numbers div.num-events div.event-type img {
+  display: block;
+}
+div.map-stats div.numbers div.num-events div.event-type .val {
+  font-size: 40px;
+}
+div.map-stats div.numbers div.num-events div.event-type.tweets-events i {
+  color: #55acee;
+}
+div.map-stats div.numbers div.num-events div.event-type.impactstory-view-events i {
+  color: #ff4000;
+}
+div.map-stats div.numbers div.num-countries {
+  clear: left;
+}
 div.map-stats table.table {
   width: 400px;
 }

@@ -6,6 +6,35 @@
 
       <div class="map-stats">
 
+         <div class="numbers">
+            <div class="num-events">
+               <div class="total-events">
+                  <span class="val">{{ MapService.getEventSum() }}</span>
+                  <span class="descr">geotagged events total</span>
+               </div>
+               <div class="event-type tweets-events">
+                  <i class="fa fa-twitter"></i>
+                  <span class="val">{{ MapService.getEventSum('altmetric_com:tweets') }}</span>
+               </div>
+               <div class="event-type mendeley-events">
+                  <img src="static/img/logos/mendeley-icon-big.png" alt=""/>
+                  <span class="val">{{ MapService.getEventSum('mendeley:readers') }}</span>
+               </div>
+               <div class="event-type impactstory-view-events">
+                  <i class="fa fa-eye"></i>
+                  <span class="val">{{ MapService.getEventSum('impactstory:views') }}</span>
+               </div>
+
+            </div>
+
+
+            <div class="num-countries">
+               <span class="val">{{ countries.length }}</span>
+               <span class="descr">countries <i class="fa fa-chevron-right"></i></span>
+            </div>
+         </div>
+
+
          <table class="table table-hover table-condensed">
             <col class="country"/>
             <col class="events"/>
@@ -13,28 +42,28 @@
 
             <thead>
                <tr>
-                  <th ng-class="{selected: MapService.table.sortBy=='name'}"
-                      ng-click="MapService.table.sortBy='name'">
+                  <th ng-class="{selected: MapService.data.sortBy=='name'}"
+                      ng-click="MapService.data.sortBy='name'">
                      <span class="text">
                         Country
                      </span>
                      <i class="fa fa-sort"></i>
                      <i class="fa fa-sort-down"></i>
                   </th>
-                  <th ng-class="{selected: MapService.table.sortBy=='-event_sum'}"
+                  <th ng-class="{selected: MapService.data.sortBy=='-event_sum'}"
                       tooltip="Total tweets, Impactstory views, and Mendeley saves"
                       tooltip-append-to-body="true"
-                      ng-click="MapService.table.sortBy='-event_sum'">
+                      ng-click="MapService.data.sortBy='-event_sum'">
                      <span class="text">
                         Impact events
                      </span>
                      <i class="fa fa-sort"></i>
                      <i class="fa fa-sort-down"></i>
                   </th>
-                  <th ng-class="{selected: MapService.table.sortBy=='-impact_per_million_internet_users'}"
+                  <th ng-class="{selected: MapService.data.sortBy=='-impact_per_million_internet_users'}"
                       tooltip="Impact events per one million national internet users"
                       tooltip-append-to-body="true"
-                      ng-click="MapService.table.sortBy='-impact_per_million_internet_users'">
+                      ng-click="MapService.data.sortBy='-impact_per_million_internet_users'">
                      <span class="text">
                         Population impact
                      </span>
@@ -46,7 +75,7 @@
                </tr>
             </thead>
             <tbody>
-               <tr ng-repeat="country in countries | orderBy: MapService.table.sortBy"
+               <tr ng-repeat="country in countries | orderBy: MapService.data.sortBy"
                    ng-click="MapService.goToCountryPage(profileService.getUrlSlug(), country.iso_code)">
                   <td class="f16">
                      <span class="flag {{ country.iso_code.toLowerCase() }}"></span>

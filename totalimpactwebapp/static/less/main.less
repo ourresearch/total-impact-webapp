@@ -1091,6 +1091,46 @@ div.jvectormap-tip {
 }
 
 div.map-stats{
+   div.numbers{
+      width: 400px;
+      float:left;
+      div.num-events{
+         div.total-events {
+
+         }
+         div.event-type {
+            float:left;
+            padding: 0 30px 20px 0;
+            text-align: center;
+            i {
+               font-size: 40px;
+            }
+            img {
+               height: 40px;
+            }
+            i, img {
+               display:block;
+            }
+            .val {
+               font-size: 40px;
+            }
+            &.tweets-events {
+               i{ color: #55acee;}
+            }
+            &.mendeley-events {
+
+            }
+            &.impactstory-view-events {
+               i{ color: @linkColor;}
+
+            }
+         }
+      }
+      div.num-countries {
+         clear:left;
+
+      }
+   }
    table.table {
       width: 400px;
       col.country {

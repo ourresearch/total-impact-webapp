@@ -42,6 +42,8 @@ angular.module( 'profileMap', [
       Loading.finishPage()
 
       $scope.countries = newVal.countries.list
+      MapService.setCountries(newVal.countries.list)
+
 
       var countryCounts = {}
       _.each(newVal.countries.list, function(countryObj){
