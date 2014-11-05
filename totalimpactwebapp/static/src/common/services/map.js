@@ -1,7 +1,13 @@
-angular.module("services.map", [])
-.factory("MapService", function(){
+angular.module("services.map", [
+  "services.countryNames"
+  ])
+.factory("MapService", function($location, CountryNames){
   var table = {
-    sortBy: "-impact_per_million_internet_users"
+    sortBy: "name"
+  }
+
+  function goToCountryPage(url_slug, isoCode){
+    $location.path(url_slug + "/country/" + CountryNames.urlFromCode(isoCode))
   }
 
   function makeRegionTipHandler(countriesData){
@@ -58,6 +64,7 @@ angular.module("services.map", [])
 
   return {
     makeRegionTipHandler: makeRegionTipHandler,
+    goToCountryPage: goToCountryPage,
     table: table
   }
 })

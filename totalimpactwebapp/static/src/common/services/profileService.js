@@ -204,7 +204,8 @@ angular.module('services.profileService', [
       }
       else {
         var res = _.filter(data.products, function(product){
-          return _.contains(_.keys(product.countries), countryCode)
+          var myCountryCodes = _.pluck(product.countries.list, "iso_code")
+          return _.contains(myCountryCodes, countryCode)
         })
         return res
       }

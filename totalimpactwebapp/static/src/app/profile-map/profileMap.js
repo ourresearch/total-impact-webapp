@@ -1,7 +1,6 @@
 angular.module( 'profileMap', [
     'security',
     'services.page',
-    'services.countriesInfo',
     'services.tiMixpanel'
   ])
 
@@ -21,7 +20,6 @@ angular.module( 'profileMap', [
                                        CountryNames,
                                        ProfileService,
                                        MapService,
-                                       CountriesInfo,
                                        Loading,
                                        Page){
   console.log("profile map ctrl ran.")
@@ -31,7 +29,6 @@ angular.module( 'profileMap', [
     Loading.startPage()
   }
 
-  $scope.sortBy = "-impact_per_million_internet_users"
     $scope.MapService = MapService
 
 

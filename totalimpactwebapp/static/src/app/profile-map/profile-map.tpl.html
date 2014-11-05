@@ -46,7 +46,8 @@
                </tr>
             </thead>
             <tbody>
-               <tr ng-repeat="country in countries | orderBy: MapService.table.sortBy">
+               <tr ng-repeat="country in countries | orderBy: MapService.table.sortBy"
+                   ng-click="MapService.goToCountryPage(profileService.getUrlSlug(), country.iso_code)">
                   <td class="f16">
                      <span class="flag {{ country.iso_code.toLowerCase() }}"></span>
                      {{ country.name }}
