@@ -8385,23 +8385,25 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "   <div class=\"main-content\">\n" +
     "      <div id=\"profile-map\" class=\"impact-map\"></div>\n" +
     "\n" +
-    "      <div class=\"map-stats\">\n" +
+    "      <div class=\"map-stats\" ng-if=\"countries\">\n" +
     "\n" +
     "         <div class=\"numbers\">\n" +
     "            <div class=\"num-events\">\n" +
-    "               <div class=\"total-events\">\n" +
-    "                  <span class=\"val\">{{ MapService.getEventSum() }}</span>\n" +
-    "                  <span class=\"descr\">geotagged events total</span>\n" +
-    "               </div>\n" +
-    "               <div class=\"event-type tweets-events\">\n" +
+    "               <div class=\"event-type tweets-events\"\n" +
+    "                    tooltip=\"{{ MapService.getEventSum('altmetric_com:tweets') }} total tweets\"\n" +
+    "                    ng-show=\"MapService.getEventSum('altmetric_com:tweets')\">\n" +
     "                  <i class=\"fa fa-twitter\"></i>\n" +
     "                  <span class=\"val\">{{ MapService.getEventSum('altmetric_com:tweets') }}</span>\n" +
     "               </div>\n" +
-    "               <div class=\"event-type mendeley-events\">\n" +
+    "               <div class=\"event-type mendeley-events\"\n" +
+    "                    tooltip=\"{{ MapService.getEventSum('mendeley:readers') }} total bookmarks in Mendeley\"\n" +
+    "                    ng-show=\"MapService.getEventSum('mendeley:readers')\">\n" +
     "                  <img src=\"static/img/logos/mendeley-icon-big.png\" alt=\"\"/>\n" +
     "                  <span class=\"val\">{{ MapService.getEventSum('mendeley:readers') }}</span>\n" +
     "               </div>\n" +
-    "               <div class=\"event-type impactstory-view-events\">\n" +
+    "               <div class=\"event-type impactstory-view-events\"\n" +
+    "                    tooltip=\"{{ MapService.getEventSum('impactstory:views') }} total views of research products embedded here on Impactstory\"\n" +
+    "                    ng-show=\"MapService.getEventSum('impactstory:views')\">\n" +
     "                  <i class=\"fa fa-eye\"></i>\n" +
     "                  <span class=\"val\">{{ MapService.getEventSum('impactstory:views') }}</span>\n" +
     "               </div>\n" +
@@ -8409,9 +8411,15 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "            </div>\n" +
     "\n" +
     "\n" +
-    "            <div class=\"num-countries\">\n" +
-    "               <span class=\"val\">{{ countries.length }}</span>\n" +
-    "               <span class=\"descr\">countries <i class=\"fa fa-chevron-right\"></i></span>\n" +
+    "            <div class=\"under-icons\">\n" +
+    "               <div class=\"total-events\">\n" +
+    "                  <span class=\"val\">{{ MapService.getEventSum() }}</span>\n" +
+    "                  <span class=\"descr\">geotagged events total, from</span>\n" +
+    "               </div>\n" +
+    "               <div class=\"num-countries\">\n" +
+    "                  <span class=\"val\">{{ countries.length }}</span>\n" +
+    "                  <span class=\"descr\">countries <i class=\"fa fa-chevron-right\"></i></span>\n" +
+    "               </div>\n" +
     "            </div>\n" +
     "         </div>\n" +
     "\n" +

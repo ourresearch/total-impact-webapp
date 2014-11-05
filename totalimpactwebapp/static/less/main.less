@@ -1092,21 +1092,25 @@ div.jvectormap-tip {
 
 div.map-stats{
    div.numbers{
-      width: 400px;
+      width: 350px;
+      margin-right: 50px;
+      margin-top: 20px;
       float:left;
+      text-align: right;
       div.num-events{
          div.total-events {
 
          }
          div.event-type {
-            float:left;
-            padding: 0 30px 20px 0;
+            display:inline-block;
+            padding: 0  0 0 30px;
             text-align: center;
             i {
                font-size: 40px;
             }
             img {
-               height: 40px;
+               margin-top: 5px;
+               height: 35px;
             }
             i, img {
                display:block;
@@ -1126,8 +1130,33 @@ div.map-stats{
             }
          }
       }
-      div.num-countries {
+      div.under-icons {
+         border-top: 1px solid #ddd;
+         margin-top: 20px;
+         padding-top: 20px;
          clear:left;
+         div.total-events {
+            padding-right: 30px;
+            span.val {
+               font-size: 18px;
+            }
+            span.descr {
+               font-size: 18px;
+            }
+         }
+         div.num-countries {
+            font-size: 50px;
+            .val {
+               font-weight: bold;
+            }
+            .descr {
+               font-weight: 300;
+               i {
+                  color: #ddd;
+               }
+            }
+         }
+
 
       }
    }

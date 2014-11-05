@@ -4,23 +4,25 @@
    <div class="main-content">
       <div id="profile-map" class="impact-map"></div>
 
-      <div class="map-stats">
+      <div class="map-stats" ng-if="countries">
 
          <div class="numbers">
             <div class="num-events">
-               <div class="total-events">
-                  <span class="val">{{ MapService.getEventSum() }}</span>
-                  <span class="descr">geotagged events total</span>
-               </div>
-               <div class="event-type tweets-events">
+               <div class="event-type tweets-events"
+                    tooltip="{{ MapService.getEventSum('altmetric_com:tweets') }} total tweets"
+                    ng-show="MapService.getEventSum('altmetric_com:tweets')">
                   <i class="fa fa-twitter"></i>
                   <span class="val">{{ MapService.getEventSum('altmetric_com:tweets') }}</span>
                </div>
-               <div class="event-type mendeley-events">
+               <div class="event-type mendeley-events"
+                    tooltip="{{ MapService.getEventSum('mendeley:readers') }} total bookmarks in Mendeley"
+                    ng-show="MapService.getEventSum('mendeley:readers')">
                   <img src="static/img/logos/mendeley-icon-big.png" alt=""/>
                   <span class="val">{{ MapService.getEventSum('mendeley:readers') }}</span>
                </div>
-               <div class="event-type impactstory-view-events">
+               <div class="event-type impactstory-view-events"
+                    tooltip="{{ MapService.getEventSum('impactstory:views') }} total views of research products embedded here on Impactstory"
+                    ng-show="MapService.getEventSum('impactstory:views')">
                   <i class="fa fa-eye"></i>
                   <span class="val">{{ MapService.getEventSum('impactstory:views') }}</span>
                </div>
@@ -28,9 +30,15 @@
             </div>
 
 
-            <div class="num-countries">
-               <span class="val">{{ countries.length }}</span>
-               <span class="descr">countries <i class="fa fa-chevron-right"></i></span>
+            <div class="under-icons">
+               <div class="total-events">
+                  <span class="val">{{ MapService.getEventSum() }}</span>
+                  <span class="descr">geotagged events total, from</span>
+               </div>
+               <div class="num-countries">
+                  <span class="val">{{ countries.length }}</span>
+                  <span class="descr">countries <i class="fa fa-chevron-right"></i></span>
+               </div>
             </div>
          </div>
 
