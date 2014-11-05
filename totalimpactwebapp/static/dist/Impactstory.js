@@ -8401,7 +8401,12 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "                     {{ country.name }}\n" +
     "                  </td>\n" +
     "                  <td>{{ country.event_sum }}</td>\n" +
-    "                  <td>{{ country.impact_per_million_internet_users.toFixed(1) }}</td>\n" +
+    "                  <td>\n" +
+    "                     {{ country.impact_per_million_internet_users.toFixed(1) }}\n" +
+    "                     <i class=\"fa fa-asterisk\"\n" +
+    "                        tooltip=\"Chinese internet users adjusted for state firewall (users/100)\"\n" +
+    "                        ng-show=\"country.iso_code=='CN'\"></i>\n" +
+    "                  </td>\n" +
     "               </tr>\n" +
     "            </tbody>\n" +
     "         </table>\n" +

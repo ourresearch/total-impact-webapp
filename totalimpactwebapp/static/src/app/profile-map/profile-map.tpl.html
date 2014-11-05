@@ -53,7 +53,12 @@
                      {{ country.name }}
                   </td>
                   <td>{{ country.event_sum }}</td>
-                  <td>{{ country.impact_per_million_internet_users.toFixed(1) }}</td>
+                  <td>
+                     {{ country.impact_per_million_internet_users.toFixed(1) }}
+                     <i class="fa fa-asterisk"
+                        tooltip="Chinese internet users adjusted for state firewall (users/100)"
+                        ng-show="country.iso_code=='CN'"></i>
+                  </td>
                </tr>
             </tbody>
          </table>

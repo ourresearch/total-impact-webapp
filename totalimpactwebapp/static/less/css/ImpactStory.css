@@ -6994,6 +6994,11 @@ div.map-stats table.table tbody tr td span.flag {
   margin-top: 4px;
   margin-right: 1px;
 }
+div.map-stats table.table tbody tr td i.fa-asterisk {
+  font-size: 10px;
+  vertical-align: middle;
+  color: #555;
+}
 /* info pages in general
 *****************************************************************************
 *****************************************************************************
