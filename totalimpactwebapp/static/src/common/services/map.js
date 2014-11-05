@@ -1,5 +1,8 @@
 angular.module("services.map", [])
 .factory("MapService", function(){
+  var table = {
+    sortBy: "-impact_per_million_internet_users"
+  }
 
   function makeRegionTipHandler(countriesData){
     console.log("making the region tip handler with", countriesData)
@@ -10,6 +13,7 @@ angular.module("services.map", [])
         console.log("country code", countryCode)
 
         var country = _.findWhere(countriesData, {iso_code: countryCode})
+        console.log("country", country)
 
         var metricValue = country.event_counts[metricName]
         if (!metricValue) {
@@ -53,6 +57,7 @@ angular.module("services.map", [])
 
 
   return {
-    makeRegionTipHandler: makeRegionTipHandler
+    makeRegionTipHandler: makeRegionTipHandler,
+    table: table
   }
 })

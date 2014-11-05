@@ -31,6 +31,9 @@ angular.module( 'profileMap', [
     Loading.startPage()
   }
 
+  $scope.sortBy = "-impact_per_million_internet_users"
+    $scope.MapService = MapService
+
 
 
 
@@ -55,6 +58,7 @@ angular.module( 'profileMap', [
         $("#profile-map").vectorMap({
           map: 'world_mill_en',
           backgroundColor: "#fff",
+          zoomOnScroll: false,
           regionStyle: {
             initial: {
               fill: "#dddddd"

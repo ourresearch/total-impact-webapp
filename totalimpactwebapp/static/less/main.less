@@ -1090,6 +1090,52 @@ div.jvectormap-tip {
    }
 }
 
+div.map-stats{
+   table.table {
+      width: 400px;
+      col.country {
+         width: 50%;
+      }
+      col.events {
+         width: 25%;
+      }
+      col.pop-adjusted {
+         width: 25%;
+      }
+      thead {
+         tr {
+            th {
+               &:hover {
+                  cursor: pointer;
+               }
+               i {
+                  margin-left: 3px;
+                  &.fa-sort-down {display:none;}
+                  &.fa-sort {display:inline;}
+               }
+               &.selected {
+                  i.fa-sort-down {display:inline;}
+                  i.fa-sort {display:none;}
+               }
+            }
+         }
+      }
+      tbody {
+         tr {
+            cursor: pointer;
+            td {
+               span.flag {
+                  display: inline-block;
+                  margin-top: 4px;
+                  margin-right: 1px;
+               }
+            }
+         }
+      }
+
+   }
+}
+
 
 
 

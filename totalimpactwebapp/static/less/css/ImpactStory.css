@@ -6956,6 +6956,44 @@ div.jvectormap-tip ul li span.name {
 div.jvectormap-tip ul li span.val {
   font-weight: bold;
 }
+div.map-stats table.table {
+  width: 400px;
+}
+div.map-stats table.table col.country {
+  width: 50%;
+}
+div.map-stats table.table col.events {
+  width: 25%;
+}
+div.map-stats table.table col.pop-adjusted {
+  width: 25%;
+}
+div.map-stats table.table thead tr th:hover {
+  cursor: pointer;
+}
+div.map-stats table.table thead tr th i {
+  margin-left: 3px;
+}
+div.map-stats table.table thead tr th i.fa-sort-down {
+  display: none;
+}
+div.map-stats table.table thead tr th i.fa-sort {
+  display: inline;
+}
+div.map-stats table.table thead tr th.selected i.fa-sort-down {
+  display: inline;
+}
+div.map-stats table.table thead tr th.selected i.fa-sort {
+  display: none;
+}
+div.map-stats table.table tbody tr {
+  cursor: pointer;
+}
+div.map-stats table.table tbody tr td span.flag {
+  display: inline-block;
+  margin-top: 4px;
+  margin-right: 1px;
+}
 /* info pages in general
 *****************************************************************************
 *****************************************************************************

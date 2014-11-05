@@ -5,23 +5,56 @@
       <div id="profile-map" class="impact-map"></div>
 
       <div class="map-stats">
-         <table>
-            <tr>
-               <th>Country <i class="fa fa-sort"></i></th>
-               <th>Impact events <i class="fa fa-sort"></i></th>
-               <th>Impact concentration <i class="fa fa-sort"></i></th>
-            </tr>
-            <tr ng-repeat="country in countries">
-               <td class="f16">
-                  <span class="flag {{ country.iso_code.toLowerCase() }}"></span>
-                  {{ country.name }}
-               </td>
-               <td>{{ country.event_sum }}</td>
-               <td>{{ country.impact_per_million_internet_users.toFixed(2) }}</td>
-            </tr>
+
+         <table class="table table-hover table-condensed">
+            <col class="country"/>
+            <col class="events"/>
+            <col class="pop-adjusted"/>
+
+            <thead>
+               <tr>
+                  <th ng-class="{selected: MapService.table.sortBy=='name'}"
+                      ng-click="MapService.table.sortBy='name'">
+                     <span class="text">
+                        Country
+                     </span>
+                     <i class="fa fa-sort"></i>
+                     <i class="fa fa-sort-down"></i>
+                  </th>
+                  <th ng-class="{selected: MapService.table.sortBy=='-event_sum'}"
+                      tooltip="Total tweets, Impactstory views, and Mendeley saves"
+                      tooltip-append-to-body="true"
+                      ng-click="MapService.table.sortBy='-event_sum'">
+                     <span class="text">
+                        Impact events
+                     </span>
+                     <i class="fa fa-sort"></i>
+                     <i class="fa fa-sort-down"></i>
+                  </th>
+                  <th ng-class="{selected: MapService.table.sortBy=='-impact_per_million_internet_users'}"
+                      tooltip="Impact events per one million national internet users"
+                      tooltip-append-to-body="true"
+                      ng-click="MapService.table.sortBy='-impact_per_million_internet_users'">
+                     <span class="text">
+                        Population impact
+                     </span>
+                     <i class="fa fa-sort"></i>
+                     <i class="fa fa-sort-down"></i>
+                  </th>
 
 
-
+               </tr>
+            </thead>
+            <tbody>
+               <tr ng-repeat="country in countries | orderBy: MapService.table.sortBy">
+                  <td class="f16">
+                     <span class="flag {{ country.iso_code.toLowerCase() }}"></span>
+                     {{ country.name }}
+                  </td>
+                  <td>{{ country.event_sum }}</td>
+                  <td>{{ country.impact_per_million_internet_users.toFixed(1) }}</td>
+               </tr>
+            </tbody>
          </table>
 
 

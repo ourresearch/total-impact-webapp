@@ -1833,6 +1833,9 @@ angular.module( 'profileMap', [
     Loading.startPage()
   }
 
+  $scope.sortBy = "-impact_per_million_internet_users"
+    $scope.MapService = MapService
+
 
 
 
@@ -1857,6 +1860,7 @@ angular.module( 'profileMap', [
         $("#profile-map").vectorMap({
           map: 'world_mill_en',
           backgroundColor: "#fff",
+          zoomOnScroll: false,
           regionStyle: {
             initial: {
               fill: "#dddddd"
@@ -5078,6 +5082,9 @@ angular.module("services.loading")
 })
 angular.module("services.map", [])
 .factory("MapService", function(){
+  var table = {
+    sortBy: "-impact_per_million_internet_users"
+  }
 
   function makeRegionTipHandler(countriesData){
     console.log("making the region tip handler with", countriesData)
@@ -5088,6 +5095,7 @@ angular.module("services.map", [])
         console.log("country code", countryCode)
 
         var country = _.findWhere(countriesData, {iso_code: countryCode})
+        console.log("country", country)
 
         var metricValue = country.event_counts[metricName]
         if (!metricValue) {
@@ -5131,7 +5139,8 @@ angular.module("services.map", [])
 
 
   return {
-    makeRegionTipHandler: makeRegionTipHandler
+    makeRegionTipHandler: makeRegionTipHandler,
+    table: table
   }
 })
 angular.module("services.page", [
@@ -8623,23 +8632,56 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "      <div id=\"profile-map\" class=\"impact-map\"></div>\n" +
     "\n" +
     "      <div class=\"map-stats\">\n" +
-    "         <table>\n" +
-    "            <tr>\n" +
-    "               <th>Country <i class=\"fa fa-sort\"></i></th>\n" +
-    "               <th>Impact events <i class=\"fa fa-sort\"></i></th>\n" +
-    "               <th>Impact concentration <i class=\"fa fa-sort\"></i></th>\n" +
-    "            </tr>\n" +
-    "            <tr ng-repeat=\"country in countries\">\n" +
-    "               <td class=\"f16\">\n" +
-    "                  <span class=\"flag {{ country.iso_code.toLowerCase() }}\"></span>\n" +
-    "                  {{ country.name }}\n" +
-    "               </td>\n" +
-    "               <td>{{ country.event_sum }}</td>\n" +
-    "               <td>{{ country.impact_per_million_internet_users.toFixed(2) }}</td>\n" +
-    "            </tr>\n" +
+    "\n" +
+    "         <table class=\"table table-hover table-condensed\">\n" +
+    "            <col class=\"country\"/>\n" +
+    "            <col class=\"events\"/>\n" +
+    "            <col class=\"pop-adjusted\"/>\n" +
+    "\n" +
+    "            <thead>\n" +
+    "               <tr>\n" +
+    "                  <th ng-class=\"{selected: MapService.table.sortBy=='name'}\"\n" +
+    "                      ng-click=\"MapService.table.sortBy='name'\">\n" +
+    "                     <span class=\"text\">\n" +
+    "                        Country\n" +
+    "                     </span>\n" +
+    "                     <i class=\"fa fa-sort\"></i>\n" +
+    "                     <i class=\"fa fa-sort-down\"></i>\n" +
+    "                  </th>\n" +
+    "                  <th ng-class=\"{selected: MapService.table.sortBy=='-event_sum'}\"\n" +
+    "                      tooltip=\"Total tweets, Impactstory views, and Mendeley saves\"\n" +
+    "                      tooltip-append-to-body=\"true\"\n" +
+    "                      ng-click=\"MapService.table.sortBy='-event_sum'\">\n" +
+    "                     <span class=\"text\">\n" +
+    "                        Impact events\n" +
+    "                     </span>\n" +
+    "                     <i class=\"fa fa-sort\"></i>\n" +
+    "                     <i class=\"fa fa-sort-down\"></i>\n" +
+    "                  </th>\n" +
+    "                  <th ng-class=\"{selected: MapService.table.sortBy=='-impact_per_million_internet_users'}\"\n" +
+    "                      tooltip=\"Impact events per one million national internet users\"\n" +
+    "                      tooltip-append-to-body=\"true\"\n" +
+    "                      ng-click=\"MapService.table.sortBy='-impact_per_million_internet_users'\">\n" +
+    "                     <span class=\"text\">\n" +
+    "                        Population impact\n" +
+    "                     </span>\n" +
+    "                     <i class=\"fa fa-sort\"></i>\n" +
+    "                     <i class=\"fa fa-sort-down\"></i>\n" +
+    "                  </th>\n" +
     "\n" +
     "\n" +
-    "\n" +
+    "               </tr>\n" +
+    "            </thead>\n" +
+    "            <tbody>\n" +
+    "               <tr ng-repeat=\"country in countries | orderBy: MapService.table.sortBy\">\n" +
+    "                  <td class=\"f16\">\n" +
+    "                     <span class=\"flag {{ country.iso_code.toLowerCase() }}\"></span>\n" +
+    "                     {{ country.name }}\n" +
+    "                  </td>\n" +
+    "                  <td>{{ country.event_sum }}</td>\n" +
+    "                  <td>{{ country.impact_per_million_internet_users.toFixed(1) }}</td>\n" +
+    "               </tr>\n" +
+    "            </tbody>\n" +
     "         </table>\n" +
     "\n" +
     "\n" +
