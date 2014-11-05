@@ -236,7 +236,7 @@ def get_internet_users_millions(country_code, adjust_for_access=False):
         return None
 
     if adjust_for_access and country_code == "CN":
-        my_internet_users *= .001  # adjust for Great Firewall
+        my_internet_users *= .01  # adjust for Great Firewall
 
     return math.ceil(my_internet_users / 1000000.0)
 
