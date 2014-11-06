@@ -225,7 +225,6 @@ class Product(db.Model):
 
 
     def get_metric_by_name(self, provider, interaction):
-        print "we are looking for", provider, interaction
         for metric in self.metrics:
             if metric.provider==provider and metric.interaction==interaction:
                 return metric

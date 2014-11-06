@@ -2076,6 +2076,7 @@ angular.module("profile", [
 .controller('ProfileCtrl', function (
     $scope,
     $rootScope,
+    $q,
     $location,
     $routeParams,
     $modal,
@@ -2141,6 +2142,31 @@ angular.module("profile", [
         // show the updated products
         renderProducts()
       })
+    }
+
+    $scope.foo = {}
+    $scope.unis = [
+    "Florence Institute of Design International",
+    "Florida Career College",
+    "Florida Christian College",
+    "Florida Community College Jacksonville",
+    "Florida Universitaria",
+    "Florida Coastal School of Law",
+    "Florida Keys Community College",
+    "Florida Institute of Technology"
+]
+
+
+    $scope.getUnis = function(nameStartsWith){
+
+      return $http.get(
+        "/unis/" + nameStartsWith
+      )
+      .then(
+        function(resp){
+          return resp.data
+        }
+      )
     }
 
 
@@ -8577,6 +8603,14 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </ul>\n" +
     "            </div>\n" +
     "\n" +
+    "            <div class=\"field-and-school\">\n" +
+    "               <a href=\"#\"\n" +
+    "                  editable-text=\"foo.state\"\n" +
+    "                  e-typeahead=\"uni for uni in getUnis($viewValue)\">\n" +
+    "                   {{ foo.state || 'empty' }}\n" +
+    "               </a>\n" +
+    "\n" +
+    "            </div>\n" +
     "            <div class=\"bio\">\n" +
     "               <span class=\"value\"\n" +
     "                  tooltip=\"click to edit your bio\"\n" +

@@ -5,6 +5,8 @@ unis_list = []
 
 
 def load_list():
+    del unis_list[:]
+
     current_dir = os.path.dirname(__file__)
     rel_path_to_unis_csv = "data/unis.csv"
     absolute_path_to_unis_csv = os.path.join(current_dir, rel_path_to_unis_csv)
@@ -21,13 +23,15 @@ def load_list():
                 })
 
 
-def filter_list(name_starts_with):
-    return [
+def filter_list(name_starts_with, max_len=8):
+    results = [
         uni["name"]
         for uni in unis_list
         if uni["name"].lower().startswith(name_starts_with.lower())
     ]
 
+    unique_results = list(set(results))
+    return unique_results[0:max_len]
 
 
 

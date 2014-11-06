@@ -27,6 +27,14 @@
                </ul>
             </div>
 
+            <div class="field-and-school">
+               <a href="#"
+                  editable-text="foo.state"
+                  e-typeahead="uni for uni in getUnis($viewValue)">
+                   {{ foo.state || 'empty' }}
+               </a>
+
+            </div>
             <div class="bio">
                <span class="value"
                   tooltip="click to edit your bio"

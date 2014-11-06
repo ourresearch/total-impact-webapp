@@ -93,6 +93,7 @@ angular.module("profile", [
 .controller('ProfileCtrl', function (
     $scope,
     $rootScope,
+    $q,
     $location,
     $routeParams,
     $modal,
@@ -158,6 +159,31 @@ angular.module("profile", [
         // show the updated products
         renderProducts()
       })
+    }
+
+    $scope.foo = {}
+    $scope.unis = [
+    "Florence Institute of Design International",
+    "Florida Career College",
+    "Florida Christian College",
+    "Florida Community College Jacksonville",
+    "Florida Universitaria",
+    "Florida Coastal School of Law",
+    "Florida Keys Community College",
+    "Florida Institute of Technology"
+]
+
+
+    $scope.getUnis = function(nameStartsWith){
+
+      return $http.get(
+        "/unis/" + nameStartsWith
+      )
+      .then(
+        function(resp){
+          return resp.data
+        }
+      )
     }
 
 
