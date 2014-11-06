@@ -1,5 +1,6 @@
 import re
 import json
+import shortuuid
 
 
 # input comes from Webometric ratings, as compiled here:
@@ -21,20 +22,20 @@ def make_country_key_to_iso_code_dict(country_lines):
 def make_uni_list(uni_lines, iso_code_dict):
     ret = []
     for line in uni_lines:
-        uni_obj = uni_obj_from_line(line)
+        uni_obj = uni_obj_from_line(line, iso_code_dict)
         ret.append(uni_obj)
 
     return [uni for uni in ret if uni is not None]
 
 
-def uni_obj_from_line(line):
+def uni_obj_from_line(line, iso_code_dict):
     print line
     if not line.startswith("("):
         return None
 
     uni_country_key = int(line.split(",")[1])
     uni_name = line.split(",")[2].replace("'", "").strip()
-    uni_url = line.split(",")[3].replace("'", "").strip()
+    uni_url = line.split(",")[3].replace("'", "").replace(")", "").strip()
 
     uni_iso_code = iso_code_dict[uni_country_key]
 
@@ -45,6 +46,19 @@ def uni_obj_from_line(line):
     }
 
 
+def write_uni_list(uni_list):
+    lines_to_write = []
+    for uni in uni_list:
+        uni_tuple = (
+            uni["name"],
+            uni["country"],
+            uni["url"]
+        )
+        lines_to_write.append(
+            "|".join(uni_tuple) + "\n"
+        )
+    with open('unis.csv', 'w') as f:
+        f.writelines(lines_to_write)
 
 
 lines = open(input_file, "r").read()
@@ -54,7 +68,6 @@ uni_lines = lines.split("[split here]")[1].split("\n")
 iso_code_dict = make_country_key_to_iso_code_dict(country_lines)
 uni_list = make_uni_list(uni_lines, iso_code_dict)
 
-with open("unis.json", "w") as outfile:
-    json.dump(uni_list, outfile, sort_keys=True, indent=4)
+write_uni_list(uni_list)
 
 print "success!"

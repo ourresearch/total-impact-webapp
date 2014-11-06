@@ -22,6 +22,7 @@ from totalimpactwebapp import app
 from totalimpactwebapp import db
 from totalimpactwebapp import login_manager
 from totalimpactwebapp import countries
+from totalimpactwebapp import unis
 
 from totalimpactwebapp.password_reset import send_reset_token
 from totalimpactwebapp.password_reset import reset_password_from_token
@@ -918,7 +919,7 @@ def reference_sets():
 
 ###############################################################################
 #
-#   MOSTLY-STATIC PAGES
+#   OTHER ROUTES
 #
 ###############################################################################
 
@@ -1079,6 +1080,14 @@ def test_emailer():
     return json_resp_from_thing(ret)
 
 
+@app.route("/unis/<name_starts_with>")
+def unis_route(name_starts_with):
+    unis.load_list()
+    unis_list = unis.filter_list(name_starts_with)
+    return json_resp_from_thing(unis_list)
+
+
+
 @app.route("/configs/metrics")
 def get_configs():
     return json_resp_from_thing(configs.metrics())
@@ -1088,9 +1097,6 @@ def get_configs():
 def get_genre_configs():
     return json_resp_from_thing(configs.genre_configs())
 
-@app.route("/configs/countries")
-def get_country_info():
-    return json_resp_from_thing(countries_info.countries_info)
 
 
 ###############################################################################
