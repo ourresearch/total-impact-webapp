@@ -1,6 +1,11 @@
 import re
 import json
 
+
+# input comes from Webometric ratings, as compiled here:
+# https://github.com/gedex/World-University-Names-Database
+input_file = "world_university_names.sql"
+
 def make_country_key_to_iso_code_dict(country_lines):
     country_key_to_iso_code = {}
     for line in country_lines:
@@ -11,9 +16,6 @@ def make_country_key_to_iso_code_dict(country_lines):
             country_key_to_iso_code[country_key] = iso_code
 
     return country_key_to_iso_code
-
-
-
 
 
 def make_uni_list(uni_lines, iso_code_dict):
@@ -45,11 +47,7 @@ def uni_obj_from_line(line):
 
 
 
-
-
-
-
-lines = open("world_university_names.sql", "r").read()
+lines = open(input_file, "r").read()
 country_lines = lines.split("[split here]")[0].split("\n")
 uni_lines = lines.split("[split here]")[1].split("\n")
 
