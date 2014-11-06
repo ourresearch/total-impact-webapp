@@ -87,24 +87,33 @@ div.profile-header {
    }
    div.my-vitals {
       margin-bottom: 50px;
-      h2.editable-name {
-         font-family: Lato, Helvetica, Arial, sans-serif;
-         font-weight: bolder;
-         font-size:  45px;
-         color:  #555;
-         margin: 0;
-         padding-top: 0;
-         float:left;
+      .fa-pencil {
+         font-size: 80%;
+         color: #ccc;
       }
-      div.bio {
+      .editable-click {
+         color: #555;
+         border-bottom: none;
+         cursor: pointer;
+      }
+      div.bio-container {
          width: 700px;
-         .editable-click {
-            color: #555;
-            border-bottom: none;
-         }
          textarea {
             width: 500px;
-            height: 80px;
+            height: 200px;
+         }
+      }
+      div.field-and-school {
+         margin-top: 30px;
+         font-weight: bold;
+         font-size: 16px;
+         height: 20px;
+         form {
+            margin-top: -3px;
+            input {
+               font-size: 16px;
+               width: 350px;
+            }
          }
       }
       div.connected-accounts {

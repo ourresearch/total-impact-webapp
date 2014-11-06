@@ -27,6 +27,25 @@
                </ul>
             </div>
 
+
+            <div class="bio-container">
+               <span class="bio" ng-show="security.isLoggedIn(url_slug)">
+                  <span class="value"
+                     tooltip="click to edit your bio"
+                     tooltip-placement="bottom"
+                     editable-textarea="profileAboutService.data.bio"
+                     onaftersave="profileAboutService.upload()">
+                     {{ trustHtml(profileAboutService.data.bio) || 'click to enter your bio'}}
+                  </span>
+                  <i class="fa fa-pencil"></i>
+               </span>
+               <span class="bio" ng-show="!security.isLoggedIn(url_slug)">
+                  <span class="value">
+                     {{ trustHtml(profileAboutService.data.bio) }}
+                  </span>
+               </span>
+            </div>
+
             <div class="field-and-school">
                <span class="institution can-edit" ng-show="security.isLoggedIn(url_slug)">
                   <span class="val"
@@ -41,22 +60,7 @@
                <span class="institution cannot-edit" ng-show="!security.isLoggedIn(url_slug)">
                   <span class="val">{{ profileAboutService.data.institution  }}</span>
                </span>
-
             </div>
-            <div class="bio">
-               <span class="value"
-                  tooltip="click to edit your bio"
-                  ng-show="security.isLoggedIn(url_slug)"
-                  tooltip-placement="bottom"
-                  editable-textarea="profileAboutService.data.bio"
-                  onaftersave="profileAboutService.upload()">
-                  {{ trustHtml(profileAboutService.data.bio) || 'click to enter your bio'}}
-               </span>
-               <span class="value" ng-show="!security.isLoggedIn(url_slug)">
-                  {{ trustHtml(profileAboutService.data.bio) }}
-               </span>
-            </div>
-
 
             <div class="connected-accounts">
                <ul>

@@ -8605,6 +8605,25 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </ul>\n" +
     "            </div>\n" +
     "\n" +
+    "\n" +
+    "            <div class=\"bio-container\">\n" +
+    "               <span class=\"bio\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                  <span class=\"value\"\n" +
+    "                     tooltip=\"click to edit your bio\"\n" +
+    "                     tooltip-placement=\"bottom\"\n" +
+    "                     editable-textarea=\"profileAboutService.data.bio\"\n" +
+    "                     onaftersave=\"profileAboutService.upload()\">\n" +
+    "                     {{ trustHtml(profileAboutService.data.bio) || 'click to enter your bio'}}\n" +
+    "                  </span>\n" +
+    "                  <i class=\"fa fa-pencil\"></i>\n" +
+    "               </span>\n" +
+    "               <span class=\"bio\" ng-show=\"!security.isLoggedIn(url_slug)\">\n" +
+    "                  <span class=\"value\">\n" +
+    "                     {{ trustHtml(profileAboutService.data.bio) }}\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "\n" +
     "            <div class=\"field-and-school\">\n" +
     "               <span class=\"institution can-edit\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
     "                  <span class=\"val\"\n" +
@@ -8619,22 +8638,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <span class=\"institution cannot-edit\" ng-show=\"!security.isLoggedIn(url_slug)\">\n" +
     "                  <span class=\"val\">{{ profileAboutService.data.institution  }}</span>\n" +
     "               </span>\n" +
-    "\n" +
     "            </div>\n" +
-    "            <div class=\"bio\">\n" +
-    "               <span class=\"value\"\n" +
-    "                  tooltip=\"click to edit your bio\"\n" +
-    "                  ng-show=\"security.isLoggedIn(url_slug)\"\n" +
-    "                  tooltip-placement=\"bottom\"\n" +
-    "                  editable-textarea=\"profileAboutService.data.bio\"\n" +
-    "                  onaftersave=\"profileAboutService.upload()\">\n" +
-    "                  {{ trustHtml(profileAboutService.data.bio) || 'click to enter your bio'}}\n" +
-    "               </span>\n" +
-    "               <span class=\"value\" ng-show=\"!security.isLoggedIn(url_slug)\">\n" +
-    "                  {{ trustHtml(profileAboutService.data.bio) }}\n" +
-    "               </span>\n" +
-    "            </div>\n" +
-    "\n" +
     "\n" +
     "            <div class=\"connected-accounts\">\n" +
     "               <ul>\n" +

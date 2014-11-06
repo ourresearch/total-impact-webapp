@@ -7631,25 +7631,34 @@ div.profile-header div.my-picture img {
 div.profile-header div.my-vitals {
   margin-bottom: 50px;
 }
-div.profile-header div.my-vitals h2.editable-name {
-  font-family: Lato, Helvetica, Arial, sans-serif;
-  font-weight: bolder;
-  font-size: 45px;
-  color: #555;
-  margin: 0;
-  padding-top: 0;
-  float: left;
+div.profile-header div.my-vitals .fa-pencil {
+  font-size: 80%;
+  color: #ccc;
 }
-div.profile-header div.my-vitals div.bio {
-  width: 700px;
-}
-div.profile-header div.my-vitals div.bio .editable-click {
+div.profile-header div.my-vitals .editable-click {
   color: #555;
   border-bottom: none;
+  cursor: pointer;
 }
-div.profile-header div.my-vitals div.bio textarea {
+div.profile-header div.my-vitals div.bio-container {
+  width: 700px;
+}
+div.profile-header div.my-vitals div.bio-container textarea {
   width: 500px;
-  height: 80px;
+  height: 200px;
+}
+div.profile-header div.my-vitals div.field-and-school {
+  margin-top: 30px;
+  font-weight: bold;
+  font-size: 16px;
+  height: 20px;
+}
+div.profile-header div.my-vitals div.field-and-school form {
+  margin-top: -3px;
+}
+div.profile-header div.my-vitals div.field-and-school form input {
+  font-size: 16px;
+  width: 350px;
 }
 div.profile-header div.my-vitals div.connected-accounts {
   clear: left;
