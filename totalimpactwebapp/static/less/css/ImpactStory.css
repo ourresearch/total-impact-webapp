@@ -7648,6 +7648,7 @@ div.profile-header div.my-vitals div.bio-container textarea {
   height: 200px;
 }
 div.profile-header div.my-vitals div.field-and-school {
+  clear: left;
   margin-top: 30px;
   font-weight: bold;
   font-size: 16px;
