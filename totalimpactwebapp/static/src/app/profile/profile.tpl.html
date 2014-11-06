@@ -28,11 +28,19 @@
             </div>
 
             <div class="field-and-school">
-               <a href="#"
-                  editable-text="foo.state"
-                  e-typeahead="uni for uni in getUnis($viewValue)">
-                   {{ foo.state || 'empty' }}
-               </a>
+               <span class="institution can-edit" ng-show="security.isLoggedIn(url_slug)">
+                  <span class="val"
+                     editable-text="profileAboutService.data.institution"
+                     tooltip="Click to edit your institution"
+                     onaftersave="profileAboutService.upload()"
+                     e-typeahead="uni for uni in getUnis($viewValue)">
+                      {{ profileAboutService.data.institution || 'Click to enter your institution' }}
+                  </span>
+                  <i class="fa fa-pencil"></i>
+               </span>
+               <span class="institution cannot-edit" ng-show="!security.isLoggedIn(url_slug)">
+                  <span class="val">{{ profileAboutService.data.institution  }}</span>
+               </span>
 
             </div>
             <div class="bio">

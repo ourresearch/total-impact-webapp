@@ -138,6 +138,7 @@ class Profile(db.Model):
     is_advisor = db.Column(db.Boolean)  # ALTER TABLE profile ADD is_advisor bool
     bio = db.Column(db.Text)  # ALTER TABLE profile ADD bio text
     trial_extended_until = db.Column(db.DateTime())  # ALTER TABLE profile ADD trial_extended_until timestamp
+    institution = db.Column(db.Text)  # ALTER TABLE profile ADD institution text
 
 
     products = db.relationship(
@@ -608,7 +609,8 @@ class Profile(db.Model):
             "is_trialing",
             "trial_extended_until",
             "trial_end_date",
-            "is_live"
+            "is_live",
+            "institution"
 
             # these make calls out to Stripe, plus we're not using them anyway.
             #"is_paid_subscriber",

@@ -2216,7 +2216,9 @@ angular.module("profile", [
       Page.setTitle(newVal.full_name)
     }, true)
 
-    $scope.$watch('profileService.data', function(newVal, oldVal){
+    $scope.$watch('profileService.loading', function(newVal, oldVal){
+
+      console.log("profile service loading watch fired.")
 
       if (ProfileService.hasFullProducts()){
         Loading.finishPage()
@@ -2239,7 +2241,7 @@ angular.module("profile", [
 
       }
 
-    }, true);
+    });
 })
 
 
@@ -8604,11 +8606,19 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "            </div>\n" +
     "\n" +
     "            <div class=\"field-and-school\">\n" +
-    "               <a href=\"#\"\n" +
-    "                  editable-text=\"foo.state\"\n" +
-    "                  e-typeahead=\"uni for uni in getUnis($viewValue)\">\n" +
-    "                   {{ foo.state || 'empty' }}\n" +
-    "               </a>\n" +
+    "               <span class=\"institution can-edit\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                  <span class=\"val\"\n" +
+    "                     editable-text=\"profileAboutService.data.institution\"\n" +
+    "                     tooltip=\"Click to edit your institution\"\n" +
+    "                     onaftersave=\"profileAboutService.upload()\"\n" +
+    "                     e-typeahead=\"uni for uni in getUnis($viewValue)\">\n" +
+    "                      {{ profileAboutService.data.institution || 'Click to enter your institution' }}\n" +
+    "                  </span>\n" +
+    "                  <i class=\"fa fa-pencil\"></i>\n" +
+    "               </span>\n" +
+    "               <span class=\"institution cannot-edit\" ng-show=\"!security.isLoggedIn(url_slug)\">\n" +
+    "                  <span class=\"val\">{{ profileAboutService.data.institution  }}</span>\n" +
+    "               </span>\n" +
     "\n" +
     "            </div>\n" +
     "            <div class=\"bio\">\n" +

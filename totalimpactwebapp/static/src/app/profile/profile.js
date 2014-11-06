@@ -233,7 +233,9 @@ angular.module("profile", [
       Page.setTitle(newVal.full_name)
     }, true)
 
-    $scope.$watch('profileService.data', function(newVal, oldVal){
+    $scope.$watch('profileService.loading', function(newVal, oldVal){
+
+      console.log("profile service loading watch fired.")
 
       if (ProfileService.hasFullProducts()){
         Loading.finishPage()
@@ -256,7 +258,7 @@ angular.module("profile", [
 
       }
 
-    }, true);
+    });
 })
 
 
