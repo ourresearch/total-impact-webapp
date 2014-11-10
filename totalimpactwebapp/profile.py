@@ -846,6 +846,11 @@ def get_profile_stubs_from_url_slug(url_slug):
     return profile
 
 
+def get_profile_awards_from_slug(url_slug):
+    profile = get_profile_stubs_from_url_slug(url_slug)
+    return profile_award.make_awards_list(profile)
+
+
 
 def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_products=True, include_product_relationships=True):
     if include_products:

@@ -32,6 +32,7 @@ from totalimpactwebapp.password_reset import PasswordResetError
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import create_profile_from_slug
 from totalimpactwebapp.profile import get_profile_stubs_from_url_slug
+from totalimpactwebapp.profile import get_profile_awards_from_slug
 from totalimpactwebapp.profile import get_profile_from_id
 from totalimpactwebapp.profile import delete_profile
 from totalimpactwebapp.profile import remove_duplicates_from_profile
@@ -509,7 +510,11 @@ def refresh_status(profile_id):
 
 
 
-
+@app.route("/profile/<profile_id>/awards")
+@app.route("/profile/<profile_id>/awards.json")
+def oa_badge(profile_id):
+    awards = get_profile_awards_from_slug(profile_id)
+    return json_resp_from_thing(awards)
 
 
 
