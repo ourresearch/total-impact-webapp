@@ -9,7 +9,6 @@ angular.module('services.profileService', [
                                       TiMixpanel,
                                       Product,
                                       Loading,
-                                      PinboardService,
                                       ProfileAboutService,
                                       GenreConfigs,
                                       UsersProducts,

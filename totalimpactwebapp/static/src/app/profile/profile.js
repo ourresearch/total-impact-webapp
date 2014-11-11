@@ -112,7 +112,6 @@ angular.module("profile", [
     ProfileService,
     ProfileAboutService,
     ProfileAwardService,
-    PinboardService,
     KeyMetrics,
     KeyProducts,
     Tour,
@@ -121,8 +120,6 @@ angular.module("profile", [
     Page) {
 
     var url_slug = $routeParams.url_slug;
-
-    $scope.pinboardService = PinboardService
 
     $scope.KeyMetrics = KeyMetrics
     $scope.KeyProducts = KeyProducts
