@@ -131,8 +131,8 @@ angular.module("profile", [
     $scope.ProfileAwardService = ProfileAwardService
     ProfileAwardService.get(url_slug)
 
-    $scope.$watch("pinboardService.cols", function(newVal, oldVal){
-      PinboardService.saveState(true)
+    $scope.$watch("KeyMetrics.data.list", function(newVal, oldVal){
+      KeyMetrics.saveIfChanged(newVal, oldVal)
     }, true)
 
     $scope.sortableOptions = {

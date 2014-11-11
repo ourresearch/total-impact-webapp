@@ -3,7 +3,7 @@ angular.module('services.pinboard', [
 ])
   .factory("Pinboard", function(security){
 
-    function save(data, resource){
+    function save(data, resource, forceSave){
       var current_user_url_slug = security.getCurrentUserSlug()
       if (!current_user_url_slug){
         return false
@@ -19,14 +19,6 @@ angular.module('services.pinboard', [
           console.log("error saving pinboard data", resp, data)
         }
       )
-    }
-
-    function isPinned(thingToTest, data){
-      if (thingToTest._tiid){
-        return !!_.find(data.list, function(product){
-          return product._tiid === thingToTest._tiid
-        })
-      }
     }
 
     function pinnedThingsAreEqual(a, b){
@@ -75,6 +67,17 @@ angular.module('services.pinboard', [
         },
         clear: function(){
           data.list.length = 0
+        },
+        save: function(){
+          save(data, resource)
+        },
+        saveIfChanged: function(newList, oldList){
+          if (_.isEqual(newList, oldList) || newList.length > oldList.length){
+            // nothing interesting happened.
+          }
+          else {
+            save(data, resource)
+          }
         },
         data: data
       }

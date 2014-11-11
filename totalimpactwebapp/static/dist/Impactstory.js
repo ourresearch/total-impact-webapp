@@ -2103,8 +2103,8 @@ angular.module("profile", [
     $scope.ProfileAwardService = ProfileAwardService
     ProfileAwardService.get(url_slug)
 
-    $scope.$watch("pinboardService.cols", function(newVal, oldVal){
-      PinboardService.saveState(true)
+    $scope.$watch("KeyMetrics.data.list", function(newVal, oldVal){
+      KeyMetrics.saveIfChanged(newVal, oldVal)
     }, true)
 
     $scope.sortableOptions = {
@@ -5265,7 +5265,7 @@ angular.module('services.pinboard', [
 ])
   .factory("Pinboard", function(security){
 
-    function save(data, resource){
+    function save(data, resource, forceSave){
       var current_user_url_slug = security.getCurrentUserSlug()
       if (!current_user_url_slug){
         return false
@@ -5281,14 +5281,6 @@ angular.module('services.pinboard', [
           console.log("error saving pinboard data", resp, data)
         }
       )
-    }
-
-    function isPinned(thingToTest, data){
-      if (thingToTest._tiid){
-        return !!_.find(data.list, function(product){
-          return product._tiid === thingToTest._tiid
-        })
-      }
     }
 
     function pinnedThingsAreEqual(a, b){
@@ -5337,6 +5329,17 @@ angular.module('services.pinboard', [
         },
         clear: function(){
           data.list.length = 0
+        },
+        save: function(){
+          save(data, resource)
+        },
+        saveIfChanged: function(newList, oldList){
+          if (_.isEqual(newList, oldList) || newList.length > oldList.length){
+            // nothing interesting happened.
+          }
+          else {
+            save(data, resource)
+          }
         },
         data: data
       }
@@ -8956,32 +8959,30 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "         <!-- LOGGED-OUT version -->\n" +
-    "         <ul class=\"col-two pinboard-list logged-out\" ng-if=\"!security.isLoggedIn(url_slug)\">\n" +
-    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\" ng-if=\"profileService.getFromPinId(pinId).current_value\">\n" +
+    "         <ul class=\"col-two pinboard-list logged-out\"\n" +
+    "             ng-if=\"!security.isLoggedIn(url_slug)\">\n" +
+    "            <li class=\"pin metric-pin\" ng-repeat=\"keyMetric in KeyMetrics.data.list\" ng-if=\"keyMetric.current_value\">\n" +
     "               <div class=\"pin-header\">\n" +
-    "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
-    "                     <i class=\"icon-remove\"></i>\n" +
-    "                  </a>\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"pin-body genre-card-pin-body\">\n" +
-    "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
-    "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
+    "                  <span class=\"main val\">{{ nFormat(keyMetric.current_value) }}</span>\n" +
+    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ keyMetric.tooltip }}\">\n" +
+    "                     <img ng-src='/static/img/favicons/{{ keyMetric.img_filename }}' class='icon' >\n" +
     "                     <span class=\"my-label\">\n" +
     "                        <span class=\"things-we-are-counting\">\n" +
-    "                           {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}\n" +
+    "                           {{ keyMetric.display_things_we_are_counting }}\n" +
     "                        </span>\n" +
     "                         on\n" +
     "                     </span>\n" +
     "                  </span>\n" +
     "                  <span class=\"genre\">\n" +
-    "                     <a href=\"{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}\"\n" +
+    "                     <a href=\"{{ url_slug }}/products/{{ GenreConfigs.get(keyMetric.genre, 'url_representation') }}\"\n" +
     "                        tooltip-placement=\"bottom\"\n" +
-    "                        tooltip=\"Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}\">\n" +
-    "                        <i class=\"icon {{ profileService.getFromPinId(pinId).genre_icon }}\"></i>\n" +
-    "                        <span class=\"val\">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>\n" +
-    "                        {{ profileService.getFromPinId(pinId).genre_plural_name }}\n" +
+    "                        tooltip=\"Click to see all {{ keyMetric.num_products }} {{ GenreConfigs.get(keyMetric.genre, 'plural_name') }}\">\n" +
+    "                        <i class=\"icon {{ GenreConfigs.get(keyMetric.genre, 'icon') }}\"></i>\n" +
+    "                        <span class=\"val\">{{ keyMetric.num_products }}</span>\n" +
+    "                        {{ GenreConfigs.get(keyMetric.genre, \"plural_name\") }}\n" +
     "                     </a>\n" +
     "                  </span>\n" +
     "               </div>\n" +
