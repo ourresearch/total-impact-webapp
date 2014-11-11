@@ -221,7 +221,7 @@ class AbstractProductsAccumulationCard(Card):
     def milestone_awarded(self):
         try:
             return self.metric_accumulations(self.products, self.provider, self.interaction)["milestone"]
-        except KeyError:
+        except (KeyError, TypeError):
             return None
 
     @property
@@ -232,14 +232,14 @@ class AbstractProductsAccumulationCard(Card):
     def current_value(self):
         try:
             return self.metric_accumulations(self.products, self.provider, self.interaction)["accumulated_diff_end_value"]
-        except KeyError:
+        except (KeyError, TypeError):
             return None
 
     @property
     def diff_value(self):
         try:
             return self.metric_accumulations(self.products, self.provider, self.interaction)["accumulated_diff"]
-        except KeyError:
+        except (KeyError, TypeError):
             return None                        
 
     @property
@@ -333,9 +333,12 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
 
     @property
     def display_things_we_are_counting(self):
-        plural_interaction = self.exemplar_metric.display_interaction
-        if not plural_interaction.endswith("s"):
-            plural_interaction += "s"    
+        try:
+            plural_interaction = self.exemplar_metric.display_interaction
+            if not plural_interaction.endswith("s"):
+                plural_interaction += "s"    
+        except AttributeError:
+            plural_interaction = self.interaction + "s" 
         return plural_interaction
 
 
@@ -388,7 +391,8 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
         if self.provider in ["scopus"]:
             score += 5000
 
-        score += self.current_value
+        if self.current_value:
+            score += self.current_value
         
         return score
 
