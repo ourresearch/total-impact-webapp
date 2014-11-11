@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-05
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-10
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -531,6 +531,7 @@ angular.module('app', [
   'ui.sortable',
   'deadProfile',
   'services.pinboardService',
+  'services.profileAwardService',
   'services.countryNames',
   'services.map',
   'settings',
@@ -1282,7 +1283,6 @@ angular.module("productListPage", [
 angular.module("productPage", [
     'resources.users',
     'resources.products',
-    'profileAward.profileAward',
     'services.page',
     'services.breadcrumbs',
     'profile',
@@ -1744,19 +1744,6 @@ angular.module("productPage", [
 
 
 
-angular.module('profileAward.profileAward', [])
-  .factory('ProfileAward', function() {
-    return {
-      test: function foo(){}
-    }
-
-})
-
-  .controller('ProfileAwardCtrl', function ($scope, ProfileAward) {
-
-  })
-
-
 angular.module('profileLinkedAccounts', [
   'accounts.allTheAccounts',
   'services.page',
@@ -2094,13 +2081,19 @@ angular.module("profile", [
     Loading,
     ProfileService,
     ProfileAboutService,
+    ProfileAwardService,
     PinboardService,
     Tour,
     Timer,
     security,
     Page) {
 
+    var url_slug = $routeParams.url_slug;
+
     $scope.pinboardService = PinboardService
+    $scope.ProfileAwardService = ProfileAwardService
+    ProfileAwardService.get(url_slug)
+
     $scope.$watch("pinboardService.cols", function(newVal, oldVal){
       PinboardService.saveState(true)
     }, true)
@@ -2119,7 +2112,6 @@ angular.module("profile", [
     Timer.start("profileViewRender.load")
     Page.setName('overview')
 
-    var url_slug = $routeParams.url_slug;
 
     $timeout(function(){
         twttr.widgets.load()
@@ -4142,6 +4134,19 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  .factory("ProfileAwards", function($resource){
+    return $resource(
+      "/profile/:id/awards",
+      {},
+      {
+        get: {
+          isArray: true
+        }
+      }
+    )
+
+  })
+
 
 
   .factory('UserProduct', function ($resource) {
@@ -5565,6 +5570,48 @@ angular.module('services.profileAboutService', [
     }
 
   })
+angular.module('services.profileAwardService', [
+  'resources.users'
+])
+.factory("ProfileAwardService", function($q,
+                                         $timeout,
+                                         Update,
+                                         Users,
+                                         ProfileAwards){
+
+  var awards = {}
+  var loading = true
+
+
+  function get(url_slug){
+    console.log("calling ProfileAwardService.get() with ", url_slug)
+
+    loading = true
+    return ProfileAwards.get(
+      {id: url_slug},
+      function(resp){
+        console.log("ProfileAwards got a response", resp)
+        awards.oa = resp[0]
+        loading = false
+      },
+
+      function(resp){
+        console.log("ProfileAwards got a failure response", resp)
+        if (resp.status == 404){
+          // do something? i dunno
+        }
+        loading = false
+      }
+    ).$promise
+  }
+
+  return {
+    get: get,
+    awards: awards,
+    loading: loading
+  }
+
+})
 angular.module('services.profileService', [
   'resources.users'
 ])
@@ -8337,35 +8384,35 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && profileAward.award_badge\">\n" +
+    "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
-    "        data-content=\"{{ profile.given_name }} has made {{ profileAward.level_justification }}\"\n" +
-    "        data-original-title=\"{{ profileAward.level_name }} level award\"\n" +
-    "        ng-show=\"profileAward.level>0\">\n" +
+    "        data-content=\"{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}\"\n" +
+    "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
+    "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
     "\n" +
-    "      <span class=\"icon level-{{ profileAward.level }}\">\n" +
+    "      <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
     "         <i class=\"icon-unlock-alt\"></i>\n" +
     "      </span>\n" +
-    "      <span class=\"text\">{{ profileAward.name }}</span>\n" +
+    "      <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
     "\n" +
     "   </span>\n" +
     "</div>\n" +
     "\n" +
-    "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && profileAward.award_badge\">\n" +
+    "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
     "        ng-controller=\"ProfileAwardCtrl\"\n" +
-    "        data-content=\"You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.call_to_action }}.</div>\"\n" +
-    "        data-original-title=\"{{ profileAward.level_name }} level award\"\n" +
-    "        ng-show=\"profileAward.level>0\">\n" +
+    "        data-content=\"You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>\"\n" +
+    "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
+    "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
     "\n" +
-    "      <span class=\"icon level-{{ profileAward.level }}\">\n" +
+    "      <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
     "         <i class=\"icon-unlock-alt\"></i>\n" +
     "      </span>\n" +
-    "      <span class=\"text\">{{ profileAward.name }}</span>\n" +
+    "      <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
     "\n" +
     "   </span>\n" +
-    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
+    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
     "</div>");
 }]);
 
@@ -8597,10 +8644,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               <div class=\"advisor\" ng-show=\"profileAboutService.data.is_advisor\">\n" +
     "                  <img src=\"/static/img/advisor-badge.png\">\n" +
     "               </div>\n" +
+    "\n" +
+    "\n" +
     "               <ul class=\"profile-award-list\">\n" +
-    "                  <li class=\"profile-award-container level-{{ profileAward.level }}\"\n" +
-    "                      ng-include=\"'profile-award/profile-award.tpl.html'\"\n" +
-    "                      ng-repeat=\"profileAward in profileService.data.awards\">\n" +
+    "                  <li class=\"profile-award-container level-{{ ProfileAwardService.awards.oa.level }}\"\n" +
+    "                      ng-include=\"'profile-award/profile-award.tpl.html'\">\n" +
     "                  </li>\n" +
     "               </ul>\n" +
     "            </div>\n" +

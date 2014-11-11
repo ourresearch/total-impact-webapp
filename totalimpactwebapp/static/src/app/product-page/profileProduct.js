@@ -1,7 +1,6 @@
 angular.module("productPage", [
     'resources.users',
     'resources.products',
-    'profileAward.profileAward',
     'services.page',
     'services.breadcrumbs',
     'profile',

@@ -1,30 +1,30 @@
-<div class="award-container" ng-show="!security.isLoggedIn(url_slug) && profileAward.award_badge">
+<div class="award-container" ng-show="!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge">
    <span class="profile-award"
         ng-controller="ProfileAwardCtrl"
-        data-content="{{ profile.given_name }} has made {{ profileAward.level_justification }}"
-        data-original-title="{{ profileAward.level_name }} level award"
-        ng-show="profileAward.level>0">
+        data-content="{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}"
+        data-original-title="{{ ProfileAwardService.awards.oa.level_name }} level award"
+        ng-show="ProfileAwardService.awards.oa.level>0">
 
-      <span class="icon level-{{ profileAward.level }}">
+      <span class="icon level-{{ ProfileAwardService.awards.oa.level }}">
          <i class="icon-unlock-alt"></i>
       </span>
-      <span class="text">{{ profileAward.name }}</span>
+      <span class="text">{{ ProfileAwardService.awards.oa.name }}</span>
 
    </span>
 </div>
 
-<div class="award-container" ng-show="security.isLoggedIn(url_slug) && profileAward.award_badge">
+<div class="award-container" ng-show="security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge">
    <span class="profile-award"
         ng-controller="ProfileAwardCtrl"
-        data-content="You've made {{ profileAward.level_justification }} Nice work! <div class='call-to-action'>{{ profileAward.call_to_action }}.</div>"
-        data-original-title="{{ profileAward.level_name }} level award"
-        ng-show="profileAward.level>0">
+        data-content="You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>"
+        data-original-title="{{ ProfileAwardService.awards.oa.level_name }} level award"
+        ng-show="ProfileAwardService.awards.oa.level>0">
 
-      <span class="icon level-{{ profileAward.level }}">
+      <span class="icon level-{{ ProfileAwardService.awards.oa.level }}">
          <i class="icon-unlock-alt"></i>
       </span>
-      <span class="text">{{ profileAward.name }}</span>
+      <span class="text">{{ ProfileAwardService.awards.oa.name }}</span>
 
    </span>
-   <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter" data-text="I got a new badge on my Impactstory profile: {{ profileAward.level_name }}-level {{ profileAward.name }}!" data-via="impactstory" data-count="none"></a>
+   <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter" data-text="I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!" data-via="impactstory" data-count="none"></a>
 </div>

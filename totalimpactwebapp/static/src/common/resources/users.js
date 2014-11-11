@@ -41,6 +41,19 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  .factory("ProfileAwards", function($resource){
+    return $resource(
+      "/profile/:id/awards",
+      {},
+      {
+        get: {
+          isArray: true
+        }
+      }
+    )
+
+  })
+
 
 
   .factory('UserProduct', function ($resource) {

@@ -19,10 +19,11 @@
                <div class="advisor" ng-show="profileAboutService.data.is_advisor">
                   <img src="/static/img/advisor-badge.png">
                </div>
+
+
                <ul class="profile-award-list">
-                  <li class="profile-award-container level-{{ profileAward.level }}"
-                      ng-include="'profile-award/profile-award.tpl.html'"
-                      ng-repeat="profileAward in profileService.data.awards">
+                  <li class="profile-award-container level-{{ ProfileAwardService.awards.oa.level }}"
+                      ng-include="'profile-award/profile-award.tpl.html'">
                   </li>
                </ul>
             </div>

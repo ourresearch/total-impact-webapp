@@ -36,6 +36,7 @@ angular.module('app', [
   'ui.sortable',
   'deadProfile',
   'services.pinboardService',
+  'services.profileAwardService',
   'services.countryNames',
   'services.map',
   'settings',

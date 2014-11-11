@@ -111,13 +111,19 @@ angular.module("profile", [
     Loading,
     ProfileService,
     ProfileAboutService,
+    ProfileAwardService,
     PinboardService,
     Tour,
     Timer,
     security,
     Page) {
 
+    var url_slug = $routeParams.url_slug;
+
     $scope.pinboardService = PinboardService
+    $scope.ProfileAwardService = ProfileAwardService
+    ProfileAwardService.get(url_slug)
+
     $scope.$watch("pinboardService.cols", function(newVal, oldVal){
       PinboardService.saveState(true)
     }, true)
@@ -136,7 +142,6 @@ angular.module("profile", [
     Timer.start("profileViewRender.load")
     Page.setName('overview')
 
-    var url_slug = $routeParams.url_slug;
 
     $timeout(function(){
         twttr.widgets.load()
