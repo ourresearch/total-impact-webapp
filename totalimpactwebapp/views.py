@@ -520,19 +520,23 @@ def oa_badge(profile_id):
 @app.route("/profile/<profile_id>/key-metrics")
 @app.route("/profile/<profile_id>/key-metrics.json")
 def genre_cards_json(profile_id):
-    resp = {}
+    resp = []
     profile = get_user_for_response(profile_id, request)
 
     board = Pinboard.query.filter_by(profile_id=profile.id).first()
     try:
-        resp["board"] = board.contents["two"]
+        genre_cards = []
+        for genre in profile.genres:
+            this_genre_cards = genre.cards
+            genre_cards += this_genre_cards
+
+        for card_address in board.contents["two"]:
+            for card_obj in genre_cards:
+                if card_obj.genre_card_address==card_address:
+                    resp.append(card_obj)
+
     except AttributeError:
         abort_json(404, "user has no pinboard set yet.")
-
-    genre_cards = []
-    for genre in profile.genres:
-        genre_cards.append(genre.cards)
-    resp["cards"] = genre_cards
 
     return json_resp_from_thing(resp)
 
