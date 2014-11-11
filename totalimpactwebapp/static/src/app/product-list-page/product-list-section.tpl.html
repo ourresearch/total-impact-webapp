@@ -109,14 +109,14 @@
                </span>
                <span class="feature-product-controls">
                   <a class="feature-product"
-                     ng-click="pinboardService.pin(['product', product.tiid])"
-                     ng-if="!pinboardService.isPinned(['product', product.tiid])"
+                     ng-click="KeyProducts.pin(product)"
+                     ng-if="!KeyProducts.isPinned(product)"
                      tooltip="Feature this product on your profile front page">
                      <i class="icon-star-empty"></i>
                   </a>
                   <a class="unfeature-product"
-                     ng-click="pinboardService.unPin(['product', product.tiid])"
-                     ng-if="pinboardService.isPinned(['product', product.tiid])"
+                     ng-click="KeyProducts.unPin(product)"
+                     ng-if="KeyProducts.isPinned(product)"
                      tooltip="This product is featured on your profile front page; click to unfeature.">
                      <i class="icon-star"></i>
                   </a>

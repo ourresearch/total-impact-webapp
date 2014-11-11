@@ -41,6 +41,31 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  .factory("ProfileKeyProducts", function($resource){
+    return $resource(
+      "/profile/:id/key-products",
+      {},
+      {
+        get: {
+          isArray: true
+        }
+      }
+    )
+  })
+  .factory("ProfileKeyMetrics", function($resource){
+    return $resource(
+      "/profile/:id/key-metrics",
+      {},
+      {
+        get: {
+          isArray: true
+        }
+      }
+    )
+  })
+
+
+
   .factory("ProfileAwards", function($resource){
     return $resource(
       "/profile/:id/awards",

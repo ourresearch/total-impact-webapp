@@ -533,6 +533,8 @@ angular.module('app', [
   'services.pinboardService',
   'services.profileAwardService',
   'services.countryNames',
+  'services.keyProducts',
+  'services.keyMetrics',
   'services.map',
   'settings',
   'xeditable',
@@ -4134,6 +4136,31 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  .factory("ProfileKeyProducts", function($resource){
+    return $resource(
+      "/profile/:id/key-products",
+      {},
+      {
+        get: {
+          isArray: true
+        }
+      }
+    )
+  })
+  .factory("ProfileKeyMetrics", function($resource){
+    return $resource(
+      "/profile/:id/key-metrics",
+      {},
+      {
+        get: {
+          isArray: true
+        }
+      }
+    )
+  })
+
+
+
   .factory("ProfileAwards", function($resource){
     return $resource(
       "/profile/:id/awards",
@@ -4770,6 +4797,28 @@ angular.module('services.httpRequestTracker').factory('httpRequestTracker', ['$h
 
   return httpRequestTracker;
 }]);
+angular.module('services.keyMetrics', [
+  'resources.users',
+  'services.pinboard'
+])
+  .factory("KeyMetrics", function(ProfileKeyMetrics, Pinboard, security){
+    var data = {list:[]}
+    var ret = Pinboard.makeInterface(data, ProfileKeyMetrics)
+
+    return ret
+  })
+
+angular.module('services.keyProducts', [
+  'resources.users',
+  'services.pinboard'
+])
+.factory("KeyProducts", function(ProfileKeyProducts, Pinboard, security){
+    var data = {list:[]}
+    var ret = Pinboard.makeInterface(data, ProfileKeyProducts)
+
+    return ret
+  })
+
 angular.module("services.loading", [])
 angular.module("services.loading")
 .factory("Loading", function(ngProgress){
@@ -5198,6 +5247,73 @@ angular.module("services.page")
 
 
 
+angular.module('services.pinboard', [
+  'resources.users'
+])
+  .factory("Pinboard", function(security){
+
+    function save(data, resource){
+      var current_user_url_slug = security.getCurrentUserSlug()
+      if (!current_user_url_slug){
+        return false
+      }
+
+      resource.save(
+        {id: current_user_url_slug},
+        {contents: data.list},
+        function(resp){
+          console.log("successfully saved pinboard data", resp, data)
+        },
+        function(resp){
+          console.log("error saving pinboard data", resp, data)
+        }
+      )
+    }
+
+
+
+    function makeInterface(data, resource){
+      return {
+        pin: function(thingToPin){
+          data.list.push(thingToPin)
+          save(data, resource)
+        },
+        get: function(id){
+          console.log("calling Pinboard.get(" + id + ")", data)
+          data.url_slug = id
+          resource.get(
+            {id: id},
+            function(resp){
+              data.list = resp
+            },
+            function(resp){
+              console.log("no pinboard set yet.", resp)
+            }
+          )
+        },
+        unpin: function(thingToUnpin){
+          data.list =  _.filter(data.list, function(pinnedThing){
+            return !_.isEqual(pinnedThing, thingToUnpin)
+          })
+          save(data, resource)
+        },
+        isPinned: function(thingToTest) {
+          return !!_.find(data.list, function(pinnedThing){
+            return _.isEqual(thingToTest, pinnedThing)
+          })
+        },
+        pins: data
+      }
+    }
+
+
+    return {
+      makeInterface: makeInterface
+    }
+
+
+  })
+
 angular.module('services.pinboardService', [
   'resources.users'
 ])
@@ -5320,6 +5436,8 @@ angular.module("services.productList", [])
     GenreConfigs,
     PinboardService,
     ProductListSort,
+    KeyMetrics,
+    KeyProducts,
     Loading,
     Timer,
     Page,
@@ -5335,6 +5453,9 @@ angular.module("services.productList", [])
     }
     Timer.start("productListRender")
     SelectedProducts.removeAll()
+
+    $scope.KeyMetrics = KeyMetrics
+    $scope.KeyProducts = KeyProducts
 
 
     // i think this stuff is not supposed to be here. not sure how else to re-use, though.
@@ -7874,14 +7995,14 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "               </span>\n" +
     "               <span class=\"feature-product-controls\">\n" +
     "                  <a class=\"feature-product\"\n" +
-    "                     ng-click=\"pinboardService.pin(['product', product.tiid])\"\n" +
-    "                     ng-if=\"!pinboardService.isPinned(['product', product.tiid])\"\n" +
+    "                     ng-click=\"KeyProducts.pin(product)\"\n" +
+    "                     ng-if=\"!KeyProducts.isPinned(product)\"\n" +
     "                     tooltip=\"Feature this product on your profile front page\">\n" +
     "                     <i class=\"icon-star-empty\"></i>\n" +
     "                  </a>\n" +
     "                  <a class=\"unfeature-product\"\n" +
-    "                     ng-click=\"pinboardService.unPin(['product', product.tiid])\"\n" +
-    "                     ng-if=\"pinboardService.isPinned(['product', product.tiid])\"\n" +
+    "                     ng-click=\"KeyProducts.unPin(product)\"\n" +
+    "                     ng-if=\"KeyProducts.isPinned(product)\"\n" +
     "                     tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
     "                     <i class=\"icon-star\"></i>\n" +
     "                  </a>\n" +

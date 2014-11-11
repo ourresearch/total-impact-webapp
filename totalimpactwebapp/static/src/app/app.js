@@ -38,6 +38,8 @@ angular.module('app', [
   'services.pinboardService',
   'services.profileAwardService',
   'services.countryNames',
+  'services.keyProducts',
+  'services.keyMetrics',
   'services.map',
   'settings',
   'xeditable',

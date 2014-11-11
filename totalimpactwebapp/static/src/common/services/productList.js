@@ -8,6 +8,8 @@ angular.module("services.productList", [])
     GenreConfigs,
     PinboardService,
     ProductListSort,
+    KeyMetrics,
+    KeyProducts,
     Loading,
     Timer,
     Page,
@@ -23,6 +25,9 @@ angular.module("services.productList", [])
     }
     Timer.start("productListRender")
     SelectedProducts.removeAll()
+
+    $scope.KeyMetrics = KeyMetrics
+    $scope.KeyProducts = KeyProducts
 
 
     // i think this stuff is not supposed to be here. not sure how else to re-use, though.
