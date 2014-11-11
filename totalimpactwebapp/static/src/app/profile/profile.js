@@ -132,11 +132,12 @@ angular.module("profile", [
     ProfileAwardService.get(url_slug)
 
     $scope.$watch("KeyMetrics.data.list", function(newVal, oldVal){
-      KeyMetrics.saveIfChanged(newVal, oldVal)
+      KeyMetrics.saveReordered(newVal, oldVal)
     }, true)
 
     $scope.$watch("KeyProducts.data.list", function(newVal, oldVal){
-      KeyProducts.saveIfChanged(newVal, oldVal)
+
+      KeyProducts.saveReordered(newVal, oldVal)
     }, true)
 
     $scope.sortableOptions = {

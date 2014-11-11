@@ -568,12 +568,18 @@ def key_products(profile_id):
             tiid = product_address[1]
             my_product = get_product(tiid)
 
-            my_product_dict = my_product.to_markup_dict(markup)
+            show_keys = [
+                "_tiid",
+                "markup",
+                "genre",
+                "genre_icon"
+            ]
+            my_product_dict = my_product.to_markup_dict(markup, show_keys=show_keys)
             resp.append(my_product_dict)
 
     elif request.method == 'POST':
         products = request.json["contents"]
-        id_tuples = [('product', p["tiid"]) for p in products]
+        id_tuples = [('product', p["_tiid"]) for p in products]
         resp = {"resp": pinboard.set_key_products(profile.id, id_tuples)}
 
     return json_resp_from_thing(resp)

@@ -539,21 +539,26 @@ class Product(db.Model):
         ret["_tiid"] = self.tiid
         return ret
 
-    def to_markup_dict(self, markup, hide_keys=None):
-        ret = self.to_dict()
+    def to_markup_dict(self, markup, hide_keys=None, show_keys="all"):
+        my_dict = self.to_dict()
 
-        ret["markup"] = markup.make(ret)
+        my_dict["markup"] = markup.make(my_dict)
 
-        try:
+        if hide_keys is not None:
             for key_to_hide in hide_keys:
                 try:
-                    del ret[key_to_hide]
+                    del my_dict[key_to_hide]
                 except KeyError:
                     pass
-        except TypeError:  # hide_keys=None is not iterable
-            pass
+        elif show_keys != "all":
+            my_small_dict = {}
+            for k, v in my_dict.iteritems():
+                if k in show_keys:
+                    my_small_dict[k] = v
 
-        return ret
+            my_dict = my_small_dict
+
+        return my_dict
 
 
     def to_markup_dict_multi(self, markups_dict, hide_keys=None):

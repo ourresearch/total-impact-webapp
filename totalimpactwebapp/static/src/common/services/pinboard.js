@@ -30,6 +30,28 @@ angular.module('services.pinboard', [
       }
     }
 
+    function listsHaveSameContents(a, b){
+      if (!a.length || !b.length){
+        return false
+      }
+
+      if (a[0]._tiid){
+        console.log("checking equality by tiid", a, b)
+        return _.isEqual(
+          _.pluck(a, "_tiid").sort(),
+          _.pluck(b, "_tiid").sort()
+        )
+      }
+      else if (a[0].genre_card_address){
+        return _.isEqual(
+          _.sortBy(a, "genre_card_address"),
+          _.sortBy(b, "genre_card_address")
+        )
+      }
+
+
+    }
+
 
 
     function makeInterface(data, resource){
@@ -71,11 +93,8 @@ angular.module('services.pinboard', [
         save: function(){
           save(data, resource)
         },
-        saveIfChanged: function(newList, oldList){
-          if (_.isEqual(newList, oldList)){
-            // nothing interesting happened.
-          }
-          else {
+        saveReordered: function(newList, oldList){
+          if (listsHaveSameContents(newList, oldList)){
             save(data, resource)
           }
         },
