@@ -41,7 +41,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run stuff.")
     parser.add_argument('endpoint', type=str, help="the endpoint you want to test, like /jason/products")
     parser.add_argument('--loc', default="local", type=str, help="'local', 'production', or 'staging'")
-    parser.add_argument('--tries', default=50, type=str, help="number of times to try the endpoint")
+    parser.add_argument('--tries', default=50, type=int, help="number of times to try the endpoint")
 
     args = vars(parser.parse_args())
     print args
