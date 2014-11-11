@@ -10,7 +10,7 @@
          title="Click to view impact details"
          data-toggle='tooltip'
 
-         href="/{{ profile.url_slug }}/product/{{ tiid }}">
+         href="/{{ url_slug }}/product/{{ tiid }}">
 
          {{biblio.display_title}}
 
@@ -57,7 +57,7 @@
    <div class="under-biblio">
      {% if embed_markup %}
       <a class="has-fulltext"
-         href="/{{ profile.url_slug }}/product/{{ tiid }}/fulltext">
+         href="/{{ url_slug }}/product/{{ tiid }}/fulltext">
          <i class="icon-unlock-alt"></i>
          {{ fulltext_cta }}
       </a>
@@ -69,7 +69,7 @@
    <ul class="awards-list">
       {% for award in awards | sort(reverse=True, attribute="display_order") %}
          <li class="award">
-            <a href="/{{ profile.url_slug }}/product/{{ tiid }}"
+            <a href="/{{ url_slug }}/product/{{ tiid }}"
                class="ti-badge"
 
                data-original-title="{{ award.highly_string }} {{award.engagement_type}} by <span class='{{award.display_audience}}'>{{award.display_audience}}</span>"

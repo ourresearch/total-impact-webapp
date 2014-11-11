@@ -72,7 +72,7 @@ angular.module('services.pinboard', [
           save(data, resource)
         },
         saveIfChanged: function(newList, oldList){
-          if (_.isEqual(newList, oldList) || newList.length > oldList.length){
+          if (_.isEqual(newList, oldList)){
             // nothing interesting happened.
           }
           else {

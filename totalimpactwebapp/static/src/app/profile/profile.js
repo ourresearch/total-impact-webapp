@@ -135,6 +135,10 @@ angular.module("profile", [
       KeyMetrics.saveIfChanged(newVal, oldVal)
     }, true)
 
+    $scope.$watch("KeyProducts.data.list", function(newVal, oldVal){
+      KeyProducts.saveIfChanged(newVal, oldVal)
+    }, true)
+
     $scope.sortableOptions = {
     }
 

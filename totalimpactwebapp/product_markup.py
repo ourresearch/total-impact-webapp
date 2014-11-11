@@ -1,25 +1,15 @@
 import jinja2
 
-class MarkupFactory(object):
-    def __init__(self, user_id, embed=False):
-        self.context = {
-            "embed": embed,
-            "user_id": user_id
-        }
-
-    def make_markup(self):
-        return Markup(self.context["user_id"], self.context["embed"])
-
 
 class Markup():
-    def __init__(self, user_id, embed=False):
-        self.user_id = user_id
+    def __init__(self, url_slug, embed=False):
+        self.url_slug = url_slug
 
         self.template = self._create_template("product.html")
 
         self.context = {
             "embed": embed,
-            "user_id": user_id
+            "url_slug": url_slug
         }
 
 

@@ -2107,6 +2107,10 @@ angular.module("profile", [
       KeyMetrics.saveIfChanged(newVal, oldVal)
     }, true)
 
+    $scope.$watch("KeyProducts.data.list", function(newVal, oldVal){
+      KeyProducts.saveIfChanged(newVal, oldVal)
+    }, true)
+
     $scope.sortableOptions = {
     }
 
@@ -5334,7 +5338,7 @@ angular.module('services.pinboard', [
           save(data, resource)
         },
         saveIfChanged: function(newList, oldList){
-          if (_.isEqual(newList, oldList) || newList.length > oldList.length){
+          if (_.isEqual(newList, oldList)){
             // nothing interesting happened.
           }
           else {
@@ -8878,21 +8882,22 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <ul class=\"col-one pinboard-list logged-in\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
     "             ng-if=\"security.isLoggedIn(url_slug)\"\n" +
-    "             ng-model=\"pinboardService.cols.one\">\n" +
-    "            <li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
+    "             ng-model=\"KeyProducts.data.list\">\n" +
+    "            <li class=\"pin product-pin\" ng-repeat=\"product in KeyProducts.data.list\">\n" +
     "               <div class=\"pin-header\">\n" +
-    "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "                  <a class=\"delete-pin\" ng-click=\"KeyProducts.unpin(product)\">\n" +
     "                     <i class=\"icon-remove\"></i>\n" +
     "                  </a>\n" +
     "               </div>\n" +
     "               <div class=\"pin-body product-pin\">\n" +
     "                  <i tooltip-placement=\"left\"\n" +
-    "                     tooltip=\"{{ profileService.productByTiid(pinId[1]).genre }}\"\n" +
-    "                     class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
-    "                  <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
+    "                     tooltip=\"{{ product.genre }}\"\n" +
+    "                     class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
+    "                  <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "               </div>\n" +
     "            </li>\n" +
     "         </ul>\n" +
+    "\n" +
     "\n" +
     "         <!-- LOGGED OUT version -->\n" +
     "         <ul class=\"col-one pinboard-list logged-out\" ng-if=\"!security.isLoggedIn(url_slug)\">\n" +

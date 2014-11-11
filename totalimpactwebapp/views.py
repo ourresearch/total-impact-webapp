@@ -46,6 +46,8 @@ from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product import patch_biblio
 
+from totalimpactwebapp.product_markup import Markup
+
 from totalimpactwebapp import pinboard
 from totalimpactwebapp.pinboard import Pinboard
 from totalimpactwebapp.pinboard import write_to_pinboard
@@ -558,11 +560,16 @@ def key_products(profile_id):
     profile = get_user_for_response(profile_id, request)
     resp = []
     if request.method == "GET":
+        markup = Markup(profile_id, False)  # profile_id must be a slug...
+
+
         board = Pinboard.query.filter_by(profile_id=profile.id).first()
         for product_address in board.contents["one"]:
             tiid = product_address[1]
             my_product = get_product(tiid)
-            resp.append(my_product)
+
+            my_product_dict = my_product.to_markup_dict(markup)
+            resp.append(my_product_dict)
 
     elif request.method == 'POST':
         products = request.json["contents"]
@@ -646,29 +653,29 @@ def profile_tweets(id):
     return json_resp_from_thing(resp)
 
 
-@app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
-@app.route("/profile/<user_id>/product/<tiid>.json", methods=['GET', 'DELETE'])
-def user_product(user_id, tiid):
-
-    if user_id == "embed":
-        abort(410)
-
-    profile = get_user_for_response(user_id, request)
-
-    if request.method == "GET":
-        markup_factory = MarkupFactory(g.user_id, embed=False)
-        try:
-            resp = profile.get_single_product_markup(tiid, markup_factory)
-        except IndexError:
-            abort_json(404, "That product doesn't exist.")
-
-    elif request.method == "DELETE":
-        # kind of confusing now, waiting for core-to-webapp refactor
-        # to improve it though.
-        abort_if_user_not_logged_in(profile)
-        resp = delete_products_from_profile(profile, [tiid])
-
-    return json_resp_from_thing(resp)
+#@app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
+#@app.route("/profile/<user_id>/product/<tiid>.json", methods=['GET', 'DELETE'])
+#def user_product(user_id, tiid):
+#
+#    if user_id == "embed":
+#        abort(410)
+#
+#    profile = get_user_for_response(user_id, request)
+#
+#    if request.method == "GET":
+#        markup_factory = MarkupFactory(g.user_id, embed=False)
+#        try:
+#            resp = profile.get_single_product_markup(tiid, markup_factory)
+#        except IndexError:
+#            abort_json(404, "That product doesn't exist.")
+#
+#    elif request.method == "DELETE":
+#        # kind of confusing now, waiting for core-to-webapp refactor
+#        # to improve it though.
+#        abort_if_user_not_logged_in(profile)
+#        resp = delete_products_from_profile(profile, [tiid])
+#
+#    return json_resp_from_thing(resp)
 
 
 

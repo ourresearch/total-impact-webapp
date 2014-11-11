@@ -4,7 +4,6 @@ from totalimpactwebapp import configs
 from totalimpactwebapp import countries
 from totalimpactwebapp.account import account_factory
 from totalimpactwebapp.product_markup import Markup
-from totalimpactwebapp.product_markup import MarkupFactory
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.drip_email import DripEmail
@@ -492,7 +491,6 @@ class Profile(db.Model):
     def get_products_markup(self, markup, hide_keys=None):
 
         markup.set_template("product.html")
-        markup.context["profile"] = self
 
         product_dicts = [p.to_markup_dict(markup, hide_keys)
                 for p in self.display_products]
@@ -642,7 +640,7 @@ class Profile(db.Model):
 
 
 def build_profile_dict(profile, hide_keys, embed):
-    markup = Markup(profile.id, embed=embed)
+    markup = Markup(profile.url_slug, embed=embed)
 
     profile_dict = {
         "products": profile.get_products_markup(
