@@ -548,6 +548,20 @@ def genre_cards_json(profile_id):
 
 
 
+@app.route("/profile/<profile_id>/key-products")
+@app.route("/profile/<profile_id>/key-products.json")
+def key_products(profile_id):
+    resp = []
+    profile = get_user_for_response(profile_id, request)
+
+    board = Pinboard.query.filter_by(profile_id=profile.id).first()
+    for product_address in board.contents["one"]:
+        tiid = product_address[1]
+        my_product = get_product(tiid)
+        resp.append(my_product)
+
+    return json_resp_from_thing(resp)
+
 
 
 
