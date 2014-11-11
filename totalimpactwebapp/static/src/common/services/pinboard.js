@@ -33,6 +33,9 @@ angular.module('services.pinboard', [
       if (a._tiid){
         return a._tiid === b._tiid
       }
+      else if (a.genre_card_address){
+        return a.genre_card_address === b.genre_card_address
+      }
     }
 
 

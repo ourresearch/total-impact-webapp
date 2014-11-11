@@ -18,9 +18,6 @@
                   <li class="genre-card"
                       ng-repeat="card in profileService.genreCards(myGenreConfig.name, 3).reverse()">
 
-
-
-
                   <span class="data"
                         tooltip-placement="bottom"
                         tooltip-html-unsafe="{{ card.tooltip }}">
@@ -34,18 +31,18 @@
                         </span>
                      </span>
 
-                     <span class="feature-controls" ng-show="security.isLoggedIn(url_slug)">
+                     <span class="feature-controls" ng-show="security.isLoggedIn(page.getUrlSlug())">
 
-                        <a ng-click="pinboardService.pin(card.genre_card_address)"
-                           ng-if="!pinboardService.isPinned(card.genre_card_address)"
+                        <a ng-click="KeyMetrics.pin(card)"
+                           ng-if="!KeyMetrics.isPinned(card)"
                            tooltip="Feature this metric on your profile front page"
                            tooltip-placement="bottom"
                            class="feature-this">
                            <i class="icon-star-empty"></i>
                         </a>
 
-                        <a ng-click="pinboardService.unPin(card.genre_card_address)"
-                           ng-if="pinboardService.isPinned(card.genre_card_address)"
+                        <a ng-click="KeyMetrics.unpin(card)"
+                           ng-if="KeyMetrics.isPinned(card)"
                            tooltip="Feature this metric on your profile front page"
                            tooltip-placement="bottom"
                            class="unfeature-this">

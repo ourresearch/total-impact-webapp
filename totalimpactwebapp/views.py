@@ -524,8 +524,8 @@ def genre_cards_json(profile_id):
     resp = []
     profile = get_user_for_response(profile_id, request)
 
-    board = Pinboard.query.filter_by(profile_id=profile.id).first()
-    try:
+    if request.method == 'GET':
+        board = Pinboard.query.filter_by(profile_id=profile.id).first()
         genre_cards = []
         for genre in profile.genres:
             this_genre_cards = genre.cards
@@ -541,9 +541,12 @@ def genre_cards_json(profile_id):
             # else:
             #     card = GenreMetricSumCard(profile.display_products, card.provider, card_obj.interaction, profile.url_slug)
 
-
-    except AttributeError:
-        abort_json(404, "user has no pinboard set yet.")
+    elif request.method == 'POST':
+        key_metrics = request.json["contents"]
+        card_addresses = [card['genre_card_address'] for card in key_metrics]
+        resp = {
+            "resp": pinboard.set_key_metrics(profile.id, card_addresses)
+        }
 
     return json_resp_from_thing(resp)
 

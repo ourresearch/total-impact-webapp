@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-10
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-11
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -2137,18 +2137,6 @@ angular.module("profile", [
         renderProducts()
       })
     }
-
-    $scope.foo = {}
-    $scope.unis = [
-    "Florence Institute of Design International",
-    "Florida Career College",
-    "Florida Christian College",
-    "Florida Community College Jacksonville",
-    "Florida Universitaria",
-    "Florida Coastal School of Law",
-    "Florida Keys Community College",
-    "Florida Institute of Technology"
-]
 
 
     $scope.getUnis = function(nameStartsWith){
@@ -5044,6 +5032,7 @@ angular.module("services.page")
         PinboardService.get(profileSlug)
 
         KeyProducts.get(profileSlug)
+        KeyMetrics.get(profileSlug)
 
         ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
@@ -5296,6 +5285,9 @@ angular.module('services.pinboard', [
     function pinnedThingsAreEqual(a, b){
       if (a._tiid){
         return a._tiid === b._tiid
+      }
+      else if (a.genre_card_address){
+        return a.genre_card_address === b.genre_card_address
       }
     }
 
@@ -7863,9 +7855,6 @@ angular.module("product-list-page/genre-page.tpl.html", []).run(["$templateCache
     "                  <li class=\"genre-card\"\n" +
     "                      ng-repeat=\"card in profileService.genreCards(myGenreConfig.name, 3).reverse()\">\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "                  <span class=\"data\"\n" +
     "                        tooltip-placement=\"bottom\"\n" +
     "                        tooltip-html-unsafe=\"{{ card.tooltip }}\">\n" +
@@ -7879,18 +7868,18 @@ angular.module("product-list-page/genre-page.tpl.html", []).run(["$templateCache
     "                        </span>\n" +
     "                     </span>\n" +
     "\n" +
-    "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(url_slug)\">\n" +
+    "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.pin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"!pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                        <a ng-click=\"KeyMetrics.pin(card)\"\n" +
+    "                           ng-if=\"!KeyMetrics.isPinned(card)\"\n" +
     "                           tooltip=\"Feature this metric on your profile front page\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           class=\"feature-this\">\n" +
     "                           <i class=\"icon-star-empty\"></i>\n" +
     "                        </a>\n" +
     "\n" +
-    "                        <a ng-click=\"pinboardService.unPin(card.genre_card_address)\"\n" +
-    "                           ng-if=\"pinboardService.isPinned(card.genre_card_address)\"\n" +
+    "                        <a ng-click=\"KeyMetrics.unpin(card)\"\n" +
+    "                           ng-if=\"KeyMetrics.isPinned(card)\"\n" +
     "                           tooltip=\"Feature this metric on your profile front page\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           class=\"unfeature-this\">\n" +

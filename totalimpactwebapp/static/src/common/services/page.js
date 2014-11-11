@@ -54,6 +54,7 @@ angular.module("services.page")
         PinboardService.get(profileSlug)
 
         KeyProducts.get(profileSlug)
+        KeyMetrics.get(profileSlug)
 
         ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
