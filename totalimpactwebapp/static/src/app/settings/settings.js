@@ -188,6 +188,7 @@ angular.module('settings', [
                                                     TiMixpanel,
                                                     ProfileAboutService,
                                                     ProfileService,
+                                                    PinboardService,
                                                     UsersSubscription) {
 
 
@@ -252,6 +253,7 @@ angular.module('settings', [
           ProfileAboutService.get($scope.user.url_slug).then(
             function(){
               ProfileService.get($scope.user.url_slug)
+              PinboardService.get($scope.user.url_slug, true)
 
               window.scrollTo(0,0)
               UserMessage.set("settings.subscription.subscribe.success")

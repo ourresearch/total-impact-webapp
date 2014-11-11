@@ -35,6 +35,7 @@ angular.module('app', [
   'profileSidebar',
   'ui.sortable',
   'deadProfile',
+  'services.pinboardService',
   'services.profileAwardService',
   'services.countryNames',
   'services.keyProducts',
