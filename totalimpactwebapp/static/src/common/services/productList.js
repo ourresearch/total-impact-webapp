@@ -26,6 +26,7 @@ angular.module("services.productList", [])
     Timer.start("productListRender")
     SelectedProducts.removeAll()
 
+
     $scope.KeyMetrics = KeyMetrics
     $scope.KeyProducts = KeyProducts
 

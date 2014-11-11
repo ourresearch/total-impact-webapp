@@ -46,6 +46,7 @@ from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product import patch_biblio
 
+from totalimpactwebapp import pinboard
 from totalimpactwebapp.pinboard import Pinboard
 from totalimpactwebapp.pinboard import write_to_pinboard
 
@@ -462,7 +463,7 @@ def user_subscription(profile_id):
 
 
 @app.route("/profile/<profile_id>/pinboard", methods=["GET", "POST"])
-def pinboard(profile_id):
+def pinboard_endpoint(profile_id):
     profile = get_user_for_response(profile_id, request)
 
     if request.method == "GET":
@@ -517,8 +518,8 @@ def oa_badge(profile_id):
     return json_resp_from_thing(awards)
 
 
-@app.route("/profile/<profile_id>/key-metrics")
-@app.route("/profile/<profile_id>/key-metrics.json")
+@app.route("/profile/<profile_id>/key-metrics", methods=["GET", "POST"])
+@app.route("/profile/<profile_id>/key-metrics.json", methods=["GET", "POST"])
 def genre_cards_json(profile_id):
     resp = []
     profile = get_user_for_response(profile_id, request)
@@ -548,21 +549,24 @@ def genre_cards_json(profile_id):
 
 
 
-@app.route("/profile/<profile_id>/key-products")
-@app.route("/profile/<profile_id>/key-products.json")
+@app.route("/profile/<profile_id>/key-products", methods=["GET", "POST"])
+@app.route("/profile/<profile_id>/key-products.json", methods=["GET", "POST"])
 def key_products(profile_id):
-    resp = []
     profile = get_user_for_response(profile_id, request)
+    resp = []
+    if request.method == "GET":
+        board = Pinboard.query.filter_by(profile_id=profile.id).first()
+        for product_address in board.contents["one"]:
+            tiid = product_address[1]
+            my_product = get_product(tiid)
+            resp.append(my_product)
 
-    board = Pinboard.query.filter_by(profile_id=profile.id).first()
-    for product_address in board.contents["one"]:
-        tiid = product_address[1]
-        my_product = get_product(tiid)
-        resp.append(my_product)
+    elif request.method == 'POST':
+        products = request.json["contents"]
+        id_tuples = [('product', p["tiid"]) for p in products]
+        resp = pinboard.set_key_products(profile.id, id_tuples)
 
     return json_resp_from_thing(resp)
-
-
 
 
 

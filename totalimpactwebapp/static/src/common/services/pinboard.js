@@ -21,12 +21,24 @@ angular.module('services.pinboard', [
       )
     }
 
+    function isPinned(thingToTest, data){
+      if (thingToTest){
+
+      }
+    }
+
 
 
     function makeInterface(data, resource){
       return {
         pin: function(thingToPin){
+
+          data.list.length = 0
+
+          console.log("pushing this thing to pin it", thingToPin)
           data.list.push(thingToPin)
+
+          console.log("here is the new list", data.list)
           save(data, resource)
         },
         get: function(id){
@@ -35,7 +47,9 @@ angular.module('services.pinboard', [
           resource.get(
             {id: id},
             function(resp){
-              data.list = resp
+//              data.list = resp
+              data.list.length = 0
+              Array.prototype.push.apply(data.list, resp)
             },
             function(resp){
               console.log("no pinboard set yet.", resp)

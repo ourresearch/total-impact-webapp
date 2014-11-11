@@ -4155,6 +4155,11 @@ angular.module('resources.users',['ngResource'])
         get: {
           isArray: true
         }
+      },
+      {
+        save: {
+          isArray: true
+        }
       }
     )
   })
@@ -4987,6 +4992,8 @@ angular.module("services.page")
                             PinboardService,
                             security,
                             ProfileAboutService,
+                            KeyMetrics,
+                            KeyProducts,
                             Loading,
                             ProfileService){
     var title = '';
@@ -5030,6 +5037,9 @@ angular.module("services.page")
         clearProfileData()
         ProfileService.get(profileSlug)
         PinboardService.get(profileSlug)
+
+        KeyProducts.get(profileSlug)
+
         ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
           }
@@ -5270,12 +5280,24 @@ angular.module('services.pinboard', [
       )
     }
 
+    function isPinned(thingToTest, data){
+      if (thingToTest){
+
+      }
+    }
+
 
 
     function makeInterface(data, resource){
       return {
         pin: function(thingToPin){
+
+          data.list.length = 0
+
+          console.log("pushing this thing to pin it", thingToPin)
           data.list.push(thingToPin)
+
+          console.log("here is the new list", data.list)
           save(data, resource)
         },
         get: function(id){
@@ -5284,7 +5306,9 @@ angular.module('services.pinboard', [
           resource.get(
             {id: id},
             function(resp){
-              data.list = resp
+//              data.list = resp
+              data.list.length = 0
+              Array.prototype.push.apply(data.list, resp)
             },
             function(resp){
               console.log("no pinboard set yet.", resp)
@@ -5453,6 +5477,7 @@ angular.module("services.productList", [])
     }
     Timer.start("productListRender")
     SelectedProducts.removeAll()
+
 
     $scope.KeyMetrics = KeyMetrics
     $scope.KeyProducts = KeyProducts

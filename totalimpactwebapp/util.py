@@ -137,7 +137,7 @@ def todict(obj, classkey=None):
         data = dict([
             (key, todict(value, classkey))
             for key, value in obj.to_dict().iteritems()
-            if not callable(value) and not key.startswith('_')
+            if key == "_tiid" or (not callable(value) and not key.startswith('_'))
         ])
 
         if classkey is not None and hasattr(obj, "__class__"):

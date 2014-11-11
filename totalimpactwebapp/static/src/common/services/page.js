@@ -7,6 +7,8 @@ angular.module("services.page")
                             PinboardService,
                             security,
                             ProfileAboutService,
+                            KeyMetrics,
+                            KeyProducts,
                             Loading,
                             ProfileService){
     var title = '';
@@ -50,6 +52,9 @@ angular.module("services.page")
         clearProfileData()
         ProfileService.get(profileSlug)
         PinboardService.get(profileSlug)
+
+        KeyProducts.get(profileSlug)
+
         ProfileAboutService.get(profileSlug).then(function(resp){
             handleDeadProfile(ProfileAboutService, profileSlug)
           }
