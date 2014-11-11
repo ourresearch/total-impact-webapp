@@ -2085,6 +2085,8 @@ angular.module("profile", [
     ProfileAboutService,
     ProfileAwardService,
     PinboardService,
+    KeyMetrics,
+    KeyProducts,
     Tour,
     Timer,
     security,
@@ -2093,6 +2095,11 @@ angular.module("profile", [
     var url_slug = $routeParams.url_slug;
 
     $scope.pinboardService = PinboardService
+
+    $scope.KeyMetrics = KeyMetrics
+    $scope.KeyProducts = KeyProducts
+
+
     $scope.ProfileAwardService = ProfileAwardService
     ProfileAwardService.get(url_slug)
 
@@ -4982,7 +4989,6 @@ angular.module("services.page", [
 angular.module("services.page")
   .factory("Page", function($location,
                             $rootScope,
-                            PinboardService,
                             security,
                             ProfileAboutService,
                             KeyMetrics,
@@ -5029,7 +5035,6 @@ angular.module("services.page")
         console.log("new user slug; loading new profile.")
         clearProfileData()
         ProfileService.get(profileSlug)
-        PinboardService.get(profileSlug)
 
         KeyProducts.get(profileSlug)
         KeyMetrics.get(profileSlug)
@@ -5044,9 +5049,12 @@ angular.module("services.page")
 
 
     function clearProfileData(){
-        ProfileAboutService.clear()
-        ProfileService.clear()
-        PinboardService.clear()
+      ProfileAboutService.clear()
+      ProfileService.clear()
+      KeyProducts.clear()
+      KeyMetrics.clear()
+
+
     }
 
 
@@ -5056,7 +5064,8 @@ angular.module("services.page")
         Loading.finishPage()
 
         ProfileService.clear()
-        PinboardService.clear()
+        KeyProducts.clear()
+        KeyMetrics.clear()
 
         // is this profile's owner here? give em a chance to subscribe.
         if (security.getCurrentUserSlug() == profileSlug){
@@ -5306,7 +5315,6 @@ angular.module('services.pinboard', [
           resource.get(
             {id: id},
             function(resp){
-//              data.list = resp
               data.list.length = 0
               Array.prototype.push.apply(data.list, resp)
             },
@@ -5327,7 +5335,10 @@ angular.module('services.pinboard', [
             return pinnedThingsAreEqual(thingToTest, pinnedThing)
           })
         },
-        pins: data
+        clear: function(){
+          data.list.length = 0
+        },
+        data: data
       }
     }
 
@@ -8530,7 +8541,6 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
   $templateCache.put("profile-award/profile-award.tpl.html",
     "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
-    "        ng-controller=\"ProfileAwardCtrl\"\n" +
     "        data-content=\"{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}\"\n" +
     "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
     "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
@@ -8545,7 +8555,6 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "\n" +
     "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
-    "        ng-controller=\"ProfileAwardCtrl\"\n" +
     "        data-content=\"You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>\"\n" +
     "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
     "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
@@ -8913,32 +8922,32 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <ul class=\"col-two pinboard-list logged-in\"\n" +
     "             ng-if=\"security.isLoggedIn(url_slug)\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
-    "             ng-model=\"pinboardService.cols.two\">\n" +
-    "            <li class=\"pin metric-pin\" ng-repeat=\"pinId in pinboardService.cols.two\" ng-if=\"profileService.getFromPinId(pinId).current_value\">\n" +
+    "             ng-model=\"KeyMetrics.data.list\">\n" +
+    "            <li class=\"pin metric-pin\" ng-repeat=\"keyMetric in KeyMetrics.data.list\" ng-if=\"keyMetric.current_value\">\n" +
     "               <div class=\"pin-header\">\n" +
-    "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
+    "                  <a class=\"delete-pin\" ng-click=\"KeyMetrics.unpin(keyMetric)\">\n" +
     "                     <i class=\"icon-remove\"></i>\n" +
     "                  </a>\n" +
     "               </div>\n" +
     "\n" +
     "               <div class=\"pin-body genre-card-pin-body\">\n" +
-    "                  <span class=\"main val\">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>\n" +
-    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ profileService.getFromPinId(pinId).tooltip }}\">\n" +
-    "                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >\n" +
+    "                  <span class=\"main val\">{{ nFormat(keyMetric.current_value) }}</span>\n" +
+    "                  <span class=\"interaction\" tooltip-html-unsafe=\"{{ keyMetric.tooltip }}\">\n" +
+    "                     <img ng-src='/static/img/favicons/{{ keyMetric.img_filename }}' class='icon' >\n" +
     "                     <span class=\"my-label\">\n" +
     "                        <span class=\"things-we-are-counting\">\n" +
-    "                           {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}\n" +
+    "                           {{ keyMetric.display_things_we_are_counting }}\n" +
     "                        </span>\n" +
     "                         on\n" +
     "                     </span>\n" +
     "                  </span>\n" +
     "                  <span class=\"genre\">\n" +
-    "                     <a href=\"{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}\"\n" +
+    "                     <a href=\"{{ url_slug }}/products/{{ GenreConfigs.get(keyMetric.genre, 'url_representation') }}\"\n" +
     "                        tooltip-placement=\"bottom\"\n" +
-    "                        tooltip=\"Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}\">\n" +
-    "                        <i class=\"icon {{ profileService.getFromPinId(pinId).genre_icon }}\"></i>\n" +
-    "                        <span class=\"val\">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>\n" +
-    "                        {{ profileService.getFromPinId(pinId).genre_plural_name }}\n" +
+    "                        tooltip=\"Click to see all {{ keyMetric.num_products }} {{ GenreConfigs.get(keyMetric.genre, 'plural_name') }}\">\n" +
+    "                        <i class=\"icon {{ GenreConfigs.get(keyMetric.genre, 'icon') }}\"></i>\n" +
+    "                        <span class=\"val\">{{ keyMetric.num_products }}</span>\n" +
+    "                        {{ GenreConfigs.get(keyMetric.genre, \"plural_name\") }}\n" +
     "                     </a>\n" +
     "                  </span>\n" +
     "               </div>\n" +

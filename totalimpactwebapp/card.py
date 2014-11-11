@@ -66,6 +66,7 @@ class Card(object):
     def card_type(self):
         return type(self).__name__
 
+
     @property
     def card_type_short(self):
         if "metric" in self.card_type.lower():
@@ -222,6 +223,10 @@ class AbstractProductsAccumulationCard(Card):
             return self.metric_accumulations(self.products, self.provider, self.interaction)["milestone"]
         except KeyError:
             return None
+
+    @property
+    def num_products(self):
+        return len(self.products)
 
     @property
     def current_value(self):
@@ -452,6 +457,11 @@ class GenreEngagementSumCard(Card):
     @property
     def genre(self):
         return self.products[0].genre
+
+
+    @property
+    def num_products(self):
+        return len(self.products)
 
     @property
     def genre_card_address(self):

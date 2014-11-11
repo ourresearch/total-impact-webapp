@@ -144,32 +144,32 @@
          <ul class="col-two pinboard-list logged-in"
              ng-if="security.isLoggedIn(url_slug)"
              ui-sortable="sortableOptions"
-             ng-model="pinboardService.cols.two">
-            <li class="pin metric-pin" ng-repeat="pinId in pinboardService.cols.two" ng-if="profileService.getFromPinId(pinId).current_value">
+             ng-model="KeyMetrics.data.list">
+            <li class="pin metric-pin" ng-repeat="keyMetric in KeyMetrics.data.list" ng-if="keyMetric.current_value">
                <div class="pin-header">
-                  <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
+                  <a class="delete-pin" ng-click="KeyMetrics.unpin(keyMetric)">
                      <i class="icon-remove"></i>
                   </a>
                </div>
 
                <div class="pin-body genre-card-pin-body">
-                  <span class="main val">{{ nFormat(profileService.getFromPinId(pinId).current_value) }}</span>
-                  <span class="interaction" tooltip-html-unsafe="{{ profileService.getFromPinId(pinId).tooltip }}">
-                     <img ng-src='/static/img/favicons/{{ profileService.getFromPinId(pinId).img_filename }}' class='icon' >
+                  <span class="main val">{{ nFormat(keyMetric.current_value) }}</span>
+                  <span class="interaction" tooltip-html-unsafe="{{ keyMetric.tooltip }}">
+                     <img ng-src='/static/img/favicons/{{ keyMetric.img_filename }}' class='icon' >
                      <span class="my-label">
                         <span class="things-we-are-counting">
-                           {{ profileService.getFromPinId(pinId).display_things_we_are_counting }}
+                           {{ keyMetric.display_things_we_are_counting }}
                         </span>
                          on
                      </span>
                   </span>
                   <span class="genre">
-                     <a href="{{ url_slug }}/products/{{ profileService.getFromPinId(pinId).genre_url_representation }}"
+                     <a href="{{ url_slug }}/products/{{ GenreConfigs.get(keyMetric.genre, 'url_representation') }}"
                         tooltip-placement="bottom"
-                        tooltip="Click to see all {{ profileService.getFromPinId(pinId).genre_num_products }} {{ profileService.getFromPinId(pinId).genre_plural_name }}">
-                        <i class="icon {{ profileService.getFromPinId(pinId).genre_icon }}"></i>
-                        <span class="val">{{ profileService.getFromPinId(pinId).genre_num_products }}</span>
-                        {{ profileService.getFromPinId(pinId).genre_plural_name }}
+                        tooltip="Click to see all {{ keyMetric.num_products }} {{ GenreConfigs.get(keyMetric.genre, 'plural_name') }}">
+                        <i class="icon {{ GenreConfigs.get(keyMetric.genre, 'icon') }}"></i>
+                        <span class="val">{{ keyMetric.num_products }}</span>
+                        {{ GenreConfigs.get(keyMetric.genre, "plural_name") }}
                      </a>
                   </span>
                </div>

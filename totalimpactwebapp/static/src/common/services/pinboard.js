@@ -53,7 +53,6 @@ angular.module('services.pinboard', [
           resource.get(
             {id: id},
             function(resp){
-//              data.list = resp
               data.list.length = 0
               Array.prototype.push.apply(data.list, resp)
             },
@@ -74,7 +73,10 @@ angular.module('services.pinboard', [
             return pinnedThingsAreEqual(thingToTest, pinnedThing)
           })
         },
-        pins: data
+        clear: function(){
+          data.list.length = 0
+        },
+        data: data
       }
     }
 

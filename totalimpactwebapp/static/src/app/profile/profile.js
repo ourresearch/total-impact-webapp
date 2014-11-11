@@ -113,6 +113,8 @@ angular.module("profile", [
     ProfileAboutService,
     ProfileAwardService,
     PinboardService,
+    KeyMetrics,
+    KeyProducts,
     Tour,
     Timer,
     security,
@@ -121,6 +123,11 @@ angular.module("profile", [
     var url_slug = $routeParams.url_slug;
 
     $scope.pinboardService = PinboardService
+
+    $scope.KeyMetrics = KeyMetrics
+    $scope.KeyProducts = KeyProducts
+
+
     $scope.ProfileAwardService = ProfileAwardService
     ProfileAwardService.get(url_slug)
 

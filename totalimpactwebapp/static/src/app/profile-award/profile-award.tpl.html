@@ -1,6 +1,5 @@
 <div class="award-container" ng-show="!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge">
    <span class="profile-award"
-        ng-controller="ProfileAwardCtrl"
         data-content="{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}"
         data-original-title="{{ ProfileAwardService.awards.oa.level_name }} level award"
         ng-show="ProfileAwardService.awards.oa.level>0">
@@ -15,7 +14,6 @@
 
 <div class="award-container" ng-show="security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge">
    <span class="profile-award"
-        ng-controller="ProfileAwardCtrl"
         data-content="You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>"
         data-original-title="{{ ProfileAwardService.awards.oa.level_name }} level award"
         ng-show="ProfileAwardService.awards.oa.level>0">

@@ -4,7 +4,6 @@ angular.module("services.page", [
 angular.module("services.page")
   .factory("Page", function($location,
                             $rootScope,
-                            PinboardService,
                             security,
                             ProfileAboutService,
                             KeyMetrics,
@@ -51,7 +50,6 @@ angular.module("services.page")
         console.log("new user slug; loading new profile.")
         clearProfileData()
         ProfileService.get(profileSlug)
-        PinboardService.get(profileSlug)
 
         KeyProducts.get(profileSlug)
         KeyMetrics.get(profileSlug)
@@ -66,9 +64,12 @@ angular.module("services.page")
 
 
     function clearProfileData(){
-        ProfileAboutService.clear()
-        ProfileService.clear()
-        PinboardService.clear()
+      ProfileAboutService.clear()
+      ProfileService.clear()
+      KeyProducts.clear()
+      KeyMetrics.clear()
+
+
     }
 
 
@@ -78,7 +79,8 @@ angular.module("services.page")
         Loading.finishPage()
 
         ProfileService.clear()
-        PinboardService.clear()
+        KeyProducts.clear()
+        KeyMetrics.clear()
 
         // is this profile's owner here? give em a chance to subscribe.
         if (security.getCurrentUserSlug() == profileSlug){
