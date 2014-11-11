@@ -8900,18 +8900,16 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "         <!-- LOGGED OUT version -->\n" +
-    "         <ul class=\"col-one pinboard-list logged-out\" ng-if=\"!security.isLoggedIn(url_slug)\">\n" +
-    "            <li class=\"pin product-pin\" ng-repeat=\"pinId in pinboardService.cols.one\">\n" +
+    "         <ul class=\"col-one pinboard-list logged-out\"\n" +
+    "             ng-if=\"!security.isLoggedIn(url_slug)\">\n" +
+    "            <li class=\"pin product-pin\" ng-repeat=\"product in KeyProducts.data.list\">\n" +
     "               <div class=\"pin-header\">\n" +
-    "                  <a class=\"delete-pin\" ng-click=\"pinboardService.unPin(pinId)\">\n" +
-    "                     <i class=\"icon-remove\"></i>\n" +
-    "                  </a>\n" +
     "               </div>\n" +
     "               <div class=\"pin-body product-pin\">\n" +
     "                  <i tooltip-placement=\"left\"\n" +
-    "                     tooltip=\"{{ profileService.productByTiid(pinId[1]).genre }}\"\n" +
-    "                     class=\"genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}\"></i>\n" +
-    "                  <div class=\"product-container\" ng-bind-html=\"trustHtml(profileService.productByTiid(pinId[1]).markup)\"></div>\n" +
+    "                     tooltip=\"{{ product.genre }}\"\n" +
+    "                     class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
+    "                  <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "               </div>\n" +
     "            </li>\n" +
     "         </ul>\n" +

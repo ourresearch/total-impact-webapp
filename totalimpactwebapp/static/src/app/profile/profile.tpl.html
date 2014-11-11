@@ -115,18 +115,16 @@
 
 
          <!-- LOGGED OUT version -->
-         <ul class="col-one pinboard-list logged-out" ng-if="!security.isLoggedIn(url_slug)">
-            <li class="pin product-pin" ng-repeat="pinId in pinboardService.cols.one">
+         <ul class="col-one pinboard-list logged-out"
+             ng-if="!security.isLoggedIn(url_slug)">
+            <li class="pin product-pin" ng-repeat="product in KeyProducts.data.list">
                <div class="pin-header">
-                  <a class="delete-pin" ng-click="pinboardService.unPin(pinId)">
-                     <i class="icon-remove"></i>
-                  </a>
                </div>
                <div class="pin-body product-pin">
                   <i tooltip-placement="left"
-                     tooltip="{{ profileService.productByTiid(pinId[1]).genre }}"
-                     class="genre-icon {{ profileService.productByTiid(pinId[1]).genre_icon }}"></i>
-                  <div class="product-container" ng-bind-html="trustHtml(profileService.productByTiid(pinId[1]).markup)"></div>
+                     tooltip="{{ product.genre }}"
+                     class="genre-icon {{ product.genre_icon }}"></i>
+                  <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
                </div>
             </li>
          </ul>
