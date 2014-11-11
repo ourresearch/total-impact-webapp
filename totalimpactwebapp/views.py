@@ -535,12 +535,16 @@ def genre_cards_json(profile_id):
                 if card_obj.genre_card_address==card_address:
                     resp.append(card_obj)
 
+            # if hasattr("engagement", card_obj):
+            #     card = GenreEngagementSumCard(profile.display_products, card_obj.engagement, profile.url_slug)
+            # else:
+            #     card = GenreMetricSumCard(profile.display_products, card.provider, card_obj.interaction, profile.url_slug)
+
+
     except AttributeError:
         abort_json(404, "user has no pinboard set yet.")
 
     return json_resp_from_thing(resp)
-
-
 
 
 
