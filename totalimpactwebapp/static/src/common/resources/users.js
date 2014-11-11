@@ -49,6 +49,11 @@ angular.module('resources.users',['ngResource'])
         get: {
           isArray: true
         }
+      },
+      {
+        save: {
+          isArray: true
+        }
       }
     )
   })

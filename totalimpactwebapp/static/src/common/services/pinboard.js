@@ -22,8 +22,16 @@ angular.module('services.pinboard', [
     }
 
     function isPinned(thingToTest, data){
-      if (thingToTest){
+      if (thingToTest._tiid){
+        return !!_.find(data.list, function(product){
+          return product._tiid === thingToTest._tiid
+        })
+      }
+    }
 
+    function pinnedThingsAreEqual(a, b){
+      if (a._tiid){
+        return a._tiid === b._tiid
       }
     }
 
@@ -32,13 +40,8 @@ angular.module('services.pinboard', [
     function makeInterface(data, resource){
       return {
         pin: function(thingToPin){
-
-          data.list.length = 0
-
           console.log("pushing this thing to pin it", thingToPin)
           data.list.push(thingToPin)
-
-          console.log("here is the new list", data.list)
           save(data, resource)
         },
         get: function(id){
@@ -57,14 +60,15 @@ angular.module('services.pinboard', [
           )
         },
         unpin: function(thingToUnpin){
+          console.log("unpinning ", thingToUnpin, data)
           data.list =  _.filter(data.list, function(pinnedThing){
-            return !_.isEqual(pinnedThing, thingToUnpin)
+            return !pinnedThingsAreEqual(thingToUnpin, pinnedThing)
           })
           save(data, resource)
         },
-        isPinned: function(thingToTest) {
+        isPinned: function(thingToTest){
           return !!_.find(data.list, function(pinnedThing){
-            return _.isEqual(thingToTest, pinnedThing)
+            return pinnedThingsAreEqual(thingToTest, pinnedThing)
           })
         },
         pins: data

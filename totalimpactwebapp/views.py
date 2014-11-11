@@ -564,7 +564,7 @@ def key_products(profile_id):
     elif request.method == 'POST':
         products = request.json["contents"]
         id_tuples = [('product', p["tiid"]) for p in products]
-        resp = pinboard.set_key_products(profile.id, id_tuples)
+        resp = {"resp": pinboard.set_key_products(profile.id, id_tuples)}
 
     return json_resp_from_thing(resp)
 
