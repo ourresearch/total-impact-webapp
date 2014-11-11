@@ -6,7 +6,6 @@ angular.module("services.productList", [])
     $window,
     SelectedProducts,
     GenreConfigs,
-    PinboardService,
     ProductListSort,
     KeyMetrics,
     KeyProducts,
@@ -32,7 +31,6 @@ angular.module("services.productList", [])
 
 
     // i think this stuff is not supposed to be here. not sure how else to re-use, though.
-    $scope.pinboardService = PinboardService
     $scope.SelectedProducts = SelectedProducts
     $scope.ProductListSort = ProductListSort
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
