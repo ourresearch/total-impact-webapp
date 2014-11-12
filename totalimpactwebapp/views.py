@@ -7,7 +7,6 @@ import datetime
 import analytics
 import stripe
 
-
 from util import local_sleep
 from totalimpactwebapp import util
 
@@ -333,11 +332,15 @@ def logout():
 
 @app.route("/profile/current/login", methods=["POST"])
 def login():
-
-    email = unicode(request.json["email"]).lower()
+    email = unicode(request.json["email"])
     password = unicode(request.json["password"])
 
-    user = Profile.query.filter_by(email=email).first()
+    if "@" in email:
+        user = Profile.query.filter_by(email=email.lower()).first()
+    else:
+        # maybe we got a url slug instead of an email
+        user = Profile.query.filter_by(url_slug=email).first()
+
 
     if user is None:
         abort(404, "Email doesn't exist")
@@ -528,6 +531,9 @@ def genre_cards_json(profile_id):
 
     if request.method == 'GET':
         board = Pinboard.query.filter_by(profile_id=profile.id).first()
+        if board is None:
+            board = pinboard.save_new_board(profile.id)
+
         genre_cards = []
         for genre in profile.genres:
             this_genre_cards = genre.cards
@@ -563,8 +569,13 @@ def key_products(profile_id):
     if request.method == "GET":
         markup = Markup(profile_id, False)  # profile_id must be a slug...
 
-
         board = Pinboard.query.filter_by(profile_id=profile.id).first()
+        if board is None:
+            board = pinboard.save_new_board(profile.id)
+
+        print "here are the board contents"
+        print board.contents
+
         for product_address in board.contents["one"]:
             tiid = product_address[1]
             my_product = get_product(tiid)

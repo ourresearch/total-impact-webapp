@@ -307,15 +307,12 @@ angular.module('security.service', [
     function listLiveDays(){
       var days = []
       _.each(_.range(30), function(dayNumber){
-        console.log("day number", dayNumber)
-        console.log("days left in trial", user.days_left_in_trial)
         if (dayNumber < user.days_left_in_trial) {
           days.push({
             stillLive: true
           })
         }
         else {
-          console.log("dead day", dayNumber)
           days.push({
             stillLive: false
           })
