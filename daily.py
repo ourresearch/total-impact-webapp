@@ -422,6 +422,39 @@ def collect_embed(tiid=None, min_tiid=None):
             print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
 
 
+def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None))
+        if min_url_slug:
+            q = q.filter(Profile.url_slug>=min_url_slug)
+
+        min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)
+        q = q.filter(Profile.created >= min_created_date)
+
+        min_last_refreshed = datetime.datetime.utcnow() - datetime.timedelta(days=7)
+        q = q.filter(Profile.last_refreshed < min_last_refreshed)
+
+    start_time = datetime.datetime.utcnow()
+    number_profiles = 0.0
+    total_refreshes = 0
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        number_profiles += 1
+        print profile.url_slug, profile.id, profile.last_refreshed
+        number_refreshes = len(profile.display_products)
+        if number_refreshes:
+            profile.refresh_products(source="scheduled")
+            total_refreshes += number_refreshes
+            pause_length = min(number_refreshes * 2, 60)
+            print "pausing", pause_length, "seconds after refreshing", number_refreshes, "products"
+            time.sleep(pause_length)
+            print total_refreshes, "total refreshes across", number_profiles, "profiles"
+            elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+            print "elapsed seconds=", elapsed_seconds, ";  number profiles per second=", number_profiles/(0.1+elapsed_seconds)
+
+
+
 def collect_new_mendeley(url_slug=None, min_url_slug=None):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
@@ -515,7 +548,6 @@ def refresh_twitter(min_tiid=None):
                     break
         except AttributeError:
             pass
-
 
 
 def refresh_tweeted_products(min_tiid=None):
@@ -867,6 +899,8 @@ def main(function, args):
         run_through_altmetric_tweets(args["url_slug"], args["min_url_slug"])
     elif function=="tweet_text":
         get_tweet_text()
+    elif function=="new_metrics_for_live_profiles":
+        new_metrics_for_live_profiles(args["url_slug"], args["min_url_slug"])
 
 
 
