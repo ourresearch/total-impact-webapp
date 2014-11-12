@@ -8274,12 +8274,14 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <i class=\"icon-bar-chart left\"></i>\n" +
     "                  Metrics\n" +
     "               </div>\n" +
+    "               <!--\n" +
     "               <div class=\"tab tab-map\"\n" +
     "                    ng-class=\"{selected: ProductPage.tabIs('map')}\"\n" +
     "                    ng-click=\"ProductPage.setTab('map')\">\n" +
     "                  <i class=\"icon-globe left\"></i>\n" +
     "                  Map\n" +
     "               </div>\n" +
+    "               -->\n" +
     "            </div>\n" +
     "\n" +
     "            <div class=\"tabs-content\">\n" +
