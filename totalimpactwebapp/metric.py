@@ -214,13 +214,6 @@ class Metric(object):
 
     @cached_property
     def diff_window_end_value(self):
-        end_value = self.most_recent_snap.raw_value_int
-        if self.diff_window_length_days > 8:
-            end_value = int(math.ceil(end_value / (self.diff_window_length_days / 7.0)))
-        return end_value
-
-    @cached_property
-    def diff_window_end_value_unadjusted(self):
         return self.most_recent_snap.raw_value_int
 
     @cached_property
@@ -231,9 +224,6 @@ class Metric(object):
     def current_value(self):
         return self.diff_window_end_value
 
-    @cached_property
-    def current_value_unadjusted(self):
-        return self.diff_window_end_value_unadjusted
 
     @cached_property
     def is_int(self):
@@ -245,8 +235,19 @@ class Metric(object):
 
     @cached_property
     def diff_value(self):
+        diff_value = self.diff_value_unadjusted
+        if diff_value:
+            if self.diff_window_length_days > 8:
+                diff_value = int(math.ceil(diff_value / (self.diff_window_length_days / 7.0)))
+        return diff_value
+
+    @cached_property
+    def diff_value_unadjusted(self):
         try:
-            return self.diff_window_end_value - self.diff_window_start_value
+            diff_value = self.diff_window_end_value - self.diff_window_start_value
+            if self.diff_window_length_days > 8:
+                diff_value = int(math.ceil(diff_value / (self.diff_window_length_days / 7.0)))
+            return diff_value
         except TypeError:
             return None
 
