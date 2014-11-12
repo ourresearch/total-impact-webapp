@@ -534,18 +534,15 @@ def genre_cards_json(profile_id):
             genre_cards += this_genre_cards
 
         for card_address in board.contents["two"]:
-            card_address_parts = card_address.split(".")
-            genre_name = card_address_parts[1]
-            card_type = card_address_parts[3]
-            if card_type == "engagement":
-                engagement_type = card_address_parts[4]
-                card = GenreEngagementSumCard(profile.display_products, engagement_type, profile.url_slug)
-                resp.append(card)
-            else:
-                provider = card_address_parts[4]
-                interaction = card_address_parts[5]
-                card = GenreMetricSumCard(profile.display_products, provider, interaction, profile.url_slug)
-                resp.append(card)
+            for card_obj in genre_cards:
+                if card_obj.genre_card_address==card_address:
+                    resp.append(card_obj)
+
+            # if hasattr("engagement", card_obj):
+            #     card = GenreEngagementSumCard(profile.display_products, card_obj.engagement, profile.url_slug)
+            # else:
+            #     card = GenreMetricSumCard(profile.display_products, card.provider, card_obj.interaction, profile.url_slug)
+
 
     elif request.method == 'POST':
         key_metrics = request.json["contents"]
