@@ -41,6 +41,12 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  .factory("ProfileCountries", function($resource){
+    return $resource(
+      "/profile/:id/countries"
+    )
+  })
+
   .factory("ProfileKeyProducts", function($resource){
     return $resource(
       "/profile/:id/key-products",

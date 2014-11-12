@@ -29,10 +29,8 @@ angular.module("services.map", [
     return (function(event, element, countryCode){
 
       function makeTipMetricLine(metricName){
-        console.log("country code", countryCode)
 
         var country = _.findWhere(countriesData, {iso_code: countryCode})
-        console.log("country", country)
 
         var metricValue = country.event_counts[metricName]
         if (!metricValue) {
