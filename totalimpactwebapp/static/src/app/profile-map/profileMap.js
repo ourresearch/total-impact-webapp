@@ -19,6 +19,7 @@ angular.module( 'profileMap', [
                                        $routeParams,
                                        CountryNames,
                                        ProfileService,
+                                       ProfileCountries,
                                        MapService,
                                        Loading,
                                        Page){
@@ -34,19 +35,18 @@ angular.module( 'profileMap', [
 
 
 
-
-  $scope.$watch('profileService.data', function(newVal, oldVal){
-    console.log("profileService.data watch triggered from profileMap", newVal, oldVal)
-    if (newVal.countries) {
-      console.log("here is where we load le map", newVal.countries)
+  ProfileCountries.get(
+    {id: $routeParams.url_slug },
+    function(resp){
+      console.log("here is where we load le map", resp.list)
       Loading.finishPage()
 
-      $scope.countries = newVal.countries.list
-      MapService.setCountries(newVal.countries.list)
+      $scope.countries = resp.list
+      MapService.setCountries(resp.list)
 
 
       var countryCounts = {}
-      _.each(newVal.countries.list, function(countryObj){
+      _.each(resp.list, function(countryObj){
         countryCounts[countryObj.iso_code] = countryObj.event_sum
       })
 
@@ -70,12 +70,11 @@ angular.module( 'profileMap', [
               normalizeFunction: 'polynomial'
             }]
           },
-          onRegionTipShow: MapService.makeRegionTipHandler(newVal.countries.list),
+          onRegionTipShow: MapService.makeRegionTipHandler(resp.list),
           onRegionClick: function(event, countryCode){
             if (!countryCounts[countryCode]) {
               return false // no country pages for blank countries.
             }
-
 
             console.log("country code click!", countryCode)
             $rootScope.$apply(function(){
@@ -88,10 +87,8 @@ angular.module( 'profileMap', [
         })
       })
     }
-  }, true);
+  )
 
-
-  // this shouldn't live here.
 
 
 })

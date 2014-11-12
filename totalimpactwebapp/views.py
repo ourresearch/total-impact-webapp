@@ -602,6 +602,14 @@ def key_products(profile_id):
 
 
 
+@app.route("/profile/<url_slug>/countries")
+@app.route("/profile/<url_slug>/countries.json")
+def profile_countries(url_slug):
+    profile = get_user_for_response(url_slug, request)
+    resp = profile.countries
+    return json_resp_from_thing(resp)
+
+
 
 ###############################################################################
 #
