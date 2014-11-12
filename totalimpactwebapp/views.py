@@ -549,6 +549,7 @@ def genre_cards_json(profile_id):
             # else:
             #     card = GenreMetricSumCard(profile.display_products, card.provider, card_obj.interaction, profile.url_slug)
 
+
     elif request.method == 'POST':
         key_metrics = request.json["contents"]
         card_addresses = [card['genre_card_address'] for card in key_metrics]

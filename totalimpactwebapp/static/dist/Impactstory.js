@@ -530,6 +530,7 @@ angular.module('app', [
   'profileSidebar',
   'ui.sortable',
   'deadProfile',
+  'services.pinboardService',
   'services.profileAwardService',
   'services.countryNames',
   'services.keyProducts',
@@ -2082,6 +2083,7 @@ angular.module("profile", [
     ProfileService,
     ProfileAboutService,
     ProfileAwardService,
+    PinboardService,
     KeyMetrics,
     KeyProducts,
     Tour,
@@ -2090,6 +2092,8 @@ angular.module("profile", [
     Page) {
 
     var url_slug = $routeParams.url_slug;
+
+    $scope.pinboardService = PinboardService
 
     $scope.KeyMetrics = KeyMetrics
     $scope.KeyProducts = KeyProducts
@@ -2983,6 +2987,7 @@ angular.module('settings', [
                                                     TiMixpanel,
                                                     ProfileAboutService,
                                                     ProfileService,
+                                                    PinboardService,
                                                     UsersSubscription) {
 
 
@@ -3047,6 +3052,7 @@ angular.module('settings', [
           ProfileAboutService.get($scope.user.url_slug).then(
             function(){
               ProfileService.get($scope.user.url_slug)
+              PinboardService.get($scope.user.url_slug, true)
 
               window.scrollTo(0,0)
               UserMessage.set("settings.subscription.subscribe.success")
@@ -5487,6 +5493,7 @@ angular.module("services.productList", [])
     $window,
     SelectedProducts,
     GenreConfigs,
+    PinboardService,
     ProductListSort,
     KeyMetrics,
     KeyProducts,
@@ -5512,6 +5519,7 @@ angular.module("services.productList", [])
 
 
     // i think this stuff is not supposed to be here. not sure how else to re-use, though.
+    $scope.pinboardService = PinboardService
     $scope.SelectedProducts = SelectedProducts
     $scope.ProductListSort = ProductListSort
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
@@ -5796,6 +5804,7 @@ angular.module('services.profileService', [
                                       TiMixpanel,
                                       Product,
                                       Loading,
+                                      PinboardService,
                                       ProfileAboutService,
                                       GenreConfigs,
                                       UsersProducts,
