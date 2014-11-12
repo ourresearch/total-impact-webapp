@@ -531,6 +531,9 @@ def genre_cards_json(profile_id):
 
     if request.method == 'GET':
         board = Pinboard.query.filter_by(profile_id=profile.id).first()
+        if board is None:
+            board = pinboard.save_new_board(profile.id)
+
         genre_cards = []
         for genre in profile.genres:
             this_genre_cards = genre.cards

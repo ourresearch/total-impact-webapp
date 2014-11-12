@@ -7927,8 +7927,15 @@ div.modal-body.embed div.code h3 {
   clear: both;
   margin-left: -10px;
   padding-right: 30px;
+  padding: 10px 30px 20px 0;
   position: relative;
   cursor: move;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin:before,
 #pinboard div.pinboard-col ul.pinboard-list li.pin:after {
@@ -7947,13 +7954,17 @@ div.modal-body.embed div.code h3 {
   clear: both;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin:hover {
-  border: 1px solid #eee;
+  border: 1px solid #ccc;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin:hover div.pin-header {
   display: block;
 }
-#pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin {
-  margin-bottom: 30px;
+#pinboard div.pinboard-col ul.pinboard-list li.pin.ui-sortable-helper {
+  opacity: .95;
+  border-color: #aaa;
+  -webkit-box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 3px 8px rgba(0, 0, 0, 0.2);
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin i.genre-icon {
   float: left;
@@ -7961,6 +7972,7 @@ div.modal-body.embed div.code h3 {
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin.product-pin .biblio {
   margin-left: 2px;
+  width: 450px;
   font-size: 12px;
   margin-bottom: 10px;
 }
@@ -8049,14 +8061,14 @@ div.modal-body.embed div.code h3 {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background: #eee;
+  background: #ccc;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-header:hover {
   opacity: 1;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-header a {
   padding: 1px 5px;
-  color: #777;
+  color: #555;
 }
 #pinboard div.pinboard-col ul.pinboard-list li.pin div.pin-header a:hover {
   color: #ff4000;
