@@ -1,6 +1,7 @@
 import configs
 import logging
 import arrow
+import math
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp.snap import ZeroSnap
@@ -29,7 +30,7 @@ def make_metrics_list(tiid, snaps, product_created):
 
             my_metric.add_snaps_from_list(snaps)
 
-            my_metric.product_create_date = arrow.get(product_created)
+            my_metric.product_create_date = arrow.get(product_created, 'UTC')
             metrics.append(my_metric)
 
     return metrics
@@ -44,7 +45,7 @@ def make_mendeley_metric(tiid, snaps, product_created):
         configs.metrics()["mendeley:discipline"]
     )
     metric.add_snaps_from_list(snaps)
-    metric.product_create_date = arrow.get(product_created)
+    metric.product_create_date = arrow.get(product_created, 'UTC')
 
     if len(metric.snaps):
         return metric
@@ -143,7 +144,7 @@ class Metric(object):
 
     @cached_property
     def _window_start_snap(self):
-        most_recent_snap_time = arrow.get(self.most_recent_snap.last_collected_date)
+        most_recent_snap_time = arrow.get(self.most_recent_snap.last_collected_date, 'UTC')
         window_start_time = arrow.utcnow().replace(days=-self.window_start_min_days_ago)
 
         # all our data is super old
@@ -159,13 +160,13 @@ class Metric(object):
 
         # we first introduced this metric less than a week ago: then no diff.
         if ("metric_debut_date" in self.config):
-            metric_debut_time = arrow.get(self.config["metric_debut_date"])
+            metric_debut_time = arrow.get(self.config["metric_debut_date"], 'UTC')
             if metric_debut_time >= window_start_time:
                 return self.oldest_snap
 
          # it's a newish product, but we can get get diffs still
         if self.product_create_date > window_start_time:
-            oldest_snap_date = arrow.get(self.oldest_snap.last_collected_date)
+            oldest_snap_date = arrow.get(self.oldest_snap.last_collected_date, 'UTC')
             earliest_valid_snap_time = self.product_create_date.replace(minutes=self.assume_we_have_first_snap_by_minutes)
             if earliest_valid_snap_time < oldest_snap_date:
                 # we could've got an earlier snap but didn't, so assume we tried and got 0
@@ -184,7 +185,7 @@ class Metric(object):
             )
 
             for snap in sorted_snaps:
-                my_snap_time = arrow.get(snap.last_collected_date)
+                my_snap_time = arrow.get(snap.last_collected_date, 'UTC')
                 if my_snap_time < window_start_time:
                     newest_snap_older_than_window = snap
                     break
@@ -213,6 +214,13 @@ class Metric(object):
 
     @cached_property
     def diff_window_end_value(self):
+        end_value = self.most_recent_snap.raw_value_int
+        if self.diff_window_length_days > 8:
+            end_value = int(math.ceil(end_value / (self.diff_window_length_days / 7.0)))
+        return end_value
+
+    @cached_property
+    def diff_window_end_value_unadjusted(self):
         return self.most_recent_snap.raw_value_int
 
     @cached_property
@@ -222,6 +230,10 @@ class Metric(object):
     @cached_property
     def current_value(self):
         return self.diff_window_end_value
+
+    @cached_property
+    def current_value_unadjusted(self):
+        return self.diff_window_end_value_unadjusted
 
     @cached_property
     def is_int(self):
@@ -238,12 +250,17 @@ class Metric(object):
         except TypeError:
             return None
 
-    #@cached_property
-    #def diff_window_length(self):
-    #    return self._diff()["window_length"]
-
-
-
+    @cached_property
+    def diff_window_length_days(self):
+        if self.diff_window_start_date and self.diff_window_end_date:
+            diff_window_start_date = arrow.get(self.diff_window_start_date)
+            diff_window_end_date = arrow.get(self.diff_window_end_date)
+            try:
+                time_diff = diff_window_end_date - diff_window_start_date
+                return time_diff.days
+            except TypeError:
+                return None
+        return None
 
     @cached_property
     def hide_badge(self):
