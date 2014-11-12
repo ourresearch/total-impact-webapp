@@ -426,13 +426,12 @@ def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
     else:
-        q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None))
+        min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)
+        q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None, Profile.created>=min_created_date))
         if min_url_slug:
             q = q.filter(Profile.url_slug>=min_url_slug)
 
-        min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)
-        q = q.filter(Profile.created >= min_created_date)
-
+        # also, only if not refreshed recently
         min_last_refreshed = datetime.datetime.utcnow() - datetime.timedelta(days=7)
         q = q.filter(Profile.last_refreshed < min_last_refreshed)
 
