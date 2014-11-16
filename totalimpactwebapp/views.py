@@ -525,7 +525,7 @@ def oa_badge(profile_id):
 
 @app.route("/profile/<profile_id>/key-metrics", methods=["GET", "POST"])
 @app.route("/profile/<profile_id>/key-metrics.json", methods=["GET", "POST"])
-def genre_cards_json(profile_id):
+def key_metrics(profile_id):
     resp = []
     profile = get_user_for_response(profile_id, request)
 
@@ -540,14 +540,19 @@ def genre_cards_json(profile_id):
             genre_cards += this_genre_cards
 
         for card_address in board.contents["two"]:
-            for card_obj in genre_cards:
-                if card_obj.genre_card_address==card_address:
-                    resp.append(card_obj)
-
-            # if hasattr("engagement", card_obj):
-            #     card = GenreEngagementSumCard(profile.display_products, card_obj.engagement, profile.url_slug)
-            # else:
-            #     card = GenreMetricSumCard(profile.display_products, card.provider, card_obj.interaction, profile.url_slug)
+            card_address_parts = card_address.split(".")
+            genre_name = card_address_parts[1]
+            card_type = card_address_parts[3]
+            genre_products = [p for p in profile.display_products if p.genre==genre_name]
+            if card_type == "engagement":
+                engagement_type = card_address_parts[4]
+                card = GenreEngagementSumCard(genre_products, engagement_type, profile.url_slug)
+            else:
+                provider = card_address_parts[4]
+                interaction = card_address_parts[5]
+                card = GenreMetricSumCard(genre_products, provider, interaction, profile.url_slug)
+            if card.current_value:
+                resp.append(card)
 
 
     elif request.method == 'POST':
@@ -564,7 +569,9 @@ def genre_cards_json(profile_id):
 @app.route("/profile/<profile_id>/key-products", methods=["GET", "POST"])
 @app.route("/profile/<profile_id>/key-products.json", methods=["GET", "POST"])
 def key_products(profile_id):
-    profile = get_user_for_response(profile_id, request)
+
+    # products are loaded individually below
+    profile = get_user_for_response(profile_id, request, include_products=False)
     resp = []
     if request.method == "GET":
         markup = Markup(profile_id, False)  # profile_id must be a slug...
@@ -572,9 +579,6 @@ def key_products(profile_id):
         board = Pinboard.query.filter_by(profile_id=profile.id).first()
         if board is None:
             board = pinboard.save_new_board(profile.id)
-
-        print "here are the board contents"
-        print board.contents
 
         for product_address in board.contents["one"]:
             tiid = product_address[1]
