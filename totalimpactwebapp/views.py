@@ -639,6 +639,8 @@ def profile_products_get(url_slug):
         show_keys = [
             "_tiid",
             "markup",
+            "genre",
+            "genre_icon"
         ]
         resp = profile.get_products_markup(
             markup=markup,
