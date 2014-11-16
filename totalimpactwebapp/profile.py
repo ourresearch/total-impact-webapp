@@ -487,12 +487,11 @@ class Profile(db.Model):
 
         return self
 
-
-    def get_products_markup(self, markup, hide_keys=None):
+    def get_products_markup(self, markup, hide_keys=None, show_keys="all"):
 
         markup.set_template("product.html")
 
-        product_dicts = [p.to_markup_dict(markup, hide_keys)
+        product_dicts = [p.to_markup_dict(markup, hide_keys, show_keys)
                 for p in self.display_products]
 
         return product_dicts

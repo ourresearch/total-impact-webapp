@@ -614,22 +614,33 @@ def profile_countries(url_slug):
 ###############################################################################
 
 
-@app.route("/profile/<id>/products", methods=["GET"])
-@app.route("/profile/<id>/products.json", methods=["GET"])
-def profile_products_get(id):
+@app.route("/profile/<url_slug>/products", methods=["GET"])
+@app.route("/profile/<url_slug>/products.json", methods=["GET"])
+def profile_products_get(url_slug):
 
     action = request.args.get("action", "refresh")
     source = request.args.get("source", "webapp")
-
-    profile = get_profile_stubs_from_url_slug(id)
-
-    resp = profile.products_not_removed
     just_stubs = request.args.get("stubs", "False").lower() in ["1", "true"]
     if just_stubs:
+        profile = get_profile_stubs_from_url_slug(url_slug)
+        resp = profile.products_not_removed
         resp = [{"tiid": p.tiid, "genre": p.genre}
                 for p in profile.products_not_removed
                 if p.genre not in ["account"]
                 ]
+
+    else:
+        profile = get_profile_from_id(url_slug)
+        markup = Markup(url_slug, embed=False)
+        show_keys = [
+            "_tiid",
+            "markup",
+        ]
+        resp = profile.get_products_markup(
+            markup=markup,
+            show_keys=show_keys
+        )
+
 
     return json_resp_from_thing(resp)
 
