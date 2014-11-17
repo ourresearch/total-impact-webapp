@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-11
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-16
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5077,7 +5077,14 @@ angular.module("services.page")
 
         // for everyone else, show a Dead Profile page
         else {
-          $location.path(profileSlug + "/expired")
+          var searchParams = $location.search()
+          if (searchParams && searchParams.show_expired ) {
+            console.log("overriding the expired page, showing everything.")
+          }
+          else {
+            $location.path(profileSlug + "/expired")
+
+          }
         }
       }
     }

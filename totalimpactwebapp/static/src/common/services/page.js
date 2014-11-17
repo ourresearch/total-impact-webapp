@@ -89,7 +89,14 @@ angular.module("services.page")
 
         // for everyone else, show a Dead Profile page
         else {
-          $location.path(profileSlug + "/expired")
+          var searchParams = $location.search()
+          if (searchParams && searchParams.show_expired ) {
+            console.log("overriding the expired page, showing everything.")
+          }
+          else {
+            $location.path(profileSlug + "/expired")
+
+          }
         }
       }
     }
