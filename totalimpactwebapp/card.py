@@ -490,14 +490,14 @@ class GenreEngagementSumCard(Card):
     def current_value(self):
         try:
             return self.engagement_accumulations(self.products, self.engagement)["accumulated_diff_end_value"]
-        except KeyError:
+        except (KeyError, TypeError):
             return None
 
     @property
     def diff_value(self):
         try:
             return self.engagement_accumulations(self.products, self.engagement)["accumulated_diff"]
-        except KeyError:
+        except (KeyError, TypeError):
             return None 
 
     @property

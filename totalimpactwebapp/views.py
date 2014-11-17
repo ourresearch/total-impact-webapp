@@ -42,6 +42,7 @@ from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.profile import build_profile_dict
 
 from totalimpactwebapp.product import get_product
+from totalimpactwebapp.product import get_products_from_tiids
 from totalimpactwebapp.product import upload_file_and_commit
 from totalimpactwebapp.product import patch_biblio
 
@@ -580,16 +581,15 @@ def key_products(profile_id):
         if board is None:
             board = pinboard.save_new_board(profile.id)
 
-        for product_address in board.contents["one"]:
-            tiid = product_address[1]
-            my_product = get_product(tiid)
-
-            show_keys = [
-                "_tiid",
-                "markup",
-                "genre",
-                "genre_icon"
-            ]
+        show_keys = [
+            "_tiid",
+            "markup",
+            "genre",
+            "genre_icon"
+        ]
+        tiids = [address[1] for address in board.contents["one"]]
+        products = get_products_from_tiids(tiids)
+        for my_product in products: 
             my_product_dict = my_product.to_markup_dict(markup, show_keys=show_keys)
             resp.append(my_product_dict)
 
