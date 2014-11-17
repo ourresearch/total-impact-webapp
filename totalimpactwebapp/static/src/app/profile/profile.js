@@ -131,14 +131,20 @@ angular.module("profile", [
     $scope.ProfileAwardService = ProfileAwardService
     ProfileAwardService.get(url_slug)
 
+
+    // support drag-and-drop reordering of pinboards
     $scope.$watch("KeyMetrics.data.list", function(newVal, oldVal){
-      KeyMetrics.saveReordered(newVal, oldVal)
+      if (security.isLoggedIn($routeParams.url_slug)){
+        KeyMetrics.saveReordered(newVal, oldVal)
+      }
     }, true)
-
     $scope.$watch("KeyProducts.data.list", function(newVal, oldVal){
-
-      KeyProducts.saveReordered(newVal, oldVal)
+      if (security.isLoggedIn($routeParams.url_slug)){
+        KeyProducts.saveReordered(newVal, oldVal)
+      }
     }, true)
+
+
 
     $scope.sortableOptions = {
     }

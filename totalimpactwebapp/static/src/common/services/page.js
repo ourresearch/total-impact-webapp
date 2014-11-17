@@ -93,10 +93,8 @@ angular.module("services.page")
           if (searchParams && searchParams.show_expired ) {
             console.log("overriding the expired page, showing everything.")
           }
-          else {
-            $location.path(profileSlug + "/expired")
+          $location.path(profileSlug + "/expired")
 
-          }
         }
       }
     }

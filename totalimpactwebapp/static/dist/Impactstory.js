@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-17
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -2100,14 +2100,20 @@ angular.module("profile", [
     $scope.ProfileAwardService = ProfileAwardService
     ProfileAwardService.get(url_slug)
 
+
+    // support drag-and-drop reordering of pinboards
     $scope.$watch("KeyMetrics.data.list", function(newVal, oldVal){
-      KeyMetrics.saveReordered(newVal, oldVal)
+      if (security.isLoggedIn($routeParams.url_slug)){
+        KeyMetrics.saveReordered(newVal, oldVal)
+      }
     }, true)
-
     $scope.$watch("KeyProducts.data.list", function(newVal, oldVal){
-
-      KeyProducts.saveReordered(newVal, oldVal)
+      if (security.isLoggedIn($routeParams.url_slug)){
+        KeyProducts.saveReordered(newVal, oldVal)
+      }
     }, true)
+
+
 
     $scope.sortableOptions = {
     }
@@ -5081,10 +5087,8 @@ angular.module("services.page")
           if (searchParams && searchParams.show_expired ) {
             console.log("overriding the expired page, showing everything.")
           }
-          else {
-            $location.path(profileSlug + "/expired")
+          $location.path(profileSlug + "/expired")
 
-          }
         }
       }
     }
