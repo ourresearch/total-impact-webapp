@@ -421,6 +421,41 @@ def collect_embed(tiid=None, min_tiid=None):
             elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
             print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
 
+def query_for_live_profiles():
+    min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)    
+    return db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None, Profile.created>=min_created_date))
+
+
+def borked_pinboards_for_life_profiles(url_slug=None, min_url_slug=None):
+    problem_urls = []
+    blank_urls = []
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        q = query_for_live_profiles()
+        if min_url_slug:
+            q = q.filter(Profile.url_slug>=min_url_slug)
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        all_profile_tiids = [product.tiid for product in profile.products] #includes removed
+        print profile.url_slug, profile.id        
+        board = Pinboard.query.filter_by(profile_id=profile.id).first()
+        if board:
+            tiids = [tiid for (dummy, tiid) in board.contents["one"]]
+            if not tiids:
+                logger.debug("{url} has blank pinboard".format(
+                    url=profile.url_slug))
+                blank_urls.append(profile.url_slug)
+            for tiid in tiids:
+                if tiid not in all_profile_tiids:
+                    logger.debug("{url} does not own this pinboard {board}".format(
+                        url=profile.url_slug, board=board))
+                    problem_urls.append(profile.url_slug)
+    logger.debug("problem urls: {urls}".format(
+        urls=problem_urls))
+    logger.debug("blank urls: {urls}".format(
+        urls=blank_urls))
+
+
 
 def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
     if url_slug:
@@ -900,6 +935,8 @@ def main(function, args):
         get_tweet_text()
     elif function=="new_metrics_for_live_profiles":
         new_metrics_for_live_profiles(args["url_slug"], args["min_url_slug"])
+    elif function=="borked_pinboards_for_life_profiles":
+        borked_pinboards_for_life_profiles(args["url_slug"], args["min_url_slug"])
 
 
 
