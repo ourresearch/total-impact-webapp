@@ -549,7 +549,14 @@ class Product(db.Model):
             "snaps_including_interactions"
         ]
 
-        ret = dict_from_dir(self, attributes_to_ignore)
+        #ret = dict_from_dir(self, attributes_to_ignore)
+        keys_to_show = [
+            "tiid",
+            "aliases",
+            "biblio",
+            "metrics"
+        ]
+        ret = dict_from_dir(self, keys_to_show=keys_to_show)
         ret["_tiid"] = self.tiid
         return ret
 

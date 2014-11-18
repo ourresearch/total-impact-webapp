@@ -100,7 +100,7 @@ def as_int_or_float_if_possible(input_value):
     return(value)
 
 
-def dict_from_dir(obj, keys_to_ignore=None):
+def dict_from_dir(obj, keys_to_ignore=None, keys_to_show="all"):
 
     if keys_to_ignore is None:
         keys_to_ignore = []
@@ -108,6 +108,15 @@ def dict_from_dir(obj, keys_to_ignore=None):
         keys_to_ignore = [keys_to_ignore]
 
     ret = {}
+
+
+    if keys_to_show != "all":
+        for key in keys_to_show:
+            ret[key] = getattr(obj, key)
+
+        return ret
+
+
     for k in dir(obj):
         pass
 
