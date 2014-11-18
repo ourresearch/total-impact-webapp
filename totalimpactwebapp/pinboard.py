@@ -54,7 +54,7 @@ def write_to_pinboard(profile_id, list_of_pins, col):
             profile_id=profile_id, contents=board.contents))
     db.session.merge(board)
     commit(db)
-    return list_of_pins
+    return board.contents
 
 
 class Pinboard(db.Model):

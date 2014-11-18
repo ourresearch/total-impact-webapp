@@ -271,8 +271,9 @@ def common_name_from_iso_code(iso_code):
     try:
         return country_names[iso_code]
     except KeyError:
-        logger.debug(u"ISO country fail: couldn't get name from {iso_code}".format(
-            iso_code=iso_code))
+        pass
+        #logger.debug(u"ISO country fail: couldn't get name from {iso_code}".format(
+        #    iso_code=iso_code))
 
 def make_countries_list(products):
     countries_dict = {}

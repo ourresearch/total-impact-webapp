@@ -55,7 +55,14 @@ def get_product(tiid):
     return Product.query.get(tiid)
 
 def get_products_from_tiids(tiids):
-    return Product.query.filter(Product.tiid.in_(tiids)).all()
+    unsorted_products = Product.query.filter(Product.tiid.in_(tiids)).all()
+    sorted_products = []
+    for my_tiid in tiids:
+        my_product = [p for p in unsorted_products if p.tiid == my_tiid][0]
+        sorted_products.append(my_product)
+
+    return sorted_products
+
 
 def upload_file_and_commit(product, file_to_upload, db):
     resp = product.upload_file(file_to_upload)

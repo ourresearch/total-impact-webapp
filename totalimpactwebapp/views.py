@@ -589,7 +589,7 @@ def key_products(profile_id):
         ]
         tiids = [address[1] for address in board.contents["one"]]
         products = get_products_from_tiids(tiids)
-        for my_product in products: 
+        for my_product in products:
             my_product_dict = my_product.to_markup_dict(markup, show_keys=show_keys)
             resp.append(my_product_dict)
 

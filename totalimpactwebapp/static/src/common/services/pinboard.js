@@ -94,6 +94,7 @@ angular.module('services.pinboard', [
           save(data, resource)
         },
         saveReordered: function(newList, oldList){
+          console.log("checking to save these pins", newList, oldList)
           if (listsHaveSameContents(newList, oldList)){
             save(data, resource)
           }
