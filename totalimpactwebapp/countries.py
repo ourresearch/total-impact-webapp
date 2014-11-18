@@ -348,7 +348,10 @@ class Country(object):
         return self.event_sum / internet_user_millions
 
     def to_dict(self):
-        ignore = ["to_dict", "add_event"]
+        ignore = [
+            "to_dict",
+            "add_event"
+        ]
         return dict_from_dir(self, keys_to_ignore=ignore)
 
 
