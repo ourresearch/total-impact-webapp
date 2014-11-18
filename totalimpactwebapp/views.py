@@ -94,8 +94,11 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 
-def json_resp_from_thing(thing):
-    my_dict = util.todict(thing)
+def json_resp_from_thing(thing, is_already_a_dict=False):
+    # @is_already_a_dict saves a bit of time if you've already converted to dict.
+    if not is_already_a_dict:
+        my_dict = util.todict(thing)
+
     json_str = json.dumps(my_dict, sort_keys=True, indent=4)
 
     if request.path.endswith(".json") and (os.getenv("FLASK_DEBUG", False) == "True"):
@@ -624,14 +627,20 @@ def profile_products_get(url_slug):
 
     action = request.args.get("action", "refresh")
     source = request.args.get("source", "webapp")
+    timer = util.Timer()
+
+
+    load_times = {}
     just_stubs = request.args.get("stubs", "False").lower() in ["1", "true"]
     if just_stubs:
         profile = get_profile_stubs_from_url_slug(url_slug)
         resp = profile.products_not_removed
-        resp = [{"tiid": p.tiid, "genre": p.genre}
-                for p in profile.products_not_removed
-                if p.genre not in ["account"]
-                ]
+        product_list = [
+            {"tiid": p.tiid, "genre": p.genre}
+            for p in profile.products_not_removed
+            if p.genre not in ["account"]
+        ]
+        load_times["queries"] = timer.elapsed()
 
     else:
         profile = get_profile_from_id(url_slug)
@@ -642,12 +651,18 @@ def profile_products_get(url_slug):
             "genre",
             "genre_icon"
         ]
-        resp = profile.get_products_markup(
+        product_list = profile.get_products_markup(
             markup=markup,
             show_keys=show_keys
         )
+        load_times["queries"] = timer.elapsed()
 
-
+    product_dicts_list = util.todict(product_list)
+    load_times["calculated_properties"] = timer.since_last_check()
+    resp = {
+        "a_load_times": load_times,
+        "list": product_dicts_list
+    }
     return json_resp_from_thing(resp)
 
 

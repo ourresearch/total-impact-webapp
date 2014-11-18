@@ -20,10 +20,10 @@ angular.module('services.profileService', [
     var data = {}
 
     function getProductStubs(url_slug){
-      UsersProducts.query(
+      UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
-          data.products = resp
+          data.products = resp.list
         },
         function(resp){
           console.log("stubs call failed", resp)

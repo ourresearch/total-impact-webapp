@@ -196,13 +196,22 @@ class HTTPMethodOverrideMiddleware(object):
 class Timer(object):
     def __init__(self):
         self.start = datetime.datetime.now()
+        self.last_check = self.start
 
-    def elapsed(self):
-        finish_time = datetime.datetime.now()
-        elapsed = finish_time - self.start
+    def since_last_check(self):
+        return self.elapsed(since_last_check=True)
 
-        # from http://stackoverflow.com/a/1905423/226013
-        return int(elapsed.seconds * 1000 + elapsed.microseconds / 1000.0)
+    def elapsed(self, since_last_check=False):
+        if since_last_check:
+            window_start = self.last_check
+        else:
+            window_start = self.start
+
+        current_datetime = datetime.datetime.now()
+        self.last_check = current_datetime
+
+        elapsed_seconds = (current_datetime - window_start).total_seconds()
+        return elapsed_seconds
 
 
 def ordinal(value):
