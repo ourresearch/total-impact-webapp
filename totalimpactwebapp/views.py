@@ -969,25 +969,6 @@ def user_linked_accounts_update(id, account):
 
 
 
-@app.route('/providers', methods=["GET"])  # information about providers
-def providers():
-    try:
-        url = u"{api_root}/v1/provider?key={api_key}".format(
-            api_key=os.getenv("API_KEY"),
-            api_root=os.getenv("API_ROOT"))
-        r = requests.get(url)
-        metadata = r.json()
-    except requests.ConnectionError:
-        metadata = {}
-
-    metadata_list = []
-    for k, v in metadata.iteritems():
-        v["name"] = k
-        metadata_list.append(v)
-
-    return json_resp_from_thing(metadata_list)
-
-
 
 
 @app.route("/tests", methods=["DELETE"])  # supports functional testing
@@ -1215,6 +1196,29 @@ def get_configs():
 @app.route("/configs/genres")
 def get_genre_configs():
     return json_resp_from_thing(configs.genre_configs())
+
+
+@app.route('/providers', methods=["GET"])  # information about providers
+def providers():
+    try:
+        url = u"{api_root}/v1/provider?key={api_key}".format(
+            api_key=os.getenv("API_KEY"),
+            api_root=os.getenv("API_ROOT"))
+        r = requests.get(url)
+        metadata = r.json()
+    except requests.ConnectionError:
+        metadata = {}
+
+    metadata_list = []
+    for k, v in metadata.iteritems():
+        if k == "delicious":  # hack. should remove from Core config.
+            continue
+
+        v["name"] = k
+        metadata_list.append(v)
+
+    return json_resp_from_thing(metadata_list)
+
 
 
 
