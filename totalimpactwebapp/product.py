@@ -576,8 +576,7 @@ class Product(db.Model):
         ]
         my_dict = self.to_dict(keys_to_show)
 
-        my_dict["markup"] = "markup goes here."
-        #my_dict["markup"] = markup.make(my_dict)
+        my_dict["markup"] = markup.make(my_dict)
 
         if hide_keys is not None:
             for key_to_hide in hide_keys:
