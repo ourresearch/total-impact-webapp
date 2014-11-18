@@ -539,9 +539,6 @@ class Product(db.Model):
             tiid=self.tiid, best_url=self.aliases.best_url)
 
     def to_dict(self, keys_to_show="all"):
-
-        print "\n\nproduct.to_dict(). keys: ", dir(self)
-
         if keys_to_show=="all":
             attributes_to_ignore = [
                 "profile",
@@ -579,7 +576,8 @@ class Product(db.Model):
         ]
         my_dict = self.to_dict(keys_to_show)
 
-        my_dict["markup"] = markup.make(my_dict)
+        my_dict["markup"] = "markup goes here."
+        #my_dict["markup"] = markup.make(my_dict)
 
         if hide_keys is not None:
             for key_to_hide in hide_keys:
