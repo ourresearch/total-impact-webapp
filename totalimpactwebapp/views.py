@@ -635,16 +635,19 @@ def profile_products_get(url_slug):
     if just_stubs:
         profile = get_profile_stubs_from_url_slug(url_slug)
         resp = profile.products_not_removed
+        load_times["profile"] = timer.elapsed()
         product_list = [
             {"tiid": p.tiid, "genre": p.genre}
             for p in profile.products_not_removed
             if p.genre not in ["account"]
         ]
-        load_times["queries"] = timer.elapsed()
+        load_times["product_list"] = timer.since_last_check()
 
     else:
         profile = get_profile_from_id(url_slug)
         markup = Markup(url_slug, embed=False)
+        load_times["profile"] = timer.elapsed()
+
         show_keys = [
             "_tiid",
             "markup",
@@ -655,10 +658,9 @@ def profile_products_get(url_slug):
             markup=markup,
             show_keys=show_keys
         )
-        load_times["queries"] = timer.elapsed()
+        load_times["product_list"] = timer.since_last_check()
 
     product_dicts_list = util.todict(product_list)
-    load_times["calculated_properties"] = timer.since_last_check()
     resp = {
         "a_load_times": load_times,
         "list": product_dicts_list
