@@ -642,29 +642,6 @@ providers = [
 
 
 
-    # *************************************************************************
-    #                             Delicious
-    # *************************************************************************
-    {
-        "descr": "Online social bookmarking service",
-        "metrics": {
-            "bookmarks": {
-                "description": "The number of bookmarks to this artifact (maximum=100).",
-                "display_name": "bookmarks",
-                "icon": "http://g.etfv.co/http://delicious.com",
-                "provider_name": "Delicious",
-                "provider_url": "http://www.delicious.com/",
-                "audience": "public",
-                "engagement_type": "saved",
-                "milestones": fives_then_orders_of_magnitude()
-            }
-        },
-        "name": "delicious",
-        "provides_aliases": False,
-        "provides_metrics": True,
-        "url": "http://www.delicious.com"
-    },
-
 
 
 
