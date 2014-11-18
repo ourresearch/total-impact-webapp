@@ -629,12 +629,10 @@ def profile_products_get(url_slug):
     source = request.args.get("source", "webapp")
     timer = util.Timer()
 
-
     load_times = {}
     just_stubs = request.args.get("stubs", "False").lower() in ["1", "true"]
     if just_stubs:
         profile = get_profile_stubs_from_url_slug(url_slug)
-        resp = profile.products_not_removed
         load_times["profile"] = timer.elapsed()
         product_list = [
             {"tiid": p.tiid, "genre": p.genre}
@@ -664,6 +662,37 @@ def profile_products_get(url_slug):
     resp = {
         "a_load_times": load_times,
         "list": product_dicts_list
+    }
+    return json_resp_from_thing(resp)
+
+
+
+@app.route("/products/<comma_separated_tiids>")
+def test_products(comma_separated_tiids):
+    timer = util.Timer()
+    load_times = {}
+    tiids = comma_separated_tiids.split(",")
+
+    products = get_products_from_tiids(tiids)
+    load_times["load_products"] = timer.since_last_check()
+
+    markup = Markup("jason", False)  # profile_id must be a slug...
+
+    product_dicts = []
+    show_keys = [
+        "_tiid",
+        "markup",
+        "genre",
+        "genre_icon"
+    ]
+    for my_product in products:
+        my_product_dict = my_product.to_markup_dict(markup, show_keys=show_keys)
+        product_dicts.append(my_product_dict)
+
+    load_times["dictify_products"] = timer.since_last_check()
+    resp = {
+        "a_load_times": load_times,
+        "list": product_dicts
     }
     return json_resp_from_thing(resp)
 
