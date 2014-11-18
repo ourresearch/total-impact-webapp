@@ -561,14 +561,14 @@ class Product(db.Model):
             "tiid",
             "aliases",
             "biblio",
-            "awards",
+            #"awards",
             "genre",
             "genre_icon",
-            "countries",
+            #"countries",
 
              # for sorting
             "year",
-            "awardedness_score",
+            #"awardedness_score",
 
             # to show the "view on impactstory" badges
             "embed_markup",
