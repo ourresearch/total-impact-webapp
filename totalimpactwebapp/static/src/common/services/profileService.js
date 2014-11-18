@@ -104,7 +104,7 @@ angular.module('services.profileService', [
         return false
       }
 
-      if (data.products[0] && data.products[0].metrics){
+      if (data.products[0] && data.products[0].markup){
         return true
       }
 

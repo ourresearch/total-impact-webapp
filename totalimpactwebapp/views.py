@@ -646,15 +646,24 @@ def profile_products_get(url_slug):
         markup = Markup(url_slug, embed=False)
         load_times["profile"] = timer.elapsed()
 
-        show_keys = [
-            "_tiid",
-            "markup",
-            "genre",
-            "genre_icon"
-        ]
         product_list = profile.get_products_markup(
             markup=markup,
-            show_keys=show_keys
+            show_keys=[
+                "_tiid",
+                "tiid",
+                "markup",
+                "countries",
+
+                # for sorting
+                "year",
+                "title",
+                "biblio",
+                "awardedness_score",
+
+                # misc
+                "genre",
+                "genre_icon"
+            ]
         )
         load_times["product_list"] = timer.since_last_check()
 
@@ -665,36 +674,6 @@ def profile_products_get(url_slug):
     }
     return json_resp_from_thing(resp)
 
-
-
-@app.route("/products/<comma_separated_tiids>")
-def test_products(comma_separated_tiids):
-    timer = util.Timer()
-    load_times = {}
-    tiids = comma_separated_tiids.split(",")
-
-    products = get_products_from_tiids(tiids)
-    load_times["load_products"] = timer.since_last_check()
-
-    markup = Markup("jason", False)  # profile_id must be a slug...
-
-    product_dicts = []
-    show_keys = [
-        "_tiid",
-        "markup",
-        "genre",
-        "genre_icon"
-    ]
-    for my_product in products:
-        my_product_dict = my_product.to_markup_dict(markup, show_keys=show_keys)
-        product_dicts.append(my_product_dict)
-
-    load_times["dictify_products"] = timer.since_last_check()
-    resp = {
-        "a_load_times": load_times,
-        "list": product_dicts
-    }
-    return json_resp_from_thing(resp)
 
 
 @app.route("/profile/<id>/products", methods=["POST", "PATCH", "DELETE"])

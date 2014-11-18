@@ -538,30 +538,46 @@ class Product(db.Model):
         return u'<Product {tiid} {best_url}>'.format(
             tiid=self.tiid, best_url=self.aliases.best_url)
 
-    def to_dict(self):
-        attributes_to_ignore = [
-            "profile",
-            "alias_rows",
-            "biblio_rows",
-            "percentile_snaps",
-            "snaps",
-            "interactions",
-            "snaps_including_interactions"
-        ]
+    def to_dict(self, keys_to_show="all"):
 
-        #ret = dict_from_dir(self, attributes_to_ignore)
-        keys_to_show = [
-            "tiid",
-            "aliases",
-            "biblio",
-            "metrics"
-        ]
-        ret = dict_from_dir(self, keys_to_show=keys_to_show)
+        print "\n\nproduct.to_dict(). keys: ", dir(self)
+
+        if keys_to_show=="all":
+            attributes_to_ignore = [
+                "profile",
+                "alias_rows",
+                "biblio_rows",
+                "percentile_snaps",
+                "snaps",
+                "interactions",
+                "snaps_including_interactions"
+            ]
+            ret = dict_from_dir(self, attributes_to_ignore)
+        else:
+            ret = dict_from_dir(self, keys_to_show=keys_to_show)
+
         ret["_tiid"] = self.tiid
         return ret
 
     def to_markup_dict(self, markup, hide_keys=None, show_keys="all"):
-        my_dict = self.to_dict()
+        keys_to_show = [
+            "tiid",
+            "aliases",
+            "biblio",
+            "awards",
+            "genre",
+            "genre_icon",
+            "countries",
+
+             # for sorting
+            "year",
+            "awardedness_score",
+
+            # to show the "view on impactstory" badges
+            "embed_markup",
+            "fulltext_cta"
+        ]
+        my_dict = self.to_dict(keys_to_show)
 
         my_dict["markup"] = markup.make(my_dict)
 

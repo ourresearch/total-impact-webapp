@@ -109,7 +109,6 @@ def dict_from_dir(obj, keys_to_ignore=None, keys_to_show="all"):
 
     ret = {}
 
-
     if keys_to_show != "all":
         for key in keys_to_show:
             ret[key] = getattr(obj, key)
