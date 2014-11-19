@@ -1209,12 +1209,11 @@ def get_genre_configs():
     return json_resp_from_thing(configs.genre_configs())
 
 @app.route("/data/users/url-slugs")
-def get_live_user_url_slugs():
-    min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=default_free_trial_days)
-    q = db.session.query(Profile.url_slug).filter(
+def get_subscribed_user_url_slugs():
+    q = db.session.query(Profile.url_slug)
+    q = q.filter(
         or_(Profile.is_advisor!=None, 
-            Profile.stripe_id!=None, 
-            Profile.created>=min_created_date))
+            Profile.stripe_id!=None))  # not including trialling users
     response = q.order_by(Profile.url_slug).all()
     url_slugs = [resp.url_slug for resp in response]
     return json_resp_from_thing({"url_slugs": url_slugs})
