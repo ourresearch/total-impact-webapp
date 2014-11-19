@@ -652,12 +652,11 @@ def profile_products_get(url_slug):
                 "_tiid",
                 "tiid",
                 "markup",
-                "countries",
+                "countries_str",
 
                 # for sorting
                 "year",
                 "title",
-                "biblio",
                 "awardedness_score",
 
                 # misc

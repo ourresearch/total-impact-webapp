@@ -315,6 +315,10 @@ class Product(db.Model):
         return sum([a.sort_score for a in self.awards])
 
     @cached_property
+    def title(self):
+        return self.biblio.display_title
+
+    @cached_property
     def is_account_product(self):
         try:
             if self.biblio.is_account:
@@ -336,6 +340,12 @@ class Product(db.Model):
     @cached_property
     def is_free_to_read(self):
         return self.has_file or self.biblio.free_fulltext_host
+
+
+    @cached_property
+    def countries_str(self):
+        return self.countries.to_string()
+
 
     @cached_property
     def countries(self):
@@ -564,11 +574,12 @@ class Product(db.Model):
             "awards",
             "genre",
             "genre_icon",
-            "countries",
+            "countries_str",
 
              # for sorting
             "year",
             "awardedness_score",
+            "title",
 
             # to show the "view on impactstory" badges
             "embed_markup",

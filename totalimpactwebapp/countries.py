@@ -404,6 +404,9 @@ class CountryList(object):
             "internationality": self.internationality
         }
 
+    def to_string(self):
+        return ",".join([c.iso_code for c in self.countries])
+
 
 
 
