@@ -43,14 +43,17 @@ angular.module("productListPage", [
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
 
     var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
-    $scope.productsFilter = function(product){
-      if (product.countries_str.indexOf(myCountryCode) > -1){
+    var filterFn = function(product){
+      if (product.countries_str && product.countries_str.indexOf(myCountryCode) > -1){
         return true
       }
       else {
         return false
       }
     }
+    ProductList.setFilterFn(filterFn)
+
+    $scope.productsFilter = filterFn
 
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -73,11 +76,9 @@ angular.module("productListPage", [
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
-    ProductList.setQuery("genre", myGenreConfig.name)
     ProductList.startRender($scope)
 
-
-    $scope.productsFilter = function(product){
+    var filterFn = function(product){
       if (product.genre == myGenreConfig.name){
         return true
       }
@@ -85,6 +86,9 @@ angular.module("productListPage", [
         return false
       }
     }
+
+    $scope.productsFilter = filterFn
+    ProductList.setFilterFn(filterFn)
 
 
     $scope.ProductList = ProductList

@@ -137,7 +137,7 @@ angular.module('services.profileService', [
         {genre: newGenre},
         function(resp){
           console.log("ProfileService.changeProductsGenre() successful.", resp)
-          get(data.about.url_slug, true)
+          get(data.url_slug)
         },
         function(resp){
           console.log("ProfileService.changeProductsGenre() FAILED.", resp)
@@ -215,9 +215,7 @@ angular.module('services.profileService', [
       hasFullProducts: hasFullProducts,
       clear: clear,
       getUrlSlug: function(){
-        if (data && data.about) {
-          return data.about.url_slug
-        }
+        return data.url_slug
       }
     }
   })

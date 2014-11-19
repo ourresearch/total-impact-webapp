@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-18
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-19
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1241,14 +1241,17 @@ angular.module("productListPage", [
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
 
     var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
-    $scope.productsFilter = function(product){
-      if (product.countries_str.indexOf(myCountryCode) > -1){
+    var filterFn = function(product){
+      if (product.countries_str && product.countries_str.indexOf(myCountryCode) > -1){
         return true
       }
       else {
         return false
       }
     }
+    ProductList.setFilterFn(filterFn)
+
+    $scope.productsFilter = filterFn
 
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -1271,11 +1274,9 @@ angular.module("productListPage", [
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
-    ProductList.setQuery("genre", myGenreConfig.name)
     ProductList.startRender($scope)
 
-
-    $scope.productsFilter = function(product){
+    var filterFn = function(product){
       if (product.genre == myGenreConfig.name){
         return true
       }
@@ -1283,6 +1284,9 @@ angular.module("productListPage", [
         return false
       }
     }
+
+    $scope.productsFilter = filterFn
+    ProductList.setFilterFn(filterFn)
 
 
     $scope.ProductList = ProductList
@@ -5584,8 +5588,7 @@ angular.module("services.productList", [])
     ProfileService){
 
   var genreChangeDropdown = {}
-  var queryDimension
-  var queryValue
+  var filterFn
 
   var startRender = function($scope){
     if (!ProfileService.hasFullProducts()){
@@ -5626,7 +5629,7 @@ angular.module("services.productList", [])
     genreChangeDropdown.isOpen = false
 
     // handle moving the last product in our current genre
-    if (!get().length){
+    if (!len()){
       var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
       var currentProfileSlug = ProfileService.getUrlSlug()
       $location.path(currentProfileSlug + "/products/" + newGenreUrlRepresentation)
@@ -5645,32 +5648,28 @@ angular.module("services.productList", [])
     }
   }
 
-  var setQuery = function(dimension, value) {
-    queryDimension = dimension
-    queryValue = value
+  var len = function(){
+    var filtered = _.filter(ProfileService.data.products, filterFn)
+    return filtered.length
   }
 
-  var get = function(){
-    if (queryDimension == "genre") {
-      return ProfileService.productsByGenre(queryValue)
-    }
-    else if (queryDimension == "country") {
-      return ProfileService.productsByCountry(queryValue)
-    }
-    else {
-      return []
-    }
+  var selectEverything = function(){
+    var filtered = _.filter(ProfileService.data.products, filterFn)
+    SelectedProducts.addFromObjects(filtered)
   }
 
 
   return {
     changeProductsGenre: changeProductsGenre,
     removeSelectedProducts: removeSelectedProducts,
-    setQuery: setQuery,
-    get: get,
     startRender: startRender,
     finishRender: finishRender,
-    genreChangeDropdown: genreChangeDropdown
+    genreChangeDropdown: genreChangeDropdown,
+    setFilterFn: function(fn){
+      filterFn = fn
+    },
+    len: len,
+    selectEverything: selectEverything
   }
 
 
@@ -6013,7 +6012,7 @@ angular.module('services.profileService', [
         {genre: newGenre},
         function(resp){
           console.log("ProfileService.changeProductsGenre() successful.", resp)
-          get(data.about.url_slug, true)
+          get(data.url_slug)
         },
         function(resp){
           console.log("ProfileService.changeProductsGenre() FAILED.", resp)
@@ -6091,9 +6090,7 @@ angular.module('services.profileService', [
       hasFullProducts: hasFullProducts,
       clear: clear,
       getUrlSlug: function(){
-        if (data && data.about) {
-          return data.about.url_slug
-        }
+        return data.url_slug
       }
     }
   })
@@ -7837,7 +7834,7 @@ angular.module("product-list-page/country-page.tpl.html", []).run(["$templateCac
     "         <h2>\n" +
     "            <span class=\"intro-text\">\n" +
     "               <span class=\"count\">\n" +
-    "                  {{ ProductList.get().length }} products\n" +
+    "                  {{ ProductList.len() }} products\n" +
     "               </span>\n" +
     "                with impacts in\n" +
     "            </span>\n" +
@@ -7940,19 +7937,19 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "         <i class=\"icon-check-empty\"\n" +
     "            tooltip=\"Select all\"\n" +
     "            ng-show=\"SelectedProducts.count() == 0\"\n" +
-    "            ng-click=\"SelectedProducts.addFromObjects(ProductList.get())\"></i>\n" +
+    "            ng-click=\"ProductList.selectEverything()\"></i>\n" +
     "\n" +
     "\n" +
     "      <!-- between zero and all products are selected. allow user to select all -->\n" +
     "      <i class=\"icon-check-minus\"\n" +
     "         tooltip=\"Select all\"\n" +
-    "         ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < ProductList.get().length\"\n" +
-    "         ng-click=\"SelectedProducts.addFromObjects(ProductList.get())\"></i>\n" +
+    "         ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < ProductList.len()\"\n" +
+    "         ng-click=\"ProductList.selectEverything()\"></i>\n" +
     "\n" +
     "      <!-- everything is selected. allow user to unselect all -->\n" +
     "      <i class=\"icon-check\"\n" +
     "         tooltip=\"Unselect all\"\n" +
-    "         ng-show=\"SelectedProducts.count() == ProductList.get().length\"\n" +
+    "         ng-show=\"SelectedProducts.count() == ProductList.len()\"\n" +
     "         ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
     "       </span>\n" +
     "\n" +
@@ -8025,9 +8022,9 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "          on-repeat-finished>\n" +
     "\n" +
     "\n" +
-    "         <!-- users must be logged in -->\n" +
     "         <div class=\"product-margin\" >\n" +
     "\n" +
+    "            <!-- users must be logged in -->\n" +
     "            <span class=\"product-controls\" ng-show=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
     "               <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
     "\n" +
@@ -8055,10 +8052,9 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "                  </a>\n" +
     "               </span>\n" +
     "            </span>\n" +
+    "\n" +
     "            <i tooltip=\"{{ product.genre }}\"\n" +
     "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
-    "\n" +
-    "\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "      </li>\n" +
