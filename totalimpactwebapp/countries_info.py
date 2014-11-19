@@ -9956,6 +9956,7 @@ countries_info = [
     }
 ]
 
+# take this out after daily.py run is done
 country_iso_by_name = dict((country["name"]["common"], country["cca2"]) for country in countries_info)
 country_iso_by_name.update(dict((country["name"]["official"], country["cca2"]) for country in countries_info))
 country_iso_by_name["Korea (South)"] = "KR"

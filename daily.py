@@ -529,6 +529,7 @@ def update_mendeley_countries_for_live_profiles(url_slug=None, min_url_slug=None
                         if len(country_name) != 2:
                             logger.error(u"Can't find country {country} in lookup".format(
                                 country=country_name))
+                        new_snap_value[country_name] = country_count
                 if new_snap_value:
                     logger.info(u"New snap value {snap}".format(
                         snap=new_snap_value))
