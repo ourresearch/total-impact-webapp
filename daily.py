@@ -500,9 +500,7 @@ def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
 
 
 
-from totalimpactwebapp.countries_info import countries_info
-country_iso_by_name = dict((country["name"]["common"], country["cca2"]) for country in countries_info)
-country_iso_by_name.update(dict((country["name"]["official"], country["cca2"]) for country in countries_info))
+from totalimpactwebapp.countries_info import country_iso_by_name
 
 
 def update_mendeley_countries_for_live_profiles(url_slug=None, min_url_slug=None):
@@ -514,27 +512,26 @@ def update_mendeley_countries_for_live_profiles(url_slug=None, min_url_slug=None
         for product in profile.display_products:
             metric = product.get_metric_by_name("mendeley", "countries")
             if metric:
-                logger.info(u"{url_slug} {tiid} has mendeley countries".format(
-                    url_slug=profile.url_slug, tiid=product.tiid))
-                print metric
                 snap = metric.most_recent_snap
                 if not snap.raw_value:
-                    logger.error(u"{url_slug} has NO SNAP for tiid {tiid}".format(
-                        url_slug=profile.url_slug, tiid=product.tiid))
+                    # logger.error(u"{url_slug} has NO SNAP for tiid {tiid}".format(
+                    #     url_slug=profile.url_slug, tiid=product.tiid))
+                    # don't save this one to the db
                     continue
                 new_snap_value = {}
                 for country_name, country_count in snap.raw_value.iteritems():
                     if country_name in country_iso_by_name:
                         iso = country_iso_by_name[country_name]
                         new_snap_value[iso] = country_count
-                        logger.error(u"{country_name} -> {iso}".format(
-                            country_name=country_name, iso=iso))
+                        # logger.error(u"{country_name} -> {iso}".format(
+                        #     country_name=country_name, iso=iso))
                     else:
-                        logger.error(u"Can't find country {country} in lookup".format(
-                            country=country_name))
-                logger.info(u"New snap value {snap}".format(
-                    snap=new_snap_value))
+                        if len(country_name) != 2:
+                            logger.error(u"Can't find country {country} in lookup".format(
+                                country=country_name))
                 if new_snap_value:
+                    logger.info(u"New snap value {snap}".format(
+                        snap=new_snap_value))
                     snap.raw_value = new_snap_value
                     db.session.add(snap)
                     commit(db)
