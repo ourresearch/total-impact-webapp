@@ -363,13 +363,17 @@ class Product(db.Model):
         except (KeyError, TypeError):
             pass
 
-        country_data = self.get_metric_raw_value("mendeley", "countries")
-        if country_data:
+        try:
+            country_data = self.get_metric_raw_value("mendeley", "countries")
             countries_set.update([country for country in country_data])
+        except (KeyError, TypeError):
+            pass
 
-        country_data = self.get_metric_raw_value("impactstory", "countries")
-        if country_data:
+        try:
+            country_data = self.get_metric_raw_value("impactstory", "countries")
             countries_set.update([country for country in country_data if country])
+        except (KeyError, TypeError):
+            pass
 
         if countries_set:
             return ",".join(list(countries_set))
@@ -393,20 +397,27 @@ class Product(db.Model):
             pass
 
         country_data = self.get_metric_raw_value("mendeley", "countries")
-        for country in country_data:
-            my_countries.add_from_metric(
-                country,
-                "mendeley:readers",
-                country_data[country]
-            )
+        try:
+            for country in country_data:
+                my_countries.add_from_metric(
+                    country,
+                    "mendeley:readers",
+                    country_data[country]
+                )
+        except (KeyError, TypeError):
+            pass
 
         country_data = self.get_metric_raw_value("impactstory", "countries")
-        for country in country_data:
-            my_countries.add_from_metric(
-                country,
-                "impactstory:views",
-                country_data[country]
-            )
+        try:
+            for country in country_data:
+                my_countries.add_from_metric(
+                    country,
+                    "impactstory:views",
+                    country_data[country]
+                )
+        except (KeyError, TypeError):
+            pass
+
         return my_countries
 
 
