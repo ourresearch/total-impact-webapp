@@ -40,6 +40,7 @@ angular.module('app', [
   'services.countryNames',
   'services.keyProducts',
   'services.keyMetrics',
+  'services.cardService',
   'services.map',
   'settings',
   'xeditable',

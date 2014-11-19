@@ -167,36 +167,7 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function genreCards(genreName, numberOfCards, smallestFirst){
-      if (typeof data.genres == "undefined"){
-        return []
-      }
-      else {
-        var cardsToReturn
-        var myGenre = _.findWhere(data.genres, {name: genreName})
-        if (typeof myGenre == "undefined"){
-          return []
-        }
-        var sortedCards = _.sortBy(myGenre.cards, "sort_by")
-        if (smallestFirst){
-          cardsToReturn = sortedCards
-        }
-        else {
-          cardsToReturn = sortedCards.concat([]).reverse()
-        }
-        return cardsToReturn.slice(0, numberOfCards)
-      }
-    }
 
-    function genreLookup(url_representation){
-      if (typeof data.genres == "undefined"){
-        return undefined
-      }
-      else {
-        var res = _.findWhere(data.genres, {url_representation: url_representation})
-        return res
-      }
-    }
 
     function productsByCountry(countryCode){
       if (typeof data.products == "undefined"){
@@ -239,52 +210,6 @@ angular.module('services.profileService', [
     }
 
 
-    function getAccountProduct(indexName){
-      console.log("calling getAccountProducts")
-
-      if (typeof data.account_products == "undefined"){
-        return undefined
-      }
-
-      console.log("account_products", data.account_products)
-
-      return _.findWhere(data.account_products, {index_name: indexName})
-    }
-
-    function getFromPinId(pinId){ // only for genre pins
-      /*
-      "genre", :genre_name, "sum", "metric", :provider, :interaction
-      "genre", :genre_name, "sum", "engagement", :engagement_type
-      */
-      if (!data.genres){
-        return false
-      }
-
-      var cards = []
-      _.each(data.genres, function(genre){
-        cards.push(genre.cards)
-      })
-
-      var flatCards = _.flatten(cards)
-      var pinnedCard = _.findWhere(flatCards, {genre_card_address: pinId})
-
-      if (!pinnedCard){
-        return false
-      }
-      
-      var myGenreObj = _.findWhere(data.genres, {name: pinnedCard.genre})
-
-      var extraData = {
-        genre_num_products: myGenreObj.num_products,
-        genre_icon: myGenreObj.icon,
-        genre_plural_name: myGenreObj.plural_name,
-        genre_url_representation: myGenreObj.url_representation
-
-      }
-      return _.extend(pinnedCard, extraData)
-    }
-
-
 
 
 
@@ -295,12 +220,9 @@ angular.module('services.profileService', [
       isLoading: isLoading,
       get: get,
       productsByGenre: productsByGenre,
-      genreCards: genreCards,
       productByTiid: productByTiid,
       removeProducts: removeProducts,
       changeProductsGenre: changeProductsGenre,
-      getAccountProduct: getAccountProduct,
-      getFromPinId: getFromPinId,
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
       productsByCountry: productsByCountry,
