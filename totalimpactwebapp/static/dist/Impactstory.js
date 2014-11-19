@@ -1235,11 +1235,21 @@ angular.module("productListPage", [
     Page) {
 
     Page.setName("map")
-    ProductList.setQuery("country", CountryNames.codeFromUrl($routeParams.country_name))
     ProductList.startRender($scope)
 
     $scope.ProductList = ProductList
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
+
+    var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
+    $scope.productsFilter = function(product){
+      if (product.countries_str.indexOf(myCountryCode) > -1){
+        return true
+      }
+      else {
+        return false
+      }
+    }
+
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
       if (newVal && newVal.full_name) {
@@ -1263,6 +1273,16 @@ angular.module("productListPage", [
     Page.setName($routeParams.genre_name)
     ProductList.setQuery("genre", myGenreConfig.name)
     ProductList.startRender($scope)
+
+
+    $scope.productsFilter = function(product){
+      if (product.genre == myGenreConfig.name){
+        return true
+      }
+      else {
+        return false
+      }
+    }
 
 
     $scope.ProductList = ProductList
@@ -6022,25 +6042,8 @@ angular.module('services.profileService', [
 
     }
 
-
-
     function isLoading(){
       return loading
-    }
-
-
-
-    function productsByCountry(countryCode){
-      if (typeof data.products == "undefined"){
-        return undefined
-      }
-      else {
-        var res = _.filter(data.products, function(product){
-          var myCountryCodes = _.pluck(product.countries.list, "iso_code")
-          return _.contains(myCountryCodes, countryCode)
-        })
-        return res
-      }
     }
 
     function productsByGenre(genreName){
@@ -6086,7 +6089,6 @@ angular.module('services.profileService', [
       changeProductsGenre: changeProductsGenre,
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
-      productsByCountry: productsByCountry,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {
@@ -8018,7 +8020,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "   <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
     "      <li class=\"product genre-{{ product.genre }}\"\n" +
     "          ng-class=\"{first: $first}\"\n" +
-    "          ng-repeat=\"product in ProductList.get() | orderBy: ProductListSort.get().keys\"\n" +
+    "          ng-repeat=\"product in profileService.data.products | filter: productsFilter | orderBy: ProductListSort.get().keys\"\n" +
     "          id=\"{{ product.tiid }}\"\n" +
     "          on-repeat-finished>\n" +
     "\n" +

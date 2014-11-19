@@ -87,7 +87,7 @@
    <ul class="products-list" ng-if="profileService.hasFullProducts()">
       <li class="product genre-{{ product.genre }}"
           ng-class="{first: $first}"
-          ng-repeat="product in ProductList.get() | orderBy: ProductListSort.get().keys"
+          ng-repeat="product in profileService.data.products | filter: productsFilter | orderBy: ProductListSort.get().keys"
           id="{{ product.tiid }}"
           on-repeat-finished>
 

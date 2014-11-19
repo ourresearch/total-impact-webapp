@@ -166,25 +166,8 @@ angular.module('services.profileService', [
 
     }
 
-
-
     function isLoading(){
       return loading
-    }
-
-
-
-    function productsByCountry(countryCode){
-      if (typeof data.products == "undefined"){
-        return undefined
-      }
-      else {
-        var res = _.filter(data.products, function(product){
-          var myCountryCodes = _.pluck(product.countries.list, "iso_code")
-          return _.contains(myCountryCodes, countryCode)
-        })
-        return res
-      }
     }
 
     function productsByGenre(genreName){
@@ -230,7 +213,6 @@ angular.module('services.profileService', [
       changeProductsGenre: changeProductsGenre,
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
-      productsByCountry: productsByCountry,
       clear: clear,
       getUrlSlug: function(){
         if (data && data.about) {
