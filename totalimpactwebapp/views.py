@@ -658,6 +658,8 @@ def profile_products_get(url_slug):
                 "year",
                 "title",
                 "awardedness_score",
+                "metrics_raw_sum",
+                "authors",
 
                 # misc
                 "genre",

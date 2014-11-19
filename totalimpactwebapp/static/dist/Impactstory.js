@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-17
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-18
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5642,22 +5642,22 @@ angular.module("services.productList", [])
 
   var configs = [
     {
-      keys: ["-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      keys: ["-awardedness_score", '-metric_raw_sum', 'title'],
       name: "default",
       urlName: "default"
     } ,
     {
-      keys: ["biblio.title", "-awardedness_score", '-metric_raw_sum'],
+      keys: ["title", "-awardedness_score", '-metric_raw_sum'],
       name: "title",
       urlName: "title"
     },
     {
-      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'title'],
       name: "year",
       urlName: "year"
     },
     {
-      keys: ["biblio.authors", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      keys: ["authors", "-awardedness_score", '-metric_raw_sum', 'title'],
       name: "first author",
       urlName: "first_author"
     }

@@ -319,6 +319,10 @@ class Product(db.Model):
         return self.biblio.display_title
 
     @cached_property
+    def authors(self):
+        return self.biblio.display_authors
+
+    @cached_property
     def is_account_product(self):
         try:
             if self.biblio.is_account:
@@ -579,7 +583,9 @@ class Product(db.Model):
              # for sorting
             "year",
             "awardedness_score",
+            "metrics_raw_sum",
             "title",
+            "authors",
 
             # to show the "view on impactstory" badges
             "embed_markup",
