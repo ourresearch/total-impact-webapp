@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-17
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-18
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5310,21 +5310,19 @@ angular.module('services.pinboard', [
       if (!a.length || !b.length){
         return false
       }
+      var comparisonKey
 
       if (a[0]._tiid){
-        console.log("checking equality by tiid", a, b)
-        return _.isEqual(
-          _.pluck(a, "_tiid").sort(),
-          _.pluck(b, "_tiid").sort()
-        )
+        comparisonKey = "_tiid"
       }
       else if (a[0].genre_card_address){
-        return _.isEqual(
-          _.sortBy(a, "genre_card_address"),
-          _.sortBy(b, "genre_card_address")
-        )
+        comparisonKey = "genre_card_address"
       }
 
+      return _.isEqual(
+        _.pluck(a, comparisonKey).sort(),
+        _.pluck(b, comparisonKey).sort()
+      )
 
     }
 
@@ -5644,22 +5642,22 @@ angular.module("services.productList", [])
 
   var configs = [
     {
-      keys: ["-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      keys: ["-awardedness_score", '-metric_raw_sum', 'title'],
       name: "default",
       urlName: "default"
     } ,
     {
-      keys: ["biblio.title", "-awardedness_score", '-metric_raw_sum'],
+      keys: ["title", "-awardedness_score", '-metric_raw_sum'],
       name: "title",
       urlName: "title"
     },
     {
-      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'title'],
       name: "year",
       urlName: "year"
     },
     {
-      keys: ["biblio.authors", "-awardedness_score", '-metric_raw_sum', 'biblio.title'],
+      keys: ["authors", "-awardedness_score", '-metric_raw_sum', 'title'],
       name: "first author",
       urlName: "first_author"
     }
@@ -5828,10 +5826,10 @@ angular.module('services.profileService', [
     var data = {}
 
     function getProductStubs(url_slug){
-      UsersProducts.query(
+      UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
-          data.products = resp
+          data.products = resp.list
         },
         function(resp){
           console.log("stubs call failed", resp)
@@ -5912,7 +5910,7 @@ angular.module('services.profileService', [
         return false
       }
 
-      if (data.products[0] && data.products[0].metrics){
+      if (data.products[0] && data.products[0].markup){
         return true
       }
 

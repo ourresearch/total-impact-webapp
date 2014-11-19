@@ -94,8 +94,11 @@ analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 
 
-def json_resp_from_thing(thing):
-    my_dict = util.todict(thing)
+def json_resp_from_thing(thing, is_already_a_dict=False):
+    # @is_already_a_dict saves a bit of time if you've already converted to dict.
+    if not is_already_a_dict:
+        my_dict = util.todict(thing)
+
     json_str = json.dumps(my_dict, sort_keys=True, indent=4)
 
     if request.path.endswith(".json") and (os.getenv("FLASK_DEBUG", False) == "True"):
@@ -589,7 +592,7 @@ def key_products(profile_id):
         ]
         tiids = [address[1] for address in board.contents["one"]]
         products = get_products_from_tiids(tiids)
-        for my_product in products: 
+        for my_product in products:
             my_product_dict = my_product.to_markup_dict(markup, show_keys=show_keys)
             resp.append(my_product_dict)
 
@@ -624,31 +627,54 @@ def profile_products_get(url_slug):
 
     action = request.args.get("action", "refresh")
     source = request.args.get("source", "webapp")
+    timer = util.Timer()
+
+    load_times = {}
     just_stubs = request.args.get("stubs", "False").lower() in ["1", "true"]
     if just_stubs:
         profile = get_profile_stubs_from_url_slug(url_slug)
-        resp = profile.products_not_removed
-        resp = [{"tiid": p.tiid, "genre": p.genre}
-                for p in profile.products_not_removed
-                if p.genre not in ["account"]
-                ]
+        load_times["profile"] = timer.elapsed()
+        product_list = [
+            {"tiid": p.tiid, "genre": p.genre}
+            for p in profile.products_not_removed
+            if p.genre not in ["account"]
+        ]
+        load_times["product_list"] = timer.since_last_check()
 
     else:
         profile = get_profile_from_id(url_slug)
         markup = Markup(url_slug, embed=False)
-        show_keys = [
-            "_tiid",
-            "markup",
-            "genre",
-            "genre_icon"
-        ]
-        resp = profile.get_products_markup(
+        load_times["profile"] = timer.elapsed()
+
+        product_list = profile.get_products_markup(
             markup=markup,
-            show_keys=show_keys
+            show_keys=[
+                "_tiid",
+                "tiid",
+                "markup",
+                "countries_str",
+
+                # for sorting
+                "year",
+                "title",
+                "awardedness_score",
+                "metrics_raw_sum",
+                "authors",
+
+                # misc
+                "genre",
+                "genre_icon"
+            ]
         )
+        load_times["product_list"] = timer.since_last_check()
 
-
+    product_dicts_list = util.todict(product_list)
+    resp = {
+        "a_load_times": load_times,
+        "list": product_dicts_list
+    }
     return json_resp_from_thing(resp)
+
 
 
 @app.route("/profile/<id>/products", methods=["POST", "PATCH", "DELETE"])
@@ -952,25 +978,6 @@ def user_linked_accounts_update(id, account):
 
 
 
-@app.route('/providers', methods=["GET"])  # information about providers
-def providers():
-    try:
-        url = u"{api_root}/v1/provider?key={api_key}".format(
-            api_key=os.getenv("API_KEY"),
-            api_root=os.getenv("API_ROOT"))
-        r = requests.get(url)
-        metadata = r.json()
-    except requests.ConnectionError:
-        metadata = {}
-
-    metadata_list = []
-    for k, v in metadata.iteritems():
-        v["name"] = k
-        metadata_list.append(v)
-
-    return json_resp_from_thing(metadata_list)
-
-
 
 
 @app.route("/tests", methods=["DELETE"])  # supports functional testing
@@ -1198,6 +1205,29 @@ def get_configs():
 @app.route("/configs/genres")
 def get_genre_configs():
     return json_resp_from_thing(configs.genre_configs())
+
+
+@app.route('/providers', methods=["GET"])  # information about providers
+def providers():
+    try:
+        url = u"{api_root}/v1/provider?key={api_key}".format(
+            api_key=os.getenv("API_KEY"),
+            api_root=os.getenv("API_ROOT"))
+        r = requests.get(url)
+        metadata = r.json()
+    except requests.ConnectionError:
+        metadata = {}
+
+    metadata_list = []
+    for k, v in metadata.iteritems():
+        if k == "delicious":  # hack. should remove from Core config.
+            continue
+
+        v["name"] = k
+        metadata_list.append(v)
+
+    return json_resp_from_thing(metadata_list)
+
 
 
 

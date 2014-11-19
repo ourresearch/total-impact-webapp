@@ -54,8 +54,20 @@ def make(raw_dict):
 def get_product(tiid):
     return Product.query.get(tiid)
 
-def get_products_from_tiids(tiids):
-    return Product.query.filter(Product.tiid.in_(tiids)).all()
+def get_products_from_tiids(tiids, ignore_order=False):
+    #  @ignore_order makes it slightly faster by not sorting
+    unsorted_products = Product.query.filter(Product.tiid.in_(tiids)).all()
+    ret = []
+
+    if ignore_order:
+        ret = unsorted_products
+    else:
+        for my_tiid in tiids:
+            my_product = [p for p in unsorted_products if p.tiid == my_tiid][0]
+            ret.append(my_product)
+
+    return ret
+
 
 def upload_file_and_commit(product, file_to_upload, db):
     resp = product.upload_file(file_to_upload)
@@ -303,6 +315,14 @@ class Product(db.Model):
         return sum([a.sort_score for a in self.awards])
 
     @cached_property
+    def title(self):
+        return self.biblio.display_title
+
+    @cached_property
+    def authors(self):
+        return self.biblio.display_authors
+
+    @cached_property
     def is_account_product(self):
         try:
             if self.biblio.is_account:
@@ -324,6 +344,12 @@ class Product(db.Model):
     @cached_property
     def is_free_to_read(self):
         return self.has_file or self.biblio.free_fulltext_host
+
+
+    @cached_property
+    def countries_str(self):
+        return self.countries.to_string()
+
 
     @cached_property
     def countries(self):
@@ -526,23 +552,46 @@ class Product(db.Model):
         return u'<Product {tiid} {best_url}>'.format(
             tiid=self.tiid, best_url=self.aliases.best_url)
 
-    def to_dict(self):
-        attributes_to_ignore = [
-            "profile",
-            "alias_rows",
-            "biblio_rows",
-            "percentile_snaps",
-            "snaps",
-            "interactions",
-            "snaps_including_interactions"
-        ]
+    def to_dict(self, keys_to_show="all"):
+        if keys_to_show=="all":
+            attributes_to_ignore = [
+                "profile",
+                "alias_rows",
+                "biblio_rows",
+                "percentile_snaps",
+                "snaps",
+                "interactions",
+                "snaps_including_interactions"
+            ]
+            ret = dict_from_dir(self, attributes_to_ignore)
+        else:
+            ret = dict_from_dir(self, keys_to_show=keys_to_show)
 
-        ret = dict_from_dir(self, attributes_to_ignore)
         ret["_tiid"] = self.tiid
         return ret
 
     def to_markup_dict(self, markup, hide_keys=None, show_keys="all"):
-        my_dict = self.to_dict()
+        keys_to_show = [
+            "tiid",
+            "aliases",
+            "biblio",
+            "awards",
+            "genre",
+            "genre_icon",
+            "countries_str",
+
+             # for sorting
+            "year",
+            "awardedness_score",
+            "metrics_raw_sum",
+            "title",
+            "authors",
+
+            # to show the "view on impactstory" badges
+            "embed_markup",
+            "fulltext_cta"
+        ]
+        my_dict = self.to_dict(keys_to_show)
 
         my_dict["markup"] = markup.make(my_dict)
 

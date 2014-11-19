@@ -271,8 +271,9 @@ def common_name_from_iso_code(iso_code):
     try:
         return country_names[iso_code]
     except KeyError:
-        logger.debug(u"ISO country fail: couldn't get name from {iso_code}".format(
-            iso_code=iso_code))
+        pass
+        #logger.debug(u"ISO country fail: couldn't get name from {iso_code}".format(
+        #    iso_code=iso_code))
 
 def make_countries_list(products):
     countries_dict = {}
@@ -347,7 +348,10 @@ class Country(object):
         return self.event_sum / internet_user_millions
 
     def to_dict(self):
-        ignore = ["to_dict", "add_event"]
+        ignore = [
+            "to_dict",
+            "add_event"
+        ]
         return dict_from_dir(self, keys_to_ignore=ignore)
 
 
@@ -399,6 +403,9 @@ class CountryList(object):
             "list": self.countries,
             "internationality": self.internationality
         }
+
+    def to_string(self):
+        return ",".join([c.iso_code for c in self.countries])
 
 
 

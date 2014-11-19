@@ -34,21 +34,19 @@ angular.module('services.pinboard', [
       if (!a.length || !b.length){
         return false
       }
+      var comparisonKey
 
       if (a[0]._tiid){
-        console.log("checking equality by tiid", a, b)
-        return _.isEqual(
-          _.pluck(a, "_tiid").sort(),
-          _.pluck(b, "_tiid").sort()
-        )
+        comparisonKey = "_tiid"
       }
       else if (a[0].genre_card_address){
-        return _.isEqual(
-          _.sortBy(a, "genre_card_address"),
-          _.sortBy(b, "genre_card_address")
-        )
+        comparisonKey = "genre_card_address"
       }
 
+      return _.isEqual(
+        _.pluck(a, comparisonKey).sort(),
+        _.pluck(b, comparisonKey).sort()
+      )
 
     }
 

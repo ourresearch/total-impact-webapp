@@ -2,6 +2,7 @@ import argparse
 import requests
 import datetime
 import numpy
+import time
 
 def benchmark_endpoint(endpoint, loc, tries):
     if not endpoint.startswith("/"):
@@ -16,6 +17,7 @@ def benchmark_endpoint(endpoint, loc, tries):
 
     elapsed_list = []
     for i in range(0, tries):
+        time.sleep(0.5)
         start_time = datetime.datetime.now()
         res = requests.get(url)
         elapsed_datetime = datetime.datetime.now() - start_time
