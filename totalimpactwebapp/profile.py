@@ -847,6 +847,154 @@ def get_profile_awards_from_slug(url_slug):
     profile = get_profile_stubs_from_url_slug(url_slug)
     return profile_award.make_awards_list(profile)
 
+<<<<<<< Updated upstream
+=======
+def read_only_profile_about(url_slug):
+    profile_bundle = Bundle("profile", 
+            Profile.url_slug, 
+            Profile.id, 
+            Profile.given_name, 
+            Profile.surname, Profile.created)
+    query_base = db.session.query(profile_bundle)  
+    query_base = query_base.filter(func.lower(Profile.url_slug) == func.lower(url_slug))
+    result = query_base.first()
+    dictdict = namedtuples_to_dict(result.profile)
+    profile = SimpleProfile(**dictdict)
+    return profile
+
+def get_read_only_profile_from_url_slug(url_slug):
+
+    profile_bundle = Bundle("profile", 
+            Profile.url_slug, 
+            Profile.id, 
+            Profile.given_name, 
+            Profile.surname, 
+            Profile.created)
+    query_base = db.session.query(profile_bundle)  
+    query_base = query_base.filter(func.lower(Profile.url_slug) == func.lower(url_slug))
+    result = query_base.first()
+    result_dict = namedtuples_to_dict(result.profile)
+    profile = SimpleProfile(**result_dict)
+
+
+    product_bundle = Bundle("product", 
+            Product.tiid, 
+            Product.created)
+    query_base = db.session.query(product_bundle)  
+    query_base = query_base.filter(
+        Product.profile_id==profile.id, 
+        Product.removed==None)
+    result = query_base.all()
+    for res in result:
+        result_dict = namedtuples_to_dict(res.product)
+        profile.products.append(SimpleProduct(**result_dict))
+
+    product_join_bundle = Bundle("product_join", 
+            Product.profile_id, 
+            Product.tiid,
+            Product.removed)
+
+    biblio_row_bundle = Bundle("biblio_row", 
+            BiblioRow.tiid, 
+            BiblioRow.biblio_name, 
+            BiblioRow.biblio_value)
+    query_base = db.session.query(product_join_bundle, biblio_row_bundle)  
+    query_base = query_base.filter(
+        Product.profile_id==profile.id, 
+        Product.tiid==BiblioRow.tiid,
+        Product.removed==None)
+    biblio_rows = defaultdict(list)
+    result = query_base.all()
+    for res in result:
+        result_dict = namedtuples_to_dict(res.biblio_row)
+        biblio_row = SimpleBiblioRow(**result_dict)
+        biblio_rows[biblio_row.tiid].append(biblio_row)
+
+
+    alias_row_bundle = Bundle("alias_row", 
+            AliasRow.tiid, 
+            AliasRow.namespace, 
+            AliasRow.nid)
+    query_base = db.session.query(product_join_bundle, alias_row_bundle)  
+    query_base = query_base.filter(
+        Product.profile_id==profile.id, 
+        Product.tiid==AliasRow.tiid,
+        Product.removed==None)
+    alias_rows = defaultdict(list)
+    result = query_base.all()
+    for res in result:
+        result_dict = namedtuples_to_dict(res.alias_row)
+        alias_row = SimpleAliasRow(**result_dict)
+        alias_rows[alias_row.tiid].append(alias_row)
+
+    interactions_bundle = Bundle("interaction", 
+            Interaction.tiid, 
+            Interaction.ip,
+            Interaction.country)
+    query_base = db.session.query(product_join_bundle, interactions_bundle)  
+    query_base = query_base.filter(
+        Product.profile_id==profile.id, 
+        Product.tiid==Interaction.tiid,
+        Product.removed==None)
+    interactions = defaultdict(list)
+    result = query_base.all()
+    for res in result:
+        result_dict = namedtuples_to_dict(res.interaction)
+        interaction = SimpleInteraction(**result_dict)
+        interactions[interaction.tiid].append(interaction)
+
+    ignore_snaps_older_than = arrow.utcnow().replace(days=-57).datetime
+
+    snaps_bundle = Bundle("snap", 
+            Snap.tiid, 
+            Snap.raw_value,
+            Snap.drilldown_url, 
+            Snap.provider, 
+            Snap.interaction, 
+            Snap.last_collected_date)
+    query_base = db.session.query(product_join_bundle, snaps_bundle)  
+    query_base = query_base.filter(
+        Product.profile_id==profile.id, 
+        Product.tiid==Snap.tiid,
+        Product.removed==None,
+        Snap.last_collected_date > ignore_snaps_older_than)
+    snaps = defaultdict(list)
+    result = query_base.all()
+    for res in result:
+        result_dict = namedtuples_to_dict(res.snap)
+        snap = SimpleSnap(**result_dict)
+        snaps[snap.tiid].append(snap)
+
+    for product in profile.products:
+        product.biblio_rows = biblio_rows[product.tiid]
+        product.alias_rows = alias_rows[product.tiid]
+        product.interactions = interactions[product.tiid]
+        product.snaps = snaps[product.tiid]
+
+    return profile
+
+    # return get_profile_from_id(url_slug, "url_slug")
+
+    # query_base = Product.query.options( orm.noload('*'), 
+    #                                     orm.subqueryload(Product.snaps), 
+    #                                     orm.subqueryload(Product.interactions), 
+    #                                     orm.subqueryload(Product.biblio_rows), 
+    #                                     orm.subqueryload(Product.alias_rows))
+    # products = query_base.filter(Product.profile_id==profile.id).all()
+
+    # profile.products = products
+
+
+
+    # query_base = Profile.query.options( orm.noload('*'), 
+    #                                     orm.subqueryload(Profile.products), 
+    #                                     orm.subqueryload(Profile.products, Product.snaps), 
+    #                                     orm.subqueryload(Profile.products, Product.interactions), 
+    #                                     orm.subqueryload(Profile.products, Product.biblio_rows), 
+    #                                     orm.subqueryload(Profile.products, Product.alias_rows))
+    # profile = query_base.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
+    # return profile
+>>>>>>> Stashed changes
 
 
 def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_products=True, include_product_relationships=True):
