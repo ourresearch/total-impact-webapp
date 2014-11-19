@@ -5873,7 +5873,9 @@ angular.module('services.profileService', [
                                       SelfCancellingProfileResource){
 
     var loading = true
-    var data = {}
+    var data = {
+      products:[]
+    }
 
     function getProductStubs(url_slug){
       UsersProducts.get(
@@ -5890,6 +5892,7 @@ angular.module('services.profileService', [
 
 
     function get(url_slug){
+      data.url_slug = url_slug
 
       if (!data.products){
         getProductStubs(url_slug)
@@ -5900,8 +5903,10 @@ angular.module('services.profileService', [
         {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
           console.log("ProfileService got a response", resp)
-          _.each(data, function(v, k){delete data[k]})
-          angular.extend(data, resp) // this sets the url_slug too
+//          _.each(data, function(v, k){delete data[k]})
+
+          data.products.length = 0
+          angular.extend(data.products, resp.list)
 
 
           // got the new stuff. but does the server say it's
@@ -6109,7 +6114,7 @@ function( $resource, $q ) {
   // way to renew the promise)
   var createResource = function() {
     cancel();
-    return $resource( '/profile/:id',
+    return $resource( '/profile/:id/products',
       {},
       {
         get: {
