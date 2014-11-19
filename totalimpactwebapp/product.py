@@ -346,52 +346,67 @@ class Product(db.Model):
         return self.has_file or self.biblio.free_fulltext_host
 
 
+    def get_metric_raw_value(self, provider, interaction):
+        metric = self.get_metric_by_name(provider, interaction)
+        if metric:
+            return metric.most_recent_snap.raw_value
+        return None
+
+
     @cached_property
     def countries_str(self):
-        return self.countries.to_string()
+        countries_set = set()
+
+        try:
+            country_data = self.get_metric_raw_value("altmetric_com", "demographics")["geo"]["twitter"]
+            countries_set.update(country_data)
+        except (KeyError, TypeError):
+            pass
+
+        country_data = self.get_metric_raw_value("mendeley", "countries")
+        if country_data:
+            countries_set.update([country for country in country_data])
+
+        country_data = self.get_metric_raw_value("impactstory", "countries")
+        if country_data:
+            countries_set.update([country for country in country_data if country])
+
+        if countries_set:
+            return ",".join(list(countries_set))
+        return ""
+
 
 
     @cached_property
     def countries(self):
         my_countries = countries.CountryList()
 
-        altmetric_twitter_metric = self.get_metric_by_name("altmetric_com", "demographics")
-        if altmetric_twitter_metric:
-            try:
-                country_data = altmetric_twitter_metric.most_recent_snap.raw_value["geo"]["twitter"]
-                for country in country_data:
-                    my_countries.add_from_metric(
-                        country,
-                        "altmetric_com:tweets",
-                        country_data[country]
-                    )
-            except KeyError:
-                pass
-
-        mendeley_views_metric = self.get_metric_by_name("mendeley", "countries")
-        if not mendeley_views_metric:
-            mendeley_views_metric = self.get_metric_by_name("mendeley_new", "countries")
-        if mendeley_views_metric:
-            country_data_fullnames = mendeley_views_metric.most_recent_snap.raw_value
-            if country_data_fullnames:
-                country_data = dict((k, v) for (k, v) in country_data_fullnames.iteritems())
-                for country in country_data:
-                    my_countries.add_from_metric(
-                        country,
-                        "mendeley:readers",
-                        country_data[country]
-                    )
-
-        # impactstory_views_metric = product.get_metric_by_name("impactstory", "my_countries")
-        impactstory_views_metric = self.get_metric_by_name("impactstory", "countries")
-        if impactstory_views_metric:
-            country_data = impactstory_views_metric.most_recent_snap.raw_value
+        try:
+            country_data = self.get_metric_raw_value("altmetric_com", "demographics")["geo"]["twitter"]
             for country in country_data:
                 my_countries.add_from_metric(
                     country,
-                    "impactstory:views",
+                    "altmetric_com:tweets",
                     country_data[country]
                 )
+        except (KeyError, TypeError):
+            pass
+
+        country_data = self.get_metric_raw_value("mendeley", "countries")
+        for country in country_data:
+            my_countries.add_from_metric(
+                country,
+                "mendeley:readers",
+                country_data[country]
+            )
+
+        country_data = self.get_metric_raw_value("impactstory", "countries")
+        for country in country_data:
+            my_countries.add_from_metric(
+                country,
+                "impactstory:views",
+                country_data[country]
+            )
         return my_countries
 
 

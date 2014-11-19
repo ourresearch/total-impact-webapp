@@ -40,6 +40,7 @@ from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.profile import build_profile_dict
+from totalimpactwebapp.profile import default_free_trial_days
 
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import get_products_from_tiids
@@ -71,6 +72,7 @@ from totalimpactwebapp.reference_set import RefsetBuilder
 
 import newrelic.agent
 from sqlalchemy import orm
+from sqlalchemy import or_
 
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
@@ -1206,6 +1208,17 @@ def get_configs():
 def get_genre_configs():
     return json_resp_from_thing(configs.genre_configs())
 
+@app.route("/data/users/url-slugs")
+def get_live_user_url_slugs():
+    min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=default_free_trial_days)
+    q = db.session.query(Profile.url_slug).filter(
+        or_(Profile.is_advisor!=None, 
+            Profile.stripe_id!=None, 
+            Profile.created>=min_created_date))
+    response = q.order_by(Profile.url_slug).all()
+    url_slugs = [resp.url_slug for resp in response]
+    return json_resp_from_thing({"url_slugs": url_slugs})
+
 
 @app.route('/providers', methods=["GET"])  # information about providers
 def providers():
@@ -1231,9 +1244,10 @@ def providers():
 
 
 
+
 ###############################################################################
 #
-#   WIDGET STUFF
+#   OTHER STUFF
 #
 ###############################################################################
 

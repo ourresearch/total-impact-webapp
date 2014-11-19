@@ -423,7 +423,8 @@ def collect_embed(tiid=None, min_tiid=None):
 
 
 def live_profile_query():
-    min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)
+    from totalimpactwebapp.profile import default_free_trial_days
+    min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=default_free_trial_days)
     q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None, Profile.created>=min_created_date))
     return q
 
