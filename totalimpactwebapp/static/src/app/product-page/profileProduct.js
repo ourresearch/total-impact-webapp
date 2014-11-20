@@ -185,7 +185,6 @@ angular.module("productPage", [
 
 
     if (product.countries) {
-      console.log("here is where we load le map", product.countries)
       Loading.finishPage()
 
       var countryCounts = {}

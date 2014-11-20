@@ -9981,6 +9981,9 @@ div.product-list-page {
    *****************************************************/
 
 }
+div.product-list-page.genre-page li.product .genre-icon {
+  display: none;
+}
 div.product-list-page div.header {
   margin: 0 0 0 -50px;
 }

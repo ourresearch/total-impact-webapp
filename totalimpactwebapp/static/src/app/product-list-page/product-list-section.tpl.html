@@ -7,19 +7,19 @@
          <i class="icon-check-empty"
             tooltip="Select all"
             ng-show="SelectedProducts.count() == 0"
-            ng-click="SelectedProducts.addFromObjects(ProductList.get())"></i>
+            ng-click="ProductList.selectEverything()"></i>
 
 
       <!-- between zero and all products are selected. allow user to select all -->
       <i class="icon-check-minus"
          tooltip="Select all"
-         ng-show="SelectedProducts.containsAny() && SelectedProducts.count() < ProductList.get().length"
-         ng-click="SelectedProducts.addFromObjects(ProductList.get())"></i>
+         ng-show="SelectedProducts.containsAny() && SelectedProducts.count() < ProductList.len()"
+         ng-click="ProductList.selectEverything()"></i>
 
       <!-- everything is selected. allow user to unselect all -->
       <i class="icon-check"
          tooltip="Unselect all"
-         ng-show="SelectedProducts.count() == ProductList.get().length"
+         ng-show="SelectedProducts.count() == ProductList.len()"
          ng-click="SelectedProducts.removeAll()"></i>
        </span>
 
@@ -87,14 +87,14 @@
    <ul class="products-list" ng-if="profileService.hasFullProducts()">
       <li class="product genre-{{ product.genre }}"
           ng-class="{first: $first}"
-          ng-repeat="product in ProductList.get() | orderBy: ProductListSort.get().keys"
+          ng-repeat="product in profileService.data.products | filter: productsFilter | orderBy: ProductListSort.get().keys"
           id="{{ product.tiid }}"
           on-repeat-finished>
 
 
-         <!-- users must be logged in -->
          <div class="product-margin" >
 
+            <!-- users must be logged in -->
             <span class="product-controls" ng-show="security.isLoggedIn(page.getUrlSlug())">
                <span class="select-product-controls"> <!--needed to style tooltip -->
 
@@ -122,10 +122,9 @@
                   </a>
                </span>
             </span>
+
             <i tooltip="{{ product.genre }}"
                class="genre-icon {{ product.genre_icon }}"></i>
-
-
          </div>
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
       </li>

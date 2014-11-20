@@ -24,7 +24,6 @@ angular.module("services.map", [
   }
 
   function makeRegionTipHandler(countriesData){
-    console.log("making the region tip handler with", countriesData)
 
     return (function(event, element, countryCode){
 

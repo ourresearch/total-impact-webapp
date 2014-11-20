@@ -16,8 +16,7 @@ angular.module("services.productList", [])
     ProfileService){
 
   var genreChangeDropdown = {}
-  var queryDimension
-  var queryValue
+  var filterFn
 
   var startRender = function($scope){
     if (!ProfileService.hasFullProducts()){
@@ -58,7 +57,7 @@ angular.module("services.productList", [])
     genreChangeDropdown.isOpen = false
 
     // handle moving the last product in our current genre
-    if (!get().length){
+    if (!len()){
       var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
       var currentProfileSlug = ProfileService.getUrlSlug()
       $location.path(currentProfileSlug + "/products/" + newGenreUrlRepresentation)
@@ -72,37 +71,33 @@ angular.module("services.productList", [])
     SelectedProducts.removeAll()
 
     // handle removing the last product in this particular product list
-    if (!get().length){
+    if (len() === 0){
       $location.path(ProfileService.getUrlSlug())
     }
   }
 
-  var setQuery = function(dimension, value) {
-    queryDimension = dimension
-    queryValue = value
+  var len = function(){
+    var filtered = _.filter(ProfileService.data.products, filterFn)
+    return filtered.length
   }
 
-  var get = function(){
-    if (queryDimension == "genre") {
-      return ProfileService.productsByGenre(queryValue)
-    }
-    else if (queryDimension == "country") {
-      return ProfileService.productsByCountry(queryValue)
-    }
-    else {
-      return []
-    }
+  var selectEverything = function(){
+    var filtered = _.filter(ProfileService.data.products, filterFn)
+    SelectedProducts.addFromObjects(filtered)
   }
 
 
   return {
     changeProductsGenre: changeProductsGenre,
     removeSelectedProducts: removeSelectedProducts,
-    setQuery: setQuery,
-    get: get,
     startRender: startRender,
     finishRender: finishRender,
-    genreChangeDropdown: genreChangeDropdown
+    genreChangeDropdown: genreChangeDropdown,
+    setFilterFn: function(fn){
+      filterFn = fn
+    },
+    len: len,
+    selectEverything: selectEverything
   }
 
 

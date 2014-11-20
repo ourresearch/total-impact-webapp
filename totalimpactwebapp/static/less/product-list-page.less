@@ -2,7 +2,11 @@
 
 
 div.product-list-page {
-
+   &.genre-page {
+      li.product .genre-icon {
+         display:none;  // we already know what genre it's in, we're on that page.
+      }
+   }
 
 
    /*****************************************************
@@ -277,6 +281,8 @@ div.product-list-page {
 
       }
    }
+
+
 
 }
 

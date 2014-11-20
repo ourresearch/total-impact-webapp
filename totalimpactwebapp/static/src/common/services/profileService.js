@@ -14,12 +14,15 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
-                                      SelfCancellingProfileResource){
+                                      SelfCancellingProductsResource){
 
     var loading = true
-    var data = {}
+    var data = {
+      products:[]
+    }
 
     function getProductStubs(url_slug){
+      data.url_slug = url_slug
       UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
@@ -34,18 +37,21 @@ angular.module('services.profileService', [
 
 
     function get(url_slug){
+      data.url_slug = url_slug
 
       if (!data.products){
         getProductStubs(url_slug)
       }
 
       loading = true
-      return SelfCancellingProfileResource.createResource().get(
+      return SelfCancellingProductsResource.createResource().get(
         {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
           console.log("ProfileService got a response", resp)
-          _.each(data, function(v, k){delete data[k]})
-          angular.extend(data, resp) // this sets the url_slug too
+//          _.each(data, function(v, k){delete data[k]})
+
+          data.products.length = 0
+          angular.extend(data.products, resp.list)
 
 
           // got the new stuff. but does the server say it's
@@ -90,10 +96,10 @@ angular.module('services.profileService', [
       UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
 
       UsersProducts.delete(
-        {id: data.about.url_slug, tiids: tiids.join(",")},
+        {id: data.url_slug, tiids: tiids.join(",")},
         function(resp){
           console.log("finished deleting", tiids)
-          get(data.about.url_slug, true)
+          get(data.url_slug, true)
 
         }
       )
@@ -107,7 +113,6 @@ angular.module('services.profileService', [
       if (data.products[0] && data.products[0].markup){
         return true
       }
-
     }
 
 
@@ -132,7 +137,7 @@ angular.module('services.profileService', [
         {genre: newGenre},
         function(resp){
           console.log("ProfileService.changeProductsGenre() successful.", resp)
-          get(data.about.url_slug, true)
+          get(data.url_slug)
         },
         function(resp){
           console.log("ProfileService.changeProductsGenre() FAILED.", resp)
@@ -161,35 +166,8 @@ angular.module('services.profileService', [
 
     }
 
-
-
     function isLoading(){
       return loading
-    }
-
-
-
-    function productsByCountry(countryCode){
-      if (typeof data.products == "undefined"){
-        return undefined
-      }
-      else {
-        var res = _.filter(data.products, function(product){
-          var myCountryCodes = _.pluck(product.countries.list, "iso_code")
-          return _.contains(myCountryCodes, countryCode)
-        })
-        return res
-      }
-    }
-
-    function productsByGenre(genreName){
-      if (typeof data.products == "undefined"){
-        return undefined
-      }
-      else {
-        var res = _.where(data.products, {genre: genreName})
-        return res
-      }
     }
 
     function getGenreCounts(){
@@ -219,18 +197,14 @@ angular.module('services.profileService', [
       loading: loading,
       isLoading: isLoading,
       get: get,
-      productsByGenre: productsByGenre,
       productByTiid: productByTiid,
       removeProducts: removeProducts,
       changeProductsGenre: changeProductsGenre,
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
-      productsByCountry: productsByCountry,
       clear: clear,
       getUrlSlug: function(){
-        if (data && data.about) {
-          return data.about.url_slug
-        }
+        return data.url_slug
       }
     }
   })
@@ -238,7 +212,7 @@ angular.module('services.profileService', [
 
 
 // http://stackoverflow.com/a/24958268
-.factory( 'SelfCancellingProfileResource', ['$resource','$q',
+.factory( 'SelfCancellingProductsResource', ['$resource','$q',
 function( $resource, $q ) {
   var canceler = $q.defer();
 
@@ -253,7 +227,7 @@ function( $resource, $q ) {
   // way to renew the promise)
   var createResource = function() {
     cancel();
-    return $resource( '/profile/:id',
+    return $resource( '/profile/:id/products',
       {},
       {
         get: {

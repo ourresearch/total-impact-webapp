@@ -37,11 +37,24 @@ angular.module("productListPage", [
     Page) {
 
     Page.setName("map")
-    ProductList.setQuery("country", CountryNames.codeFromUrl($routeParams.country_name))
     ProductList.startRender($scope)
 
     $scope.ProductList = ProductList
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
+
+    var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
+    var filterFn = function(product){
+      if (product.countries_str && product.countries_str.indexOf(myCountryCode) > -1){
+        return true
+      }
+      else {
+        return false
+      }
+    }
+    ProductList.setFilterFn(filterFn)
+
+    $scope.productsFilter = filterFn
+
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
       if (newVal && newVal.full_name) {
@@ -63,8 +76,19 @@ angular.module("productListPage", [
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
-    ProductList.setQuery("genre", myGenreConfig.name)
     ProductList.startRender($scope)
+
+    var filterFn = function(product){
+      if (product.genre == myGenreConfig.name){
+        return true
+      }
+      else {
+        return false
+      }
+    }
+
+    $scope.productsFilter = filterFn
+    ProductList.setFilterFn(filterFn)
 
 
     $scope.ProductList = ProductList
