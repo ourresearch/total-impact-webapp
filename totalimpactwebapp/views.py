@@ -59,6 +59,9 @@ from totalimpactwebapp.interaction import log_interaction_event
 from totalimpactwebapp.tweet import get_product_tweets
 
 from totalimpactwebapp.cards_factory import make_summary_cards
+from totalimpactwebapp.card import GenreNewDiffCard
+from totalimpactwebapp.card import GenreMetricSumCard
+from totalimpactwebapp.card import GenreEngagementSumCard
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
