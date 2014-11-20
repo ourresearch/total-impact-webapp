@@ -677,6 +677,7 @@ def profile_products_get(url_slug):
     product_dicts_list = util.todict(product_list)
     resp = {
         "a_load_times": load_times,
+        "is_refreshing": profile.is_refreshing,
         "list": product_dicts_list
     }
     return json_resp_from_thing(resp)
