@@ -1,6 +1,6 @@
 import logging
 from collections import Counter
-from totalimpactwebapp.cards_factory import make_genre_cards
+from totalimpactwebapp.cards_factory import make_summary_cards
 from totalimpactwebapp.cards_factory import make_genre_new_metrics_cards
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
@@ -52,7 +52,7 @@ class Genre(object):
 
     @cached_property
     def cards(self):
-        return make_genre_cards(self.products)
+        return make_summary_cards(self.products)
 
     @cached_property
     def cards_new_metrics(self):

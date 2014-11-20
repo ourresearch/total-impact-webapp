@@ -59,7 +59,7 @@ def make_profile_new_metrics_cards(products, url_slug):
     return make_product_list_cards(products, ProfileNewDiffCard, url_slug)
 
 
-def make_genre_cards(products):
+def make_summary_cards(products):
     cards = []
     cards += make_product_list_cards(products, GenreMetricSumCard)
     cards += make_product_list_engagement_cards(products, GenreEngagementSumCard)

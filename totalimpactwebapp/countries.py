@@ -300,9 +300,11 @@ def iso_code_from_name(name):
     Makes a few guesses based on alternate versions found in the country_info.py
     file. If you give it an ISO code it just gives you that back.
     """
+    if not name:
+        return None
+
     if name in [c["cca2"] for c in countries_info.countries_info]:
         return name  # we got an ISO code, give it back.
-
 
     for country in countries_info.countries_info:
         name_versions = [c for c in country["altSpellings"]]

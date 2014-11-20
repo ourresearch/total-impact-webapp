@@ -40,6 +40,7 @@ from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.profile import build_profile_dict
+from totalimpactwebapp.profile import default_free_trial_days
 
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import get_products_from_tiids
@@ -54,9 +55,13 @@ from totalimpactwebapp.pinboard import write_to_pinboard
 
 from totalimpactwebapp.interaction import log_interaction_event
 
+
 from totalimpactwebapp.tweet import get_product_tweets
 
-from totalimpactwebapp.cards_factory import *
+from totalimpactwebapp.cards_factory import make_summary_cards
+from totalimpactwebapp.card import GenreNewDiffCard
+from totalimpactwebapp.card import GenreMetricSumCard
+from totalimpactwebapp.card import GenreEngagementSumCard
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
@@ -71,6 +76,7 @@ from totalimpactwebapp.reference_set import RefsetBuilder
 
 import newrelic.agent
 from sqlalchemy import orm
+from sqlalchemy import or_
 
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
@@ -671,6 +677,7 @@ def profile_products_get(url_slug):
     product_dicts_list = util.todict(product_list)
     resp = {
         "a_load_times": load_times,
+        "is_refreshing": profile.is_refreshing,
         "list": product_dicts_list
     }
     return json_resp_from_thing(resp)
@@ -1146,9 +1153,28 @@ def scratchpad():
     return render_template("scratchpad.html")
 
 
+@app.route("/profile/<profile_id>/<namespace>/<tag>/summary-cards", methods=['GET'])
+@app.route("/profile/<profile_id>/<namespace>/<tag>/summary-cards.json", methods=['GET'])
+def get_summary_cards(profile_id, namespace, tag):
 
-@app.route("/<profile_id>/cards.json")
-def render_cards_json(profile_id):
+    profile = get_user_for_response(
+        profile_id,
+        request
+    )
+
+    if namespace=="genre":
+        tagged_products = [product for product in profile.display_products if product.genre==tag]
+    else:
+        abort_json(404, "We only support genres for now")
+
+    cards = make_summary_cards(tagged_products)
+    return json_resp_from_thing(cards)
+
+
+
+@app.route("/<profile_id>/notification-cards")
+@app.route("/<profile_id>/notification-cards.json")
+def notification_cards_json(profile_id):
     profile = get_user_for_response(
         profile_id,
         request
@@ -1206,6 +1232,16 @@ def get_configs():
 def get_genre_configs():
     return json_resp_from_thing(configs.genre_configs())
 
+@app.route("/data/users/url-slugs")
+def get_subscribed_user_url_slugs():
+    q = db.session.query(Profile.url_slug)
+    q = q.filter(
+        or_(Profile.is_advisor!=None, 
+            Profile.stripe_id!=None))  # not including trialling users
+    response = q.order_by(Profile.url_slug).all()
+    url_slugs = [resp.url_slug for resp in response]
+    return json_resp_from_thing({"url_slugs": url_slugs})
+
 
 @app.route('/providers', methods=["GET"])  # information about providers
 def providers():
@@ -1231,9 +1267,10 @@ def providers():
 
 
 
+
 ###############################################################################
 #
-#   WIDGET STUFF
+#   OTHER STUFF
 #
 ###############################################################################
 

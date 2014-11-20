@@ -421,10 +421,21 @@ def collect_embed(tiid=None, min_tiid=None):
             elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
             print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
 
-def query_for_live_profiles():
-    min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=30)    
-    return db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None, Profile.created>=min_created_date))
 
+def live_profile_query():
+    from totalimpactwebapp.profile import default_free_trial_days
+    min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=default_free_trial_days)
+    q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None, Profile.created>=min_created_date))
+    return q
+
+def profile_query(url_slug=None, min_url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        q = live_profile_query()
+        if min_url_slug:
+            q = q.filter(Profile.url_slug>=min_url_slug)
+    return q
 
 def borked_pinboards_for_life_profiles(url_slug=None, min_url_slug=None):
     problem_urls = []
@@ -432,7 +443,7 @@ def borked_pinboards_for_life_profiles(url_slug=None, min_url_slug=None):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
     else:
-        q = query_for_live_profiles()
+        q = live_profile_query()
         if min_url_slug:
             q = q.filter(Profile.url_slug>=min_url_slug)
     for profile in windowed_query(q, Profile.url_slug, 25):
@@ -486,6 +497,47 @@ def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
             print total_refreshes, "total refreshes across", number_profiles, "profiles"
             elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
             print "elapsed seconds=", elapsed_seconds, ";  number profiles per second=", number_profiles/(0.1+elapsed_seconds)
+
+
+
+
+from totalimpactwebapp.countries_info import country_iso_by_name
+
+
+def update_mendeley_countries_for_live_profiles(url_slug=None, min_url_slug=None):
+    q = profile_query(url_slug, min_url_slug)
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.info(u"{url_slug} processing mendeley countries".format(
+            url_slug=profile.url_slug))
+        for product in profile.display_products:
+            metric = product.get_metric_by_name("mendeley", "countries")
+            if metric:
+                snap = metric.most_recent_snap
+                if not snap.raw_value:
+                    # logger.error(u"{url_slug} has NO SNAP for tiid {tiid}".format(
+                    #     url_slug=profile.url_slug, tiid=product.tiid))
+                    # don't save this one to the db
+                    continue
+                new_snap_value = {}
+                for country_name, country_count in snap.raw_value.iteritems():
+                    if country_name in country_iso_by_name:
+                        iso = country_iso_by_name[country_name]
+                        new_snap_value[iso] = country_count
+                        # logger.error(u"{country_name} -> {iso}".format(
+                        #     country_name=country_name, iso=iso))
+                    else:
+                        if len(country_name) != 2:
+                            logger.error(u"Can't find country {country} in lookup".format(
+                                country=country_name))
+                        new_snap_value[country_name] = country_count
+                if new_snap_value:
+                    logger.info(u"New snap value {snap}".format(
+                        snap=new_snap_value))
+                    snap.raw_value = new_snap_value
+                    db.session.add(snap)
+                    commit(db)
+
 
 
 
@@ -937,6 +989,8 @@ def main(function, args):
         new_metrics_for_live_profiles(args["url_slug"], args["min_url_slug"])
     elif function=="borked_pinboards_for_life_profiles":
         borked_pinboards_for_life_profiles(args["url_slug"], args["min_url_slug"])
+    elif function=="update_mendeley_countries_for_live_profiles":
+        update_mendeley_countries_for_live_profiles(args["url_slug"], args["min_url_slug"])
 
 
 
