@@ -71,7 +71,7 @@ angular.module("services.productList", [])
     SelectedProducts.removeAll()
 
     // handle removing the last product in this particular product list
-    if (!get().length){
+    if (len() === 0){
       $location.path(ProfileService.getUrlSlug())
     }
   }

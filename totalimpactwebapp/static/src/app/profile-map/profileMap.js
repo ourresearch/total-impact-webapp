@@ -38,7 +38,6 @@ angular.module( 'profileMap', [
   ProfileCountries.get(
     {id: $routeParams.url_slug },
     function(resp){
-      console.log("here is where we load le map", resp.list)
       Loading.finishPage()
 
       $scope.countries = resp.list

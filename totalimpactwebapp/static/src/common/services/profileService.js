@@ -14,7 +14,7 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
-                                      SelfCancellingProfileResource){
+                                      SelfCancellingProductsResource){
 
     var loading = true
     var data = {
@@ -22,6 +22,7 @@ angular.module('services.profileService', [
     }
 
     function getProductStubs(url_slug){
+      data.url_slug = url_slug
       UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
@@ -43,7 +44,7 @@ angular.module('services.profileService', [
       }
 
       loading = true
-      return SelfCancellingProfileResource.createResource().get(
+      return SelfCancellingProductsResource.createResource().get(
         {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
           console.log("ProfileService got a response", resp)
@@ -95,10 +96,10 @@ angular.module('services.profileService', [
       UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
 
       UsersProducts.delete(
-        {id: data.about.url_slug, tiids: tiids.join(",")},
+        {id: data.url_slug, tiids: tiids.join(",")},
         function(resp){
           console.log("finished deleting", tiids)
-          get(data.about.url_slug, true)
+          get(data.url_slug, true)
 
         }
       )
@@ -112,7 +113,6 @@ angular.module('services.profileService', [
       if (data.products[0] && data.products[0].markup){
         return true
       }
-
     }
 
 
@@ -170,16 +170,6 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function productsByGenre(genreName){
-      if (typeof data.products == "undefined"){
-        return undefined
-      }
-      else {
-        var res = _.where(data.products, {genre: genreName})
-        return res
-      }
-    }
-
     function getGenreCounts(){
       var counts = _.countBy(data.products, function(product){
         return product.genre
@@ -207,7 +197,6 @@ angular.module('services.profileService', [
       loading: loading,
       isLoading: isLoading,
       get: get,
-      productsByGenre: productsByGenre,
       productByTiid: productByTiid,
       removeProducts: removeProducts,
       changeProductsGenre: changeProductsGenre,
@@ -223,7 +212,7 @@ angular.module('services.profileService', [
 
 
 // http://stackoverflow.com/a/24958268
-.factory( 'SelfCancellingProfileResource', ['$resource','$q',
+.factory( 'SelfCancellingProductsResource', ['$resource','$q',
 function( $resource, $q ) {
   var canceler = $q.defer();
 

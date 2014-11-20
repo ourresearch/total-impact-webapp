@@ -1494,7 +1494,6 @@ angular.module("productPage", [
 
 
     if (product.countries) {
-      console.log("here is where we load le map", product.countries)
       Loading.finishPage()
 
       var countryCounts = {}
@@ -1854,7 +1853,6 @@ angular.module( 'profileMap', [
   ProfileCountries.get(
     {id: $routeParams.url_slug },
     function(resp){
-      console.log("here is where we load le map", resp.list)
       Loading.finishPage()
 
       $scope.countries = resp.list
@@ -4993,7 +4991,6 @@ angular.module("services.map", [
   }
 
   function makeRegionTipHandler(countriesData){
-    console.log("making the region tip handler with", countriesData)
 
     return (function(event, element, countryCode){
 
@@ -5643,7 +5640,7 @@ angular.module("services.productList", [])
     SelectedProducts.removeAll()
 
     // handle removing the last product in this particular product list
-    if (!get().length){
+    if (len() === 0){
       $location.path(ProfileService.getUrlSlug())
     }
   }
@@ -5889,7 +5886,7 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
-                                      SelfCancellingProfileResource){
+                                      SelfCancellingProductsResource){
 
     var loading = true
     var data = {
@@ -5897,6 +5894,7 @@ angular.module('services.profileService', [
     }
 
     function getProductStubs(url_slug){
+      data.url_slug = url_slug
       UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
@@ -5918,7 +5916,7 @@ angular.module('services.profileService', [
       }
 
       loading = true
-      return SelfCancellingProfileResource.createResource().get(
+      return SelfCancellingProductsResource.createResource().get(
         {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
           console.log("ProfileService got a response", resp)
@@ -5970,10 +5968,10 @@ angular.module('services.profileService', [
       UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
 
       UsersProducts.delete(
-        {id: data.about.url_slug, tiids: tiids.join(",")},
+        {id: data.url_slug, tiids: tiids.join(",")},
         function(resp){
           console.log("finished deleting", tiids)
-          get(data.about.url_slug, true)
+          get(data.url_slug, true)
 
         }
       )
@@ -5987,7 +5985,6 @@ angular.module('services.profileService', [
       if (data.products[0] && data.products[0].markup){
         return true
       }
-
     }
 
 
@@ -6045,16 +6042,6 @@ angular.module('services.profileService', [
       return loading
     }
 
-    function productsByGenre(genreName){
-      if (typeof data.products == "undefined"){
-        return undefined
-      }
-      else {
-        var res = _.where(data.products, {genre: genreName})
-        return res
-      }
-    }
-
     function getGenreCounts(){
       var counts = _.countBy(data.products, function(product){
         return product.genre
@@ -6082,7 +6069,6 @@ angular.module('services.profileService', [
       loading: loading,
       isLoading: isLoading,
       get: get,
-      productsByGenre: productsByGenre,
       productByTiid: productByTiid,
       removeProducts: removeProducts,
       changeProductsGenre: changeProductsGenre,
@@ -6098,7 +6084,7 @@ angular.module('services.profileService', [
 
 
 // http://stackoverflow.com/a/24958268
-.factory( 'SelfCancellingProfileResource', ['$resource','$q',
+.factory( 'SelfCancellingProductsResource', ['$resource','$q',
 function( $resource, $q ) {
   var canceler = $q.defer();
 
@@ -7863,7 +7849,7 @@ angular.module("product-list-page/genre-page.tpl.html", []).run(["$templateCache
     "\n" +
     "         <h2>\n" +
     "            <span class=\"count\">\n" +
-    "               {{ profileService.productsByGenre(myGenreConfig.name).length }}\n" +
+    "               {{ ProductList.len() }}\n" +
     "            </span>\n" +
     "            <span class=\"text\">\n" +
     "               {{ myGenreConfig.plural_name }}\n" +
