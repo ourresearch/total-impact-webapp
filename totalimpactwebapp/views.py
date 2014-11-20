@@ -55,9 +55,10 @@ from totalimpactwebapp.pinboard import write_to_pinboard
 
 from totalimpactwebapp.interaction import log_interaction_event
 
+
 from totalimpactwebapp.tweet import get_product_tweets
 
-from totalimpactwebapp.cards_factory import *
+from totalimpactwebapp.cards_factory import make_summary_cards
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
@@ -1149,8 +1150,28 @@ def scratchpad():
 
 
 
-@app.route("/<profile_id>/cards.json")
-def render_cards_json(profile_id):
+@app.route("/data/summary-cards", methods=['POST'])
+@app.route("/data/summary-cards.json", methods=['POST'])
+@app.route('/data/summary-cards/<tiids_comma_separated_string>', methods=['GET'])
+@app.route('/data/summary-cards/<tiids_comma_separated_string>.json', methods=['GET'])
+def get_summary_cards(tiids_comma_separated_string=""):
+    tiids = None
+    if request.method=="GET":
+        tiids = tiids_comma_separated_string.split(",")
+    elif request.method=="POST" and "tiids" in request.json:
+        tiids = request.json["tiids"]
+    if not tiids:
+        abort_json(400, "You need to supply tiids")
+
+    products = get_products_from_tiids(tiids)
+    cards = make_summary_cards(products)
+
+    return json_resp_from_thing(cards)
+
+
+@app.route("/<profile_id>/notification-cards")
+@app.route("/<profile_id>/notification-cards.json")
+def notification_cards_json(profile_id):
     profile = get_user_for_response(
         profile_id,
         request
