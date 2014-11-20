@@ -1149,24 +1149,23 @@ def scratchpad():
     return render_template("scratchpad.html")
 
 
+@app.route("/profile/<profile_id>/<namespace>/<tag>/summary-cards", methods=['GET'])
+@app.route("/profile/<profile_id>/<namespace>/<tag>/summary-cards.json", methods=['GET'])
+def get_summary_cards(profile_id, namespace, tag):
 
-@app.route("/data/summary-cards", methods=['POST'])
-@app.route("/data/summary-cards.json", methods=['POST'])
-@app.route('/data/summary-cards/<tiids_comma_separated_string>', methods=['GET'])
-@app.route('/data/summary-cards/<tiids_comma_separated_string>.json', methods=['GET'])
-def get_summary_cards(tiids_comma_separated_string=""):
-    tiids = None
-    if request.method=="GET":
-        tiids = tiids_comma_separated_string.split(",")
-    elif request.method=="POST" and "tiids" in request.json:
-        tiids = request.json["tiids"]
-    if not tiids:
-        abort_json(400, "You need to supply tiids")
+    profile = get_user_for_response(
+        profile_id,
+        request
+    )
 
-    products = get_products_from_tiids(tiids)
-    cards = make_summary_cards(products)
+    if namespace=="genre":
+        tagged_products = [product for product in profile.display_products if product.genre==tag]
+    else:
+        abort_json(404, "We only support genres for now")
 
+    cards = make_summary_cards(tagged_products)
     return json_resp_from_thing(cards)
+
 
 
 @app.route("/<profile_id>/notification-cards")
