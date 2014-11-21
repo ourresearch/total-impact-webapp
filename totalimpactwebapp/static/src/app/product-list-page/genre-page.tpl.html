@@ -13,10 +13,14 @@
          </h2>
          <div class="genre-summary">
             <div class="genre-summary-top">
-               <ul class="genre-cards-best">
+               <div class="cards-loading" ng-if="!genreCards.length">
+                  <i class="fa fa-refresh fa-spin left"></i>
+                  <span class="text">calculating key metrics</span>
+               </div>
+               <ul class="genre-cards-best animated fadeIn" ng-if="genreCards.length">
 
                   <li class="genre-card"
-                      ng-repeat="card in profileService.genreCards(myGenreConfig.name, 3).reverse()">
+                      ng-repeat="card in genreCards">
 
                   <span class="data"
                         tooltip-placement="bottom"

@@ -71,12 +71,33 @@ angular.module("productListPage", [
     $routeParams,
     GenreConfigs,
     ProfileAboutService,
+    SummaryCards,
     ProductList,
     Page) {
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
     ProductList.startRender($scope)
+
+    SummaryCards.query(
+      {
+        id: $routeParams.url_slug,
+        namespace: "genre",
+        tag: myGenreConfig.name
+      },
+      function(resp){
+        console.log("got some cards back!", resp)
+        var sortedCards = _.sortBy(resp, function(card){
+          return card.sort_by * -1
+        })
+
+        $scope.genreCards = sortedCards.slice(0, 3).reverse()
+      },
+      function(resp){
+        console.log("problem with the cards call. #sadface.", resp)
+      }
+
+    )
 
     var filterFn = function(product){
       if (product.genre == myGenreConfig.name){

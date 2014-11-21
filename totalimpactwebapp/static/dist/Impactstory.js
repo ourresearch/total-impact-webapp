@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-19
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-20
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1269,12 +1269,33 @@ angular.module("productListPage", [
     $routeParams,
     GenreConfigs,
     ProfileAboutService,
+    SummaryCards,
     ProductList,
     Page) {
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
     ProductList.startRender($scope)
+
+    SummaryCards.query(
+      {
+        id: $routeParams.url_slug,
+        namespace: "genre",
+        tag: myGenreConfig.name
+      },
+      function(resp){
+        console.log("got some cards back!", resp)
+        var sortedCards = _.sortBy(resp, function(card){
+          return card.sort_by * -1
+        })
+
+        $scope.genreCards = sortedCards.slice(0, 3).reverse()
+      },
+      function(resp){
+        console.log("problem with the cards call. #sadface.", resp)
+      }
+
+    )
 
     var filterFn = function(product){
       if (product.genre == myGenreConfig.name){
@@ -4162,6 +4183,12 @@ angular.module('resources.users',['ngResource'])
   .factory("ProfileCountries", function($resource){
     return $resource(
       "/profile/:id/countries"
+    )
+  })
+
+  .factory("SummaryCards", function($resource){
+    return $resource(
+      "/profile/:id/:namespace/:tag/summary-cards"
     )
   })
 
@@ -7857,10 +7884,14 @@ angular.module("product-list-page/genre-page.tpl.html", []).run(["$templateCache
     "         </h2>\n" +
     "         <div class=\"genre-summary\">\n" +
     "            <div class=\"genre-summary-top\">\n" +
-    "               <ul class=\"genre-cards-best\">\n" +
+    "               <div class=\"cards-loading\" ng-if=\"!genreCards.length\">\n" +
+    "                  <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
+    "                  <span class=\"text\">calculating key metrics</span>\n" +
+    "               </div>\n" +
+    "               <ul class=\"genre-cards-best animated fadeIn\" ng-if=\"genreCards.length\">\n" +
     "\n" +
     "                  <li class=\"genre-card\"\n" +
-    "                      ng-repeat=\"card in profileService.genreCards(myGenreConfig.name, 3).reverse()\">\n" +
+    "                      ng-repeat=\"card in genreCards\">\n" +
     "\n" +
     "                  <span class=\"data\"\n" +
     "                        tooltip-placement=\"bottom\"\n" +

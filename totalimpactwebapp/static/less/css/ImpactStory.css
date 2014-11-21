@@ -10068,6 +10068,16 @@ div.product-list-page div.header div.header-content div.genre-summary div.genre-
 div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .modal-footer {
   clear: both;
 }
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top div.cards-loading {
+  float: right;
+  margin: 17px 15px 0 0;
+  color: #999;
+  font-size: 13px;
+  font-weight: 300;
+}
+div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top div.cards-loading i {
+  font-size: 90%;
+}
 div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card {
   float: right;
   margin: 0 20px 0 40px;

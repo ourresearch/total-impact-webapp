@@ -47,6 +47,12 @@ angular.module('resources.users',['ngResource'])
     )
   })
 
+  .factory("SummaryCards", function($resource){
+    return $resource(
+      "/profile/:id/:namespace/:tag/summary-cards"
+    )
+  })
+
   .factory("ProfileKeyProducts", function($resource){
     return $resource(
       "/profile/:id/key-products",
