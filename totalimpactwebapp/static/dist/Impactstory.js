@@ -8884,12 +8884,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <div id=\"pinboard\">\n" +
     "      <div class=\"pinboard-col col-one\">\n" +
     "         <h3 class=\"pinboard-col-heading\">Selected works</h3>\n" +
+    "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "         <div class=\"loading\" ng-if=\"!KeyProducts.data.list.length\">\n" +
     "            <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
     "            <span class=\"text\">Loading...</span>\n" +
     "         </div>\n" +
     "\n" +
-    "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "\n" +
     "         <!-- LOGGED IN version -->\n" +
     "         <ul class=\"col-one pinboard-list logged-in\"\n" +
@@ -8934,11 +8934,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"pinboard-col col-two\">\n" +
     "         <div class=\"col-header\">\n" +
     "            <h3 class=\"pinboard-col-heading\">Key profile metrics</h3>\n" +
+    "            <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "            <div class=\"loading\" ng-if=\"!KeyMetrics.data.list.length\">\n" +
     "               <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
     "               <span class=\"text\">Loading...</span>\n" +
     "            </div>\n" +
-    "            <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "         </div>\n" +
     "\n" +
     "         <!-- LOGGED-IN version -->\n" +
