@@ -1,4 +1,4 @@
-@import url("//fonts.googleapis.com/css?family=Lato:300,400,700,900,400italic");
+@import url("//fonts.googleapis.com/css?family=Lato:300,400,700,400italic");
 
 @import "animate.css";
 
@@ -7862,6 +7862,11 @@ div.modal-body.embed div.code h3 {
   font-size: 12px;
   margin-top: -10px;
   color: #999;
+}
+#pinboard div.pinboard-col div.loading {
+  color: #999;
+  margin-left: 50px;
+  font-weight: 300;
 }
 #pinboard div.pinboard-col.col-one {
   width: 65%;

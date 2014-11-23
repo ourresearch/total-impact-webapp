@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-20
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-22
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -2157,17 +2157,8 @@ angular.module("profile", [
       }
     }, true)
 
-
-
     $scope.sortableOptions = {
     }
-
-    if (ProfileService.isLoading()){
-      console.log("no full products!")
-      Loading.startPage()
-    }
-
-
 
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
@@ -2260,10 +2251,6 @@ angular.module("profile", [
     $scope.$watch('profileService.loading', function(newVal, oldVal){
 
       console.log("profile service loading watch fired.")
-
-      if (ProfileService.hasFullProducts()){
-        Loading.finishPage()
-      }
 
       if (newVal.about) {
         security.isLoggedInPromise(url_slug).then(
@@ -8897,6 +8884,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <div id=\"pinboard\">\n" +
     "      <div class=\"pinboard-col col-one\">\n" +
     "         <h3 class=\"pinboard-col-heading\">Selected works</h3>\n" +
+    "         <div class=\"loading\" ng-if=\"!KeyProducts.data.list.length\">\n" +
+    "            <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
+    "            <span class=\"text\">Loading...</span>\n" +
+    "         </div>\n" +
+    "\n" +
     "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "\n" +
     "         <!-- LOGGED IN version -->\n" +
@@ -8942,6 +8934,10 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"pinboard-col col-two\">\n" +
     "         <div class=\"col-header\">\n" +
     "            <h3 class=\"pinboard-col-heading\">Key profile metrics</h3>\n" +
+    "            <div class=\"loading\" ng-if=\"!KeyMetrics.data.list.length\">\n" +
+    "               <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
+    "               <span class=\"text\">Loading...</span>\n" +
+    "            </div>\n" +
     "            <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
     "         </div>\n" +
     "\n" +

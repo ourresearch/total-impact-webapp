@@ -144,17 +144,8 @@ angular.module("profile", [
       }
     }, true)
 
-
-
     $scope.sortableOptions = {
     }
-
-    if (ProfileService.isLoading()){
-      console.log("no full products!")
-      Loading.startPage()
-    }
-
-
 
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
@@ -247,10 +238,6 @@ angular.module("profile", [
     $scope.$watch('profileService.loading', function(newVal, oldVal){
 
       console.log("profile service loading watch fired.")
-
-      if (ProfileService.hasFullProducts()){
-        Loading.finishPage()
-      }
 
       if (newVal.about) {
         security.isLoggedInPromise(url_slug).then(
