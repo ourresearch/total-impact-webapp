@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-22
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-23
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5943,6 +5943,7 @@ angular.module('services.profileService', [
       UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
+          console.log("ProfileService got stubs back", resp)
           data.products = resp.list
         },
         function(resp){
@@ -5956,7 +5957,10 @@ angular.module('services.profileService', [
     function get(url_slug){
       data.url_slug = url_slug
 
+      console.log("running ProfileService.get()")
+
       if (!data.products){
+        console.log("getting product stubs in ProfileService.get()")
         getProductStubs(url_slug)
       }
 
@@ -5969,6 +5973,8 @@ angular.module('services.profileService', [
 
           data.products.length = 0
           angular.extend(data.products, resp.list)
+
+          console.log("here's ProfileService.data.products", data.products)
 
 
           // got the new stuff. but does the server say it's
@@ -9944,8 +9950,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "         </a>\n" +
     "      </h1>\n" +
     "\n" +
-    "\n" +
-    "      <div class=\"nav animated fadeIn\" ng-if=\"profileService.data.products\">\n" +
+    "      <div class=\"nav animated fadeIn\" ng-if=\"profileService.data.products.length\">\n" +
     "         <a href=\"/{{ profileAboutService.data.url_slug }}\" ng-class=\"{active: page.isNamed('overview')}\">\n" +
     "            <i class=\"icon-user left\"></i>\n" +
     "            <span class=\"text\">\n" +

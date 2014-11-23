@@ -26,6 +26,7 @@ angular.module('services.profileService', [
       UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
+          console.log("ProfileService got stubs back", resp)
           data.products = resp.list
         },
         function(resp){
@@ -39,7 +40,10 @@ angular.module('services.profileService', [
     function get(url_slug){
       data.url_slug = url_slug
 
+      console.log("running ProfileService.get()")
+
       if (!data.products){
+        console.log("getting product stubs in ProfileService.get()")
         getProductStubs(url_slug)
       }
 
@@ -52,6 +56,8 @@ angular.module('services.profileService', [
 
           data.products.length = 0
           angular.extend(data.products, resp.list)
+
+          console.log("here's ProfileService.data.products", data.products)
 
 
           // got the new stuff. but does the server say it's
