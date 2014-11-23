@@ -40,10 +40,7 @@ angular.module('services.profileService', [
     function get(url_slug){
       data.url_slug = url_slug
 
-      console.log("running ProfileService.get()")
-
       if (!data.products){
-        console.log("getting product stubs in ProfileService.get()")
         getProductStubs(url_slug)
       }
 
@@ -51,14 +48,10 @@ angular.module('services.profileService', [
       return SelfCancellingProductsResource.createResource().get(
         {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
-          console.log("ProfileService got a response", resp)
 //          _.each(data, function(v, k){delete data[k]})
 
           data.products.length = 0
           angular.extend(data.products, resp.list)
-
-          console.log("here's ProfileService.data.products", data.products)
-
 
           // got the new stuff. but does the server say it's
           // actually still updating there? if so, show
