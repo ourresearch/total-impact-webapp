@@ -34,6 +34,14 @@ angular.module("services.page")
       "/buy-subscriptions"
     ]
 
+    var profileServices = [
+      ProfileAboutService,
+      ProfileService,
+      KeyProducts,
+      KeyMetrics
+    ]
+
+
     $rootScope.$on('$routeChangeSuccess', function () {
       isInfopage = false // init...it's being set elsewhere
       pageName = null // init...it's being set elsewhere
@@ -41,36 +49,19 @@ angular.module("services.page")
       profileSlug = findProfileSlug()
 
       if (!profileSlug) {
-        clearProfileData()
+        _.each(profileServices, function(service){
+          service.clear()
+        })
       }
 
       handleDeadProfile(ProfileAboutService, profileSlug)
 
-      if (ProfileAboutService.slugIsNew(profileSlug)) {
-        console.log("new user slug; loading new profile.")
-        clearProfileData()
-        ProfileService.get(profileSlug)
-
-        KeyProducts.get(profileSlug)
-        KeyMetrics.get(profileSlug)
-
-        ProfileAboutService.get(profileSlug).then(function(resp){
-            handleDeadProfile(ProfileAboutService, profileSlug)
-          }
-        )
-
-      }
+      ProfileAboutService.handleSlug(profileServices, profileSlug).then(function(resp){
+          handleDeadProfile(ProfileAboutService, profileSlug)
+        }
+      )
     });
 
-
-    function clearProfileData(){
-      ProfileAboutService.clear()
-      ProfileService.clear()
-      KeyProducts.clear()
-      KeyMetrics.clear()
-
-
-    }
 
 
     function handleDeadProfile(ProfileAboutService, profileSlug){
@@ -106,7 +97,6 @@ angular.module("services.page")
         console.log("findprofileslug reporting /settings page")
         return security.getCurrentUserSlug()
       }
-
 
       if (_.contains(nonProfilePages, firstPartOfPath)){
         return undefined

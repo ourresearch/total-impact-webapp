@@ -1,7 +1,7 @@
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
-  .factory("ProfileAboutService", function($q, $timeout, Update, Users, ProfileAbout){
+  .factory("ProfileAboutService", function($q, $timeout, $location, Update, Users, ProfileAbout){
 
     var loading = true
     var data = {}
@@ -15,6 +15,14 @@ angular.module('services.profileAboutService', [
         {id: url_slug},
         function(resp){
           console.log("ProfileAbout got a response", resp)
+
+          if (url_slug.toLowerCase() == resp.url_slug.toLowerCase() && url_slug !== resp.url_slug
+            ){
+            var currentPath = $location.path()
+            var redirectTo = currentPath.replace(url_slug, resp.url_slug)
+            $location.path(redirectTo)
+          }
+
           _.each(data, function(v, k){delete data[k]})
           angular.extend(data, resp)  // this sets the url_slug too
           loading = false
@@ -51,7 +59,32 @@ angular.module('services.profileAboutService', [
     }
 
     function slugIsNew(slug){
-        return slug && data.url_slug !== slug
+      if (!data || !data.url_slug){
+        return true
+      }
+      return data.url_slug.toLocaleLowerCase() !== slug.toLocaleLowerCase()
+    }
+
+    function handleSlug(profileServices, newSlug){
+      console.log("refreshing the profile with new slug", newSlug)
+
+      // handle new slugs; we need to load a whole new profile
+      if (slugIsNew(newSlug)){
+        _.each(profileServices, function(service){
+          service.clear()
+          if (!service.handleSlug){ // don't run the ProfileAboutService here, we need to return it.
+            service.get(newSlug)
+          }
+        })
+        return get(newSlug)
+      }
+
+      // this is the same profile; don't nothin' change.
+      else {
+       return $q.when(data)
+      }
+
+
     }
 
 
@@ -63,7 +96,8 @@ angular.module('services.profileAboutService', [
       getUrlSlug: function(){
         return data.url_slug
       },
-      slugIsNew: slugIsNew
+      slugIsNew: slugIsNew,
+      handleSlug: handleSlug
     }
 
   })
