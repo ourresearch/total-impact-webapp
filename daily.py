@@ -216,7 +216,7 @@ def populate_profile_deets(profile):
             try:
                 if product.biblio.year and int(product.biblio.year) < deets["earliest_publication_year"]:
                     deets["earliest_publication_year"] = int(product.biblio.year)
-            except AttributeError:
+            except (AttributeError, ValueError):
                 pass
         citation_metric = product.get_metric_by_name("scopus", "citations")
         if citation_metric:
