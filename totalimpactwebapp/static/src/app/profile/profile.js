@@ -231,7 +231,6 @@ angular.module("profile", [
     }
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
-      console.log("profile.js watch on profileAboutService triggered", newVal, oldVal)
       Page.setTitle(newVal.full_name)
     }, true)
 

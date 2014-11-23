@@ -2244,7 +2244,6 @@ angular.module("profile", [
     }
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
-      console.log("profile.js watch on profileAboutService triggered", newVal, oldVal)
       Page.setTitle(newVal.full_name)
     }, true)
 
@@ -4903,10 +4902,12 @@ angular.module('services.keyMetrics', [
   'resources.users',
   'services.pinboard'
 ])
-  .factory("KeyMetrics", function(ProfileKeyMetrics, Pinboard, security){
-    var data = {list:[]}
+  .factory("KeyMetrics", function(ProfileKeyMetrics, Pinboard, Loading){
+    var data = {
+      name: "KeyMetrics",
+      list:[]
+    }
     var ret = Pinboard.makeInterface(data, ProfileKeyMetrics)
-
     return ret
   })
 
@@ -4915,7 +4916,10 @@ angular.module('services.keyProducts', [
   'services.pinboard'
 ])
 .factory("KeyProducts", function(ProfileKeyProducts, Pinboard, security){
-    var data = {list:[]}
+    var data = {
+      name: "KeyProducts",
+      list:[]
+    }
     var ret = Pinboard.makeInterface(data, ProfileKeyProducts)
 
     return ret
@@ -5352,7 +5356,7 @@ angular.module("services.page")
 angular.module('services.pinboard', [
   'resources.users'
 ])
-  .factory("Pinboard", function(security){
+  .factory("Pinboard", function(security, Loading){
 
     function save(data, resource, forceSave){
       var current_user_url_slug = security.getCurrentUserSlug()
@@ -5413,7 +5417,8 @@ angular.module('services.pinboard', [
         get: function(id){
           console.log("calling Pinboard.get(" + id + ")", data)
           data.url_slug = id
-          resource.get(
+          Loading.start(data.name)
+          return resource.get(
             {id: id},
             function(resp){
               data.list.length = 0
@@ -5422,7 +5427,9 @@ angular.module('services.pinboard', [
             function(resp){
               console.log("no pinboard set yet.", resp)
             }
-          )
+          ).$promise.finally(function(){
+            Loading.finish(data.name)
+          })
         },
         unpin: function(thingToUnpin){
           console.log("unpinning ", thingToUnpin, data)
@@ -8909,7 +8916,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"pinboard-col col-one\">\n" +
     "         <h3 class=\"pinboard-col-heading\">Selected works</h3>\n" +
     "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
-    "         <div class=\"loading\" ng-if=\"!KeyProducts.data.list.length\">\n" +
+    "         <div class=\"loading\" ng-if=\"loading.is('KeyProducts')\">\n" +
     "            <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
     "            <span class=\"text\">Loading...</span>\n" +
     "         </div>\n" +
@@ -8959,7 +8966,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         <div class=\"col-header\">\n" +
     "            <h3 class=\"pinboard-col-heading\">Key profile metrics</h3>\n" +
     "            <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
-    "            <div class=\"loading\" ng-if=\"!KeyMetrics.data.list.length\">\n" +
+    "            <div class=\"loading\" ng-if=\"loading.is('KeyMetrics')\">\n" +
     "               <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
     "               <span class=\"text\">Loading...</span>\n" +
     "            </div>\n" +

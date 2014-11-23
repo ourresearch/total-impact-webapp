@@ -1,7 +1,7 @@
 angular.module('services.pinboard', [
   'resources.users'
 ])
-  .factory("Pinboard", function(security){
+  .factory("Pinboard", function(security, Loading){
 
     function save(data, resource, forceSave){
       var current_user_url_slug = security.getCurrentUserSlug()
@@ -62,7 +62,8 @@ angular.module('services.pinboard', [
         get: function(id){
           console.log("calling Pinboard.get(" + id + ")", data)
           data.url_slug = id
-          resource.get(
+          Loading.start(data.name)
+          return resource.get(
             {id: id},
             function(resp){
               data.list.length = 0
@@ -71,7 +72,9 @@ angular.module('services.pinboard', [
             function(resp){
               console.log("no pinboard set yet.", resp)
             }
-          )
+          ).$promise.finally(function(){
+            Loading.finish(data.name)
+          })
         },
         unpin: function(thingToUnpin){
           console.log("unpinning ", thingToUnpin, data)

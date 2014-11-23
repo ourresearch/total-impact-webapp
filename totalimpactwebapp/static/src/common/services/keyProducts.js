@@ -3,7 +3,10 @@ angular.module('services.keyProducts', [
   'services.pinboard'
 ])
 .factory("KeyProducts", function(ProfileKeyProducts, Pinboard, security){
-    var data = {list:[]}
+    var data = {
+      name: "KeyProducts",
+      list:[]
+    }
     var ret = Pinboard.makeInterface(data, ProfileKeyProducts)
 
     return ret
