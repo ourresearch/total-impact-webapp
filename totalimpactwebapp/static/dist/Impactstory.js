@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-23
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-24
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5957,10 +5957,7 @@ angular.module('services.profileService', [
     function get(url_slug){
       data.url_slug = url_slug
 
-      console.log("running ProfileService.get()")
-
       if (!data.products){
-        console.log("getting product stubs in ProfileService.get()")
         getProductStubs(url_slug)
       }
 
@@ -5968,14 +5965,10 @@ angular.module('services.profileService', [
       return SelfCancellingProductsResource.createResource().get(
         {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
-          console.log("ProfileService got a response", resp)
 //          _.each(data, function(v, k){delete data[k]})
 
           data.products.length = 0
           angular.extend(data.products, resp.list)
-
-          console.log("here's ProfileService.data.products", data.products)
-
 
           // got the new stuff. but does the server say it's
           // actually still updating there? if so, show
@@ -8668,6 +8661,17 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "      <div class=\"map-stats\" ng-if=\"countries\">\n" +
     "\n" +
     "         <div class=\"numbers\">\n" +
+    "            <div class=\"overview\">\n" +
+    "               <div class=\"total-events\">\n" +
+    "                  <span class=\"val\">{{ MapService.getEventSum() }}</span>\n" +
+    "                  <span class=\"descr\">geotagged events from</span>\n" +
+    "               </div>\n" +
+    "               <div class=\"num-countries\">\n" +
+    "                  <span class=\"val\">{{ countries.length }}</span>\n" +
+    "                  <span class=\"descr\">countries</span>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
     "            <div class=\"num-events\">\n" +
     "               <div class=\"event-type tweets-events\"\n" +
     "                    tooltip=\"Showing {{ MapService.getEventSum('altmetric_com:tweets') }} total tweets\"\n" +
@@ -8687,20 +8691,9 @@ angular.module("profile-map/profile-map.tpl.html", []).run(["$templateCache", fu
     "                  <i class=\"fa fa-eye\"></i>\n" +
     "                  <span class=\"val\">{{ MapService.getEventSum('impactstory:views') }}</span>\n" +
     "               </div>\n" +
-    "\n" +
     "            </div>\n" +
     "\n" +
     "\n" +
-    "            <div class=\"under-icons\">\n" +
-    "               <div class=\"total-events\">\n" +
-    "                  <span class=\"val\">{{ MapService.getEventSum() }}</span>\n" +
-    "                  <span class=\"descr\">geotagged events total, from</span>\n" +
-    "               </div>\n" +
-    "               <div class=\"num-countries\">\n" +
-    "                  <span class=\"val\">{{ countries.length }}</span>\n" +
-    "                  <span class=\"descr\">countries <i class=\"fa fa-chevron-right\"></i></span>\n" +
-    "               </div>\n" +
-    "            </div>\n" +
     "         </div>\n" +
     "\n" +
     "\n" +

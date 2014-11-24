@@ -7,6 +7,17 @@
       <div class="map-stats" ng-if="countries">
 
          <div class="numbers">
+            <div class="overview">
+               <div class="total-events">
+                  <span class="val">{{ MapService.getEventSum() }}</span>
+                  <span class="descr">geotagged events from</span>
+               </div>
+               <div class="num-countries">
+                  <span class="val">{{ countries.length }}</span>
+                  <span class="descr">countries</span>
+               </div>
+            </div>
+
             <div class="num-events">
                <div class="event-type tweets-events"
                     tooltip="Showing {{ MapService.getEventSum('altmetric_com:tweets') }} total tweets"
@@ -26,20 +37,9 @@
                   <i class="fa fa-eye"></i>
                   <span class="val">{{ MapService.getEventSum('impactstory:views') }}</span>
                </div>
-
             </div>
 
 
-            <div class="under-icons">
-               <div class="total-events">
-                  <span class="val">{{ MapService.getEventSum() }}</span>
-                  <span class="descr">geotagged events total, from</span>
-               </div>
-               <div class="num-countries">
-                  <span class="val">{{ countries.length }}</span>
-                  <span class="descr">countries <i class="fa fa-chevron-right"></i></span>
-               </div>
-            </div>
          </div>
 
 

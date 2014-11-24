@@ -6960,9 +6960,34 @@ div.jvectormap-tip ul li span.val {
 div.map-stats div.numbers {
   width: 350px;
   margin-right: 70px;
-  margin-top: 20px;
+  margin-top: 30px;
   float: left;
   text-align: right;
+}
+div.map-stats div.numbers div.overview {
+  border-bottom: 1px solid #ddd;
+  clear: left;
+  margin-bottom: 20px;
+}
+div.map-stats div.numbers div.overview div.total-events span.val {
+  font-size: 18px;
+  font-weight: bold;
+}
+div.map-stats div.numbers div.overview div.total-events span.descr {
+  font-size: 18px;
+  font-weight: 300;
+}
+div.map-stats div.numbers div.overview div.num-countries {
+  font-size: 50px;
+}
+div.map-stats div.numbers div.overview div.num-countries .val {
+  font-weight: bold;
+}
+div.map-stats div.numbers div.overview div.num-countries .descr {
+  font-weight: 300;
+}
+div.map-stats div.numbers div.overview div.num-countries .descr i {
+  color: #ddd;
 }
 div.map-stats div.numbers div.num-events div.event-type {
   display: inline-block;
@@ -6988,33 +7013,6 @@ div.map-stats div.numbers div.num-events div.event-type.tweets-events i {
 }
 div.map-stats div.numbers div.num-events div.event-type.impactstory-view-events i {
   color: #ff4000;
-}
-div.map-stats div.numbers div.under-icons {
-  border-top: 1px solid #ddd;
-  margin-top: 20px;
-  padding-top: 20px;
-  clear: left;
-}
-div.map-stats div.numbers div.under-icons div.total-events {
-  padding-right: 30px;
-}
-div.map-stats div.numbers div.under-icons div.total-events span.val {
-  font-size: 18px;
-}
-div.map-stats div.numbers div.under-icons div.total-events span.descr {
-  font-size: 18px;
-}
-div.map-stats div.numbers div.under-icons div.num-countries {
-  font-size: 50px;
-}
-div.map-stats div.numbers div.under-icons div.num-countries .val {
-  font-weight: bold;
-}
-div.map-stats div.numbers div.under-icons div.num-countries .descr {
-  font-weight: 300;
-}
-div.map-stats div.numbers div.under-icons div.num-countries .descr i {
-  color: #ddd;
 }
 div.map-stats table.table {
   width: 400px;
