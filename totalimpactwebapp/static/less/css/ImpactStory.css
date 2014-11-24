@@ -6995,7 +6995,7 @@ div.map-stats div.numbers div.num-events div.event-type {
   text-align: center;
 }
 div.map-stats div.numbers div.num-events div.event-type i {
-  font-size: 40px;
+  font-size: 35px;
 }
 div.map-stats div.numbers div.num-events div.event-type img {
   margin-top: 5px;
@@ -7006,7 +7006,8 @@ div.map-stats div.numbers div.num-events div.event-type img {
   display: block;
 }
 div.map-stats div.numbers div.num-events div.event-type .val {
-  font-size: 40px;
+  font-size: 30px;
+  font-weight: 300;
 }
 div.map-stats div.numbers div.num-events div.event-type.tweets-events i {
   color: #55acee;
