@@ -40,12 +40,13 @@ angular.module( 'profileMap', [
     function(resp){
       Loading.finishPage()
 
-      $scope.countries = resp.list
-      MapService.setCountries(resp.list)
+      var countryList = resp.list
 
+      $scope.countries = countryList
+      MapService.setCountries(countryList)
 
       var countryCounts = {}
-      _.each(resp.list, function(countryObj){
+      _.each(countryList, function(countryObj){
         countryCounts[countryObj.iso_code] = countryObj.event_sum
       })
 
@@ -69,7 +70,7 @@ angular.module( 'profileMap', [
               normalizeFunction: 'polynomial'
             }]
           },
-          onRegionTipShow: MapService.makeRegionTipHandler(resp.list),
+          onRegionTipShow: MapService.makeRegionTipHandler(countryList),
           onRegionClick: function(event, countryCode){
             if (!countryCounts[countryCode]) {
               return false // no country pages for blank countries.
