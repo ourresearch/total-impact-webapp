@@ -1865,11 +1865,9 @@ angular.module( 'profileMap', [
   console.log("profile map ctrl ran.")
   Page.setName("map")
   Page.setTitle("Map")
-  if (!ProfileService.hasFullProducts()){
-    Loading.startPage()
-  }
+  Loading.startPage()
 
-    $scope.MapService = MapService
+  $scope.MapService = MapService
 
 
 
