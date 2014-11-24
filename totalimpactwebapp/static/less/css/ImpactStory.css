@@ -6957,6 +6957,26 @@ div.jvectormap-tip ul li span.name {
 div.jvectormap-tip ul li span.val {
   font-weight: bold;
 }
+div.map-stats {
+  margin-bottom: 150px;
+  clear: both;
+}
+div.map-stats:before,
+div.map-stats:after {
+  content: " ";
+  display: table;
+}
+div.map-stats:after {
+  clear: both;
+}
+div.map-stats:before,
+div.map-stats:after {
+  content: " ";
+  display: table;
+}
+div.map-stats:after {
+  clear: both;
+}
 div.map-stats div.numbers {
   width: 350px;
   margin-right: 70px;

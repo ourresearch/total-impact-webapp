@@ -189,6 +189,8 @@ angular.module("productPage", [
 
       var countryList = product.countries.list
       MapService.setCountries(countryList)
+      $scope.MapService = MapService
+      $scope.countries = countryList
 
       var countryCounts = {}
       _.each(countryList, function(countryObj){
@@ -202,6 +204,7 @@ angular.module("productPage", [
         $("#product-map").vectorMap({
           map: 'world_mill_en',
           backgroundColor: "#fff",
+          zoomOnScroll: false,
           regionStyle: {
             initial: {
               fill: "#dddddd"

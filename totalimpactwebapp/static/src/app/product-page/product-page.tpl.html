@@ -418,6 +418,113 @@
 
                <div class="tab-content tab-map" ng-show="ProductPage.tabIs('map')">
                   <div id="product-map" class="impact-map"></div>
+
+                  <!-- this whole div is  copy/pasted from the profile map -->
+                  <div class="map-stats" ng-if="countries">
+
+                     <div class="numbers">
+                        <div class="overview">
+                           <div class="total-events">
+                              <span class="val">{{ MapService.getEventSum() }}</span>
+                              <span class="descr">geotagged events from</span>
+                           </div>
+                           <div class="num-countries">
+                              <span class="val">{{ countries.length }}</span>
+                              <span class="descr">countries</span>
+                           </div>
+                        </div>
+
+                        <div class="num-events">
+                           <div class="event-type tweets-events"
+                                tooltip="Showing {{ MapService.getEventSum('altmetric_com:tweets') }} geotagged tweets"
+                                ng-show="MapService.getEventSum('altmetric_com:tweets')">
+                              <i class="fa fa-twitter"></i>
+                              <span class="val">{{ MapService.getEventSum('altmetric_com:tweets') }}</span>
+                           </div>
+                           <div class="event-type mendeley-events"
+                                tooltip="Showing {{ MapService.getEventSum('mendeley:readers') }} geotagged bookmarks in Mendeley"
+                                ng-show="MapService.getEventSum('mendeley:readers')">
+                              <img src="static/img/logos/mendeley-icon-big.png" alt=""/>
+                              <span class="val">{{ MapService.getEventSum('mendeley:readers') }}</span>
+                           </div>
+                           <div class="event-type impactstory-view-events"
+                                tooltip="Showing {{ MapService.getEventSum('impactstory:views') }} geotagged views of research products embedded here on Impactstory"
+                                ng-show="MapService.getEventSum('impactstory:views')">
+                              <i class="fa fa-eye"></i>
+                              <span class="val">{{ MapService.getEventSum('impactstory:views') }}</span>
+                           </div>
+                        </div>
+
+
+                     </div>
+
+
+                     <table class="table table-hover table-condensed">
+                        <col class="country"/>
+                        <col class="events"/>
+                        <col class="pop-adjusted"/>
+
+                        <thead>
+                           <tr>
+                              <th ng-class="{selected: MapService.data.sortBy=='name'}"
+                                  ng-click="MapService.data.sortBy='name'">
+                                 <span class="text">
+                                    Country
+                                 </span>
+                                 <i class="fa fa-sort"></i>
+                                 <i class="fa fa-sort-down"></i>
+                              </th>
+                              <th ng-class="{selected: MapService.data.sortBy=='-event_sum'}"
+                                  tooltip="Total tweets, Impactstory views, and Mendeley saves"
+                                  tooltip-append-to-body="true"
+                                  ng-click="MapService.data.sortBy='-event_sum'">
+                                 <span class="text">
+                                    Impact events
+                                 </span>
+                                 <i class="fa fa-sort"></i>
+                                 <i class="fa fa-sort-down"></i>
+                              </th>
+                              <th ng-class="{selected: MapService.data.sortBy=='-impact_per_million_internet_users'}"
+                                  tooltip="Impact events per one million national internet users"
+                                  tooltip-append-to-body="true"
+                                  ng-click="MapService.data.sortBy='-impact_per_million_internet_users'">
+                                 <span class="text">
+                                    Population impact
+                                 </span>
+                                 <i class="fa fa-sort"></i>
+                                 <i class="fa fa-sort-down"></i>
+                              </th>
+
+
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr ng-repeat="country in countries | orderBy: MapService.data.sortBy"
+                               ng-click="MapService.goToCountryPage(profileService.getUrlSlug(), country.iso_code)">
+                              <td class="f16">
+                                 <span class="flag {{ country.iso_code.toLowerCase() }}"></span>
+                                 {{ country.name }}
+                              </td>
+                              <td>{{ country.event_sum }}</td>
+                              <td>
+                                 {{ country.impact_per_million_internet_users.toFixed(1) }}
+                                 <i class="fa fa-asterisk"
+                                    tooltip="Chinese internet users adjusted for state firewall (users/100)"
+                                    ng-show="country.iso_code=='CN'"></i>
+                              </td>
+                           </tr>
+                        </tbody>
+                     </table>
+
+
+
+                  </div>
+
+               </div>
+
+
+
+
                </div><!-- end of the Maps Tab section -->
 
 
