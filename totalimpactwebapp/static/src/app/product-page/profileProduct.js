@@ -187,9 +187,12 @@ angular.module("productPage", [
     if (product.countries) {
       Loading.finishPage()
 
+      var countryList = product.countries.list
+      MapService.setCountries(countryList)
+
       var countryCounts = {}
-      _.each(product.countries, function(myCountryCounts, myCountryCode){
-        countryCounts[myCountryCode] = myCountryCounts.sum
+      _.each(countryList, function(countryObj){
+        countryCounts[countryObj.iso_code] = countryObj.event_sum
       })
 
       console.log("preparing to run the map", countryCounts)
@@ -211,7 +214,7 @@ angular.module("productPage", [
               normalizeFunction: 'polynomial'
             }]
           },
-          onRegionTipShow: MapService.makeRegionTipHandler(product.countries),
+          onRegionTipShow: MapService.makeRegionTipHandler(countryList),
           onRegionClick: function(event, countryCode){
             if (!countryCounts[countryCode]) {
               return false // no country pages for blank countries.
