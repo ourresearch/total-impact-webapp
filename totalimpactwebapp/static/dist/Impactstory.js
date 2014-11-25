@@ -8641,7 +8641,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        </thead>\n" +
     "                        <tbody>\n" +
     "                           <tr ng-repeat=\"country in countries | orderBy: MapService.data.sortBy\"\n" +
-    "                               ng-click=\"MapService.goToCountryPage(profileService.getUrlSlug(), country.iso_code)\">\n" +
+    "                              class=\"no-click\">\n" +
     "                              <td class=\"f16\">\n" +
     "                                 <span class=\"flag {{ country.iso_code.toLowerCase() }}\"></span>\n" +
     "                                 {{ country.name }}\n" +

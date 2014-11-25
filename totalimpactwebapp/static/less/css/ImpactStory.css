@@ -7068,6 +7068,9 @@ div.map-stats table.table thead tr th.selected i.fa-sort {
 div.map-stats table.table tbody tr {
   cursor: pointer;
 }
+div.map-stats table.table tbody tr.no-click {
+  cursor: default;
+}
 div.map-stats table.table tbody tr td span.flag {
   display: inline-block;
   margin-top: 4px;

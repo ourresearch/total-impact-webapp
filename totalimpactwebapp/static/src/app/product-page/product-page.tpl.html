@@ -500,7 +500,7 @@
                         </thead>
                         <tbody>
                            <tr ng-repeat="country in countries | orderBy: MapService.data.sortBy"
-                               ng-click="MapService.goToCountryPage(profileService.getUrlSlug(), country.iso_code)">
+                              class="no-click">
                               <td class="f16">
                                  <span class="flag {{ country.iso_code.toLowerCase() }}"></span>
                                  {{ country.name }}
