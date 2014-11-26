@@ -1,0 +1,33 @@
+{
+    "search-results": {
+        "opensearch:Query": {
+            "@searchTerms": "DOI%2810.1371%2Fjournal.pone.0000308%29", 
+            "@role": "request", 
+            "@startPage": "0"
+        }, 
+        "opensearch:itemsPerPage": "1", 
+        "opensearch:totalResults": "1", 
+        "link": [
+            {
+                "@href": "http://api.elsevier.com:80/content/search/index:scopus?start=0&count=25&query=DOI(10.1371/journal.pone.0000308)&field=citedby-count&apiKey=REDACTED&insttoken=REDACTED", 
+                "@ref": "self", 
+                "@_fa": "true", 
+                "@type": "application/json"
+            }, 
+            {
+                "@href": "http://api.elsevier.com:80/content/search/index:scopus?start=0&count=25&query=DOI(10.1371/journal.pone.0000308)&field=citedby-count&apiKey=REDACTED&insttoken=REDACTED", 
+                "@ref": "first", 
+                "@_fa": "true", 
+                "@type": "application/json"
+            }
+        ], 
+        "opensearch:startIndex": "0", 
+        "entry": [
+            {
+                "prism:url": "http://api.elsevier.com/content/abstract/scopus_id:36248970413", 
+                "@_fa": "true", 
+                "citedby-count": "97"
+            }
+        ]
+    }
+}

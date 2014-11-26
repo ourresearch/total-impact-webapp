@@ -1,0 +1,2 @@
+core_web: gunicorn totalimpact:app -b 0.0.0.0:$PORT -w 3
+core_celeryworker: ./core_celeryworkers.sh
