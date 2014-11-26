@@ -1653,7 +1653,7 @@ angular.module("productPage", [
         function(resp){
           console.log("updated product biblio; re-rendering", resp)
           $scope.reRenderProduct()
-          ProfileAboutService.get($routeParams.url_slug)
+//          ProfileAboutService.get($routeParams.url_slug)
           ProfileService.get($routeParams.url_slug)
         }
       )
@@ -8561,6 +8561,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <div id=\"product-map\" class=\"impact-map\"></div>\n" +
     "\n" +
     "                  <!-- this whole div is  copy/pasted from the profile map -->\n" +
+    "                  <!-- except you can't click on the country table rows -->\n" +
     "                  <div class=\"map-stats\" ng-if=\"countries\">\n" +
     "\n" +
     "                     <div class=\"numbers\">\n" +

@@ -323,7 +323,7 @@ angular.module("productPage", [
         function(resp){
           console.log("updated product biblio; re-rendering", resp)
           $scope.reRenderProduct()
-          ProfileAboutService.get($routeParams.url_slug)
+//          ProfileAboutService.get($routeParams.url_slug)
           ProfileService.get($routeParams.url_slug)
         }
       )
