@@ -5,7 +5,7 @@ from kombu import Exchange, Queue
 
 sys.path.append('.')
 
-redis_url = os.environ.get('REDIS_URL', "redis://localhost:6379/")
+redis_url = os.environ.get('REDIS_URL', "redis://127.0.0.1:6379/")
 if not redis_url.endswith("/"):
     redis_url += "/"
 
@@ -15,8 +15,11 @@ REDIS_CONNECT_RETRY = True
 
 
 # these options will be defaults in future as per http://celery.readthedocs.org/en/latest/getting-started/brokers/redis.html
-BROKER_TRANSPORT_OPTIONS = {'fanout_prefix': True}
-BROKER_TRANSPORT_OPTIONS = {'fanout_patterns': True}
+BROKER_TRANSPORT_OPTIONS = {'fanout_prefix': True, 
+                            'fanout_patterns': True, 
+                            'visibility_timeout': 60,  # one minute
+                            'max_connections': 100  # max redis connections for tasks. see https://github.com/celery/celery/issues/1350
+                            }
 
 
 BROKER_TRANSPORT_OPTIONS = {
