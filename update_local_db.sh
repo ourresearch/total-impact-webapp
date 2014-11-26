@@ -8,7 +8,7 @@
 psql -d workingdb -c 'select max(last_collected_date) from snap;'
 
 # copy local db from server
-curl -o fresh.dp `heroku pgbackups:url --app total-impact-core`
+curl -o fresh.db `heroku pgbackups:url --app total-impact-core`
 
 # make a new local database with a temporary name
 psql -c 'CREATE DATABASE freshdb;'
