@@ -1,7 +1,7 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderAuthenticationError
 from totalimpact import tiredis
-from totalimpact.utils import Retry
+from totalimpact.retry import Retry
 
 import simplejson, urllib, os, string, itertools
 import requests

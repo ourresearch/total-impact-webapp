@@ -1,7 +1,7 @@
 import time
 import logging
 
-logger = logging.getLogger('ti.utils')
+logger = logging.getLogger('ti.retry')
 
 class Retry(object):
     default_exceptions = (Exception,)

@@ -4,7 +4,7 @@ from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderAuthenticationError
 from totalimpact import tiredis
 from totalimpact.utils import Retry
-from totalimpact.providers.countries_info import country_iso_by_name
+from totalimpactwebapp.countries_info import country_iso_by_name
 
 import simplejson, urllib, os, string, itertools
 import requests

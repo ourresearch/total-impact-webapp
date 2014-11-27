@@ -33,6 +33,7 @@ def create_doaj_table():
     result = db.session.execute(doaj_setup_sql)
     db.session.commit()
 
+
 def create_doaj_view():
     doaj_setup_sql = """
         CREATE or replace VIEW doaj_issn_lookup (issn) AS          

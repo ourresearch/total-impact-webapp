@@ -19,8 +19,10 @@ from sqlalchemy.orm.exc import FlushError
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy.sql import text    
 
-from totalimpact import json_sqlalchemy, tiredis
+from totalimpact import tiredis
 from totalimpact import db
+
+from totalimpactwebapp import json_sqlalchemy
 
 import os
 

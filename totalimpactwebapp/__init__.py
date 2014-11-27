@@ -123,5 +123,16 @@ commit(db)
 
 from totalimpactwebapp import views
 
+try:
+    from totalimpact import extra_schema 
+except exc.ProgrammingError:
+    logger.info("SQLAlchemy database tables not found, so creating them")
+    db.session.rollback()
+    db.create_all()
+    from totalimpact import extra_schema 
+
+
+
+
 
 
