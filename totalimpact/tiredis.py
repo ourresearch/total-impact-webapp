@@ -1,10 +1,16 @@
 import redis, logging, json, datetime, os, iso8601
 from collections import defaultdict
 
-from totalimpact.providers.provider import ProviderFactory
-
 
 logger = logging.getLogger("ti.tiredis")
+
+REDIS_MAIN_DATABASE_NUMBER = 0
+REDIS_CELERY_TASKS_DATABASE_NUMBER = 1
+REDIS_CELERY_RESULTS_DATABASE_NUMBER = 2
+REDIS_CACHE_DATABASE_NUMBER = 7
+REDIS_UNITTEST_DATABASE_NUMBER = 8
+
+
 
 def from_url(url, db=0):
     r = redis.from_url(url, db)

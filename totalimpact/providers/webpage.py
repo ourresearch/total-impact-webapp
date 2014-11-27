@@ -1,7 +1,6 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError
-from totalimpact import unicode_helpers
-from totalimpact.unicode_helpers import remove_nonprinting_characters
+from unicode_helpers import remove_nonprinting_characters, to_unicode_or_bust
 
 import lxml.html
 import lxml.etree
@@ -104,7 +103,7 @@ class Webpage(Provider):
         if not page:
             return biblio_dict
         
-        unicode_page = unicode_helpers.to_unicode_or_bust(page)
+        unicode_page = to_unicode_or_bust(page)
         try:
             parsed_html = lxml.html.document_fromstring(unicode_page)
 

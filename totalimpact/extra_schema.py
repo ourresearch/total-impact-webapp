@@ -1,4 +1,4 @@
-from totalimpact import db
+from totalimpactwebapp import db
 
 def create_view_min_biblio():
     result = db.session.execute("""create or replace view min_biblio as (

@@ -15,12 +15,13 @@ from celery.utils import uuid
 from eventlet import timeout
 
 from totalimpact import item as item_module
-from totalimpact import db
-from totalimpact import REDIS_MAIN_DATABASE_NUMBER
+from totalimpactwebapp import db
+from totalimpact.tiredis import REDIS_MAIN_DATABASE_NUMBER
 from totalimpact import tiredis, default_settings
 from totalimpact.providers.provider import ProviderFactory, ProviderError, ProviderTimeout
 
 from totalimpactwebapp.product import add_product_embed_markup
+from totalimpactwebapp.product import Product
 
 import rate_limit
 
@@ -123,18 +124,18 @@ def add_to_database_if_nonzero(
     if new_content:
         # don't need item with metrics for this purpose, so don't bother getting metrics from db
 
-        item_obj = item_module.Item.query.get(tiid)
+        product = Product.query.get(tiid)
 
-        if item_obj:
+        if product:
             if method_name=="aliases":
                 if isinstance(new_content, list):
                     new_content = item_module.alias_dict_from_tuples(new_content)    
-                item_obj = item_module.add_aliases_to_item_object(new_content, item_obj)
+                product = item_module.add_aliases_to_item_object(new_content, product)
             elif method_name=="biblio":
-                updated_item_doc = item_module.update_item_with_new_biblio(new_content, item_obj, provider_name)
+                updated_item_doc = item_module.update_item_with_new_biblio(new_content, product, provider_name)
             elif method_name=="metrics":
                 for metric_name in new_content:
-                    item_obj = item_module.add_metric_to_item_object(metric_name, new_content[metric_name], item_obj)
+                    item_obj = item_module.add_metric_to_item_object(metric_name, new_content[metric_name], product)
             else:
                 logger.warning(u"ack, supposed to save something i don't know about: " + str(new_content))
 
@@ -217,13 +218,17 @@ def after_refresh_complete(tiid, task_ids):
     logger.info(u"here in after_refresh_complete with {tiid}".format(
         tiid=tiid))
 
-    item_obj = item_module.Item.query.get(tiid)
+    product = Product.query.get(tiid)
 
-    if item_obj:
-        add_product_embed_markup(item_obj.tiid)
-        item_obj.set_last_refresh_finished(myredis)
-        db.session.add(item_obj)
-        db.session.commit()
+    if not product:
+        logger.warning(u"Empty product in after_refresh_complete for tiid {tiid}".format(
+           tiid=tiid))
+        return None
+
+    product.embed_markup = product.get_embed_markup() 
+    product.set_last_refresh_finished(myredis)
+    db.session.merge(product)
+    db.session.commit()
 
 
 

@@ -3,16 +3,20 @@ import shortuuid, datetime, hashlib, threading, json, time, copy, re
 from collections import defaultdict
 from celery.result import AsyncResult
 
-from totalimpact.providers.provider import ProviderFactory
 from totalimpact.providers.provider import ProviderTimeout, ProviderServerError
 from totalimpact.providers.provider import normalize_alias
-from totalimpact import unicode_helpers
+import unicode_helpers
 
 from totalimpact import default_settings
-from totalimpact.utils import Retry
+from retry import Retry
 
 from totalimpact import tiredis
-from totalimpact import REDIS_MAIN_DATABASE_NUMBER
+from totalimpact.tiredis import REDIS_MAIN_DATABASE_NUMBER
+
+from totalimpactwebapp.product import Product
+from totalimpactwebapp.biblio import BiblioRow
+from totalimpactwebapp.aliases import AliasRow
+from totalimpactwebapp.snap import Snap
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import FlushError
@@ -20,7 +24,7 @@ from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy.sql import text    
 
 from totalimpact import tiredis
-from totalimpact import db
+from totalimpactwebapp import db
 
 from totalimpactwebapp import json_sqlalchemy
 
@@ -36,8 +40,6 @@ logger = logging.getLogger('ti.item')
 #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 
-all_static_meta = ProviderFactory.get_all_static_meta()
-
 
 
 class NotAuthenticatedError(Exception):
@@ -45,7 +47,7 @@ class NotAuthenticatedError(Exception):
 
 
 def delete_item(tiid):
-    item_object = Item.from_tiid(tiid)
+    item_object = CoreItem.from_tiid(tiid)
     db.session.delete(item_object)
     try:
         db.session.commit()
@@ -71,7 +73,7 @@ def create_metric_objects(old_style_snap_dict):
         for collected_date in snap_details["values"]["raw_history"]:
             new_style_snap_dict["last_collected_date"] = collected_date
             new_style_snap_dict["raw_value"] = metric_details["values"]["raw_history"][collected_date]
-            snap_object = Snap(**new_style_snap_dict)
+            snap_object = CoreSnap(**new_style_snap_dict)
             new_snap_objects += [snap_object]    
 
     return new_snap_objects
@@ -86,7 +88,7 @@ def create_biblio_objects(list_of_old_style_biblio_dicts, provider=None, collect
             provider_number += 1
             provider = "unknown" + str(provider_number)
         for biblio_name in biblio_dict:
-            biblio_object = Biblio(biblio_name=biblio_name, 
+            biblio_object = CoreBiblio(biblio_name=biblio_name, 
                     biblio_value=biblio_dict[biblio_name], 
                     provider=provider, 
                     collected_date=collected_date)
@@ -101,7 +103,7 @@ def create_alias_objects(old_style_alias_dict, collected_date=datetime.datetime.
     for alias_tuple in alias_tuples:
         (namespace, nid) = alias_tuple
         if nid and namespace and (namespace != "biblio"):
-            new_alias_objects += [Alias(alias_tuple=alias_tuple, collected_date=collected_date)]
+            new_alias_objects += [CoreAlias(alias_tuple=alias_tuple, collected_date=collected_date)]
     return new_alias_objects
 
 
@@ -111,16 +113,16 @@ def create_new_item_object_from_item_doc(item_doc, skip_if_exists=False, commit=
     # logger.debug(u"in create_new_item_object_from_item_doc for {tiid}".format(
     #     tiid=item_doc["_id"]))        
 
-    new_item_object = Item.from_tiid(item_doc["_id"])
+    new_item_object = CoreItem.from_tiid(item_doc["_id"])
     if new_item_object and skip_if_exists:
         return new_item_object
     else:
-        new_item_object = Item.create_from_old_doc(item_doc)
+        new_item_object = CoreItem.create_from_old_doc(item_doc)
     db.session.merge(new_item_object)
 
     alias_dict = item_doc["aliases"]
     new_alias_objects = create_alias_objects(alias_dict, item_doc["last_modified"])
-    new_item_object.aliases = new_alias_objects
+    new_item_object.alias_rows = new_alias_objects
 
     if commit:
         try:
@@ -133,24 +135,14 @@ def create_new_item_object_from_item_doc(item_doc, skip_if_exists=False, commit=
 
     # have to set it because after the commit the metrics aren't set any more
     if new_metric_objects:
-        new_item_object.metrics = new_metric_objects
+        new_item_object.core_metrics = new_metric_objects
 
     return new_item_object
 
 
 
 
-class Snap(db.Model):
-    snap_id = db.Column(db.Text, primary_key=True)
-    tiid = db.Column(db.Text, db.ForeignKey('item.tiid'))
-    provider = db.Column(db.Text)
-    interaction = db.Column(db.Text)
-    last_collected_date = db.Column(db.DateTime())
-    raw_value = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
-    drilldown_url = db.Column(db.Text)
-    first_collected_date = db.Column(db.DateTime())
-    number_times_collected = db.Column(db.Integer)
-    query_type = None
+class CoreSnap(Snap):
 
     def __init__(self, **kwargs):
         if not "last_collected_date" in kwargs:
@@ -161,7 +153,7 @@ class Snap(db.Model):
             self.snap_id = shortuuid.uuid()
         if "query_type" in kwargs:
             self.query_type = kwargs["query_type"]
-        super(Snap, self).__init__(**kwargs)
+        super(CoreSnap, self).__init__(**kwargs)
 
     #remove after migration complete
     @property
@@ -178,7 +170,7 @@ class Snap(db.Model):
             provider=self.provider, interaction=self.interaction)
 
     def __repr__(self):
-        return '<Snap {tiid} {provider}:{interaction}={raw_value} on {last_collected_date} via {query_type}>'.format(
+        return '<CoreSnap {tiid} {provider}:{interaction}={raw_value} on {last_collected_date} via {query_type}>'.format(
             provider=self.provider, 
             interaction=self.interaction, 
             raw_value=self.raw_value, 
@@ -187,15 +179,10 @@ class Snap(db.Model):
             tiid=self.tiid)
 
 
-class Biblio(db.Model):
-    tiid = db.Column(db.Text, db.ForeignKey('item.tiid'), primary_key=True, index=True)
-    provider = db.Column(db.Text, primary_key=True)
-    biblio_name = db.Column(db.Text, primary_key=True)
-    biblio_value = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
-    collected_date = db.Column(db.DateTime())
+class CoreBiblio(BiblioRow):
 
     def __init__(self, **kwargs):
-        # logger.debug(u"new Biblio {kwargs}".format(
+        # logger.debug(u"new CoreBiblio {kwargs}".format(
         #     kwargs=kwargs))                
 
         if "collected_date" in kwargs:
@@ -205,10 +192,10 @@ class Biblio(db.Model):
         if not "provider" in kwargs:
             self.provider = "unknown"
            
-        super(Biblio, self).__init__(**kwargs)
+        super(CoreBiblio, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<Biblio {biblio_name}, {item}>'.format(
+        return '<CoreBiblio {biblio_name}, {item}>'.format(
             biblio_name=self.biblio_name, 
             item=self.item)
 
@@ -226,14 +213,10 @@ class Biblio(db.Model):
         return response
 
 
-class Alias(db.Model):
-    tiid = db.Column(db.Text, db.ForeignKey('item.tiid'), primary_key=True, index=True)
-    namespace = db.Column(db.Text, primary_key=True)
-    nid = db.Column(db.Text, primary_key=True)
-    collected_date = db.Column(db.DateTime())
+class CoreAlias(AliasRow):
 
     def __init__(self, **kwargs):
-        # logger.debug(u"new Alias {kwargs}".format(
+        # logger.debug(u"new CoreAlias {kwargs}".format(
         #     kwargs=kwargs))                
 
         if "alias_tuple" in kwargs:
@@ -246,7 +229,7 @@ class Alias(db.Model):
         else:   
             self.collected_date = datetime.datetime.utcnow()
 
-        super(Alias, self).__init__(**kwargs)
+        super(CoreAlias, self).__init__(**kwargs)
         
     @hybrid_property
     def alias_tuple(self):
@@ -264,7 +247,7 @@ class Alias(db.Model):
         self.nid = nid        
 
     def __repr__(self):
-        return '<Alias {item}, {alias_tuple}>'.format(
+        return '<CoreAlias {item}, {alias_tuple}>'.format(
             item=self.item,
             alias_tuple=self.alias_tuple)
 
@@ -294,28 +277,10 @@ def add_metrics_data(metric_name, metrics_method_response, item_doc, timestamp=N
     return item_doc
 
 
-class Item(db.Model):
-    profile_id = db.Column(db.Integer)
-    tiid = db.Column(db.Text, primary_key=True)
-    created = db.Column(db.DateTime())
-    last_modified = db.Column(db.DateTime())
-    last_update_run = db.Column(db.DateTime())
-    last_refresh_started = db.Column(db.DateTime())  #ALTER TABLE item ADD last_refresh_started timestamp
-    last_refresh_finished = db.Column(db.DateTime()) #ALTER TABLE item ADD last_refresh_finished timestamp
-    last_refresh_status = db.Column(db.Text) #ALTER TABLE item ADD last_refresh_status text
-    last_refresh_failure_message = db.Column(json_sqlalchemy.JSONAlchemy(db.Text)) #ALTER TABLE item ADD last_refresh_failure_message text
-    embed_markup = db.Column(db.Text)
-
-    aliases = db.relationship('Alias', lazy='subquery', cascade="all, delete-orphan",
-        backref=db.backref("item", lazy="subquery"))
-    biblios = db.relationship('Biblio', lazy='subquery', cascade="all, delete-orphan",
-        backref=db.backref("item", lazy="subquery"))
-    metrics = db.relationship('Snap', lazy='noload', cascade="all, delete-orphan",
-        backref=db.backref("item", lazy="noload"))
-    metrics_query = db.relationship('Snap', lazy='dynamic')
+class CoreItem(Product):
 
     def __init__(self, **kwargs):
-        # logger.debug(u"new Item {kwargs}".format(
+        # logger.debug(u"new CoreItem {kwargs}".format(
         #     kwargs=kwargs))                
 
         if "tiid" in kwargs:
@@ -338,10 +303,10 @@ class Item(db.Model):
         else:   
             self.last_update_run = now
 
-        super(Item, self).__init__(**kwargs)
+        super(CoreItem, self).__init__(**kwargs)
 
     def __repr__(self):
-        return '<Item {tiid}>'.format(
+        return '<CoreItem {tiid}>'.format(
             tiid=self.tiid)
 
     @classmethod
@@ -350,31 +315,31 @@ class Item(db.Model):
         if not item:
             return None
         if with_metrics:
-            item.metrics = item.metrics_query.all()
+            item.core_metrics = item.core_metrics_query.all()
         return item
 
     @property
     def alias_tuples(self):
-        return [alias.alias_tuple for alias in self.aliases]
+        return [alias.alias_tuple for alias in self.alias_rows]
 
     @property
     def biblio_dict(self):
         response = {}
-        for biblio in self.biblios:
+        for biblio in self.biblio_rows:
             response[biblio.biblio_name] = biblio.biblio_value
         return response
 
     @property
     def biblio_dicts_per_provider(self):
         response = defaultdict(dict)
-        for biblio in self.biblios:
+        for biblio in self.biblio_rows:
             response[biblio.provider][biblio.biblio_name] = biblio.biblio_value
         return response        
 
     @property
     def publication_date(self):
         publication_date = None
-        for biblio in self.biblios:
+        for biblio in self.biblio_rows:
             if biblio.biblio_name == "date":
                 publication_date = biblio.biblio_value
                 continue
@@ -390,10 +355,10 @@ class Item(db.Model):
         return (self.publication_date < mydate.isoformat())
 
     def has_user_provided_biblio(self):
-        return any([biblio.provider=='user_provided' for biblio in self.biblios])
+        return any([biblio.provider=='user_provided' for biblio in self.biblio_rows])
 
     def has_free_fulltext_url(self):
-        return any([biblio.biblio_name=='free_fulltext_url' for biblio in self.biblios])
+        return any([biblio.biblio_name=='free_fulltext_url' for biblio in self.biblio_rows])
 
     def set_last_refresh_start(self):
         self.last_refresh_started = datetime.datetime.utcnow()
@@ -401,12 +366,6 @@ class Item(db.Model):
         self.last_refresh_status = u"STARTED"
         self.last_refresh_failure_message = None
 
-    def set_last_refresh_finished(self, myredis):
-        redis_refresh_status = refresh_status(self.tiid, myredis)
-        if not redis_refresh_status["short"].startswith(u"SUCCESS"):
-            self.last_refresh_failure_message = redis_refresh_status["long"]
-        self.last_refresh_status = redis_refresh_status["short"]
-        self.last_refresh_finished = datetime.datetime.utcnow()
 
     @classmethod
     def create_from_old_doc(cls, doc):
@@ -418,14 +377,14 @@ class Item(db.Model):
         for key in doc_copy.keys():
             if key not in ["tiid", "created", "last_modified", "last_update_run"]:
                 del doc_copy[key]
-        new_item_object = Item(**doc_copy)
+        new_item_object = CoreItem(**doc_copy)
 
         return new_item_object
 
     @property
     def biblio_dict(self):
         biblio_dict = {}
-        for biblio_obj in self.biblios:
+        for biblio_obj in self.biblio_rows:
             if (biblio_obj.biblio_name not in biblio_dict) or (biblio_obj.provider == "user_provided"):
                     biblio_dict[biblio_obj.biblio_name] = biblio_obj.biblio_value    
         return biblio_dict
@@ -448,7 +407,7 @@ class Item(db.Model):
             item_doc["aliases"]["biblio"] = [item_doc["biblio"]]
 
         item_doc["metrics"] = {}
-        for metric in self.metrics:
+        for metric in self.core_metrics:
             metric_name = metric.provider + ":" + metric.metric_name
             metrics_method_response = (metric.raw_value, metric.drilldown_url)
             item_doc = add_metrics_data(metric_name, metrics_method_response, item_doc, metric.collected_date.isoformat())
@@ -482,19 +441,6 @@ def clean_id(nid):
         pass
     return(nid)
 
-def get_item(tiid, myrefsets, myredis):
-    item_obj = Item.from_tiid(tiid)
-
-    if not item_obj:
-        return None
-    try:
-        item_for_client = build_item_for_client(item_obj, myrefsets, myredis)
-    except Exception, e:
-        item_for_client = None
-        logger.error(u"Exception %s: Skipping item, unable to build %s, %s" % (e.__repr__(), tiid, str(item_for_client)))
-    return item_for_client
-
-
 
 def diff_for_dict_metrics(previous_json, current_json):
     previous = json.loads(previous_json)
@@ -514,117 +460,6 @@ def diff_for_dict_metrics(previous_json, current_json):
         return diff
 
 
-def build_item_for_client(item_metrics_dict, myrefsets, myredis):
-    item_obj = item_metrics_dict["item_obj"]
-    metrics_summaries = item_metrics_dict["metrics_summaries"]
-    item = item_obj.as_old_doc()
-
-    # logger.debug(u"in build_item_for_client {tiid}".format(
-    #     tiid=item["_id"]))
-
-    try:
-        (genre, host) = decide_genre(item['aliases'])
-        item["biblio"]['genre'] = genre
-    except (KeyError, TypeError):
-        logger.error(u"Skipping item, unable to lookup aliases or biblio in %s" % str(item))
-        return None
-
-    try:
-        if "authors" in item["biblio"]:
-            del item["biblio"]["authors_literal"]
-    except (KeyError, TypeError):
-        pass    
-
-    metrics = defaultdict(dict)
-
-    for fully_qualified_metric_name in metrics_summaries:
-        try:
-            most_recent_metric_obj = metrics_summaries[fully_qualified_metric_name]["most_recent"]
-            metric_name = fully_qualified_metric_name
-            metrics[metric_name]["provenance_url"] = most_recent_metric_obj.drilldown_url
-        except (KeyError, ValueError, AttributeError, TypeError):
-            metric_name = None
-
-        if metric_name and (metric_name in all_static_meta.keys()):  # make sure we still support this metrics type
-            # add static data
-
-            metrics[metric_name]["static_meta"] = all_static_meta[metric_name]  
-
-            if most_recent_metric_obj:
-                metrics[metric_name]["historical_values"] = {}
-                raw = as_int_or_float_if_possible(most_recent_metric_obj.raw_value)
-                if isinstance(raw, basestring):
-                    try:
-                        raw = json.loads(raw)
-                    except ValueError:
-                        pass
-
-                metrics[metric_name]["historical_values"]["current"] = {
-                        "collected_date": most_recent_metric_obj.collected_date.isoformat(),
-                        "raw": raw
-                        }
-
-                metrics[metric_name]["values"] = {"raw": raw}
-                earlier_metric_obj = None
-                raw_diff = None
-
-                try:
-                    earlier_metric_obj = metrics_summaries[fully_qualified_metric_name]["7_days_ago"]
-                    earlier_metric_raw = as_int_or_float_if_possible(earlier_metric_obj.raw_value)
-                    metrics[metric_name]["historical_values"]["previous"] = {
-                            "collected_date": earlier_metric_obj.collected_date.isoformat(),
-                            "raw": earlier_metric_raw
-                            }
-                    raw_diff = raw - earlier_metric_raw
-                except (KeyError, ValueError, AttributeError, TypeError):
-                    # try:
-                    #     raw_diff = diff_for_dict_metrics(earlier_metric_obj.raw_value, most_recent_metric_obj.raw_value)
-                    # except (KeyError, ValueError, AttributeError, TypeError):
-                    #     pass
-                    metrics[metric_name]["historical_values"]["previous"] = {
-                            "collected_date": None,
-                            "raw": None
-                            }
-
-                try:
-                    # need to round the dates because python difference returns number of full days between
-                    rounded_recent_date = most_recent_metric_obj.collected_date.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
-                    rounded_earlier_date = earlier_metric_obj.collected_date.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
-
-                    raw_diff_days = (rounded_recent_date - rounded_earlier_date).days
-                except (KeyError, ValueError, AttributeError, TypeError):
-                    item_created_date = item_obj.created.replace(hour = 0, minute = 0, second = 0, microsecond = 0)
-                    raw_diff_days = (rounded_recent_date - item_created_date).days
-
-                    if raw_diff_days > 7:
-                        raw_diff = raw
-                        raw_diff_days = 7.2  # special value, assumes that things are updated once a week and this is first metric
-
-                metrics[metric_name]["historical_values"]["diff"] = {
-                    "days": raw_diff_days,
-                    "raw": raw_diff
-                    }
-    
-                try:
-                    # add normalization values
-                    # need year to calculate normalization below
-                    year = int(item["biblio"]["year"])
-                    if year < 2002:
-                        year = 2002
-                    normalized_values = get_normalized_values(genre, host, year, metric_name, raw, myrefsets)
-                    metrics[metric_name]["values"].update(normalized_values)
-                except (KeyError, ValueError, AttributeError):
-                    #logger.error(u"No good year in biblio for item {tiid}, no normalization".format(
-                    #    tiid=item["_id"]))
-                    pass
-
-
-    # ditch metrics we don't have static_meta for:
-
-    item["metrics"] = {k:v for k, v in metrics.iteritems() if "static_meta" in v}
-    item["refresh_status"] = refresh_status(item["_id"], myredis)["long"]
-
-    return item
 
 def as_int_or_float_if_possible(input_value):
     value = input_value
@@ -640,8 +475,8 @@ def as_int_or_float_if_possible(input_value):
 
 
 
-def add_metric_to_item_object(full_metric_name, metrics_method_response, item_obj):
-    tiid = item_obj.tiid
+def add_metric_to_item_object(full_metric_name, metrics_method_response, product):
+    tiid = product.tiid
 
     (metric_value, provenance_url) = metrics_method_response
     (provider, interaction) = full_metric_name.split(":")
@@ -654,7 +489,7 @@ def add_metric_to_item_object(full_metric_name, metrics_method_response, item_ob
         "drilldown_url": provenance_url,
         "last_collected_date": datetime.datetime.utcnow()
     }    
-    snap_object = Snap(**new_style_metric_dict)
+    snap_object = CoreSnap(**new_style_metric_dict)
     db.session.merge(snap_object)
 
     try:
@@ -665,20 +500,24 @@ def add_metric_to_item_object(full_metric_name, metrics_method_response, item_ob
             tiid=tiid, 
             message=e.message)) 
 
-    return item_obj
+    return product
 
 
 
 
-def add_aliases_to_item_object(aliases_dict, item_obj):
+def add_aliases_to_item_object(aliases_dict, product):
     # logger.debug(u"in add_aliases_to_item_object for {tiid}".format(
     #     tiid=item_obj.tiid))        
 
-    alias_objects = create_alias_objects(aliases_dict)
+    alias_rows = create_alias_objects(aliases_dict)
 
-    for alias_obj in alias_objects:
-        if not alias_obj.alias_tuple in item_obj.alias_tuples:
-            item_obj.aliases.append(alias_obj)    
+    for alias_row in alias_rows:
+        matching_row = AliasRow.query.filter_by(
+            tiid=product.tiid, 
+            namespace=alias_row.namespace, 
+            nid=alias_row.nid)
+        if not matching_row.first():
+            product.alias_rows.append(alias_row)    
 
     try:
         db.session.commit()
@@ -687,7 +526,7 @@ def add_aliases_to_item_object(aliases_dict, item_obj):
         logger.warning(u"Fails Integrity check in add_aliases_to_item_object for {tiid}, rolling back.  Message: {message}".format(
             tiid=tiid, 
             message=e.message)) 
-    return item_obj
+    return product
 
 
 def add_biblio(tiid, biblio_name, biblio_value, provider_name="user_provided", collected_date=datetime.datetime.utcnow()):
@@ -695,14 +534,14 @@ def add_biblio(tiid, biblio_name, biblio_value, provider_name="user_provided", c
     # logger.debug(u"in add_biblio for {tiid} {biblio_name}".format(
     #     tiid=tiid, biblio_name=biblio_name))
 
-    biblio_object = Biblio.query.filter_by(tiid=tiid, provider=provider_name, biblio_name=biblio_name).first()
+    biblio_object = CoreBiblio.query.filter_by(tiid=tiid, provider=provider_name, biblio_name=biblio_name).first()
     if biblio_object:
         # logger.debug(u"found a previous row in add_biblio for {tiid} {biblio_name}, so removing it".format(
         #     tiid=tiid, biblio_name=biblio_name))
         biblio_object.biblio_value = biblio_value
         biblio_object.collected_date = collected_date
     else:
-        biblio_object = Biblio(tiid=tiid, 
+        biblio_object = CoreBiblio(tiid=tiid, 
                 biblio_name=biblio_name, 
                 biblio_value=biblio_value, 
                 provider=provider_name, 
@@ -720,7 +559,7 @@ def add_biblio(tiid, biblio_name, biblio_value, provider_name="user_provided", c
     # logger.debug(u"finished saving add_biblio for {tiid} {biblio_name}".format(
     #     tiid=tiid, biblio_name=biblio_name))
 
-    item_obj = Item.from_tiid(tiid)
+    item_obj = CoreItem.from_tiid(tiid)
 
     # logger.debug(u"got object for add_biblio for {tiid} {biblio_name}".format(
     #     tiid=tiid, biblio_name=biblio_name))
@@ -729,29 +568,27 @@ def add_biblio(tiid, biblio_name, biblio_value, provider_name="user_provided", c
 
 
 
-def add_biblio_to_item_object(new_biblio_dict, item_doc, provider_name):
-    tiid = item_doc["_id"]
-    item_obj = Item.from_tiid(tiid)
+def add_biblio_to_item_object(biblio_dict_to_add, product, provider_name):
 
-    # logger.debug(u"in add_biblio_to_item_object for {tiid} {provider_name}, /biblio_print {new_biblio_dict}".format(
-    #     tiid=tiid, 
+    # logger.debug(u"in add_biblio_to_item_object for {tiid} {provider_name}, /biblio_print {biblio_dict_to_add}".format(
+    #     tiid=product.tiid, 
     #     provider_name=provider_name,
-    #     new_biblio_dict=new_biblio_dict))        
+    #     biblio_dict_to_add=biblio_dict_to_add))        
 
-    new_biblio_objects = create_biblio_objects([new_biblio_dict], provider=provider_name)
+    new_biblio_objects = create_biblio_objects([biblio_dict_to_add], provider=provider_name)
     for new_biblio_obj in new_biblio_objects:
-        if not Biblio.query.get((tiid, provider_name, new_biblio_obj.biblio_name)):
-            item_obj.biblios += [new_biblio_obj]    
+        if not BiblioRow.query.get((product.tiid, provider_name, new_biblio_obj.biblio_name)):
+            product.biblio_rows += [new_biblio_obj]    
 
     try:
         db.session.commit()
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
         logger.warning(u"Fails Integrity check in add_biblio_to_item_object for {tiid}, rolling back.  Message: {message}".format(
-            tiid=tiid, 
+            tiid=product.tiid, 
             message=e.message)) 
         
-    return item_obj
+    return product
 
 
 
@@ -776,17 +613,16 @@ def get_biblio_to_update(old_biblio, new_biblio):
 
 
 
-def update_item_with_new_biblio(new_biblio_dict, item_obj, provider_name=None):
-    item_doc = item_obj.as_old_doc()
+def update_item_with_new_biblio(new_biblio_dict, product, provider_name=None):
+    old_biblio_dict = product.biblio.to_dict()
 
     # return None if no changes
     # don't change if biblio already there, except in special cases
 
-    response = get_biblio_to_update(item_doc["biblio"], new_biblio_dict)
-    if response:
-        item_doc["biblio"] = response
-        item_obj = add_biblio_to_item_object(new_biblio_dict, item_doc, provider_name=provider_name)
-    return(item_obj)
+    biblio_dict_to_add = get_biblio_to_update(old_biblio_dict, new_biblio_dict)
+    if biblio_dict_to_add:
+        product = add_biblio_to_item_object(biblio_dict_to_add, product, provider_name=provider_name)
+    return(product)
 
 
 def make():
@@ -966,14 +802,6 @@ def merge_alias_dicts(aliases1, aliases2):
                 merged_aliases[ns] = [nid]
     return merged_aliases
 
-def get_metric_names(providers_config):
-    full_metric_names = []
-    providers = ProviderFactory.get_providers(providers_config)
-    for provider in providers:
-        metric_names = provider.metric_names()
-        for metric_name in metric_names:
-            full_metric_names.append(provider.provider_name + ':' + metric_name)
-    return full_metric_names
 
 def get_normalized_values(genre, host, year, metric_name, value, myrefsets):
     # Will be passed None as myrefsets type when loading items in reference collections :)
@@ -1016,84 +844,6 @@ def get_normalized_values(genre, host, year, metric_name, value, myrefsets):
             
     return response
 
-def retrieve_items(tiids, myrefsets, myredis, mydao):
-    something_currently_updating = False
-    items = []
-    for tiid in tiids:
-        try:
-            item = get_item(tiid, myrefsets, myredis)
-        except (LookupError, AttributeError), e:
-            logger.warning(u"Got an error looking up tiid '{tiid}'; error: {error}".format(
-                    tiid=tiid, error=e.__repr__()))
-            raise
-
-        if not item:
-            logger.warning(u"Looks like there's no item with tiid '{tiid}': ".format(
-                    tiid=tiid))
-            raise LookupError
-            
-        item["refresh_status"] = refresh_status(tiid, myredis)["long"]
-        items.append(item)
-
-    something_currently_updating = not collection.is_all_done(tiids, myredis)
-    return (items, something_currently_updating)
-
-
-def refresh_status(tiid, myredis):
-    task_ids = myredis.get_provider_task_ids(tiid)
-
-    if not task_ids:
-        status = "SUCCESS: no recent refresh"
-        return {"short": status, "long": status}
-
-    statuses = {}
-
-    if "STARTED" in task_ids:
-        if (len(task_ids) > 1):
-            task_ids.remove("STARTED")
-        else:
-            status = "started_queueing"
-            return {"short": status, "long": status}
-
-    for task_id in task_ids:
-        task_result = AsyncResult(task_id)
-        try:
-            state = task_result.state
-        except AttributeError:
-            state = "unknown_state" 
-        
-        statuses[task_id] = state
-
-    # logger.debug(u"refresh_status statuses: tiid={tiid}, statuses={statuses}".format(
-    #     tiid=tiid, statuses=statuses))
-
-    done_updating = all([(status.startswith("SUCCESS") or status.startswith("FAILURE")) for status in statuses.values()])
-    has_failures = any([status.startswith("FAILURE") for status in statuses.values()])
-    has_pending = any([status.startswith("PENDING") for status in statuses.values()])
-    has_started = any([status.startswith("STARTED") for status in statuses.values()])
-
-    status_short = "unknown"
-    if done_updating and not has_failures:
-        status_short = u"SUCCESS: refresh finished"
-    elif done_updating and has_failures:
-        status_short = u"SUCCESS with FAILURES"
-    elif has_failures:
-        status_short = u"SUCCESS with FAILURES (and not all providers ran)"
-    elif has_pending:
-        status_short = u"PENDING"
-    elif has_started:
-        status_short = u"STARTED"
-
-    status_long = u"{status_short}; task_ids: {statuses}".format(
-        status_short=status_short, statuses=statuses)
-
-
-    # if not refresh_status.startswith("SUCCESS"):
-    #     # logger.debug(u"refresh_status: task_id={task_id}, refresh_status={refresh_status}, tiid={tiid}".format(
-    #     #     task_id=task_id, refresh_status=refresh_status, tiid=tiid))
-    #     pass
-
-    return {"short": status_short, "long": status_long}
 
 
 
@@ -1110,7 +860,7 @@ def get_tiids_from_aliases(aliases):
             alias_key = (ns, json.dumps(nid))
             tiid = get_tiid_by_biblio(nid)        
         else:
-            alias_obj = Alias.query.filter_by(namespace=ns, nid=nid).first()
+            alias_obj = CoreAlias.query.filter_by(namespace=ns, nid=nid).first()
             try:
                 tiid = alias_obj.tiid
                 # logger.debug(u"Found a tiid for {nid} in get_tiid_by_alias: {tiid}".format(
@@ -1124,18 +874,18 @@ def get_tiids_from_aliases(aliases):
 
 # forgoes some checks for speed because only used for just-created items
 def add_alias_to_new_item(alias_tuple, provider=None):
-    item_obj = Item()
+    item_obj = CoreItem()
     (namespace, nid) = alias_tuple
     if namespace=="biblio":
         if not provider:
             provider = "unknown1"
         for biblio_name in nid:
-                biblio_object = Biblio(biblio_name=biblio_name, 
+                biblio_object = CoreBiblio(biblio_name=biblio_name, 
                         biblio_value=nid[biblio_name], 
                         provider=provider)
-                item_obj.biblios += [biblio_object]
+                item_obj.biblio_rows += [biblio_object]
     else:
-        item_obj.aliases = [Alias(alias_tuple=alias_tuple)]
+        item_obj.alias_rows = [CoreAlias(alias_tuple=alias_tuple)]
     return item_obj  
 
 
@@ -1176,7 +926,7 @@ def create_tiids_from_aliases(profile_id, aliases, analytics_credentials, provid
 def get_items_from_tiids(tiids, with_metrics=True):
     items = []
     for tiid in tiids:
-        item = Item.from_tiid(tiid, with_metrics)
+        item = CoreItem.from_tiid(tiid, with_metrics)
         if item:
             items += [item]
         else:
@@ -1214,7 +964,7 @@ def get_tiid_by_alias(ns, nid, mydao=None):
     else:
         # change input to lowercase etc
         (ns, nid) = canonical_alias_tuple((ns, nid))
-        alias_obj = Alias.query.filter_by(namespace=ns, nid=nid).first()
+        alias_obj = CoreAlias.query.filter_by(namespace=ns, nid=nid).first()
         try:
             tiid = alias_obj.tiid
             # logger.debug(u"Found a tiid for {nid} in get_tiid_by_alias: {tiid}".format(
@@ -1275,8 +1025,8 @@ def clean_alias_tuple_for_deduplication(alias_tuple):
 
 def alias_tuples_for_deduplication(item):
     alias_tuples = []
-    if item.aliases:
-        alias_tuples = [alias.alias_tuple for alias in item.aliases]
+    if item.alias_rows:
+        alias_tuples = [alias.alias_tuple for alias in item.alias_rows]
     biblio_dicts_per_provider = item.biblio_dicts_per_provider
     for provider in biblio_dicts_per_provider:
         alias_tuple = ("biblio", biblio_dicts_per_provider[provider])
@@ -1295,7 +1045,7 @@ def aliases_not_in_existing_tiids(retrieved_aliases, existing_tiids):
     new_aliases = []
     if not existing_tiids:
         return retrieved_aliases
-    existing_items = Item.query.filter(Item.tiid.in_(existing_tiids)).all()
+    existing_items = CoreItem.query.filter(CoreItem.tiid.in_(existing_tiids)).all()
 
     aliases_from_all_items = []
     for item in existing_items:

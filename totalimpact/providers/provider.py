@@ -3,10 +3,7 @@
 from totalimpact import cache as cache_module
 from totalimpact import providers
 from totalimpact import default_settings
-from totalimpact import utils
-from totalimpact import app
-from totalimpact import db
-from totalimpact.unicode_helpers import remove_nonprinting_characters
+from unicode_helpers import remove_nonprinting_characters
 
 import requests, os, time, threading, sys, traceback, importlib, urllib, logging, itertools
 import simplejson
@@ -22,6 +19,8 @@ logger = logging.getLogger("ti.provider")
 
 # Requests' logging is too noisy
 requests_log = logging.getLogger("requests").setLevel(logging.WARNING) 
+
+USER_AGENT = "Impactstory" # User-Agent string to use on HTTP requests
 
 
 class CachedResponse:
@@ -79,31 +78,43 @@ def normalize_alias(alias):
 
     nid = remove_nonprinting_characters(nid)
     nid = nid.strip()  # also remove spaces
+    
+    from totalimpact.providers import crossref
+    from totalimpact.providers import pubmed
+    from totalimpact.providers import arxiv
+    from totalimpact.providers import webpage
+
     if is_doi(nid):
-        nid = providers.crossref.clean_doi(nid)
+        nid = crossref.clean_doi(nid)
     elif is_pmid(nid):
-        nid = providers.pubmed.clean_pmid(nid)
+        nid = pubmed.clean_pmid(nid)
     elif is_arxiv(nid):
-        nid = providers.arxiv.clean_arxiv_id(nid)
+        nid = arxiv.clean_arxiv_id(nid)
     elif is_url(nid):
-        nid = providers.webpage.clean_url(nid)
+        nid = webpage.clean_url(nid)
 
     return (ns, nid)
 
 
 def get_aliases_from_product_id_strings(product_id_strings):
     aliases = []
+
+    from totalimpact.providers import crossref
+    from totalimpact.providers import pubmed
+    from totalimpact.providers import arxiv
+    from totalimpact.providers import webpage
+
     for nid in product_id_strings:
         nid = remove_nonprinting_characters(nid)
         nid = nid.strip()  # also remove spaces
         if is_doi(nid):
-            aliases += providers.crossref.Crossref().member_items(nid)
+            aliases += crossref.Crossref().member_items(nid)
         elif is_pmid(nid):
-            aliases += providers.pubmed.Pubmed().member_items(nid)
+            aliases += pubmed.Pubmed().member_items(nid)
         elif is_arxiv(nid):
-            aliases += providers.arxiv.Arxiv().member_items(nid)
+            aliases += arxiv.Arxiv().member_items(nid)
         elif is_url(nid):
-            aliases += providers.webpage.Webpage().member_items(nid)
+            aliases += webpage.Webpage().member_items(nid)
     return aliases
 
 
@@ -134,6 +145,8 @@ def import_products(provider_name, import_input):
 
 
 def is_issn_in_doaj(issn):
+    from totalimpactwebapp import db
+
     issn = issn.replace("-", "")
     raw_sql = text("""SELECT issn from doaj_issn_lookup where issn=:issn""")
     result = db.session.execute(raw_sql, params={
@@ -652,7 +665,7 @@ class Provider(object):
         """ Returns a requests.models.Response object or raises exception
             on failure. Will cache requests to the same URL. """
 
-        headers["User-Agent"] = app.config["USER_AGENT"]
+        headers["User-Agent"] = USER_AGENT
 
         if cache_enabled:
             cache = cache_module.Cache(self.max_cache_duration)
@@ -699,7 +712,7 @@ class Provider(object):
         """ Returns a requests.models.Response object or raises exception
             on failure. Will cache requests to the same URL. """
 
-        headers["User-Agent"] = app.config["USER_AGENT"]
+        headers["User-Agent"] = USER_AGENT
 
         # use the cache if the config parameter is set and the arg allows it
         if cache_enabled:

@@ -1,6 +1,6 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError
-from totalimpact.unicode_helpers import remove_nonprinting_characters
+from unicode_helpers import remove_nonprinting_characters
 
 import os, re
 

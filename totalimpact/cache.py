@@ -6,7 +6,7 @@ import json
 from cPickle import PicklingError
 import redis
 
-from totalimpact import REDIS_CACHE_DATABASE_NUMBER
+from totalimpact.tiredis import REDIS_CACHE_DATABASE_NUMBER
 
 # set up logging
 logger = logging.getLogger("ti.cache")

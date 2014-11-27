@@ -15,7 +15,9 @@ class AliasRow(db.Model):
     def __init__(self, **kwargs):
         super(AliasRow, self).__init__(**kwargs)
 
-
+    @cached_property
+    def alias_tuple(self):
+        return (self.namespace, self.nid)
 
 
 class Aliases(object):

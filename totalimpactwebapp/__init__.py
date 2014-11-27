@@ -123,6 +123,7 @@ commit(db)
 
 from totalimpactwebapp import views
 
+
 try:
     from totalimpact import extra_schema 
 except exc.ProgrammingError:

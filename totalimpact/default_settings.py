@@ -35,7 +35,6 @@ PROVIDERS = [
     # don't-have-biblio providers go here, alphabetical order
     ("altmetric_com", {}),    
     ("citeulike", {}),   
-    ("delicious", {}),   
     ("plosalm", {}),
     ("plossearch", {}),
     ("scopus", {}),

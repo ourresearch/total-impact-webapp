@@ -3,7 +3,7 @@ import json, re
 
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderTimeout, ProviderServerError
-from totalimpact import unicode_helpers 
+import unicode_helpers
 
 import logging
 logger = logging.getLogger('ti.providers.bibjson')

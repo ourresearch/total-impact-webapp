@@ -5,6 +5,7 @@ import os
 import json
 import boto
 import requests
+from celery.result import AsyncResult
 from collections import Counter
 from collections import defaultdict
 import flask
@@ -139,6 +140,15 @@ class Product(db.Model):
         return Aliases(self.alias_rows)
 
     @cached_property
+    def alias_dict(self):
+        alias_dict = {}
+        for alias_row in self.alias_rows:
+            if alias_row.namespace not in alias_dict:
+                alias_dict[alias_row.namespace] = []
+            alias_dict[alias_row.namespace] += [alias_row.nid]
+        return alias_dict
+
+    @cached_property
     def metrics(self):
         my_metrics = make_metrics_list(self.tiid, self.percentile_snaps, self.created)
         return my_metrics
@@ -168,6 +178,19 @@ class Product(db.Model):
         if self.last_refresh_status and self.last_refresh_status.startswith(u"SUCCESS"):
            return True
         return False
+
+    def set_last_refresh_start(self):
+        self.last_refresh_started = datetime.datetime.utcnow()
+        self.last_refresh_finished = None
+        self.last_refresh_status = u"STARTED"
+        self.last_refresh_failure_message = None
+
+    def set_last_refresh_finished(self, myredis):
+        redis_refresh_status = refresh_status(self.tiid, myredis)
+        if not redis_refresh_status["short"].startswith(u"SUCCESS"):
+            self.last_refresh_failure_message = redis_refresh_status["long"]
+        self.last_refresh_status = redis_refresh_status["short"]
+        self.last_refresh_finished = datetime.datetime.utcnow()
 
     @cached_property
     def genre(self):
@@ -690,6 +713,63 @@ def patch_biblio(tiid, patch_dict):
         add_product_embed_markup(tiid)
 
     return r
+
+
+def refresh_status(tiid, myredis):
+    task_ids = myredis.get_provider_task_ids(tiid)
+
+    if not task_ids:
+        status = "SUCCESS: no recent refresh"
+        return {"short": status, "long": status}
+
+    statuses = {}
+
+    if "STARTED" in task_ids:
+        if (len(task_ids) > 1):
+            task_ids.remove("STARTED")
+        else:
+            status = "started_queueing"
+            return {"short": status, "long": status}
+
+    for task_id in task_ids:
+        task_result = AsyncResult(task_id)
+        try:
+            state = task_result.state
+        except AttributeError:
+            state = "unknown_state" 
+        
+        statuses[task_id] = state
+
+    # logger.debug(u"refresh_status statuses: tiid={tiid}, statuses={statuses}".format(
+    #     tiid=tiid, statuses=statuses))
+
+    done_updating = all([(status.startswith("SUCCESS") or status.startswith("FAILURE")) for status in statuses.values()])
+    has_failures = any([status.startswith("FAILURE") for status in statuses.values()])
+    has_pending = any([status.startswith("PENDING") for status in statuses.values()])
+    has_started = any([status.startswith("STARTED") for status in statuses.values()])
+
+    status_short = "unknown"
+    if done_updating and not has_failures:
+        status_short = u"SUCCESS: refresh finished"
+    elif done_updating and has_failures:
+        status_short = u"SUCCESS with FAILURES"
+    elif has_failures:
+        status_short = u"SUCCESS with FAILURES (and not all providers ran)"
+    elif has_pending:
+        status_short = u"PENDING"
+    elif has_started:
+        status_short = u"STARTED"
+
+    status_long = u"{status_short}; task_ids: {statuses}".format(
+        status_short=status_short, statuses=statuses)
+
+
+    # if not refresh_status.startswith("SUCCESS"):
+    #     # logger.debug(u"refresh_status: task_id={task_id}, refresh_status={refresh_status}, tiid={tiid}".format(
+    #     #     task_id=task_id, refresh_status=refresh_status, tiid=tiid))
+    #     pass
+
+    return {"short": status_short, "long": status_long}
 
 
 

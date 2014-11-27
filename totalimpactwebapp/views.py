@@ -43,6 +43,7 @@ from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.profile import build_profile_dict
 from totalimpactwebapp.profile import default_free_trial_days
 
+from totalimpactwebapp.product import Product
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import get_products_from_tiids
 from totalimpactwebapp.product import upload_file_and_commit
@@ -76,9 +77,9 @@ from totalimpactwebapp.drip_email import drip_email_context
 
 from totalimpactwebapp.reference_set import RefsetBuilder
 
-from totalimpact.providers.provider import ProviderFactory, ProviderItemNotFoundError, ProviderError, ProviderServerError, ProviderTimeout
+from totalimpact.providers.provider import ProviderFactory
 from totalimpact.providers import provider as provider_module
-from totalimpact import item as item_module
+
 
 
 import newrelic.agent
@@ -88,7 +89,7 @@ from sqlalchemy import or_
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
-USER_AGENT = "ImpactStory/0.4.0" # User-Agent string to use on HTTP requests
+USER_AGENT = "ImpactStory" # User-Agent string to use on HTTP requests
 VERSION = "cristhian" # version
 
 
@@ -1217,25 +1218,13 @@ def get_subscribed_user_url_slugs():
 
 @app.route('/providers', methods=["GET"])  # information about providers
 def providers():
-    try:
-        url = u"{api_root}/v2/provider?key={api_key}".format(
-            api_key=os.getenv("API_KEY"),
-            api_root=os.getenv("API_ROOT"))
-        r = requests.get(url)
-        metadata = r.json()
-    except requests.ConnectionError:
-        metadata = {}
-
+    metadata = ProviderFactory.get_all_metadata()
     metadata_list = []
     for k, v in metadata.iteritems():
-        if k == "delicious":  # hack. should remove from Core config.
-            continue
-
         v["name"] = k
         metadata_list.append(v)
 
     return json_resp_from_thing(metadata_list)
-
 
 
 
@@ -1299,6 +1288,7 @@ def hello():
 @app.route("/v1/product/<tiid>/biblio", methods=["PATCH"])
 def product_biblio_modify(tiid):
     data = request.json
+    from totalimpact import item as item_module
     for biblio_field_name in data:
         item = item_module.add_biblio(tiid, biblio_field_name, data[biblio_field_name])
     response = {"product": item.as_old_doc()}
@@ -1307,22 +1297,25 @@ def product_biblio_modify(tiid):
 
 
 def refresh_from_tiids(tiids, analytics_credentials, priority):
-    item_objects = item_module.Item.query.filter(item_module.Item.tiid.in_(tiids)).all()
+    if not tiids:
+        return None
+
+    products = Product.query.filter(Product.tiid.in_(tiids)).all()
     dicts_to_refresh = []  
 
-    for item_obj in item_objects:
+    for product in products:
         try:
-            tiid = item_obj.tiid
-            item_obj.set_last_refresh_start()
-            db.session.merge(item_obj)
-            alias_dict = item_module.alias_dict_from_tuples(item_obj.alias_tuples)       
-            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": alias_dict}]
+            tiid = product.tiid
+            product.set_last_refresh_start()
+            db.session.merge(product)
+            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
         except AttributeError:
             logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
                 tiid=tiid))
 
     db.session.commit()
 
+    from totalimpact import item as item_module
     item_module.start_item_update(dicts_to_refresh, priority)
     return tiids
 
@@ -1354,74 +1347,15 @@ def products_refresh_post():
 def products_duplicates_post():
     # logger.debug(u"in products_duplicates_post with tiids")
     tiids = request.json["tiids"]
+    from totalimpact import item as item_module
     duplicates_list = item_module.build_duplicates_list(tiids)
     resp = json_resp_from_thing({"duplicates_list": duplicates_list})
     return resp
 
 
-def format_into_products_dict(tiids_aliases_map):
-    products_dict = {}
-    for tiid in tiids_aliases_map:
-        (ns, nid) = tiids_aliases_map[tiid]
-        products_dict[tiid] = {"aliases": {ns: [nid]}}
-    return products_dict
 
 
 
-@app.route("/v2/importer/<provider_name>", methods=['POST'])
-@app.route("/v1/importer/<provider_name>", methods=['POST'])
-def importer_post(provider_name):
-    # need to do these ugly deletes because import products not in dict.  fix in future!
-    try:
-        profile_id = request.json["profile_id"]
-        del request.json["profile_id"]
-    except KeyError:
-        abort(405, "missing profile_id")
-
-    try:
-        analytics_credentials = request.json["analytics_credentials"]
-        del request.json["analytics_credentials"]
-    except KeyError:
-        analytics_credentials = {}
-
-    try:
-        existing_tiids = request.json["existing_tiids"]
-        del request.json["existing_tiids"]
-    except KeyError:
-        existing_tiids = []
-
-    try:
-        retrieved_aliases = provider_module.import_products(provider_name, request.json)
-    except ImportError:
-        abort_custom(404, "an importer for provider '{provider_name}' is not found".format(
-            provider_name=provider_name))        
-    except ProviderItemNotFoundError:
-        abort_custom(404, "item not found")
-    except ProviderItemNotFoundError:
-        abort_custom(404, "item not found")
-    except (ProviderTimeout, ProviderServerError):
-        abort_custom(503, "timeout error, might be transient")
-    except ProviderError:
-        abort(500, "internal error from provider")
-
-    new_aliases = item_module.aliases_not_in_existing_tiids(retrieved_aliases, existing_tiids)
-    tiids_aliases_map = item_module.create_tiids_from_aliases(profile_id, new_aliases, analytics_credentials, provider_name)
-    # logger.debug(u"in provider_importer_get with {tiids_aliases_map}".format(
-    #     tiids_aliases_map=tiids_aliases_map))
-
-    products_dict = format_into_products_dict(tiids_aliases_map)
-
-    resp = json_resp_from_thing({"products": products_dict})
-    return resp
-
-
-@app.route('/v2/provider', methods=['GET'])
-@app.route('/v1/provider', methods=['GET'])
-def provider():
-    ret = ProviderFactory.get_all_metadata()
-    resp = json_resp_from_thing(ret)
-
-    return resp
 
 
 # # route to receive email

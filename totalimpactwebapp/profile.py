@@ -417,13 +417,13 @@ class Profile(db.Model):
             analytics_credentials = {}    
         product_id_type = product_id_dict.keys()[0]
         existing_tiids = self.tiids # re-import dup removed products    
-        import_response = make_products_for_product_id_strings(
+        imported_products = make_products_for_product_id_strings(
                 self.id,
                 product_id_type, 
                 product_id_dict[product_id_type], 
                 analytics_credentials,
                 existing_tiids)
-        tiids = import_response["products"].keys()
+        tiids = [product.tiid for product in imported_products]
 
         return tiids
 
@@ -920,59 +920,136 @@ def get_profiles():
     return res
 
 
-def make_products_for_linked_account(profile_id, importer_name, importer_value, analytics_credentials={}, existing_tiids={}):
-    logger.info(u"in make_products_for_linked_account with {importer_name} {importer_value}".format(
-        importer_name=importer_name, importer_value=importer_value))
+def alias_tuples_for_deduplication(item):
+    alias_tuples = []
+    if item.alias_rows:
+        alias_tuples = [alias.alias_tuple for alias in item.alias_rows]
+    biblio_dicts_per_provider = item.biblio_dicts_per_provider
+    for provider in biblio_dicts_per_provider:
+        alias_tuple = ("biblio", biblio_dicts_per_provider[provider])
+        alias_tuples += [alias_tuple]
+        # logger.debug(u"tiid={tiid}, for provider {provider} is a new alias {alias_tuple}".format(
+        #     tiid=item.tiid, provider=provider, alias_tuple=alias_tuple))
 
-    query = u"{core_api_root}/v2/importer/{importer_name}?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        importer_name=importer_name,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    data_dict = {
-        "profile_id": profile_id, 
-        "account_name": importer_value, 
-        "analytics_credentials": analytics_credentials,
-        "existing_tiids": existing_tiids
-        }
+    cleaned_tuples = [clean_alias_tuple_for_deduplication(alias_tuple) for alias_tuple in alias_tuples]
+    cleaned_tuples = [alias_tuple for alias_tuple in cleaned_tuples if alias_tuple != ("biblio", '{}')]
 
-    r = requests.post(
-        query,
-        data=json.dumps(data_dict),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
-    if r.status_code==200:
-        return r.json()
+    # logger.debug(u"tiid={tiid}, cleaned_tuples {cleaned_tuples}".format(
+    #     tiid=item.tiid, cleaned_tuples=cleaned_tuples))
+    return cleaned_tuples
+
+def is_equivalent_alias_tuple_in_list(query_tuple, tuple_list):
+    is_equivalent = (clean_alias_tuple_for_deduplication(query_tuple) in tuple_list)
+    return is_equivalent
+
+def clean_alias_tuple_for_deduplication(alias_tuple):
+    (ns, nid) = alias_tuple
+    if ns == "biblio":
+        keys_to_compare = ["full_citation", "title", "authors", "journal", "year"]
+        if not isinstance(nid, dict):
+            nid = json.loads(nid)
+        if "year" in nid:
+            nid["year"] = str(nid["year"])
+        biblio_dict_for_deduplication = dict([(k, v) for (k, v) in nid.iteritems() if k.lower() in keys_to_compare])
+
+        biblios_as_string = json.dumps(biblio_dict_for_deduplication, sort_keys=True, indent=0, separators=(',', ':'))
+        return ("biblio", biblios_as_string.lower())
     else:
-        logger.warning(u"make_products_for_linked_account returned status={status}".format(
-            status=r.status_code))
-        return {"products": {}}
+        (ns, nid) = normalize_alias((ns, nid))
+        try:
+            cleaned_alias = (ns.lower(), nid.lower())
+        except AttributeError:
+            logger.debug(u"problem cleaning {alias_tuple}".format(
+                alias_tuple=alias_tuple))
+            cleaned_alias = alias_tuple
+        return cleaned_alias
+
+
+def aliases_not_in_existing_products(retrieved_aliases, existing_tiids):
+    if not existing_tiids:
+        return retrieved_aliases
+
+    existing_products = Product.query.filter(Product.tiid.in_(existing_tiids)).all()
+
+    new_aliases = []
+    for alias_tuple in retrieved_aliases:
+        for product in existing_products:
+            if product.has_alias(alias_tuple):
+                # logger.debug(u"already have alias {alias_tuple}".format(
+                #     alias_tuple=alias_tuple))
+                pass
+            else:
+                new_aliases += [alias_tuple]
+    return new_aliases
+
+
+def create_products_from_aliases(profile_id, aliases, analytics_credentials, provider=None):
+    tiid_alias_mapping = {}
+    clean_aliases = [canonical_alias_tuple((ns, nid)) for (ns, nid) in aliases]  
+    dicts_to_update = []  
+    new_products = []
+
+    for alias_tuple in clean_aliases:
+        # logger.debug(u"in create_tiids_from_aliases, with alias_tuple {alias_tuple}".format(
+        #     alias_tuple=alias_tuple))
+        alias_row = Alias()
+        product = add_alias_to_new_item(alias_tuple, provider)
+        tiid = product.tiid
+        product.profile_id = profile_id
+        product.set_last_refresh_start()
+        new_products += [product]
+
+        db.session.merge(product)
+        # logger.debug(u"in create_tiids_from_aliases, made item {item_obj}".format(
+        #     item_obj=item_obj))
+
+        dicts_to_update += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
+
+    try:
+        db.session.commit()
+    except (IntegrityError, FlushError) as e:
+        db.session.rollback()
+        logger.warning(u"Fails Integrity check in create_tiids_from_aliases for {tiid}, rolling back.  Message: {message}".format(
+            tiid=tiid, 
+            message=e.message)) 
+
+    # has to be after commits to database
+    start_item_update(dicts_to_update, "high")
+
+    return new_products
+
+
+def importer(profile_id, provider_name, account_name, analytics_credentials={}, existing_tiids=[]):
+    # need to do these ugly deletes because import products not in dict.  fix in future!
+
+    retrieved_aliases = provider_module.import_products(provider_name, account_name)
+    new_aliases = aliases_not_in_existing_products(retrieved_aliases, existing_tiids)
+    products = create_products_from_aliases(profile_id, new_aliases, analytics_credentials, provider_name)
+
+    return products
+
+
+def make_products_for_linked_account(profile_id, provider_name, account_name, analytics_credentials={}, existing_tiids={}):
+    logger.info(u"in make_products_for_linked_account with {provider_name} {account_name}".format(
+        provider_name=provider_name, account_name=account_name))
+
+    try:
+        response = importer(profile_id, provider_name, account_name, analytics_credentials, existing_tiids)
+    except (ImportError, ProviderItemNotFoundError, ProviderItemNotFoundError, ProviderTimeout, ProviderError)
+        response = []
+    return response
+
 
 
 def make_products_for_product_id_strings(profile_id, product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
-    query = u"{core_api_root}/v2/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
-        product_id_type=product_id_type,
-        core_api_root=os.getenv("API_ROOT"),
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    data_dict = {
-        "profile_id": profile_id,     
-        product_id_type: product_id_strings, 
-        "analytics_credentials": analytics_credentials,
-        "existing_tiids": existing_tiids        
-        }
+    logger.info(u"in make_products_for_product_id_strings with {provider_name} {account_name}".format(
+        provider_name=provider_name, account_name=account_name))
 
-    r = requests.post(
-        query,
-        data=json.dumps(data_dict),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
-    if r.status_code==200:
-        return r.json()
-    else:
-        logger.warning(u"make_products_for_product_id_strings returned status={status}".format(
-            status=r.status_code))        
-        return {"products": {}}
+    try:
+        response = importer(profile_id, product_id_type, product_id_strings, analytics_credentials, existing_tiids)
+    except (ImportError, ProviderItemNotFoundError, ProviderItemNotFoundError, ProviderTimeout, ProviderError)
+        response = []
+    return response
 
 
 def hide_profile_secrets(profile):

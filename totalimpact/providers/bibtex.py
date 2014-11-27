@@ -7,7 +7,7 @@ from pybtex.scanner import PybtexSyntaxError, PybtexError
 
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderTimeout, ProviderServerError
-from totalimpact import unicode_helpers 
+import unicode_helpers
 from totalimpact.providers import bibtex_lookup
 
 import logging
