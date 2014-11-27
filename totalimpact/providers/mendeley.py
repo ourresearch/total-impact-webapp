@@ -14,6 +14,7 @@ from urllib import urlencode
 from urlparse import parse_qs, urlsplit, urlunsplit
 
 # need to get system mendeley library
+from mendeley.exception import MendeleyException
 import mendeley as mendeley_lib
 
 import logging
@@ -91,7 +92,12 @@ class Mendeley(Provider):
         mendeley = mendeley_lib.Mendeley(
             client_id=os.getenv("MENDELEY_OAUTH2_CLIENT_ID"), 
             client_secret=os.getenv("MENDELEY_OAUTH2_SECRET"))
-        session = mendeley.start_client_credentials_flow().authenticate()
+        try:
+            session = mendeley.start_client_credentials_flow().authenticate()
+        except AttributeError:
+            logger.error(u"Attribute error getting start_client_credentials_flow")
+            raise ProviderAuthenticationError
+
         return session
 
     def _get_doc_by_id(self, namespace, aliases_dict):
@@ -99,7 +105,7 @@ class Mendeley(Provider):
             nid = aliases_dict[namespace][0]
             kwargs = {namespace:nid, "view":'stats'}
             doc = self.session.catalog.by_identifier(**kwargs)
-        except (KeyError, mendeley_lib.MendeleyException):
+        except (KeyError, MendeleyException):
             doc = None
         return doc
 
@@ -119,7 +125,7 @@ class Mendeley(Provider):
                     logger.debug(u"Mendeley: titles don't match so not using this match /biblio_print %s and %s" %(
                         biblio_title, mendeley_title))
                     doc = None
-        except (KeyError, mendeley_lib.MendeleyException):
+        except (KeyError, MendeleyException):
             doc = None
         return doc
 

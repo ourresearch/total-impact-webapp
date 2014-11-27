@@ -11,6 +11,9 @@ from totalimpact import unicode_helpers
 from totalimpact import default_settings
 from totalimpact.utils import Retry
 
+from totalimpact import tiredis
+from totalimpact import REDIS_MAIN_DATABASE_NUMBER
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
@@ -19,6 +22,7 @@ from sqlalchemy.sql import text
 from totalimpact import json_sqlalchemy, tiredis
 from totalimpact import db
 
+import os
 
 # Master lock to ensure that only a single thread can write
 # to the DB at one time to avoid document conflicts
@@ -110,7 +114,7 @@ def create_new_item_object_from_item_doc(item_doc, skip_if_exists=False, commit=
         return new_item_object
     else:
         new_item_object = Item.create_from_old_doc(item_doc)
-    db.session.add(new_item_object)
+    db.session.merge(new_item_object)
 
     alias_dict = item_doc["aliases"]
     new_alias_objects = create_alias_objects(alias_dict, item_doc["last_modified"])
@@ -649,7 +653,7 @@ def add_metric_to_item_object(full_metric_name, metrics_method_response, item_ob
         "last_collected_date": datetime.datetime.utcnow()
     }    
     snap_object = Snap(**new_style_metric_dict)
-    db.session.add(snap_object)
+    db.session.merge(snap_object)
 
     try:
         db.session.commit()
@@ -701,7 +705,7 @@ def add_biblio(tiid, biblio_name, biblio_value, provider_name="user_provided", c
                 biblio_value=biblio_value, 
                 provider=provider_name, 
                 collected_date=collected_date)
-        db.session.add(biblio_object)
+        db.session.merge(biblio_object)
 
     try:
         db.session.commit()
@@ -1133,7 +1137,7 @@ def add_alias_to_new_item(alias_tuple, provider=None):
     return item_obj  
 
 
-def create_tiids_from_aliases(profile_id, aliases, analytics_credentials, myredis, provider=None):
+def create_tiids_from_aliases(profile_id, aliases, analytics_credentials, provider=None):
     tiid_alias_mapping = {}
     clean_aliases = [canonical_alias_tuple((ns, nid)) for (ns, nid) in aliases]  
     dicts_to_update = []  
@@ -1146,7 +1150,7 @@ def create_tiids_from_aliases(profile_id, aliases, analytics_credentials, myredi
         item_obj.profile_id = profile_id
         item_obj.set_last_refresh_start()
 
-        db.session.add(item_obj)
+        db.session.merge(item_obj)
         # logger.debug(u"in create_tiids_from_aliases, made item {item_obj}".format(
         #     item_obj=item_obj))
 
@@ -1162,7 +1166,7 @@ def create_tiids_from_aliases(profile_id, aliases, analytics_credentials, myredi
             message=e.message)) 
 
     # has to be after commits to database
-    start_item_update(dicts_to_update, "high", myredis)
+    start_item_update(dicts_to_update, "high")
 
     return tiid_alias_mapping
 
@@ -1222,7 +1226,9 @@ def get_tiid_by_alias(ns, nid, mydao=None):
 
 
 
-def start_item_update(dicts_to_add, priority, myredis):
+def start_item_update(dicts_to_add, priority):
+    myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=REDIS_MAIN_DATABASE_NUMBER)  # main app is on DB 0
+
     # logger.debug(u"In start_item_update with {tiid}, priority {priority} /biblio_print {aliases_dict}".format(
     #     tiid=tiid, priority=priority, aliases_dict=aliases_dict))
 

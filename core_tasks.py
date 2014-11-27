@@ -19,6 +19,9 @@ from totalimpact import db
 from totalimpact import REDIS_MAIN_DATABASE_NUMBER
 from totalimpact import tiredis, default_settings
 from totalimpact.providers.provider import ProviderFactory, ProviderError, ProviderTimeout
+
+from totalimpactwebapp.product import add_product_embed_markup
+
 import rate_limit
 
 logger = logging.getLogger("core.core_tasks")
@@ -217,18 +220,7 @@ def after_refresh_complete(tiid, task_ids):
     item_obj = item_module.Item.query.get(tiid)
 
     if item_obj:
-        try:
-            url = u"{webapp_root}/product/{tiid}?action=after-refresh".format(
-                webapp_root=os.getenv("WEBAPP_ROOT"), tiid=tiid)
-            r = requests.post(url)
-            if r.status_code==200:
-                logger.debug(u"success calling webapp after-refresh")
-            else:
-                logger.warning(u"error calling webapp after-refresh, returned status={status}".format(
-                    status=r.status_code))        
-        except requests.ConnectionError:
-            logger.warning(u"connection error calling webapp after-refresh, skipping")
-
+        add_product_embed_markup(item_obj.tiid)
         item_obj.set_last_refresh_finished(myredis)
         db.session.add(item_obj)
         db.session.commit()

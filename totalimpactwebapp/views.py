@@ -42,7 +42,6 @@ from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.profile import build_profile_dict
 from totalimpactwebapp.profile import default_free_trial_days
-from totalimpact.providers.provider import ProviderFactory, ProviderItemNotFoundError, ProviderError, ProviderServerError, ProviderTimeout
 
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import get_products_from_tiids
@@ -76,6 +75,11 @@ from totalimpactwebapp import notification_report
 from totalimpactwebapp.drip_email import drip_email_context
 
 from totalimpactwebapp.reference_set import RefsetBuilder
+
+from totalimpact.providers.provider import ProviderFactory, ProviderItemNotFoundError, ProviderError, ProviderServerError, ProviderTimeout
+from totalimpact.providers import provider as provider_module
+from totalimpact import item as item_module
+
 
 import newrelic.agent
 from sqlalchemy import orm
@@ -1281,11 +1285,9 @@ def advisor_badge():
 # from totalimpact import app, tiredis, collection, incoming_email, db
 # from totalimpact import item as item_module
 # from totalimpact.models import MemberItems, NotAuthenticatedError
-# from totalimpact.providers import provider as provider_module
 # from totalimpact.providers.provider import ProviderFactory, ProviderItemNotFoundError, ProviderError, ProviderServerError, ProviderTimeout
 # from totalimpact import unicode_helpers
 # from totalimpact import default_settings
-# from totalimpact import REDIS_MAIN_DATABASE_NUMBER
 # import logging
 
 
@@ -1293,7 +1295,7 @@ def advisor_badge():
 # logger.setLevel(logging.DEBUG)
 
 # mydao = None
-# myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=REDIS_MAIN_DATABASE_NUMBER)  # main app is on DB 0
+
 
 
 # def set_db(url, db):
@@ -1413,7 +1415,7 @@ def product_biblio_modify(tiid):
 
 
 
-def refresh_from_tiids(tiids, analytics_credentials, priority, myredis):
+def refresh_from_tiids(tiids, analytics_credentials, priority):
     item_objects = item_module.Item.query.filter(item_module.Item.tiid.in_(tiids)).all()
     dicts_to_refresh = []  
 
@@ -1421,7 +1423,7 @@ def refresh_from_tiids(tiids, analytics_credentials, priority, myredis):
         try:
             tiid = item_obj.tiid
             item_obj.set_last_refresh_start()
-            db.session.add(item_obj)
+            db.session.merge(item_obj)
             alias_dict = item_module.alias_dict_from_tuples(item_obj.alias_tuples)       
             dicts_to_refresh += [{"tiid":tiid, "aliases_dict": alias_dict}]
         except AttributeError:
@@ -1430,7 +1432,7 @@ def refresh_from_tiids(tiids, analytics_credentials, priority, myredis):
 
     db.session.commit()
 
-    item_module.start_item_update(dicts_to_refresh, priority, myredis)
+    item_module.start_item_update(dicts_to_refresh, priority)
     return tiids
 
 
@@ -1450,7 +1452,7 @@ def products_refresh_post():
     except KeyError:
         priority = "high"
 
-    refresh_from_tiids(tiids, analytics_credentials, priority, myredis)
+    refresh_from_tiids(tiids, analytics_credentials, priority)
     resp = json_resp_from_thing("true")
     return resp
 
@@ -1512,7 +1514,7 @@ def importer_post(provider_name):
         abort(500, "internal error from provider")
 
     new_aliases = item_module.aliases_not_in_existing_tiids(retrieved_aliases, existing_tiids)
-    tiids_aliases_map = item_module.create_tiids_from_aliases(profile_id, new_aliases, analytics_credentials, myredis, provider_name)
+    tiids_aliases_map = item_module.create_tiids_from_aliases(profile_id, new_aliases, analytics_credentials, provider_name)
     # logger.debug(u"in provider_importer_get with {tiids_aliases_map}".format(
     #     tiids_aliases_map=tiids_aliases_map))
 
