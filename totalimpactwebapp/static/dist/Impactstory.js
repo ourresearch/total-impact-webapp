@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-26
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-27
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1434,8 +1434,8 @@ angular.module("productPage", [
     Page) {
 
     var genre_url_key = GenreConfigs.get(product.genre, "url_representation")
-    console.log("product.genre_url_key", genre_url_key)
 
+    var tiid = angular.copy($routeParams.tiid)
 
     Page.setName(genre_url_key)
     Loading.finishPage()
@@ -1579,7 +1579,7 @@ angular.module("productPage", [
     $scope.reRenderProduct = function(){
       console.log("re-rendering product.")
       ProductWithoutProfile.get({
-        tiid: $routeParams.tiid
+        tiid: tiid // use copied tiid so it still works after quick route change.
       },
       function(data){
         console.log("inserting this new product data into the ProfileProducts service:", data)
