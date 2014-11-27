@@ -9,6 +9,11 @@ angular.module("services.loading")
     loadingJobs[jobName] = !!setLoadingTo
   }
 
+  function clear(){
+    for (var jobName in loadingJobs) delete loadingJobs[jobName]
+  }
+
+
 
   return {
     is: function(jobName){
@@ -37,10 +42,8 @@ angular.module("services.loading")
     finish:function(jobName){
       setLoading(false, jobName)
     },
-    clear: function(){
-      loading = false;
-      for (var jobName in loadingJobs) delete loadingJobs[jobName]
-    },
+    finishAll: clear,  // alias because i keep forgetting clear()
+    clear: clear,
     startPage: function(){
       ngProgress.start()
       pageLoading = true

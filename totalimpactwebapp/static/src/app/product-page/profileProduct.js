@@ -99,10 +99,16 @@ angular.module("productPage", [
     ProductWithoutProfile,
     ProfileAboutService,
     ProfileService,
+    GenreConfigs,
     MapService,
     Page) {
 
-    Page.setName(product.genre_url_key)
+    var genre_url_key = GenreConfigs.get(product.genre, "url_representation")
+
+    var tiid = angular.copy($routeParams.tiid)
+
+    Page.setName(genre_url_key)
+    Loading.finishPage()
 
     console.log("product.host", product.host)
 
@@ -185,7 +191,6 @@ angular.module("productPage", [
 
 
     if (product.countries) {
-      Loading.finishPage()
 
       var countryList = product.countries.list
       MapService.setCountries(countryList)
@@ -242,11 +247,13 @@ angular.module("productPage", [
 
 
     $scope.reRenderProduct = function(){
+      console.log("re-rendering product.")
       ProductWithoutProfile.get({
-        tiid: $routeParams.tiid
+        tiid: tiid // use copied tiid so it still works after quick route change.
       },
       function(data){
-        console.log("re-rendering the product", data)
+        console.log("inserting this new product data into the ProfileProducts service:", data)
+        ProfileService.overwriteProduct(data)
         renderProduct(data)
       },
       function(data){
@@ -321,10 +328,9 @@ angular.module("productPage", [
         {'tiid': $routeParams.tiid},
         updateObj,
         function(resp){
-          console.log("updated product biblio; re-rendering", resp)
           $scope.reRenderProduct()
-          ProfileAboutService.get($routeParams.url_slug)
-          ProfileService.get($routeParams.url_slug)
+//          ProfileAboutService.get($routeParams.url_slug)
+//          ProfileService.get($routeParams.url_slug)
         }
       )
     }

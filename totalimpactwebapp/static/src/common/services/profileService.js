@@ -36,6 +36,11 @@ angular.module('services.profileService', [
 
     }
 
+    function overwriteProduct(newProduct){
+      removeProductsLocal([newProduct._tiid])
+      data.products.push(newProduct)
+    }
+
 
     function get(url_slug){
       data.url_slug = url_slug
@@ -81,17 +86,21 @@ angular.module('services.profileService', [
       })
     }
 
+    function removeProductsLocal(tiids){
+      _.each(tiids, function(tiid){
+        var tiidIndex = getProductIndexFromTiid(tiid)
+        data.products.splice(tiidIndex, 1)
+      })
+
+    }
+
 
     function removeProducts(tiids){
       if (!tiids.length){
         return false
       }
 
-      _.each(tiids, function(tiid){
-        var tiidIndex = getProductIndexFromTiid(tiid)
-        data.products.splice(tiidIndex, 1)
-      })
-
+      removeProductsLocal(tiids)
       UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
 
       UsersProducts.delete(
@@ -202,6 +211,7 @@ angular.module('services.profileService', [
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
       clear: clear,
+      overwriteProduct: overwriteProduct,
       getUrlSlug: function(){
         return data.url_slug
       }

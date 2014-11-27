@@ -820,9 +820,17 @@ def product_interaction(tiid):
 @app.route("/product/<tiid>", methods=["GET"])
 @app.route("/product/<tiid>.json", methods=["GET"])
 def product_without_needing_profile(tiid):
-    local_sleep(2)
+    local_sleep(1)
+
     product = get_product(tiid)
-    return json_resp_from_thing(product)
+    #return json_resp_from_thing(product)
+
+    markup = Markup("jason", embed=False)
+    product_dict = product.to_markup_dict(
+        markup=markup
+    )
+
+    return json_resp_from_thing(product_dict)
 
 
 @app.route("/product/<tiid>/file", methods=['GET', 'POST'])
