@@ -6,6 +6,7 @@ import re
 import datetime
 import analytics
 import stripe
+from collections import defaultdict
 
 from util import local_sleep
 from totalimpactwebapp import util
@@ -49,14 +50,15 @@ from totalimpactwebapp.product import patch_biblio
 
 from totalimpactwebapp.product_markup import Markup
 
+from totalimpactwebapp.collection import Collection
+
 from totalimpactwebapp import pinboard
 from totalimpactwebapp.pinboard import Pinboard
 from totalimpactwebapp.pinboard import write_to_pinboard
 
 from totalimpactwebapp.interaction import log_interaction_event
 
-
-from totalimpactwebapp.tweet import get_product_tweets
+from totalimpactwebapp.tweet import get_product_tweets_for_profile
 
 from totalimpactwebapp.cards_factory import make_summary_cards
 from totalimpactwebapp.card import GenreNewDiffCard
@@ -721,41 +723,35 @@ def profile_products_modify(id):
     return json_resp_from_thing(resp)
 
 
-@app.route("/profile/<id>/tweets", methods=["GET"])
-@app.route("/profile/<id>/tweets.json", methods=["GET"])
-def profile_tweets(id):
-    profile = get_user_for_response(id, request, include_products=False)
-    resp = get_product_tweets(profile.id)
+@app.route("/profile/<url_slug>/collection/<tagspace>/<tag>/products", methods=["GET"])
+@app.route("/profile/<url_slug>/collection/<tagspace>/<tag>/products.json", methods=["GET"])
+def get_products_for_collection(url_slug, tagspace, tag):
+    collection = Collection(url_slug, tagspace, tag)
+    resp = dict([(tiid, {}) for tiid in collection.tiids])
+
+    include = request.args.get("include", "").split(",")
+    if "tweets" in include:
+        for tiid, tweets_dict in collection.tweets_by_tiid.iteritems():
+            resp[tiid].update(tweets_dict)
+    if "markup" in include:
+        for tiid, markup_dict in collection.markup_by_tiid.iteritems():
+            resp[tiid].update(markup_dict)
+
     return json_resp_from_thing(resp)
 
 
-#@app.route("/profile/<user_id>/product/<tiid>", methods=['GET', 'DELETE'])
-#@app.route("/profile/<user_id>/product/<tiid>.json", methods=['GET', 'DELETE'])
-#def user_product(user_id, tiid):
-#
-#    if user_id == "embed":
-#        abort(410)
-#
-#    profile = get_user_for_response(user_id, request)
-#
-#    if request.method == "GET":
-#        markup_factory = MarkupFactory(g.user_id, embed=False)
-#        try:
-#            resp = profile.get_single_product_markup(tiid, markup_factory)
-#        except IndexError:
-#            abort_json(404, "That product doesn't exist.")
-#
-#    elif request.method == "DELETE":
-#        # kind of confusing now, waiting for core-to-webapp refactor
-#        # to improve it though.
-#        abort_if_user_not_logged_in(profile)
-#        resp = delete_products_from_profile(profile, [tiid])
-#
-#    return json_resp_from_thing(resp)
+@app.route("/profile/<url_slug>/collection/<tagspace>/<tag>/summary-cards", methods=['GET'])
+@app.route("/profile/<url_slug>/<tagspace>/<tag>/summary-cards.json", methods=['GET'])
+def get_summary_cards_for_collection(url_slug, tagspace, tag):
+    collection = Collection(url_slug, tagspace, tag)
+    return json_resp_from_thing(collection.summary_cards)
 
 
-
-
+@app.route("/profile/<url_slug>/collection/<tagspace>/<tag>/countries", methods=['GET'])
+@app.route("/profile/<url_slug>/<tagspace>/<tag>/countries.json", methods=['GET'])
+def get_countries_for_collection(url_slug, tagspace, tag):
+    collection = Collection(url_slug, tagspace, tag)
+    return json_resp_from_thing(collection.country_list)
 
 
 @app.route("/product/<tiid>/pdf", methods=['GET'])
@@ -820,6 +816,7 @@ def product_interaction(tiid):
 
 
 @app.route("/product/<tiid>", methods=["GET"])
+@app.route("/product/<tiid>.json", methods=["GET"])
 def product_without_needing_profile(tiid):
     local_sleep(2)
 
@@ -1176,25 +1173,6 @@ def create_page():
 @app.route("/scratchpad")
 def scratchpad():
     return render_template("scratchpad.html")
-
-
-@app.route("/profile/<profile_id>/<namespace>/<tag>/summary-cards", methods=['GET'])
-@app.route("/profile/<profile_id>/<namespace>/<tag>/summary-cards.json", methods=['GET'])
-def get_summary_cards(profile_id, namespace, tag):
-
-    profile = get_user_for_response(
-        profile_id,
-        request
-    )
-
-    if namespace=="genre":
-        tagged_products = [product for product in profile.display_products if product.genre==tag]
-    else:
-        abort_json(404, "We only support genres for now")
-
-    cards = make_summary_cards(tagged_products)
-    return json_resp_from_thing(cards)
-
 
 
 @app.route("/<profile_id>/notification-cards")

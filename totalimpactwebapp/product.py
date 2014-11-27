@@ -24,6 +24,8 @@ from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.snap import Snap
+from totalimpactwebapp.tweet import Tweet
+
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
@@ -352,6 +354,10 @@ class Product(db.Model):
             return metric.most_recent_snap.raw_value
         return None
 
+    @cached_property
+    def tweets(self):
+        tweets = db.session.query(Tweet).filter(Tweet.tiid==self.tiid).all()
+        return tweets
 
     @cached_property
     def countries_str(self):

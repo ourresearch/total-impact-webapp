@@ -12,7 +12,11 @@ import datetime
 import logging
 logger = logging.getLogger('ti.webapp.tweets')
 
-def get_product_tweets(profile_id):
+def tweets_from_tiids(tiids):
+    tweets = db.session.query(Tweet).filter(Tweet.tiid.in_(tiids)).all()
+    return tweets
+
+def get_product_tweets_for_profile(profile_id):
     tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile_id).all()
     response = defaultdict(list)
     for tweet in tweets:
@@ -196,6 +200,17 @@ class Tweet(db.Model):
         except TypeError:
             return None
 
+    @cached_property
+    def has_country(self):
+        return self.country != None
+
+    @cached_property
+    def country(self):
+        try:
+            return self.payload["place"]["country_code"]
+        except TypeError:
+            return None
+
     def __repr__(self):
         return u'<Tweet {tweet_id} {profile_id} {screen_name} {timestamp} {text}>'.format(
             tweet_id=self.tweet_id, 
@@ -211,178 +226,302 @@ class Tweet(db.Model):
         return ret
 
 
-example_contents = {u'contributors': None,
- u'coordinates': None,
- u'created_at': u'Fri Oct 17 16:25:59 +0000 2014',
- u'entities': {u'hashtags': [],
-  u'symbols': [],
-  u'urls': [{u'display_url': u'blog.impactstory.org/credit-peer-re\u2026',
-    u'expanded_url': u'http://blog.impactstory.org/credit-peer-reviews/',
-    u'indices': [100, 122],
-    u'url': u'http://t.co/dWKxLiQ8H4'}],
-  u'user_mentions': [{u'id': 127003086,
-    u'id_str': u'127003086',
-    u'indices': [3, 12],
-    u'name': u'Todd Vision',
-    u'screen_name': u'tjvision'},
-   {u'id': 376019079,
-    u'id_str': u'376019079',
-    u'indices': [123, 131],
-    u'name': u'Publons',
-    u'screen_name': u'Publons'},
-   {u'id': 375668090,
-    u'id_str': u'375668090',
-    u'indices': [132, 140],
-    u'name': u'Impactstory',
-    u'screen_name': u'Impactstory'}]},
- u'favorite_count': 0,
- u'favorited': False,
- u'geo': None,
- u'id': 523147923824340993,
- u'id_str': u'523147923824340993',
- u'in_reply_to_screen_name': None,
- u'in_reply_to_status_id': None,
- u'in_reply_to_status_id_str': None,
- u'in_reply_to_user_id': None,
- u'in_reply_to_user_id_str': None,
- u'lang': u'en',
- u'place': None,
- u'possibly_sensitive': False,
- u'retweet_count': 12,
- u'retweeted': False,
- u'retweeted_status': {
-         u'contributors': None,
-          u'coordinates': None,
-          u'created_at': u'Thu Oct 16 20:39:59 +0000 2014',
-          u'entities': {u'hashtags': [],
-           u'symbols': [],
-           u'urls': [{u'display_url': u'blog.impactstory.org/credit-peer-re\u2026',
-             u'expanded_url': u'http://blog.impactstory.org/credit-peer-reviews/',
-             u'indices': [86, 108],
-             u'url': u'http://t.co/dWKxLiQ8H4'}],
-           u'user_mentions': [{u'id': 376019079,
-             u'id_str': u'376019079',
-             u'indices': [109, 117],
-             u'name': u'Publons',
-             u'screen_name': u'Publons'},
-            {u'id': 375668090,
-             u'id_str': u'375668090',
-             u'indices': [118, 130],
-             u'name': u'Impactstory',
-             u'screen_name': u'Impactstory'}]},
-          u'favorite_count': 9,
-          u'favorited': False,
-          u'geo': None,
-          u'id': 522849458527420416,
-          u'id_str': u'522849458527420416',
-          u'in_reply_to_screen_name': None,
-          u'in_reply_to_status_id': None,
-          u'in_reply_to_status_id_str': None,
-          u'in_reply_to_user_id': None,
-          u'in_reply_to_user_id_str': None,
-          u'lang': u'en',
-          u'place': None,
-          u'possibly_sensitive': False,
-          u'retweet_count': 12,
-          u'retweeted': False,
-          u'source': u'<a href="https://about.twitter.com/products/tweetdeck" rel="nofollow">TweetDeck</a>',
-          u'text': u"Wouldn't you like to get some cred for the sweat and tears you put into peer reviews? http://t.co/dWKxLiQ8H4 @Publons @ImpactStory",
-          u'truncated': False,
-          u'user': 
-                  {u'contributors_enabled': False,
-                   u'created_at': u'Sat Mar 27 18:21:42 +0000 2010',
-                   u'default_profile': False,
-                   u'default_profile_image': False,
-                   u'description': u'Evolution, genomics, bioinformatics & stuff @ UNC Chapel Hill & NESCent. ORCID:0000-0002-6133-2581. Image CC-BY-SA by schnobby at http://t.co/MpjyHunUV4',
-                   u'entities': {u'description': {u'urls': [{u'display_url': u'wikimedia.org',
-                       u'expanded_url': u'http://wikimedia.org',
-                       u'indices': [130, 152],
-                       u'url': u'http://t.co/MpjyHunUV4'}]},
-                    u'url': {u'urls': [{u'display_url': u'mendeley.com/profiles/todd-\u2026',
-                       u'expanded_url': u'http://www.mendeley.com/profiles/todd-vision/',
-                       u'indices': [0, 22],
-                       u'url': u'http://t.co/dr5G1MQlmT'}]}},
-                   u'favourites_count': 700,
-                   u'follow_request_sent': None,
-                   u'followers_count': 954,
-                   u'following': None,
-                   u'friends_count': 436,
-                   u'geo_enabled': False,
-                   u'id': 127003086,
-                   u'id_str': u'127003086',
-                   u'is_translation_enabled': False,
-                   u'is_translator': False,
-                   u'lang': u'en',
-                   u'listed_count': 56,
-                   u'location': u'Carrboro NC',
-                   u'name': u'Todd Vision',
-                   u'notifications': None,
-                   u'profile_background_color': u'C0DEED',
-                   u'profile_background_image_url': u'http://pbs.twimg.com/profile_background_images/425647837/lotus.biltmore.jpg',
-                   u'profile_background_image_url_https': u'https://pbs.twimg.com/profile_background_images/425647837/lotus.biltmore.jpg',
-                   u'profile_background_tile': True,
-                   u'profile_image_url': u'http://pbs.twimg.com/profile_images/378800000821019587/ea4d2f7c7be6cb839675a52cb8636e3b_normal.jpeg',
-                   u'profile_image_url_https': u'https://pbs.twimg.com/profile_images/378800000821019587/ea4d2f7c7be6cb839675a52cb8636e3b_normal.jpeg',
-                   u'profile_link_color': u'0084B4',
-                   u'profile_sidebar_border_color': u'C0DEED',
-                   u'profile_sidebar_fill_color': u'DDEEF6',
-                   u'profile_text_color': u'333333',
-                   u'profile_use_background_image': True,
-                   u'protected': False,
-                   u'screen_name': u'tjvision',
-                   u'statuses_count': 3479,
-                   u'time_zone': u'Eastern Time (US & Canada)',
-                   u'url': u'http://t.co/dr5G1MQlmT',
-                   u'utc_offset': -14400,
-                   u'verified': False}
-   },
- u'source': u'<a href="http://twitter.com" rel="nofollow">Twitter Web Client</a>',
- u'text': u"RT @tjvision: Wouldn't you like to get some cred for the sweat and tears you put into peer reviews? http://t.co/dWKxLiQ8H4 @Publons @Impact\u2026",
- u'truncated': False,
- u'user': 
-         {u'contributors_enabled': False,
-          u'created_at': u'Tue Nov 10 14:15:50 +0000 2009',
-          u'default_profile': True,
-          u'default_profile_image': False,
-          u'description': u'cofounder of @impactstory: share the full impact of your research. Research passion: measuring data sharing and reuse. Adore cookies+cycling+reading+my fam.',
-          u'entities': {u'description': {u'urls': []},
-           u'url': {u'urls': [{u'display_url': u'researchremix.wordpress.com',
-              u'expanded_url': u'http://researchremix.wordpress.com',
-              u'indices': [0, 22],
-              u'url': u'http://t.co/CNaGfZcH5K'}]}},
-          u'favourites_count': 1846,
-          u'follow_request_sent': None,
-          u'followers_count': 4890,
-          u'following': None,
-          u'friends_count': 2025,
-          u'geo_enabled': False,
-          u'id': 88936048,
-          u'id_str': u'88936048',
-          u'is_translation_enabled': False,
-          u'is_translator': False,
-          u'lang': u'en',
-          u'listed_count': 338,
-          u'location': u'Vancouver Canada',
-          u'name': u'Heather Piwowar',
-          u'notifications': None,
-          u'profile_background_color': u'C0DEED',
-          u'profile_background_image_url': u'http://abs.twimg.com/images/themes/theme1/bg.png',
-          u'profile_background_image_url_https': u'https://abs.twimg.com/images/themes/theme1/bg.png',
-          u'profile_background_tile': False,
-          u'profile_image_url': u'http://pbs.twimg.com/profile_images/519570521/heather_new_haircut_normal.jpg',
-          u'profile_image_url_https': u'https://pbs.twimg.com/profile_images/519570521/heather_new_haircut_normal.jpg',
-          u'profile_link_color': u'0084B4',
-          u'profile_sidebar_border_color': u'C0DEED',
-          u'profile_sidebar_fill_color': u'DDEEF6',
-          u'profile_text_color': u'333333',
-          u'profile_use_background_image': True,
-          u'protected': False,
-          u'screen_name': u'researchremix',
-          u'statuses_count': 16900,
-          u'time_zone': u'Pacific Time (US & Canada)',
-          u'url': u'http://t.co/CNaGfZcH5K',
-          u'utc_offset': -25200,
-          u'verified': False}
-  }
-
-
+example_contents = """{
+        "contributors": null, 
+        "coordinates": null, 
+        "created_at": "Sun Dec 16 22:42:55 +0000 2012", 
+        "entities": {
+            "hashtags": [
+                {
+                    "indices": [
+                        72, 
+                        81
+                    ], 
+                    "text": "scholars"
+                }
+            ], 
+            "symbols": [], 
+            "urls": [
+                {
+                    "display_url": "shar.es/hfqDY", 
+                    "expanded_url": "http://shar.es/hfqDY", 
+                    "indices": [
+                        83, 
+                        103
+                    ], 
+                    "url": "http://t.co/GDwhOrnu"
+                }
+            ], 
+            "user_mentions": [
+                {
+                    "id": 259990583, 
+                    "id_str": "259990583", 
+                    "indices": [
+                        3, 
+                        11
+                    ], 
+                    "name": "Karen Lips", 
+                    "screen_name": "kwren88"
+                }, 
+                {
+                    "id": 224631899, 
+                    "id_str": "224631899", 
+                    "indices": [
+                        17, 
+                        26
+                    ], 
+                    "name": "figshare", 
+                    "screen_name": "figshare"
+                }
+            ]
+        }, 
+        "favorite_count": 0, 
+        "favorited": false, 
+        "geo": null, 
+        "id": 280442912347664384, 
+        "id_str": "280442912347664384", 
+        "in_reply_to_screen_name": null, 
+        "in_reply_to_status_id": null, 
+        "in_reply_to_status_id_str": null, 
+        "in_reply_to_user_id": null, 
+        "in_reply_to_user_id_str": null, 
+        "lang": "en", 
+        "place": null, 
+        "possibly_sensitive": false, 
+        "retweet_count": 5, 
+        "retweeted": false, 
+        "retweeted_status": {
+            "contributors": null, 
+            "coordinates": {
+                "coordinates": [
+                    -77.01357981, 
+                    39.01103526
+                ], 
+                "type": "Point"
+            }, 
+            "created_at": "Sun Dec 16 22:34:13 +0000 2012", 
+            "entities": {
+                "hashtags": [
+                    {
+                        "indices": [
+                            59, 
+                            68
+                        ], 
+                        "text": "scholars"
+                    }
+                ], 
+                "symbols": [], 
+                "urls": [
+                    {
+                        "display_url": "shar.es/hfqDY", 
+                        "expanded_url": "http://shar.es/hfqDY", 
+                        "indices": [
+                            70, 
+                            90
+                        ], 
+                        "url": "http://t.co/GDwhOrnu"
+                    }
+                ], 
+                "user_mentions": [
+                    {
+                        "id": 224631899, 
+                        "id_str": "224631899", 
+                        "indices": [
+                            4, 
+                            13
+                        ], 
+                        "name": "figshare", 
+                        "screen_name": "figshare"
+                    }
+                ]
+            }, 
+            "favorite_count": 0, 
+            "favorited": false, 
+            "geo": {
+                "coordinates": [
+                    39.01103526, 
+                    -77.01357981
+                ], 
+                "type": "Point"
+            }, 
+            "id": 280440721884983297, 
+            "id_str": "280440721884983297", 
+            "in_reply_to_screen_name": null, 
+            "in_reply_to_status_id": null, 
+            "in_reply_to_status_id_str": null, 
+            "in_reply_to_user_id": null, 
+            "in_reply_to_user_id_str": null, 
+            "lang": "en", 
+            "place": {
+                "attributes": {}, 
+                "bounding_box": {
+                    "coordinates": [
+                        [
+                            [
+                                -77.064086, 
+                                38.979735
+                            ], 
+                            [
+                                -76.97162, 
+                                38.979735
+                            ], 
+                            [
+                                -76.97162, 
+                                39.036964
+                            ], 
+                            [
+                                -77.064086, 
+                                39.036964
+                            ]
+                        ]
+                    ], 
+                    "type": "Polygon"
+                }, 
+                "contained_within": [], 
+                "country": "United States", 
+                "country_code": "US", 
+                "full_name": "Silver Spring, MD", 
+                "id": "6417871953fa5e86", 
+                "name": "Silver Spring", 
+                "place_type": "city", 
+                "url": "https://api.twitter.com/1.1/geo/id/6417871953fa5e86.json"
+            }, 
+            "possibly_sensitive": false, 
+            "retweet_count": 5, 
+            "retweeted": false, 
+            "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>", 
+            "text": "MT \"@figshare: Prevalence and use of Twitter growing among #scholars: http://t.co/GDwhOrnu\u201d", 
+            "truncated": false, 
+            "user": {
+                "contributors_enabled": false, 
+                "created_at": "Thu Mar 03 00:30:46 +0000 2011", 
+                "default_profile": false, 
+                "default_profile_image": false, 
+                "description": "Amphibian Ecologist. Associate Professor Biology, UMaryland. Director, Graduate Program in Sustainable Development & Conservation Biology. tweets my own", 
+                "entities": {
+                    "description": {
+                        "urls": []
+                    }, 
+                    "url": {
+                        "urls": [
+                            {
+                                "display_url": "lipslab.weebly.com", 
+                                "expanded_url": "http://lipslab.weebly.com/", 
+                                "indices": [
+                                    0, 
+                                    22
+                                ], 
+                                "url": "http://t.co/8sw0WzjuIn"
+                            }
+                        ]
+                    }
+                }, 
+                "favourites_count": 2979, 
+                "follow_request_sent": null, 
+                "followers_count": 1767, 
+                "following": null, 
+                "friends_count": 946, 
+                "geo_enabled": true, 
+                "id": 259990583, 
+                "id_str": "259990583", 
+                "is_translation_enabled": false, 
+                "is_translator": false, 
+                "lang": "en", 
+                "listed_count": 92, 
+                "location": "", 
+                "name": "Karen Lips", 
+                "notifications": null, 
+                "profile_background_color": "C0DEED", 
+                "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/795249398/fae1497afc5e983974518244cf4aaba2.jpeg", 
+                "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/795249398/fae1497afc5e983974518244cf4aaba2.jpeg", 
+                "profile_background_tile": false, 
+                "profile_banner_url": "https://pbs.twimg.com/profile_banners/259990583/1348775951", 
+                "profile_image_url": "http://pbs.twimg.com/profile_images/3495233234/70ac2d2c7299e4b04febca2beb83b74f_normal.png", 
+                "profile_image_url_https": "https://pbs.twimg.com/profile_images/3495233234/70ac2d2c7299e4b04febca2beb83b74f_normal.png", 
+                "profile_link_color": "0089B3", 
+                "profile_sidebar_border_color": "FFFFFF", 
+                "profile_sidebar_fill_color": "361645", 
+                "profile_text_color": "02606A", 
+                "profile_use_background_image": true, 
+                "protected": false, 
+                "screen_name": "kwren88", 
+                "statuses_count": 11928, 
+                "time_zone": "Eastern Time (US & Canada)", 
+                "url": "http://t.co/8sw0WzjuIn", 
+                "utc_offset": -14400, 
+                "verified": false
+            }
+        }, 
+        "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>", 
+        "text": "RT @kwren88: MT \"@figshare: Prevalence and use of Twitter growing among #scholars: http://t.co/GDwhOrnu\u201d", 
+        "truncated": false, 
+        "user": {
+            "contributors_enabled": false, 
+            "created_at": "Tue Mar 29 14:48:17 +0000 2011", 
+            "default_profile": false, 
+            "default_profile_image": false, 
+            "description": "Postdoc,lazy blogger, co-host of http://t.co/uz2JfRCfki podcast. Interests: herpetology, behavioral ecology, evolution, genes and behavior. I heart salamanders.", 
+            "entities": {
+                "description": {
+                    "urls": [
+                        {
+                            "display_url": "Breakingbio.com", 
+                            "expanded_url": "http://Breakingbio.com", 
+                            "indices": [
+                                33, 
+                                55
+                            ], 
+                            "url": "http://t.co/uz2JfRCfki"
+                        }
+                    ]
+                }, 
+                "url": {
+                    "urls": [
+                        {
+                            "display_url": "natureafield.com", 
+                            "expanded_url": "http://www.natureafield.com", 
+                            "indices": [
+                                0, 
+                                22
+                            ], 
+                            "url": "http://t.co/I0kb1Imd6b"
+                        }
+                    ]
+                }
+            }, 
+            "favourites_count": 789, 
+            "follow_request_sent": null, 
+            "followers_count": 1128, 
+            "following": null, 
+            "friends_count": 477, 
+            "geo_enabled": true, 
+            "id": 274000727, 
+            "id_str": "274000727", 
+            "is_translation_enabled": false, 
+            "is_translator": false, 
+            "lang": "en", 
+            "listed_count": 91, 
+            "location": "Buenos Aires, Argentina", 
+            "name": "Heidi K Smith-Parker", 
+            "notifications": null, 
+            "profile_background_color": "FED105", 
+            "profile_background_image_url": "http://pbs.twimg.com/profile_background_images/259765740/x069eeb809c51076b2883e31fbce942f.png", 
+            "profile_background_image_url_https": "https://pbs.twimg.com/profile_background_images/259765740/x069eeb809c51076b2883e31fbce942f.png", 
+            "profile_background_tile": true, 
+            "profile_banner_url": "https://pbs.twimg.com/profile_banners/274000727/1349651541", 
+            "profile_image_url": "http://pbs.twimg.com/profile_images/2963151089/d9cfaa7ab235dcd1ad3430d534c23929_normal.jpeg", 
+            "profile_image_url_https": "https://pbs.twimg.com/profile_images/2963151089/d9cfaa7ab235dcd1ad3430d534c23929_normal.jpeg", 
+            "profile_link_color": "E9BF05", 
+            "profile_sidebar_border_color": "3B3B3B", 
+            "profile_sidebar_fill_color": "3B3B3B", 
+            "profile_text_color": "989898", 
+            "profile_use_background_image": true, 
+            "protected": false, 
+            "screen_name": "HeidiKayDeidi", 
+            "statuses_count": 7747, 
+            "time_zone": null, 
+            "url": "http://t.co/I0kb1Imd6b", 
+            "utc_offset": null, 
+            "verified": false
+        }
+    }"""

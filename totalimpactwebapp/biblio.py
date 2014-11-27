@@ -9,7 +9,7 @@ from totalimpactwebapp import json_sqlalchemy
 class BiblioRow(db.Model):
 
     __tablename__ = 'biblio'
-    tiid = db.Column(db.Integer, db.ForeignKey('item.tiid'), primary_key=True)
+    tiid = db.Column(db.Text, db.ForeignKey('item.tiid'), primary_key=True)
     provider = db.Column(db.Text, primary_key=True)
     biblio_name = db.Column(db.Text, primary_key=True)
     biblio_value = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
