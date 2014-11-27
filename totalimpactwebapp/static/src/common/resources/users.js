@@ -49,7 +49,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory("SummaryCards", function($resource){
     return $resource(
-      "/profile/:id/:namespace/:tag/summary-cards"
+      "/profile/:id/collection/:namespace/:tag/summary-cards"
     )
   })
 
