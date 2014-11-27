@@ -1429,10 +1429,16 @@ angular.module("productPage", [
     ProductWithoutProfile,
     ProfileAboutService,
     ProfileService,
+    GenreConfigs,
     MapService,
     Page) {
 
-    Page.setName(product.genre_url_key)
+    var genre_url_key = GenreConfigs.get(product.genre, "url_representation")
+    console.log("product.genre_url_key", genre_url_key)
+
+
+    Page.setName(genre_url_key)
+    Loading.finishPage()
 
     console.log("product.host", product.host)
 
@@ -1515,7 +1521,6 @@ angular.module("productPage", [
 
 
     if (product.countries) {
-      Loading.finishPage()
 
       var countryList = product.countries.list
       MapService.setCountries(countryList)
@@ -1572,11 +1577,13 @@ angular.module("productPage", [
 
 
     $scope.reRenderProduct = function(){
+      console.log("re-rendering product.")
       ProductWithoutProfile.get({
         tiid: $routeParams.tiid
       },
       function(data){
-        console.log("re-rendering the product", data)
+        console.log("inserting this new product data into the ProfileProducts service:", data)
+        ProfileService.overwriteProduct(data)
         renderProduct(data)
       },
       function(data){
@@ -1651,10 +1658,9 @@ angular.module("productPage", [
         {'tiid': $routeParams.tiid},
         updateObj,
         function(resp){
-          console.log("updated product biblio; re-rendering", resp)
           $scope.reRenderProduct()
 //          ProfileAboutService.get($routeParams.url_slug)
-          ProfileService.get($routeParams.url_slug)
+//          ProfileService.get($routeParams.url_slug)
         }
       )
     }
@@ -4941,6 +4947,11 @@ angular.module("services.loading")
     loadingJobs[jobName] = !!setLoadingTo
   }
 
+  function clear(){
+    for (var jobName in loadingJobs) delete loadingJobs[jobName]
+  }
+
+
 
   return {
     is: function(jobName){
@@ -4969,10 +4980,8 @@ angular.module("services.loading")
     finish:function(jobName){
       setLoading(false, jobName)
     },
-    clear: function(){
-      loading = false;
-      for (var jobName in loadingJobs) delete loadingJobs[jobName]
-    },
+    finishAll: clear,  // alias because i keep forgetting clear()
+    clear: clear,
     startPage: function(){
       ngProgress.start()
       pageLoading = true
@@ -5958,6 +5967,11 @@ angular.module('services.profileService', [
 
     }
 
+    function overwriteProduct(newProduct){
+      removeProductsLocal([newProduct._tiid])
+      data.products.push(newProduct)
+    }
+
 
     function get(url_slug){
       data.url_slug = url_slug
@@ -6003,17 +6017,21 @@ angular.module('services.profileService', [
       })
     }
 
+    function removeProductsLocal(tiids){
+      _.each(tiids, function(tiid){
+        var tiidIndex = getProductIndexFromTiid(tiid)
+        data.products.splice(tiidIndex, 1)
+      })
+
+    }
+
 
     function removeProducts(tiids){
       if (!tiids.length){
         return false
       }
 
-      _.each(tiids, function(tiid){
-        var tiidIndex = getProductIndexFromTiid(tiid)
-        data.products.splice(tiidIndex, 1)
-      })
-
+      removeProductsLocal(tiids)
       UserMessage.setStr("Deleted "+ tiids.length +" items.", "success" )
 
       UsersProducts.delete(
@@ -6124,6 +6142,7 @@ angular.module('services.profileService', [
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
       clear: clear,
+      overwriteProduct: overwriteProduct,
       getUrlSlug: function(){
         return data.url_slug
       }
