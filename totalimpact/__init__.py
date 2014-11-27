@@ -87,16 +87,6 @@ analytics.identify("CORE", {
                        'name': 'IMPACTSTORY CORE'})
 
 
-
-# set up views and database, if necessary
-try:
-    from totalimpact import views
-except exc.ProgrammingError:
-    logger.info("SQLAlchemy database tables not found, so creating them")
-    db.session.rollback()
-    db.create_all()
-    from totalimpact import views
-
 try:
     from totalimpact import extra_schema 
 except exc.ProgrammingError:

@@ -671,7 +671,7 @@ class Product(db.Model):
 
 def patch_biblio(tiid, patch_dict):
     pass
-    query = u"{core_api_root}/v1/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
+    query = u"{core_api_root}/v2/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
         core_api_root=os.getenv("API_ROOT"),
         tiid=tiid,
         api_admin_key=os.getenv("API_ADMIN_KEY")

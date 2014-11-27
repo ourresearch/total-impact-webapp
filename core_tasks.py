@@ -218,7 +218,7 @@ def after_refresh_complete(tiid, task_ids):
 
     if item_obj:
         try:
-            url = u"http://{webapp_root}/product/{tiid}?action=after-refresh".format(
+            url = u"{webapp_root}/product/{tiid}?action=after-refresh".format(
                 webapp_root=os.getenv("WEBAPP_ROOT"), tiid=tiid)
             r = requests.post(url)
             if r.status_code==200:

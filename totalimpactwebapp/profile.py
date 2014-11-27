@@ -688,7 +688,7 @@ def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"
     if source=="scheduled":
         priority = "low"
 
-    query = u"{core_api_root}/v1/products/refresh?api_admin_key={api_admin_key}".format(
+    query = u"{core_api_root}/v2/products/refresh?api_admin_key={api_admin_key}".format(
         core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
@@ -738,7 +738,7 @@ def remove_duplicates_from_profile(profile_id):
 
 
 def get_duplicates_list_from_tiids(tiids):
-    query = u"{core_api_root}/v1/products/duplicates?api_admin_key={api_admin_key}".format(
+    query = u"{core_api_root}/v2/products/duplicates?api_admin_key={api_admin_key}".format(
         core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")
     )
@@ -924,7 +924,7 @@ def make_products_for_linked_account(profile_id, importer_name, importer_value, 
     logger.info(u"in make_products_for_linked_account with {importer_name} {importer_value}".format(
         importer_name=importer_name, importer_value=importer_value))
 
-    query = u"{core_api_root}/v1/importer/{importer_name}?api_admin_key={api_admin_key}".format(
+    query = u"{core_api_root}/v2/importer/{importer_name}?api_admin_key={api_admin_key}".format(
         core_api_root=os.getenv("API_ROOT"),
         importer_name=importer_name,
         api_admin_key=os.getenv("API_ADMIN_KEY")
@@ -950,7 +950,7 @@ def make_products_for_linked_account(profile_id, importer_name, importer_value, 
 
 
 def make_products_for_product_id_strings(profile_id, product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
-    query = u"{core_api_root}/v1/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
+    query = u"{core_api_root}/v2/importer/{product_id_type}?api_admin_key={api_admin_key}".format(
         product_id_type=product_id_type,
         core_api_root=os.getenv("API_ROOT"),
         api_admin_key=os.getenv("API_ADMIN_KEY")

@@ -42,6 +42,7 @@ from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.profile import build_profile_dict
 from totalimpactwebapp.profile import default_free_trial_days
+from totalimpact.providers.provider import ProviderFactory, ProviderItemNotFoundError, ProviderError, ProviderServerError, ProviderTimeout
 
 from totalimpactwebapp.product import get_product
 from totalimpactwebapp.product import get_products_from_tiids
@@ -83,11 +84,8 @@ from sqlalchemy import or_
 logger = logging.getLogger("tiwebapp.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
-
-
-
-
-
+USER_AGENT = "ImpactStory/0.4.0" # User-Agent string to use on HTTP requests
+VERSION = "cristhian" # version
 
 
 
@@ -1076,22 +1074,6 @@ def images():
     return send_file(path)
 
 
-@app.route('/item/<namespace>/<path:nid>', methods=['GET'])
-def item_page(namespace, nid):
-    url = u"{api_root}/v1/tiid/{namespace}/{nid}?api_admin_key={api_admin_key}".format(
-        api_root=os.getenv("API_ROOT"),
-        namespace=namespace,
-        nid=nid,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    r = requests.get(url)
-    try:
-        tiid = r.json()["tiid"]
-    except KeyError:
-        abort(404, "Sorry, we've got no record for that item.")
-    return redirect("/embed/product/" + tiid, 301)
-
-
 @app.route("/top.js")
 def get_js_top():
     newrelic_header = views_helpers.remove_script_tags(
@@ -1224,7 +1206,7 @@ def get_subscribed_user_url_slugs():
 @app.route('/providers', methods=["GET"])  # information about providers
 def providers():
     try:
-        url = u"{api_root}/v1/provider?key={api_key}".format(
+        url = u"{api_root}/v2/provider?key={api_key}".format(
             api_key=os.getenv("API_KEY"),
             api_root=os.getenv("API_ROOT"))
         r = requests.get(url)
@@ -1274,5 +1256,473 @@ def logo_small():
 def advisor_badge():
     filename = "static/img/advisor-badge.png"
     return send_file(filename, mimetype='image/png')
+
+
+
+
+###############################################################################
+#
+#   CORE
+#
+###############################################################################
+
+
+
+# from flask import json, request, abort, make_response, g
+# from flask import render_template
+# import sys, os
+# import datetime, re, copy
+# from werkzeug.security import check_password_hash
+# from collections import defaultdict
+# import redis
+# import analytics
+# import requests
+
+# from totalimpact import app, tiredis, collection, incoming_email, db
+# from totalimpact import item as item_module
+# from totalimpact.models import MemberItems, NotAuthenticatedError
+# from totalimpact.providers import provider as provider_module
+# from totalimpact.providers.provider import ProviderFactory, ProviderItemNotFoundError, ProviderError, ProviderServerError, ProviderTimeout
+# from totalimpact import unicode_helpers
+# from totalimpact import default_settings
+# from totalimpact import REDIS_MAIN_DATABASE_NUMBER
+# import logging
+
+
+# logger = logging.getLogger("ti.views")
+# logger.setLevel(logging.DEBUG)
+
+# mydao = None
+# myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=REDIS_MAIN_DATABASE_NUMBER)  # main app is on DB 0
+
+
+# def set_db(url, db):
+#     """useful for unit testing, where you want to use a local database
+#     """
+#     global mydao 
+#     mydao = None
+#     return mydao
+
+# def set_redis(url, db):
+#     """useful for unit testing, where you want to use a local database
+#     """
+#     global myredis 
+#     myredis = tiredis.from_url(url, db)
+#     return myredis
+
+
+# def is_valid_key(key):
+#     internal_keys = ["yourkey", "samplekey", "item-report-page", "api-docs", os.getenv("API_KEY").lower(), os.getenv("API_ADMIN_KEY").lower()]
+#     is_valid_internal_key = key.lower() in internal_keys
+#     return is_valid_internal_key
+
+# def check_key():
+#     pass
+
+
+# def abort_custom(status_code, msg):
+#     body_dict = {
+#         "HTTP_status_code": status_code,
+#         "message": msg,
+#         "error": True
+#     }
+#     if request.args.get("callback"):
+#         status_code = 200  # JSONP can't deal with actual errors, it needs something back
+#         resp_string = "{callback_name}( {resp} )".format(
+#             callback_name=request.args.get("callback"),
+#             resp=json.dumps(body_dict)
+#         )
+#     else:
+#         resp_string = json.dumps(body_dict, sort_keys=True, indent=4)
+
+#     resp = make_response(resp_string, status_code)
+#     resp.mimetype = "application/json"
+#     abort(resp)
+
+# def check_mimetype():
+#     g.return_as_html = False
+#     if request.path.endswith(".html"):
+#         g.return_as_html = True
+#         request.path = request.path.replace(".html", "")
+
+
+
+# @app.before_request
+# def before_request():
+#     check_key()
+#     check_mimetype()
+
+
+# @app.after_request
+# def add_crossdomain_header(resp):
+#     #support CORS    
+#     resp.headers['Access-Control-Allow-Origin'] = "*"
+#     resp.headers['Access-Control-Allow-Methods'] = "POST, GET, OPTIONS, PUT, DELETE"
+#     resp.headers['Access-Control-Allow-Headers'] = "origin, content-type, accept, x-requested-with"
+#     return resp
+
+# @app.after_request
+# def set_mimetype_and_encoding(resp):
+#     resp.headers.add("Content-Encoding", "UTF-8")
+
+#     if "csv" in resp.mimetype:
+#         return resp
+#     if "static" in request.path:
+#         return resp
+
+#     try:
+#         if g.return_as_html:
+#             logger.info(u"rendering output through debug_api.html template")
+#             resp.mimetype = "text/html"
+#             return make_response(render_template(
+#                 'debug_api.html',
+#                 data=resp.data))
+#     except AttributeError:
+#         pass
+
+#     # logger.info(u"rendering output as json")
+#     resp.mimetype = "application/json"
+#     return resp
+
+
+# adding a simple route to confirm working API
+@app.route('/v1')
+@app.route('/v2')
+def hello():
+    msg = {
+        "hello": "world",
+        "message": "Congratulations! You have found the ImpactStory API.",
+        "more-info": "http://impactstory.org/api-docs",
+        "contact": "team@impactstory.org",
+        "version": VERSION
+    }
+    resp = json_resp_from_thing(msg)
+    return resp
+
+
+# still used
+
+@app.route("/v2/product/<tiid>/biblio", methods=["PATCH"])
+@app.route("/v1/product/<tiid>/biblio", methods=["PATCH"])
+def product_biblio_modify(tiid):
+    data = request.json
+    for biblio_field_name in data:
+        item = item_module.add_biblio(tiid, biblio_field_name, data[biblio_field_name])
+    response = {"product": item.as_old_doc()}
+    return json_resp_from_thing(response)
+
+
+
+def refresh_from_tiids(tiids, analytics_credentials, priority, myredis):
+    item_objects = item_module.Item.query.filter(item_module.Item.tiid.in_(tiids)).all()
+    dicts_to_refresh = []  
+
+    for item_obj in item_objects:
+        try:
+            tiid = item_obj.tiid
+            item_obj.set_last_refresh_start()
+            db.session.add(item_obj)
+            alias_dict = item_module.alias_dict_from_tuples(item_obj.alias_tuples)       
+            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": alias_dict}]
+        except AttributeError:
+            logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
+                tiid=tiid))
+
+    db.session.commit()
+
+    item_module.start_item_update(dicts_to_refresh, priority, myredis)
+    return tiids
+
+
+# refreshes items from tiids list in body of POST
+@app.route('/v2/products/refresh', methods=['POST'])
+@app.route('/v1/products/refresh', methods=['POST'])
+def products_refresh_post():
+    # logger.debug(u"in products_refresh_post with tiids")
+    tiids = request.json["tiids"]
+    try:
+        analytics_credentials = request.json["analytics_credentials"]
+    except KeyError:
+        analytics_credentials = {}
+
+    try:
+        priority = request.json["priority"]
+    except KeyError:
+        priority = "high"
+
+    refresh_from_tiids(tiids, analytics_credentials, priority, myredis)
+    resp = json_resp_from_thing("true")
+    return resp
+
+
+# sends back duplicate groups from tiids list in body of POST
+@app.route('/v2/products/duplicates', methods=['POST'])
+@app.route('/v1/products/duplicates', methods=['POST'])
+def products_duplicates_post():
+    # logger.debug(u"in products_duplicates_post with tiids")
+    tiids = request.json["tiids"]
+    duplicates_list = item_module.build_duplicates_list(tiids)
+    resp = json_resp_from_thing({"duplicates_list": duplicates_list})
+    return resp
+
+
+def format_into_products_dict(tiids_aliases_map):
+    products_dict = {}
+    for tiid in tiids_aliases_map:
+        (ns, nid) = tiids_aliases_map[tiid]
+        products_dict[tiid] = {"aliases": {ns: [nid]}}
+    return products_dict
+
+
+
+@app.route("/v2/importer/<provider_name>", methods=['POST'])
+@app.route("/v1/importer/<provider_name>", methods=['POST'])
+def importer_post(provider_name):
+    # need to do these ugly deletes because import products not in dict.  fix in future!
+    try:
+        profile_id = request.json["profile_id"]
+        del request.json["profile_id"]
+    except KeyError:
+        abort(405, "missing profile_id")
+
+    try:
+        analytics_credentials = request.json["analytics_credentials"]
+        del request.json["analytics_credentials"]
+    except KeyError:
+        analytics_credentials = {}
+
+    try:
+        existing_tiids = request.json["existing_tiids"]
+        del request.json["existing_tiids"]
+    except KeyError:
+        existing_tiids = []
+
+    try:
+        retrieved_aliases = provider_module.import_products(provider_name, request.json)
+    except ImportError:
+        abort_custom(404, "an importer for provider '{provider_name}' is not found".format(
+            provider_name=provider_name))        
+    except ProviderItemNotFoundError:
+        abort_custom(404, "item not found")
+    except ProviderItemNotFoundError:
+        abort_custom(404, "item not found")
+    except (ProviderTimeout, ProviderServerError):
+        abort_custom(503, "timeout error, might be transient")
+    except ProviderError:
+        abort(500, "internal error from provider")
+
+    new_aliases = item_module.aliases_not_in_existing_tiids(retrieved_aliases, existing_tiids)
+    tiids_aliases_map = item_module.create_tiids_from_aliases(profile_id, new_aliases, analytics_credentials, myredis, provider_name)
+    # logger.debug(u"in provider_importer_get with {tiids_aliases_map}".format(
+    #     tiids_aliases_map=tiids_aliases_map))
+
+    products_dict = format_into_products_dict(tiids_aliases_map)
+
+    resp = json_resp_from_thing({"products": products_dict})
+    return resp
+
+@app.route('/v2/provider', methods=['GET'])
+@app.route('/v1/provider', methods=['GET'])
+def provider():
+    ret = ProviderFactory.get_all_metadata()
+    resp = json_resp_from_thing(ret)
+
+    return resp
+
+
+
+# maybe used, maybe not
+
+
+# @app.route('/v1/item/<namespace>/<path:nid>', methods=['POST'])
+# def item_namespace_post(namespace, nid):
+#     abort_custom(410, "no longer supported")
+
+
+# @app.route('/v1/item/<tiid>', methods=['GET'])
+# def get_item_from_tiid(tiid, format=None, include_history=False, callback_name=None):
+#     try:
+#         item = item_module.get_item(tiid, myrefsets, myredis)
+#     except (LookupError, AttributeError):
+#         abort_custom(404, "item does not exist")
+
+#     if not item:
+#         abort_custom(404, "item does not exist")
+
+#     item["refresh_status"] = item_module.refresh_status(tiid, myredis)["short"]
+#     if not item["refresh_status"].startswith("SUCCESS"):
+#         response_code = 210 # not complete yet
+#     else:
+#         response_code = 200
+
+#     api_key = request.args.get("key", None)
+#     clean_item = item_module.clean_for_export(item, api_key, os.getenv("API_ADMIN_KEY"))
+#     clean_item["HTTP_status_code"] = response_code  # hack for clients who can't read real response codes
+
+#     resp_string = json.dumps(clean_item, sort_keys=True, indent=4)
+#     if callback_name is not None:
+#         resp_string = callback_name + '(' + resp_string + ')'
+
+#     resp = make_response(resp_string, response_code)
+
+#     return resp
+
+# @app.route('/v1/tiid/<namespace>/<path:nid>', methods=['GET'])
+# def get_tiid_from_namespace_nid(namespace, nid):
+#     tiid = item_module.get_tiid_by_alias(namespace, nid)
+#     if not tiid:
+#         abort_custom(404, "alias not in database")
+#     return make_response(json.dumps({"tiid": tiid}, sort_keys=True, indent=4), 200)
+
+
+# @app.route('/v1/item/<namespace>/<path:nid>', methods=['GET'])
+# def get_item_from_namespace_nid(namespace, nid, format=None, include_history=False):
+#     abort_custom(410, "no longer supported")
+
+
+
+
+
+
+
+# def abort_if_fails_collection_edit_auth(request):
+#     if request.args.get("api_admin_key"):
+#         supplied_key = request.args.get("api_admin_key", "")
+#         if os.getenv("API_KEY") == supplied_key:  #remove this once webapp sends admin_api_key
+#             return True
+#         if os.getenv("API_ADMIN_KEY") == supplied_key:
+#             return True
+#     abort_custom(403, "This collection has no update key; it can't be changed.")
+
+
+# def get_alias_strings(aliases):
+#     alias_strings = []
+#     for (namespace, nid) in aliases:
+#         namespace = item_module.clean_id(namespace)
+#         nid = item_module.clean_id(nid)
+#         try:
+#             alias_strings += [namespace+":"+nid]
+#         except TypeError:
+#             # jsonify the biblio dicts
+#             alias_strings += [namespace+":"+json.dumps(nid)]
+#     return alias_strings   
+
+
+
+
+
+# """ Refreshes all the items from tiids
+#     Depricate this one
+# """
+# @app.route("/v1/products/<tiids_string>", methods=["POST"])
+# # not officially supported in api
+# def products_refresh_post_inline(tiids_string):
+#     tiids = tiids_string.split(",")
+#     try:
+#         analytics_credentials = request.json["analytics_credentials"]
+#     except KeyError:
+#         analytics_credentials = {}
+
+#     try:
+#         priority = request.json["priority"]
+#     except KeyError:
+#         priority = "high"
+
+#     refresh_from_tiids(tiids, analytics_credentials, priority, myredis)
+#     resp = make_response("true", 200)
+#     return resp
+
+
+
+
+
+# # creates products from aliases or returns items from tiids
+# @app.route('/v1/products', methods=['POST'])
+# @app.route('/v1/products.<format>', methods=['POST'])
+# def products_post(format="json"):
+#     if "tiids" in request.json:
+#         # overloading post for get because tiids string gets long
+#         # logger.debug(u"in products_post with tiids, so getting products to return")
+#         tiids = request.json["tiids"]
+#         tiids_string = ",".join(tiids)
+#         try:
+#             most_recent_metric_date = request.json["most_recent_metric_date"]
+#             most_recent_diff_metric_date = request.json["most_recent_diff_metric_date"]
+#         except KeyError:
+#             most_recent_metric_date = None
+#             most_recent_diff_metric_date = None
+
+#         return products_get(tiids_string, format, most_recent_metric_date, most_recent_diff_metric_date)
+#     else:
+#         abort_custom(400, "bad arguments")
+
+
+# def cleaned_items(tiids, myredis, override_export_clean=False, most_recent_metric_date=None, most_recent_diff_metric_date=None):
+#     items_dict = collection.get_items_for_client(tiids, myrefsets, myredis, most_recent_metric_date, most_recent_diff_metric_date)
+
+#     secret_key = os.getenv("API_ADMIN_KEY")
+#     supplied_key = request.args.get("api_admin_key", "")
+#     cleaned_items_dict = {}
+#     for tiid in items_dict:
+#         cleaned_items_dict[tiid] = item_module.clean_for_export(items_dict[tiid], supplied_key, secret_key, override_export_clean)
+#     return cleaned_items_dict
+
+
+# # returns a product from a tiid
+# @app.route('/v1/product/<tiid>', methods=['GET'])
+# def single_product_get(tiid):
+#     cleaned_items_dict = cleaned_items([tiid], myredis)
+#     try:
+#         single_item = cleaned_items_dict[tiid]
+#     except TypeError:
+#         abort_custom(404, "No product found with that tiid")
+
+#     response_code = 200
+#     if not collection.is_all_done([tiid], myredis):
+#         response_code = 210 # update is not complete yet
+
+#     resp = make_response(json.dumps(single_item, sort_keys=True, indent=4),
+#                          response_code)
+
+#     return resp
+
+
+# # returns products from tiids
+# @app.route('/v1/products/<tiids_string>', methods=['GET'])
+# @app.route('/v1/products.<format>/<tiids_string>', methods=['GET'])
+# def products_get(tiids_string, format="json", most_recent_metric_date=None, most_recent_diff_metric_date=None):
+#     tiids = tiids_string.split(",")
+#     override_export_clean = (format=="csv")
+#     cleaned_items_dict = cleaned_items(tiids, myredis, override_export_clean, most_recent_metric_date, most_recent_diff_metric_date)
+
+#     response_code = 200
+#     if not collection.is_all_done(tiids, myredis):
+#         response_code = 210 # update is not complete yet
+
+#     if format == "csv":
+#         csv = collection.make_csv_stream(cleaned_items_dict.values())
+#         resp = make_response(csv, response_code)
+#         resp.mimetype = "text/csv;charset=UTF-8"
+#         resp.headers.add("Content-Encoding", "UTF-8")
+#     else:
+#         resp = make_response(json.dumps({"products": cleaned_items_dict}, sort_keys=True, indent=4),
+#                              response_code)
+
+#     return resp
+
+
+
+
+
+
+# # route to receive email
+# @app.route('/v1/inbox', methods=["POST"])
+# def inbox():
+#     payload = request.json
+#     email = incoming_email.save_incoming_email(payload)
+#     logger.info(u"You've got mail. Subject: {subject}".format(
+#         subject=email.subject))
+#     resp = make_response(json.dumps({"subject":email.subject}, sort_keys=True, indent=4), 200)
+#     return resp
 
 
