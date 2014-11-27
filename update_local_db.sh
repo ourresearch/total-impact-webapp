@@ -5,7 +5,7 @@
 # echo "set DATABASE_URL to postgres://localhost/workingdb"
 
 # show the newest snap on local, before update
-psql -d workingdb -c 'select max(last_collected_date) from snap;'
+# psql -d workingdb -c 'select max(last_collected_date) from snap;'
 
 # copy local db from server
 curl -o fresh.db `heroku pgbackups:url --app total-impact-core`
