@@ -116,6 +116,55 @@ def store_tweet_payload_from_twitter(profile_id, tiid, payload_dicts):
 
 
 
+
+def save_product_tweets_for_profile(profile):
+    tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile.id).all()
+    tweets_by_tweet_id_and_tiid = dict([((tweet.tweet_id, tweet.tiid), tweet) for tweet in tweets])
+
+    new_objects = []
+    for product in profile.display_products:
+        tiid = product.tiid
+        metric = product.get_metric_by_name("altmetric_com", "posts")
+        # logger.info(u"{url_slug} has tweet".format(
+        #     url_slug=profile.url_slug))
+        if metric and "twitter" in metric.most_recent_snap.raw_value:
+            print ".",
+            twitter_posts_from_altmetric = metric.most_recent_snap.raw_value["twitter"]
+
+            for post in twitter_posts_from_altmetric:
+                tweet_id = post["tweet_id"]
+                screen_name = post["author"]["id_on_source"]
+
+                if (tweet_id, tiid) in tweets_by_tweet_id_and_tiid.keys():
+                    tweet = tweets_by_tweet_id_and_tiid[(tweet_id, tiid)]
+                else:
+                    tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
+
+                #overwrite even if there
+                tweet.screen_name = screen_name
+                tweet.tweet_id = tweet_id
+                tweet.tweet_timestamp = post["posted_on"]
+                tweet.profile_id = profile.id
+                if "geo" in post["author"]:
+                    tweet.country = post["author"]["geo"].get("country", None)
+                    tweet.latitude = post["author"]["geo"].get("lt", None)
+                    tweet.longitude = post["author"]["geo"].get("ln", None)
+                new_objects.append(tweet)
+
+                #overwrite with new info even if already there
+                tweeter = tweet.tweeter
+                if not tweeter:
+                    tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
+
+                tweeter.followers = post["author"].get("followers", 0)
+                tweeter.name = post["author"].get("name", screen_name)
+                tweeter.description = post["author"].get("description", "")
+                tweeter.image_url = post["author"].get("image", None)
+                new_objects.append(tweeter)
+
+    return new_objects
+
+
 def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
     tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile_id).all()
     tweets_by_tweet_id = dict([(tweet.tweet_id, tweet) for tweet in tweets])
@@ -129,8 +178,7 @@ def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
             tweet = tweets_by_tweet_id[tweet_id]
         else:
             tweet = Tweet(tweet_id=tweet_id)
-            db.session.add(tweet)
-            tweets_by_tweet_id[tweet_id] = tweet
+            db.session.merge(tweet)
 
         #overwrite even if there
         tweet.screen_name = screen_name
@@ -147,14 +195,16 @@ def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
         tweeter = tweet.tweeter
         if not tweeter:
             tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
-            db.session.add(tweeter)
+            db.session.merge(tweeter)
 
         tweeter.followers = post["author"].get("followers", 0)
         tweeter.name = post["author"].get("name", screen_name)
         tweeter.description = post["author"].get("description", "")
         tweeter.image_url = post["author"].get("image", None)
+        new_objects.append(tweeter)
 
     commit(db)
+    return new_objects
 
 
 class Tweeter(db.Model):

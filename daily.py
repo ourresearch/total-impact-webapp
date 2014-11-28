@@ -8,7 +8,8 @@ from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
 from totalimpactwebapp.drip_email import log_drip_email
 from totalimpactwebapp.util import commit
-from totalimpactwebapp.util  import dict_from_dir
+from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp.tweet import save_product_tweets_for_profile
 from totalimpactwebapp import db
 import tasks
 
@@ -683,25 +684,19 @@ def refresh_tweeted_products(min_tiid=None):
 def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
     q = profile_query(url_slug, min_url_slug)
 
-    from totalimpactwebapp.tweet import save_product_tweets
-
-    total_tweets_saved = 0
-    total_products_saved = 0
+    total_objects_saved = 0
     for profile in windowed_query(q, Profile.url_slug, 25):
         logger.info(u"{url_slug}".format(
             url_slug=profile.url_slug))
 
-        for product in profile.display_products:
-            metric = product.get_metric_by_name("altmetric_com", "posts")
-            # logger.info(u"{url_slug} has tweet".format(
-            #     url_slug=profile.url_slug))
-            if metric and "twitter" in metric.most_recent_snap.raw_value:
-                print ".",
-                twitter_details = metric.most_recent_snap.raw_value["twitter"]
-                save_product_tweets(profile.id, metric.tiid, twitter_details)
-                total_tweets_saved += len(twitter_details)
-                total_products_saved += 1
-        print "total_tweets_saved", total_tweets_saved, "total_products_saved", total_products_saved
+        new_objects = save_product_tweets_for_profile(profile)
+        total_objects_saved += len(new_objects)
+
+        print "merging and commiting"
+        for obj in new_objects:
+            db.session.merge(obj)
+        commit(db)
+        print "total_objects_saved", total_objects_saved
 
 
 def get_tweet_text(min_tiid=None):

@@ -33,8 +33,6 @@ from totalimpactwebapp.aliases import alias_tuples_from_dict
 from totalimpactwebapp.aliases import canonical_aliases
 from totalimpactwebapp.aliases import merge_alias_dicts
  
-from totalimpactwebapp.tweet import save_product_tweets
-
 import rate_limit
 
 logger = logging.getLogger("core.core_tasks")
