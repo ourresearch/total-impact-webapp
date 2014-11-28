@@ -3,6 +3,8 @@ from totalimpact.providers import crossref
 from totalimpact.providers import arxiv
 from totalimpact.providers import pubmed
 from totalimpact.providers import webpage
+from totalimpact.providers.provider import ProviderFactory
+
 import re
 import logging
 
@@ -84,12 +86,12 @@ def import_products(provider_name, import_input):
         logger.debug(u"in import_products, going to call get_aliases_from_product_id_strings")
         aliases = get_aliases_from_product_id_strings(import_input)
     elif provider_name=="bibtex":
-        provider = ProviderFactory.get_provider("bibtex")
-        aliases = provider.member_items(import_input)
+        provider_module = ProviderFactory.get_provider("bibtex")
+        aliases = provider_module.member_items(import_input)
     else:
         try:
-            provider = ProviderFactory.get_provider(provider_name)
-            aliases = provider.member_items(import_input)
+            provider_module = ProviderFactory.get_provider(provider_name)
+            aliases = provider_module.member_items(import_input)
         except ImportError:
             logger.debug(u"in import_products, got ImportError")
             pass
