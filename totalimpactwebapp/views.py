@@ -828,6 +828,9 @@ def product_without_needing_profile(tiid):
         markup=markup
     )
 
+    product_dict["metrics"] = product.metrics
+    product_dict["countries"] = product.countries
+
     return json_resp_from_thing(product_dict)
 
 
