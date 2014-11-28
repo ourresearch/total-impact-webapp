@@ -117,14 +117,19 @@ def store_tweet_payload_from_twitter(profile_id, tiid, payload_dicts):
 
 
 def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
+    tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile_id).all()
+    tweets_by_tweet_id = dict([(tweet.tweet_id, tweet) for tweet in tweets])
+
+    new_objects = []
     for post in twitter_posts_from_altmetric:
         tweet_id = post["tweet_id"]
         screen_name = post["author"]["id_on_source"]
-        # print ".",
 
-        tweet = Tweet.query.get(tweet_id)
-        if not tweet:
+        if tweet_id in tweets_by_tweet_id:
+            tweet = tweets_by_tweet_id[tweet_id]
+        else:
             tweet = Tweet(tweet_id=tweet_id)
+
         #overwrite even if there
         tweet.screen_name = screen_name
         tweet.tweet_id = tweet_id
@@ -134,24 +139,25 @@ def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
             tweet.country = post["author"]["geo"].get("country", None)
             tweet.latitude = post["author"]["geo"].get("lt", None)
             tweet.longitude = post["author"]["geo"].get("ln", None)
-        db.session.add(tweet)
+        new_objects.append(tweet)
 
         #overwrite with new info even if already there
-        tweeter = Tweeter.query.get((screen_name, tweet_id))
+        tweeter = tweet.tweeter
         if not tweeter:
             tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
         tweeter.followers = post["author"].get("followers", 0)
         tweeter.name = post["author"].get("name", screen_name)
         tweeter.description = post["author"].get("description", "")
         tweeter.image_url = post["author"].get("image", None)
-        db.session.add(tweeter)
+        new_objects.append(tweeter)
 
+    db.session.add_all(new_objects)
     commit(db)
 
 
 class Tweeter(db.Model):
     screen_name = db.Column(db.Text, primary_key=True)
-    tweet_id = db.Column(db.Text, primary_key=True)  # alter table tweeter add tweet_id text  
+    tweet_id = db.Column(db.Text, db.ForeignKey('tweet.tweet_id'), primary_key=True)  # alter table tweeter add tweet_id text  
     followers = db.Column(db.Integer)
     name = db.Column(db.Text)
     description = db.Column(db.Text)
@@ -187,6 +193,14 @@ class Tweet(db.Model):
     # would make lat and long numeric, but ran into problems serializing, ala http://stackoverflow.com/questions/1960516/python-json-serialize-a-decimal-object
     # latitude = db.Column(db.Text) # alter table tweet add latitude text;
     # longitude = db.Column(db.Text) # alter table tweet add longitude text;
+
+    tweeter = db.relationship(
+        'Tweeter',
+        lazy='joined',
+        cascade='all, delete-orphan',
+        backref=db.backref("tweet", lazy="joined"), 
+        uselist=False  #onetoone
+    )
 
     def __init__(self, **kwargs):
         if "payload" in kwargs:

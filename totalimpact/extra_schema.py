@@ -1,23 +1,23 @@
 from totalimpactwebapp import db
 
-def create_view_min_biblio():
-    result = db.session.execute("""create or replace view min_biblio as (
-                select 
-                    a.tiid, 
-                    a.provider, 
-                    a.biblio_value as title, 
-                    b.biblio_value as authors, 
-                    c.biblio_value as journal, 
-                    a.collected_date
-                from biblio a
-                join biblio b using (tiid, provider)
-                join biblio c using (tiid, provider)
-                where 
-                a.biblio_name = 'title'
-                and b.biblio_name = 'authors'
-                and c.biblio_name = 'journal'
-                )""")
-    db.session.commit()
+# def create_view_min_biblio():
+#     result = db.session.execute("""create or replace view min_biblio as (
+#                 select 
+#                     a.tiid, 
+#                     a.provider, 
+#                     a.biblio_value as title, 
+#                     b.biblio_value as authors, 
+#                     c.biblio_value as journal, 
+#                     a.collected_date
+#                 from biblio a
+#                 join biblio b using (tiid, provider)
+#                 join biblio c using (tiid, provider)
+#                 where 
+#                 a.biblio_name = 'title'
+#                 and b.biblio_name = 'authors'
+#                 and c.biblio_name = 'journal'
+#                 )""")
+#     db.session.commit()
 
 
 def create_doaj_table():
@@ -44,6 +44,5 @@ def create_doaj_view():
     result = db.session.execute(doaj_setup_sql)
     db.session.commit()
 
-create_view_min_biblio()    
 create_doaj_table()    
 create_doaj_view()    

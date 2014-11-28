@@ -500,7 +500,6 @@ class Product(db.Model):
     def parse_and_save_tweets(self):
         metric = self.get_metric_by_name("altmetric_com", "posts")
         if metric and "twitter" in metric.most_recent_snap.raw_value:
-            print ".",
             twitter_details = metric.most_recent_snap.raw_value["twitter"]
             save_product_tweets(self.profile_id, self.tiid, twitter_details)
 
