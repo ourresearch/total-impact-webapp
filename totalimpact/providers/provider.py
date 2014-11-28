@@ -80,16 +80,22 @@ def get_aliases_from_product_id_strings(product_id_strings):
     from totalimpact.providers import arxiv
     from totalimpact.providers import webpage
 
-    logger.debug(u"in import_products with {product_id_strings}".format(
+    logger.debug(u"in get_aliases_from_product_id_strings with product_id_strings {product_id_strings}".format(
         product_id_strings=product_id_strings))
 
     for nid in product_id_strings:
-        nid = remove_nonprinting_characters(nid)
-        nid = nid.strip()  # also remove spaces
-
-        logger.debug(u"in import_products with cleaned nid {nid}".format(
+        logger.debug(u"in get_aliases_from_product_id_strings nid 1 {nid}".format(
             nid=nid))
 
+        nid = remove_nonprinting_characters(nid)
+
+        logger.debug(u"in get_aliases_from_product_id_strings nid 2 {nid}".format(
+            nid=nid))
+
+        nid = nid.strip()  # also remove spaces
+
+        logger.debug(u"in get_aliases_from_product_id_strings with cleaned nid {nid}".format(
+            nid=nid))
 
         if is_doi(nid):
             aliases += crossref.Crossref().member_items(nid)
@@ -100,7 +106,7 @@ def get_aliases_from_product_id_strings(product_id_strings):
         elif is_url(nid):
             aliases += webpage.Webpage().member_items(nid)
 
-        logger.debug(u"in import_products with cleaned aliases {aliases}".format(
+        logger.debug(u"in get_aliases_from_product_id_strings with cleaned aliases {aliases}".format(
             aliases=aliases))
 
     return aliases
@@ -108,10 +114,10 @@ def get_aliases_from_product_id_strings(product_id_strings):
 
 def import_products(provider_name, import_input):
     if provider_name in ["bibtex", "product_id_strings"]:
-        logger.debug(u"in import_products with {provider_name}".format(
+        logger.debug(u"in import_products with provider_name {provider_name}".format(
             provider_name=provider_name))
     else:
-        logger.debug(u"in import_products with {provider_name}: {import_input}".format(
+        logger.debug(u"in import_products with provider_name {provider_name}: {import_input}".format(
             provider_name=provider_name, import_input=import_input))
 
     aliases = []
