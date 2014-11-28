@@ -154,6 +154,8 @@ def save_product_tweets_for_profile(profile):
                 #overwrite with new info even if already there
                 tweeter = tweet.tweeter
                 if not tweeter:
+                    tweeter = Tweeter.query.get((screen_name, tweet_id))
+                if not tweeter:
                     tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
 
                 tweeter.followers = post["author"].get("followers", 0)
