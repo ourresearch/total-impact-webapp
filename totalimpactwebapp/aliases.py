@@ -1,5 +1,6 @@
 import util
 import datetime
+import copy
 import unicode_helpers
 
 from totalimpactwebapp.util import cached_property
@@ -62,6 +63,59 @@ def clean_alias_tuple_for_comparing(ns, nid):
                 alias_tuple=alias_tuple))
             cleaned_alias = alias_tuple
         return cleaned_alias
+
+
+def alias_tuples_from_dict(aliases_dict):
+    """
+    Convert from aliases dict we use in items, to a list of alias tuples.
+
+    The providers need the tuples list, which look like this:
+    [(doi, 10.123), (doi, 10.345), (pmid, 1234567)]
+    """
+    alias_tuples = []
+    for ns, ids in aliases_dict.iteritems():
+        if isinstance(ids, basestring): # it's a date, not a list of ids
+            alias_tuples.append((ns, ids))
+        else:
+            for id in ids:
+                alias_tuples.append((ns, id))
+    return alias_tuples
+
+
+def alias_dict_from_tuples(aliases_tuples):
+    alias_dict = {}
+    for (ns, ids) in aliases_tuples:
+        if ns in alias_dict:
+            alias_dict[ns] += [ids]
+        else:
+            alias_dict[ns] = [ids]
+    return alias_dict
+
+
+def canonical_aliases(orig_aliases_dict):
+    # only put lowercase namespaces in items, and lowercase dois
+    lowercase_aliases_dict = {}
+    for orig_namespace in orig_aliases_dict:
+        lowercase_namespace = clean_id(orig_namespace.lower())
+        if lowercase_namespace == "doi":
+            lowercase_aliases_dict[lowercase_namespace] = [clean_id(doi.lower()) for doi in orig_aliases_dict[orig_namespace]]
+        else:
+            lowercase_aliases_dict[lowercase_namespace] = [clean_id(nid) for nid in orig_aliases_dict[orig_namespace]]
+    return lowercase_aliases_dict
+
+
+def merge_alias_dicts(aliases1, aliases2):
+    #logger.debug(u"in MERGE ALIAS DICTS with %s and %s" %(aliases1, aliases2))
+    merged_aliases = copy.deepcopy(aliases1)
+    for ns, nid_list in aliases2.iteritems():
+        for nid in nid_list:
+            try:
+                if not nid in merged_aliases[ns]:
+                    merged_aliases[ns].append(nid)
+            except KeyError: # no ids for that namespace yet. make it.
+                merged_aliases[ns] = [nid]
+    return merged_aliases
+    
 
 class AliasRow(db.Model):
 

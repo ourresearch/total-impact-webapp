@@ -1264,58 +1264,14 @@ def advisor_badge():
     return send_file(filename, mimetype='image/png')
 
 
-
-
-###############################################################################
-#
-#   FROM CORE
-#
-###############################################################################
-
-
-
-# adding a simple route to confirm working API
-@app.route('/v1')
-@app.route('/v2')
-def hello():
-    msg = {
-        "hello": "world",
-        "message": "Congratulations! You have found the ImpactStory API.",
-        "more-info": "http://impactstory.org/api-docs",
-        "contact": "team@impactstory.org",
-        "version": VERSION
-    }
-    resp = json_resp_from_thing(msg)
+# route to receive email
+@app.route('/v1/inbox', methods=["POST"])
+def inbox():
+    payload = request.json
+    email = incoming_email.save_incoming_email(payload)
+    logger.info(u"You've got mail. Subject: {subject}".format(
+        subject=email.subject))
+    resp = make_response(json.dumps({"subject":email.subject}, sort_keys=True, indent=4), 200)
     return resp
-
-
-@app.route("/v2/product/<tiid>/biblio", methods=["PATCH"])
-@app.route("/v1/product/<tiid>/biblio", methods=["PATCH"])
-def product_biblio_modify(tiid):
-    data = request.json
-    from totalimpact import item as item_module
-    for biblio_field_name in data:
-        item = item_module.add_biblio(tiid, biblio_field_name, data[biblio_field_name])
-    response = {"product": item.as_old_doc()}
-    return json_resp_from_thing(response)
-
-
-
-
-
-
-
-
-
-
-# # route to receive email
-# @app.route('/v1/inbox', methods=["POST"])
-# def inbox():
-#     payload = request.json
-#     email = incoming_email.save_incoming_email(payload)
-#     logger.info(u"You've got mail. Subject: {subject}".format(
-#         subject=email.subject))
-#     resp = make_response(json.dumps({"subject":email.subject}, sort_keys=True, indent=4), 200)
-#     return resp
 
 

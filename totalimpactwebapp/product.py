@@ -731,30 +731,6 @@ class Product(db.Model):
 
 
 
-
-def patch_biblio(tiid, patch_dict):
-    pass
-    query = u"{core_api_root}/v2/product/{tiid}/biblio?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        tiid=tiid,
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-    r = requests.patch(
-        query,
-        data=json.dumps(patch_dict),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'}
-    )
-
-    if "free_fulltext_url" in patch_dict.keys():
-        product = get_product(tiid)
-        product.checked_pdf_url = False
-        db.session.add(product)
-        commit(db)        
-        add_product_embed_markup(tiid)
-
-    return r
-
-
 def refresh_status(tiid, myredis):
     task_ids = myredis.get_provider_task_ids(tiid)
 
@@ -927,6 +903,29 @@ def build_duplicates_list(products):
     distinct_groups_values = [group for group in distinct_groups.values() if group]
     return distinct_groups_values
 
+
+def patch_biblio(tiid, patch_dict, provider="user_provided"):
+
+    product = Product.query.get(tiid)
+
+    for biblio_name, biblio_value in patch_dict.iteritems():
+        biblio_row_object = BiblioRow.query.filter_by(
+                    tiid=tiid, 
+                    provider=provider_name, 
+                    biblio_name=biblio_name).first()
+        if biblio_object:
+            biblio_row_object.biblio_value = biblio_value
+            biblio_row_object.provider = provider
+        else:
+            biblio_row_object = BiblioRow(
+                    biblio_name=biblio_name, 
+                    biblio_value=biblio_value, 
+                    provider=provider)
+            product.biblio_rows.append(biblio_row_object)
+
+    commit(db)
+
+    return {"product": product}
 
 def put_aliases_in_product(product, alias_tuples):
     # logger.debug(u"in add_aliases_to_item_object for {tiid}".format(

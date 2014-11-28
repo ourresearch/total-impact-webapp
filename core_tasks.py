@@ -5,6 +5,7 @@ import logging
 import datetime
 import random
 import celery
+import re
 import requests
 from celery.decorators import task
 from celery.signals import task_postrun, task_prerun, task_failure, worker_process_init
@@ -16,7 +17,6 @@ from eventlet import timeout
 from sqlalchemy.orm.exc import FlushError
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 
-from totalimpact import item as item_module
 from totalimpactwebapp import db
 from totalimpact.tiredis import REDIS_MAIN_DATABASE_NUMBER
 from totalimpact import tiredis, default_settings
@@ -27,6 +27,11 @@ from totalimpactwebapp.product import Product
 from totalimpactwebapp.product import put_aliases_in_product
 from totalimpactwebapp.product import put_biblio_in_product
 from totalimpactwebapp.product import put_snap_in_product
+
+from totalimpactwebapp.aliases import alias_dict_from_tuples
+from totalimpactwebapp.aliases import alias_tuples_from_dict
+from totalimpactwebapp.aliases import canonical_aliases
+from totalimpactwebapp.aliases import merge_alias_dicts
 
 import rate_limit
 
@@ -84,9 +89,9 @@ def provider_method_wrapper(tiid, input_aliases_dict, provider, method_name):
     worker_name = provider_name+"_worker"
 
     if isinstance(input_aliases_dict, list):
-        input_aliases_dict = item_module.alias_dict_from_tuples(input_aliases_dict)    
+        input_aliases_dict = alias_dict_from_tuples(input_aliases_dict)    
 
-    input_alias_tuples = item_module.alias_tuples_from_dict(input_aliases_dict)
+    input_alias_tuples = alias_tuples_from_dict(input_aliases_dict)
     method = getattr(provider, method_name)
 
     try:
@@ -107,9 +112,9 @@ def provider_method_wrapper(tiid, input_aliases_dict, provider, method_name):
         provider_name=provider_name.upper(), method_response=method_response))
 
     if method_name == "aliases" and method_response:
-        initial_alias_dict = item_module.alias_dict_from_tuples(method_response)
-        new_canonical_aliases_dict = item_module.canonical_aliases(initial_alias_dict)
-        full_aliases_dict = item_module.merge_alias_dicts(new_canonical_aliases_dict, input_aliases_dict)
+        initial_alias_dict = alias_dict_from_tuples(method_response)
+        new_canonical_aliases_dict = canonical_aliases(initial_alias_dict)
+        full_aliases_dict = merge_alias_dicts(new_canonical_aliases_dict, input_aliases_dict)
     else:
         full_aliases_dict = input_aliases_dict
 
@@ -161,9 +166,97 @@ def add_to_database_if_nonzero(
     return
 
 
+def decide_genre(alias_dict):
+    # logger.debug(u"in decide_genre with {alias_dict}".format(
+    #     alias_dict=alias_dict))        
+
+    genre = "unknown"
+    host = "unknown"
+
+    '''Uses available aliases to decide the item's genre'''
+    if "doi" in alias_dict:
+        joined_doi_string = "".join(alias_dict["doi"])
+        joined_doi_string = joined_doi_string.lower()
+        if "10.5061/dryad." in joined_doi_string:
+            genre = "dataset"
+            host = "dryad"
+        elif ".figshare." in joined_doi_string:
+            host = "figshare"
+            try:
+                genre = alias_dict["biblio"][0]["genre"]
+            except (KeyError, AttributeError):
+                genre = "dataset"
+        else:
+            genre = "article"
+
+    elif "pmid" in alias_dict:
+        genre = "article"
+
+    elif "arxiv" in alias_dict:
+        genre = "article"
+        host = "arxiv"
+
+    elif "blog" in alias_dict:
+        genre = "blog"
+        host = "wordpresscom"
+
+    elif "blog_post" in alias_dict:
+        genre = "blog"
+        host = "blog_post"
+
+    elif "url" in alias_dict:
+        joined_url_string = "".join(alias_dict["url"])
+        joined_url_string = joined_url_string.lower()
+        if "slideshare.net" in joined_url_string:
+            if re.match(".+slideshare.net/.+/.+", joined_url_string):
+                host = "slideshare"
+                genre = "slides"
+            else:
+                host = "slideshare_account"
+                genre = "account"
+        elif "github.com" in joined_url_string:
+            if re.match(".+github.com/.+/.+", joined_url_string):
+                host = "github"
+                genre = "software"
+            else:
+                host = "github_account"
+                genre = "account"
+        elif "twitter.com" in joined_url_string:
+            genre = "account"
+            host = "twitter"
+        elif "linkedin" in joined_url_string:
+            genre = "account"
+            host = "linkedin"            
+        elif "youtube.com" in joined_url_string:
+            genre = "video"
+            host = "youtube"
+        elif "vimeo.com" in joined_url_string:
+            genre = "video"
+            host = "vimeo"
+        elif "publons.com" in joined_url_string:
+            genre = "peer review"
+            host = "publons"
+        else:
+            genre = "webpage"
+
+    # override if it came in with a genre, or call it an "article" if it has a journal
+    if (host=="unknown" and ("biblio" in alias_dict)):
+        for biblio_dict in alias_dict["biblio"]:
+            if "genre" in biblio_dict and (biblio_dict["genre"] not in ["undefined", "other"]):
+                genre = biblio_dict["genre"]
+            elif ("journal" in biblio_dict) and biblio_dict["journal"]:  
+                genre = "article"
+
+    if "article" in genre:
+        genre = "article"  #disregard whether journal article or conference article for now
+
+    return (genre, host)
+
+
+
 def sniffer(item_aliases, provider_config=default_settings.PROVIDERS):
 
-    (genre, host) = item_module.decide_genre(item_aliases)
+    (genre, host) = decide_genre(item_aliases)
 
     all_metrics_providers = [provider.provider_name for provider in 
                     ProviderFactory.get_providers(provider_config, "metrics")]

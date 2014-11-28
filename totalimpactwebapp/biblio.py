@@ -6,6 +6,9 @@ from totalimpactwebapp import json_sqlalchemy
 
 
 
+
+
+
 class BiblioRow(db.Model):
 
     __tablename__ = 'biblio'
