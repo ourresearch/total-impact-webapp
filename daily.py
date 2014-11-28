@@ -662,25 +662,6 @@ def refresh_tweeted_products(min_tiid=None):
             pass
 
 
-
-# def run_through_altmetric_tweets(min_tiid=None):
-#     from sqlalchemy.sql import text
-#     sql = """select snap.* from snap, item, profile 
-#                 where snap.tiid=item.tiid
-#                 and item.profile_id = profile.id
-#                 and (profile.is_advisor=true or profile.stripe_id is not null or profile.created > '2014-09-01'::date)
-#                 and provider='altmetric_com' and interaction='posts'"""
-
-#     snaps = db.engine.execute(text(sql))
-
-#     from totalimpactwebapp.tweet import save_product_tweets
-
-#     for snap in snaps:
-#         if "twitter" in snap.raw_value:
-#             twitter_details = json.loads(snap.raw_value)["twitter"]
-#             save_product_tweets(None, snap.tiid, twitter_details)
-
-
 def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
     q = profile_query(url_slug, min_url_slug)
 
@@ -691,11 +672,6 @@ def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
 
         new_objects = save_product_tweets_for_profile(profile)
         total_objects_saved += len(new_objects)
-
-        print "merging and commiting"
-        for obj in new_objects:
-            db.session.merge(obj)
-        commit(db)
         print "total_objects_saved", total_objects_saved
 
 

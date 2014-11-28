@@ -115,6 +115,41 @@ def store_tweet_payload_from_twitter(profile_id, tiid, payload_dicts):
     return num_saved_tweets
 
 
+def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
+    tweets = db.session.query(Tweet).filter(Tweet.tiid==tiid).all()
+    tweets_by_tweet_id_and_tiid = dict([((tweet.tweet_id, tweet.tiid), tweet) for tweet in tweets])
+    tweeters = {}
+
+    new_objects = []
+    for post in twitter_posts_from_altmetric:
+        tweet_id = post["tweet_id"]
+        screen_name = post["author"]["id_on_source"]
+
+        if (tweet_id, tiid) in tweets_by_tweet_id_and_tiid.keys():
+            tweet = tweets_by_tweet_id_and_tiid[(tweet_id, tiid)]
+        else:
+            tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
+
+        #overwrite even if there
+        tweet.set_attributes_from_post(post)
+        tweet.profile_id = profile_id
+        new_objects.append(tweet)
+
+        tweeter = None
+        if (screen_name, tweet_id) in tweeters.keys():
+            continue  # already saved this one
+        if not tweeter:
+            tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
+        tweeters[(screen_name, tweet_id)] = tweeter
+
+        tweeter.set_attributes_from_post(post)
+        new_objects.append(tweeter)
+
+    for obj in new_objects:
+        db.session.merge(obj)
+    commit(db)
+
+    return new_objects
 
 
 def save_product_tweets_for_profile(profile):
@@ -142,32 +177,24 @@ def save_product_tweets_for_profile(profile):
                     tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
 
                 #overwrite even if there
-                tweet.screen_name = screen_name
-                tweet.tweet_id = tweet_id
-                tweet.tweet_timestamp = post["posted_on"]
+                tweet.set_attributes_from_post(post)
                 tweet.profile_id = profile.id
-                if "geo" in post["author"]:
-                    tweet.country = post["author"]["geo"].get("country", None)
-                    tweet.latitude = post["author"]["geo"].get("lt", None)
-                    tweet.longitude = post["author"]["geo"].get("ln", None)
                 new_objects.append(tweet)
 
-                #overwrite with new info even if already there
                 tweeter = None
                 if (screen_name, tweet_id) in tweeters.keys():
                     continue  # already saved this one
                 if not tweeter:
-                    tweeter = Tweeter.query.get((screen_name, tweet_id))
-                if not tweeter:
                     tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
-
                 tweeters[(screen_name, tweet_id)] = tweeter
-                tweeter.followers = post["author"].get("followers", 0)
-                tweeter.name = post["author"].get("name", screen_name)
-                tweeter.description = post["author"].get("description", "")
-                tweeter.image_url = post["author"].get("image", None)
+
+                tweeter.set_attributes_from_post(post)
                 new_objects.append(tweeter)
 
+    for obj in new_objects:
+        db.session.merge(obj)
+    commit(db)
+    
     return new_objects
 
 
@@ -186,11 +213,19 @@ class Tweeter(db.Model):
             self.tweet_id = 0
         super(Tweeter, self).__init__(**kwargs)
 
+
+    def set_attributes_from_post(self, post):
+        self.followers = post["author"].get("followers", 0)
+        self.name = post["author"].get("name", self.screen_name)
+        self.description = post["author"].get("description", "")
+        self.image_url = post["author"].get("image", None)
+        return self
+
     def __repr__(self):
         return u'<Tweet {screen_name} {followers}>'.format(
             screen_name=self.screen_name, 
             followers=self.followers)
-    
+
     def to_dict(self):
         attributes_to_ignore = [
         ]
@@ -255,6 +290,16 @@ class Tweet(db.Model):
     @cached_property
     def has_country(self):
         return self.country != None
+
+    def set_attributes_from_post(self, post):
+        self.tweet_id = post["tweet_id"]
+        self.screen_name = post["author"]["id_on_source"]                
+        self.tweet_timestamp = post["posted_on"]
+        if "geo" in post["author"]:
+            self.country = post["author"]["geo"].get("country", None)
+            self.latitude = post["author"]["geo"].get("lt", None)
+            self.longitude = post["author"]["geo"].get("ln", None)
+        return self
 
     def __repr__(self):
         return u'<Tweet {tweet_id} {profile_id} {screen_name} {timestamp} {text}>'.format(
