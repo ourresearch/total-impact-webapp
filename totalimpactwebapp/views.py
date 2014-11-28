@@ -821,6 +821,11 @@ def product_interaction(tiid):
 @app.route("/product/<tiid>", methods=["GET"])
 @app.route("/product/<tiid>.json", methods=["GET"])
 def product_without_needing_profile(tiid):
+    """
+    I think this is unused, replaced by product_from_tiid.
+    If it is used, it's broken because all the markups it gives just
+    point to /jason profile.
+    """
     local_sleep(1)
 
     product = get_product(tiid)
@@ -832,6 +837,24 @@ def product_without_needing_profile(tiid):
     )
     product_dict["metrics"] = product.metrics
     product_dict["countries"] = product.countries
+
+    product_dict["metrics"] = product.metrics
+    product_dict["countries"] = product.countries
+
+    return json_resp_from_thing(product_dict)
+
+
+
+@app.route("/profile/<url_slug>/product/<tiid>", methods=["GET"])
+@app.route("/profile/<url_slug>/product/<tiid>.json", methods=["GET"])
+def product_from_tiid(url_slug, tiid):
+    local_sleep(1)
+
+    product = get_product(tiid)
+    markup = Markup(url_slug, embed=False)
+    product_dict = product.to_markup_dict(
+        markup=markup
+    )
 
     product_dict["metrics"] = product.metrics
     product_dict["countries"] = product.countries

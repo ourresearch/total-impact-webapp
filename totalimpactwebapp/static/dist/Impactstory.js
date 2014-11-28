@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-28
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1350,8 +1350,9 @@ angular.module("productPage", [
       templateUrl:'product-page/product-page.tpl.html',
       controller:'ProductPageCtrl',
       resolve: {
-        product: function(ProductWithoutProfile, $route){
-          return ProductWithoutProfile.get({
+        product: function(Product, $route){
+          return Product.get({
+            id: $route.current.params.url_slug,
             tiid: $route.current.params.tiid
           }).$promise
         }
@@ -1427,7 +1428,7 @@ angular.module("productPage", [
     ProductBiblio,
     ProductInteraction,
     product,
-    ProductWithoutProfile,
+    Product,
     ProfileAboutService,
     ProfileService,
     GenreConfigs,
@@ -1437,11 +1438,10 @@ angular.module("productPage", [
     var genre_url_key = GenreConfigs.get(product.genre, "url_representation")
 
     var tiid = angular.copy($routeParams.tiid)
+    var url_slug = angular.copy($routeParams.url_slug)
 
     Page.setName(genre_url_key)
     Loading.finishPage()
-
-    console.log("product.host", product.host)
 
     var slug = $routeParams.url_slug
     UserProfile.useCache(true)
@@ -1579,7 +1579,8 @@ angular.module("productPage", [
 
     $scope.reRenderProduct = function(){
       console.log("re-rendering product.")
-      ProductWithoutProfile.get({
+      Product.get({
+        id: url_slug,
         tiid: tiid // use copied tiid so it still works after quick route change.
       },
       function(data){
@@ -4117,7 +4118,7 @@ angular.module('resources.products',['ngResource'])
 .factory('Product', function ($resource) {
 
   return $resource(
-    "/profile/:user_id/product/:tiid",
+    "/profile/:id/product/:tiid",
     {},
     {}
   )
