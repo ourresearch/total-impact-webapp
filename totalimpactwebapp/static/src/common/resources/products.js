@@ -50,7 +50,7 @@ angular.module('resources.products',['ngResource'])
 .factory('Product', function ($resource) {
 
   return $resource(
-    "/profile/:user_id/product/:tiid",
+    "/profile/:id/product/:tiid",
     {},
     {}
   )
