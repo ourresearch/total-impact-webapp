@@ -43,6 +43,7 @@ from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp.aliases import normalize_alias_tuple
 
 from totalimpact.providers import provider as provider_module
+from totalimpact.importer import import_products
 from totalimpact import tiredis
 
 percentile_snap_creations = 0
@@ -864,7 +865,7 @@ def import_and_create_products(profile_id, provider_name, importer_input, analyt
     logger.debug(u"in import_and_create_products with importer_input {importer_input}".format(
         importer_input=importer_input))
 
-    retrieved_aliases = provider_module.import_products(provider_name, importer_input)
+    retrieved_aliases = import_products(provider_name, importer_input)
 
     logger.debug(u"in import_and_create_products with retrieved_aliases {retrieved_aliases}".format(
         retrieved_aliases=retrieved_aliases))

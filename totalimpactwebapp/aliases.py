@@ -29,15 +29,15 @@ def normalize_alias_tuple(ns, nid):
     from totalimpact.providers import pubmed
     from totalimpact.providers import arxiv
     from totalimpact.providers import webpage
-    from totalimpact.providers import provider
+    from totalimpact import importer
 
-    if provider.is_doi(nid):
+    if importer.is_doi(nid):
         nid = crossref.clean_doi(nid)
-    elif provider.is_pmid(nid):
+    elif importer.is_pmid(nid):
         nid = pubmed.clean_pmid(nid)
-    elif provider.is_arxiv(nid):
+    elif importer.is_arxiv(nid):
         nid = arxiv.clean_arxiv_id(nid)
-    elif provider.is_url(nid):
+    elif importer.is_url(nid):
         nid = webpage.clean_url(nid)
 
     return (ns, nid)
