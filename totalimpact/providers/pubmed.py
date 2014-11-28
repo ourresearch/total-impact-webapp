@@ -1,6 +1,6 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError
-from totalimpactwebapp.utils.unicode_helpers  import remove_nonprinting_characters
+from unicode_helpers import remove_nonprinting_characters
 
 import json, urllib, os, itertools, datetime, re
 from StringIO import StringIO
