@@ -833,6 +833,9 @@ def product_without_needing_profile(tiid):
     product_dict["metrics"] = product.metrics
     product_dict["countries"] = product.countries
 
+    product_dict["metrics"] = product.metrics
+    product_dict["countries"] = product.countries
+
     return json_resp_from_thing(product_dict)
 
 
