@@ -75,10 +75,7 @@ def is_arxiv(nid):
 def get_aliases_from_product_id_strings(product_id_strings):
     aliases = []
 
-    from totalimpact.providers import crossref
-    from totalimpact.providers import pubmed
-    from totalimpact.providers import arxiv
-    from totalimpact.providers import webpage
+
 
     logger.debug(u"in get_aliases_from_product_id_strings with product_id_strings {product_id_strings}".format(
         product_id_strings=product_id_strings))
@@ -96,6 +93,11 @@ def get_aliases_from_product_id_strings(product_id_strings):
 
         logger.debug(u"in get_aliases_from_product_id_strings with cleaned nid {nid}".format(
             nid=nid))
+
+        from totalimpact.providers import crossref
+        from totalimpact.providers import pubmed
+        from totalimpact.providers import arxiv
+        from totalimpact.providers import webpage
 
         if is_doi(nid):
             aliases += crossref.Crossref().member_items(nid)
