@@ -129,6 +129,8 @@ def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
             tweet = tweets_by_tweet_id[tweet_id]
         else:
             tweet = Tweet(tweet_id=tweet_id)
+            db.session.add(tweet)
+            tweets_by_tweet_id[tweet_id] = tweet
 
         #overwrite even if there
         tweet.screen_name = screen_name
@@ -145,13 +147,13 @@ def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
         tweeter = tweet.tweeter
         if not tweeter:
             tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
+            db.session.add(tweeter)
+
         tweeter.followers = post["author"].get("followers", 0)
         tweeter.name = post["author"].get("name", screen_name)
         tweeter.description = post["author"].get("description", "")
         tweeter.image_url = post["author"].get("image", None)
-        new_objects.append(tweeter)
 
-    db.session.add_all(new_objects)
     commit(db)
 
 
