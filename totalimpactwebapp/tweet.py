@@ -120,6 +120,7 @@ def store_tweet_payload_from_twitter(profile_id, tiid, payload_dicts):
 def save_product_tweets_for_profile(profile):
     tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile.id).all()
     tweets_by_tweet_id_and_tiid = dict([((tweet.tweet_id, tweet.tiid), tweet) for tweet in tweets])
+    tweeters = {}
 
     new_objects = []
     for product in profile.display_products:
@@ -152,12 +153,15 @@ def save_product_tweets_for_profile(profile):
                 new_objects.append(tweet)
 
                 #overwrite with new info even if already there
-                tweeter = tweet.tweeter
+                tweeter = None
+                if (screen_name, tweet_id) in tweeters.keys():
+                    continue  # already saved this one
                 if not tweeter:
                     tweeter = Tweeter.query.get((screen_name, tweet_id))
                 if not tweeter:
                     tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
 
+                tweeters[(screen_name, tweet_id)] = tweeter
                 tweeter.followers = post["author"].get("followers", 0)
                 tweeter.name = post["author"].get("name", screen_name)
                 tweeter.description = post["author"].get("description", "")
