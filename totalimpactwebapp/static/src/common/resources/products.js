@@ -8,6 +8,7 @@ angular.module('resources.products',['ngResource'])
   )
 })
 
+
 .factory('ProductsBiblio', function ($resource) {
 
   return $resource(

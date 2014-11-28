@@ -4,7 +4,6 @@ from collections import defaultdict
 from celery.result import AsyncResult
 
 from totalimpact.providers.provider import ProviderTimeout, ProviderServerError
-from totalimpact.providers.provider import normalize_alias
 import unicode_helpers
 
 from totalimpact import default_settings
@@ -507,7 +506,7 @@ def add_metric_to_item_object(full_metric_name, metrics_method_response, product
 
 def add_aliases_to_item_object(aliases_dict, product):
     # logger.debug(u"in add_aliases_to_item_object for {tiid}".format(
-    #     tiid=item_obj.tiid))        
+    #     tiid=product.tiid))        
 
     alias_rows = create_alias_objects(aliases_dict)
 
@@ -524,7 +523,7 @@ def add_aliases_to_item_object(aliases_dict, product):
     except (IntegrityError, FlushError) as e:
         db.session.rollback()
         logger.warning(u"Fails Integrity check in add_aliases_to_item_object for {tiid}, rolling back.  Message: {message}".format(
-            tiid=tiid, 
+            tiid=product.tiid, 
             message=e.message)) 
     return product
 
@@ -803,47 +802,6 @@ def merge_alias_dicts(aliases1, aliases2):
     return merged_aliases
 
 
-def get_normalized_values(genre, host, year, metric_name, value, myrefsets):
-    # Will be passed None as myrefsets type when loading items in reference collections :)
-
-    if not myrefsets:
-        return {}
-
-    if host in ["dryad", "figshare"]:
-        genre = "dataset"  #treat as dataset for the sake of normalization
-
-    if genre not in myrefsets.keys():
-        #logger.info(u"Genre {genre} not in refsets so give up".format(
-        #    genre=genre))
-        return {}
-
-    # treat the f1000 "Yes" as a 1 for normalization
-    if value=="Yes":
-        value = 1
-
-    response = {}
-    for refsetname in myrefsets[genre]:
-        # for nonarticles, use only the reference set type whose name matches the host (figshare, dryad, etc)
-        if (genre != "article"):
-            if (host != refsetname):
-                continue  # skip this refset
-        try:
-            int_year = int(year)  #year is a number in the refset keys
-            fencepost_values = myrefsets[genre][refsetname][int_year][metric_name].keys()
-            myclosest = largest_value_that_is_less_than_or_equal_to(value, fencepost_values)
-            response[refsetname] = myrefsets[genre][refsetname][int_year][metric_name][myclosest]
-        except KeyError:
-            #logger.info(u"No good lookup in %s %s %s for %s" %(genre, refsetname, year, metric_name))
-            pass
-        except ValueError:
-            logger.error(u"Exception: no good lookup in %s %s %s for %s" %(genre, refsetname, year, metric_name))
-            logger.debug(u"Value error calculating percentiles for %s %s %s for %s=%s" %(genre, refsetname, year, metric_name, str(value)))
-            logger.debug(u"fencepost = {fencepost_values}".format(
-                fencepost_values=fencepost_values))
-            pass
-            
-    return response
-
 
 
 
@@ -888,39 +846,6 @@ def add_alias_to_new_item(alias_tuple, provider=None):
         item_obj.alias_rows = [CoreAlias(alias_tuple=alias_tuple)]
     return item_obj  
 
-
-def create_tiids_from_aliases(profile_id, aliases, analytics_credentials, provider=None):
-    tiid_alias_mapping = {}
-    clean_aliases = [canonical_alias_tuple((ns, nid)) for (ns, nid) in aliases]  
-    dicts_to_update = []  
-
-    for alias_tuple in clean_aliases:
-        # logger.debug(u"in create_tiids_from_aliases, with alias_tuple {alias_tuple}".format(
-        #     alias_tuple=alias_tuple))
-        item_obj = add_alias_to_new_item(alias_tuple, provider)
-        tiid = item_obj.tiid
-        item_obj.profile_id = profile_id
-        item_obj.set_last_refresh_start()
-
-        db.session.merge(item_obj)
-        # logger.debug(u"in create_tiids_from_aliases, made item {item_obj}".format(
-        #     item_obj=item_obj))
-
-        tiid_alias_mapping[tiid] = alias_tuple
-        dicts_to_update += [{"tiid":tiid, "aliases_dict": alias_dict_from_tuples([alias_tuple])}]
-
-    try:
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in create_tiids_from_aliases for {tiid}, rolling back.  Message: {message}".format(
-            tiid=tiid, 
-            message=e.message)) 
-
-    # has to be after commits to database
-    start_item_update(dicts_to_update, "high")
-
-    return tiid_alias_mapping
 
 
 def get_items_from_tiids(tiids, with_metrics=True):
@@ -978,22 +903,7 @@ def get_tiid_by_alias(ns, nid, mydao=None):
 
 
 
-def start_item_update(dicts_to_add, priority):
-    myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=REDIS_MAIN_DATABASE_NUMBER)  # main app is on DB 0
 
-    # logger.debug(u"In start_item_update with {tiid}, priority {priority} /biblio_print {aliases_dict}".format(
-    #     tiid=tiid, priority=priority, aliases_dict=aliases_dict))
-
-    # do all of this first and quickly
-    for d in dicts_to_add:
-        myredis.clear_provider_task_ids(d["tiid"])
-        myredis.set_provider_task_ids(d["tiid"], ["STARTED"])  # set this right away
-    
-    for d in dicts_to_add:
-        # this import here to avoid circular dependancies
-        from core_tasks import put_on_celery_queue
-        task_id = put_on_celery_queue(d["tiid"], d["aliases_dict"], priority)
-    
 
 
 def is_equivalent_alias_tuple_in_list(query_tuple, tuple_list):
@@ -1013,7 +923,8 @@ def clean_alias_tuple_for_deduplication(alias_tuple):
         biblios_as_string = json.dumps(biblio_dict_for_deduplication, sort_keys=True, indent=0, separators=(',', ':'))
         return ("biblio", biblios_as_string.lower())
     else:
-        (ns, nid) = normalize_alias((ns, nid))
+        from totalimpact.aliases import normalize_alias_tuple
+        (ns, nid) = normalize_alias_tuple(ns, nid)
         try:
             cleaned_alias = (ns.lower(), nid.lower())
         except AttributeError:
@@ -1065,40 +976,5 @@ def aliases_not_in_existing_tiids(retrieved_aliases, existing_tiids):
     return new_aliases
 
 
-def build_duplicates_list(tiids):
-    items = get_items_from_tiids(tiids, with_metrics=False)
-    distinct_groups = defaultdict(list)
-    duplication_list = {}
-    for item in items:
-        is_distinct_item = True
 
-        alias_tuples = alias_tuples_for_deduplication(item)
-
-        for alias in alias_tuples:
-
-            if is_equivalent_alias_tuple_in_list(alias, duplication_list):
-                # we already have one of the aliase
-                distinct_item_id = duplication_list[clean_alias_tuple_for_deduplication(alias)] 
-                is_distinct_item = False  
-
-        if is_distinct_item:
-            distinct_item_id = len(distinct_groups)
-            for alias in alias_tuples:
-                # we went through all the aliases and don't have any that match, so make a new entries
-                duplication_list[clean_alias_tuple_for_deduplication(alias)] = distinct_item_id
-
-        # whether distinct or not,
-        # add this to the group, and add all its aliases too
-        if item.created:
-            created_date = item.created.isoformat()
-        else:
-            created_date = "1999-01-01T14:42:49.818393"   
-        distinct_groups[distinct_item_id] += [{ "tiid":item.tiid, 
-                                                "has_user_provided_biblio":item.has_user_provided_biblio(), 
-                                                "has_free_fulltext_url":item.has_free_fulltext_url(), 
-                                                "created":created_date
-                                                }]
-
-    distinct_groups_values = [group for group in distinct_groups.values() if group]
-    return distinct_groups_values
 

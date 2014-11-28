@@ -2,6 +2,9 @@ from totalimpactwebapp import db
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import ordinal
 from totalimpactwebapp import json_sqlalchemy
+import shortuuid
+import datetime
+
 
 class Snap(db.Model):
 
@@ -21,6 +24,14 @@ class Snap(db.Model):
 
     def __init__(self, **kwargs):
         self.refset = None
+        if not "last_collected_date" in kwargs:
+            self.last_collected_date = datetime.datetime.utcnow()
+        if not "first_collected_date" in kwargs:
+            self.first_collected_date = datetime.datetime.utcnow()
+        if not "snap_id" in kwargs:
+            self.snap_id = shortuuid.uuid()
+        if "query_type" in kwargs:
+            self.query_type = kwargs["query_type"]
         super(Snap, self).__init__(**kwargs)
 
 

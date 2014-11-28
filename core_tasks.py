@@ -13,6 +13,8 @@ from celery import current_app as celery_app
 from celery.signals import task_sent
 from celery.utils import uuid
 from eventlet import timeout
+from sqlalchemy.orm.exc import FlushError
+from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 
 from totalimpact import item as item_module
 from totalimpactwebapp import db
@@ -22,6 +24,9 @@ from totalimpact.providers.provider import ProviderFactory, ProviderError, Provi
 
 from totalimpactwebapp.product import add_product_embed_markup
 from totalimpactwebapp.product import Product
+from totalimpactwebapp.product import put_aliases_in_product
+from totalimpactwebapp.product import put_biblio_in_product
+from totalimpactwebapp.product import put_snap_in_product
 
 import rate_limit
 
@@ -56,6 +61,7 @@ canvas.chord.type = property(_type)
 @task_postrun.connect()
 def task_postrun_handler(*args, **kwargs):    
     db.session.remove()
+    logger.debug(u"Celery task POST RUN HANDLER")
 
 
 @task_failure.connect
@@ -114,6 +120,7 @@ def provider_method_wrapper(tiid, input_aliases_dict, provider, method_name):
 
 
 
+
 # last variable is an artifact so it has same call signature as other callbacks
 def add_to_database_if_nonzero( 
         tiid, 
@@ -124,21 +131,33 @@ def add_to_database_if_nonzero(
     if new_content:
         # don't need item with metrics for this purpose, so don't bother getting metrics from db
 
-        product = Product.query.get(tiid)
 
+        product = Product.query.get(tiid)
+        updated_product = None
         if product:
             if method_name=="aliases":
-                if isinstance(new_content, list):
-                    new_content = item_module.alias_dict_from_tuples(new_content)    
-                product = item_module.add_aliases_to_item_object(new_content, product)
+                print "**********NEW CONTENT", new_content, method_name, provider_name
+                updated_product = put_aliases_in_product(product, new_content)
             elif method_name=="biblio":
-                updated_item_doc = item_module.update_item_with_new_biblio(new_content, product, provider_name)
+                print "**********NEW CONTENT", new_content, method_name, provider_name
+                updated_product = put_biblio_in_product(product, new_content, provider_name)
             elif method_name=="metrics":
                 for metric_name in new_content:
-                    item_obj = item_module.add_metric_to_item_object(metric_name, new_content[metric_name], product)
+                    if new_content[metric_name]:
+                        print "**********NEW CONTENT", metric_name, new_content[metric_name], method_name, provider_name
+                        updated_product = put_snap_in_product(product, metric_name, new_content[metric_name])
             else:
                 logger.warning(u"ack, supposed to save something i don't know about: " + str(new_content))
 
+            if updated_product:
+                try:
+                    db.session.merge(updated_product)
+                    db.session.commit()
+                except (IntegrityError, FlushError) as e:
+                    db.session.rollback()
+                    logger.warning(u"Fails Integrity check in add_aliases_to_item_object for {tiid}, rolling back.  Message: {message}".format(
+                        tiid=product.tiid, 
+                        message=e.message)) 
     return
 
 

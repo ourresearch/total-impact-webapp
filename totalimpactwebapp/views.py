@@ -9,6 +9,7 @@ import stripe
 from collections import defaultdict
 
 from util import local_sleep
+from util import commit
 from totalimpactwebapp import util
 
 from flask import request, send_file, abort, make_response, g, redirect
@@ -35,7 +36,6 @@ from totalimpactwebapp.profile import get_profile_stubs_from_url_slug
 from totalimpactwebapp.profile import get_profile_awards_from_slug
 from totalimpactwebapp.profile import get_profile_from_id
 from totalimpactwebapp.profile import delete_profile
-from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.profile import EmailExistsError
 from totalimpactwebapp.profile import delete_products_from_profile
 from totalimpactwebapp.profile import subscribe
@@ -331,7 +331,7 @@ def current_user_notifications(notification_name):
     if request.args.get("action") == "dismiss":
         g.user.new_metrics_notification_dismissed = datetime.datetime.now()
         db.session.merge(g.user)
-        db.session.commit()
+        commit(db)
 
     return json_resp_from_thing({"user": g.user.dict_about()})
 
@@ -515,7 +515,7 @@ def patch_user_about(profile_id):
     abort_if_user_not_logged_in(profile)
 
     profile.patch(request.json["about"])
-    db.session.commit()
+    commit(db)
 
     return json_resp_from_thing({"about": profile.dict_about()})
 
@@ -699,7 +699,7 @@ def profile_products_modify(id):
     profile = get_user_for_response(id, request)
 
     if request.method == "POST" and action == "deduplicate":
-        deleted_tiids = remove_duplicates_from_profile(profile.id)
+        deleted_tiids = profile.remove_duplicates()
         resp = {"deleted_tiids": deleted_tiids}
         # local_sleep(30)
 
@@ -765,7 +765,7 @@ def product_pdf(tiid):
             product = get_product(tiid)
             pdf = product.get_pdf()
             db.session.merge(product)  # get pdf might have cached the pdf
-            db.session.commit()
+            commit(db)
             if pdf:
                 resp = make_response(pdf, 200)
                 resp.mimetype = "application/pdf"
@@ -830,6 +830,8 @@ def product_without_needing_profile(tiid):
     product_dict = product.to_markup_dict(
         markup=markup
     )
+    product_dict["metrics"] = product.metrics
+    product_dict["countries"] = product.countries
 
     return json_resp_from_thing(product_dict)
 
@@ -963,7 +965,7 @@ def user_password_modify(id):
     except PasswordResetError as e:
         abort_json(403, e.message)
 
-    db.session.commit()
+    commit(db)
     return json_resp_from_thing({"about": user.dict_about()})
 
 
@@ -1296,61 +1298,6 @@ def product_biblio_modify(tiid):
 
 
 
-def refresh_from_tiids(tiids, analytics_credentials, priority):
-    if not tiids:
-        return None
-
-    products = Product.query.filter(Product.tiid.in_(tiids)).all()
-    dicts_to_refresh = []  
-
-    for product in products:
-        try:
-            tiid = product.tiid
-            product.set_last_refresh_start()
-            db.session.merge(product)
-            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
-        except AttributeError:
-            logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
-                tiid=tiid))
-
-    db.session.commit()
-
-    from totalimpact import item as item_module
-    item_module.start_item_update(dicts_to_refresh, priority)
-    return tiids
-
-
-# refreshes items from tiids list in body of POST
-@app.route('/v2/products/refresh', methods=['POST'])
-@app.route('/v1/products/refresh', methods=['POST'])
-def products_refresh_post():
-    # logger.debug(u"in products_refresh_post with tiids")
-    tiids = request.json["tiids"]
-    try:
-        analytics_credentials = request.json["analytics_credentials"]
-    except KeyError:
-        analytics_credentials = {}
-
-    try:
-        priority = request.json["priority"]
-    except KeyError:
-        priority = "high"
-
-    refresh_from_tiids(tiids, analytics_credentials, priority)
-    resp = json_resp_from_thing("true")
-    return resp
-
-
-# sends back duplicate groups from tiids list in body of POST
-@app.route('/v2/products/duplicates', methods=['POST'])
-@app.route('/v1/products/duplicates', methods=['POST'])
-def products_duplicates_post():
-    # logger.debug(u"in products_duplicates_post with tiids")
-    tiids = request.json["tiids"]
-    from totalimpact import item as item_module
-    duplicates_list = item_module.build_duplicates_list(tiids)
-    resp = json_resp_from_thing({"duplicates_list": duplicates_list})
-    return resp
 
 
 

@@ -71,33 +71,11 @@ def is_arxiv(nid):
         return True
     return False
 
-def normalize_alias(alias):
-    (ns, nid) = alias
-    if ns == "biblio":
-        return (ns, nid)
-
-    nid = remove_nonprinting_characters(nid)
-    nid = nid.strip()  # also remove spaces
-    
-    from totalimpact.providers import crossref
-    from totalimpact.providers import pubmed
-    from totalimpact.providers import arxiv
-    from totalimpact.providers import webpage
-
-    if is_doi(nid):
-        nid = crossref.clean_doi(nid)
-    elif is_pmid(nid):
-        nid = pubmed.clean_pmid(nid)
-    elif is_arxiv(nid):
-        nid = arxiv.clean_arxiv_id(nid)
-    elif is_url(nid):
-        nid = webpage.clean_url(nid)
-
-    return (ns, nid)
-
 
 def get_aliases_from_product_id_strings(product_id_strings):
     aliases = []
+
+    print "IN get_aliases_from_product_id_strings", product_id_strings
 
     from totalimpact.providers import crossref
     from totalimpact.providers import pubmed
@@ -115,6 +93,8 @@ def get_aliases_from_product_id_strings(product_id_strings):
             aliases += arxiv.Arxiv().member_items(nid)
         elif is_url(nid):
             aliases += webpage.Webpage().member_items(nid)
+
+    print "RETURNING FROM get_aliases_from_product_id_strings", aliases
     return aliases
 
 
@@ -130,14 +110,14 @@ def import_products(provider_name, import_input):
 
     # pull in standard items, if we were passed any of these
     if provider_name=="product_id_strings":
-        aliases = get_aliases_from_product_id_strings(import_input["product_id_strings"])
+        aliases = get_aliases_from_product_id_strings(import_input)
     elif provider_name=="bibtex":
         provider = ProviderFactory.get_provider("bibtex")
-        aliases = provider.member_items(import_input["bibtex"])
+        aliases = provider.member_items(import_input)
     else:
         try:
             provider = ProviderFactory.get_provider(provider_name)
-            aliases = provider.member_items(import_input["account_name"])
+            aliases = provider.member_items(import_input)
         except ImportError:
             pass
 

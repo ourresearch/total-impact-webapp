@@ -1,7 +1,67 @@
 import util
+import datetime
+import unicode_helpers
+
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp import db
 
+def clean_id(nid):
+    try:
+        nid = nid.strip(' "').strip()
+        nid = unicode_helpers.remove_nonprinting_characters(nid)
+    except (TypeError, AttributeError):
+        #isn't a string.  That's ok, might be biblio
+        pass
+    return(nid)
+    
+
+def normalize_alias_tuple(ns, nid):
+    ns = clean_id(ns)
+    ns = ns.lower()
+
+    if ns == "biblio":
+        return (ns, nid)
+
+    nid = clean_id(nid)
+    
+    from totalimpact.providers import crossref
+    from totalimpact.providers import pubmed
+    from totalimpact.providers import arxiv
+    from totalimpact.providers import webpage
+    from totalimpact.providers import provider
+
+    if provider.is_doi(nid):
+        nid = crossref.clean_doi(nid)
+    elif provider.is_pmid(nid):
+        nid = pubmed.clean_pmid(nid)
+    elif provider.is_arxiv(nid):
+        nid = arxiv.clean_arxiv_id(nid)
+    elif provider.is_url(nid):
+        nid = webpage.clean_url(nid)
+
+    return (ns, nid)
+
+
+def clean_alias_tuple_for_comparing(ns, nid):
+    if ns == "biblio":
+        keys_to_compare = ["full_citation", "title", "authors", "journal", "year"]
+        if not isinstance(nid, dict):
+            nid = json.loads(nid)
+        if "year" in nid:
+            nid["year"] = str(nid["year"])
+        biblio_dict_for_deduplication = dict([(k, v) for (k, v) in nid.iteritems() if k.lower() in keys_to_compare])
+
+        biblios_as_string = json.dumps(biblio_dict_for_deduplication, sort_keys=True, indent=0, separators=(',', ':'))
+        return ("biblio", biblios_as_string.lower())
+    else:
+        (ns, nid) = normalize_alias_tuple(ns, nid)
+        try:
+            cleaned_alias = (ns.lower(), nid.lower())
+        except AttributeError:
+            logger.debug(u"problem cleaning {alias_tuple}".format(
+                alias_tuple=alias_tuple))
+            cleaned_alias = alias_tuple
+        return cleaned_alias
 
 class AliasRow(db.Model):
 
@@ -13,11 +73,23 @@ class AliasRow(db.Model):
     collected_date = db.Column(db.DateTime())
 
     def __init__(self, **kwargs):
+        if "collected_date" not in kwargs:
+            self.collected_date = datetime.datetime.utcnow()
+
         super(AliasRow, self).__init__(**kwargs)
 
     @cached_property
     def alias_tuple(self):
         return (self.namespace, self.nid)
+
+    @cached_property
+    def my_alias_tuple_for_comparing(self):
+        return clean_alias_tuple_for_comparing(self.namespace, self.nid)
+
+    def is_equivalent_alias(self, given_namespace, given_nid):
+        given_clean_alias = clean_alias_tuple_for_comparing(given_namespace, given_nid)
+        return given_clean_alias==self.my_alias_tuple_for_comparing
+
 
 
 class Aliases(object):

@@ -5,13 +5,19 @@ from totalimpactwebapp import countries
 from totalimpactwebapp.account import account_factory
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product import Product
+from totalimpactwebapp.product import start_product_update
+from totalimpactwebapp.product import import_and_create_products
+from totalimpactwebapp.product import build_duplicates_list
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.drip_email import DripEmail
 from totalimpactwebapp.tweet import save_recent_tweets
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import commit
 from totalimpactwebapp.util import dict_from_dir
+from totalimpact.providers.provider import ProviderError
 
+from totalimpact import tiredis
+from totalimpact.tiredis import REDIS_MAIN_DATABASE_NUMBER
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError, DataError
@@ -416,14 +422,13 @@ class Profile(db.Model):
             # AnonymousUser doesn't have method
             analytics_credentials = {}    
         product_id_type = product_id_dict.keys()[0]
-        existing_tiids = self.tiids # re-import dup removed products    
-        imported_products = make_products_for_product_id_strings(
-                self.id,
+        add_even_if_removed = True
+        new_products = self.get_new_products(
                 product_id_type, 
                 product_id_dict[product_id_type], 
                 analytics_credentials,
-                existing_tiids)
-        tiids = [product.tiid for product in imported_products]
+                add_even_if_removed)
+        tiids = [product.tiid for product in new_products]
 
         return tiids
 
@@ -441,7 +446,7 @@ class Profile(db.Model):
         t.daemon = True
         t.start()
 
-    def update_products_from_linked_account(self, account, update_even_removed_products):
+    def update_products_from_linked_account(self, account, add_even_if_removed):
         if account=="twitter":
             return self.update_twitter()
         else:
@@ -453,19 +458,14 @@ class Profile(db.Model):
                 except AttributeError:
                     # AnonymousUser doesn't have method
                     analytics_credentials = {}
-                if update_even_removed_products:
-                    existing_tiids = self.tiids
-                else:
-                    existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
-                import_response = make_products_for_linked_account(
-                        self.id,                
+                new_products = self.get_new_products(
                         account, 
                         account_value, 
                         analytics_credentials,
-                        existing_tiids)
+                        add_even_if_removed)
 
-                tiids_to_add = import_response["products"].keys()
-            return tiids_to_add
+                added_tiids = [product.tiid for product in new_products]
+            return added_tiids
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -563,6 +563,35 @@ class Profile(db.Model):
             rows += [ordered_fieldnames]
         return(ordered_fieldnames, rows)
 
+
+    def get_new_products(self, provider_name, account_name, analytics_credentials={}, add_even_if_removed=False):
+        logger.info(u"in make_products with {provider_name} {account_name}".format(
+            provider_name=provider_name, account_name=account_name))
+
+        if add_even_if_removed:
+            existing_tiids = self.tiids_including_removed
+        else:
+            existing_tiids = self.tiids # don't re-import dup or removed products
+
+        try:
+            new_products = import_and_create_products(self.id, provider_name, account_name, analytics_credentials, existing_tiids)
+        except (ImportError, ProviderError):
+            new_products = []
+        return new_products
+
+
+    def remove_duplicates(self):
+        duplicates_list = build_duplicates_list(self.products_not_removed)
+
+        tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
+
+        self.delete_products(tiids_to_remove)
+
+        # important to keep this logging in so we can recover if necessary
+        logger.debug(u"removed duplicate tiids from {url_slug} {profile_id}: {tiids_to_remove}".format(
+            url_slug=self.url_slug, profile_id=self.id, tiids_to_remove=tiids_to_remove))
+
+        return tiids_to_remove
 
 
     def dict_about(self, show_secrets=True):
@@ -688,21 +717,22 @@ def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"
     if source=="scheduled":
         priority = "low"
 
-    query = u"{core_api_root}/v2/products/refresh?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
+    products = Product.query.filter(Product.tiid.in_(tiids)).all()
+    dicts_to_refresh = []  
 
-    r = requests.post(query,
-            data=json.dumps({
-                "tiids": tiids,
-                "analytics_credentials": analytics_credentials,
-                "priority": priority
-                }),
-            headers={'Content-type': 'application/json', 'Accept': 'application/json'})
+    for product in products:
+        try:
+            tiid = product.tiid
+            product.set_last_refresh_start()
+            db.session.merge(product)
+            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
+        except AttributeError:
+            logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
+                tiid=tiid))
 
+    db.session.commit()
+    start_product_update(dicts_to_refresh, priority)
     return tiids
-
 
 
 def tiids_to_remove_from_duplicates_list(duplicates_list):
@@ -719,44 +749,6 @@ def tiids_to_remove_from_duplicates_list(duplicates_list):
             earliest_created_date = min([tiid_dict["created"] for tiid_dict in duplicate_group])
             tiids_to_remove = [tiid_dict for tiid_dict in tiids_to_remove if tiid_dict["created"] != earliest_created_date]
     return [tiid_dict["tiid"] for tiid_dict in tiids_to_remove]
-
-
-def remove_duplicates_from_profile(profile_id):
-    profile = Profile.query.get(profile_id)
-    db.session.merge(profile)
-
-    duplicates_list = get_duplicates_list_from_tiids(profile.tiids)
-    tiids_to_remove = tiids_to_remove_from_duplicates_list(duplicates_list)
-
-    profile.delete_products(tiids_to_remove)
-
-    # important to keep this logging in so we can recover if necessary
-    logger.debug(u"removed duplicate tiids from {url_slug} {profile_id}: {tiids_to_remove}".format(
-        url_slug=profile.url_slug, profile_id=profile_id, tiids_to_remove=tiids_to_remove))
-
-    return tiids_to_remove
-
-
-def get_duplicates_list_from_tiids(tiids):
-    query = u"{core_api_root}/v2/products/duplicates?api_admin_key={api_admin_key}".format(
-        core_api_root=os.getenv("API_ROOT"),
-        api_admin_key=os.getenv("API_ADMIN_KEY")
-    )
-
-    r = requests.post(query,
-        data=json.dumps({
-            "tiids": tiids
-            }),
-        headers={'Content-type': 'application/json', 'Accept': 'application/json'})
-
-    try:
-        duplicates_list = r.json()["duplicates_list"]
-    except ValueError:
-        logger.warning(u"got ValueError in get_duplicates_list_from_tiids, maybe decode error?")
-        duplicates_list = []
-
-    return duplicates_list
-
 
 
 def save_profile_last_refreshed_timestamp(profile_id, timestamp=None):
@@ -919,137 +911,6 @@ def get_profiles():
     res = Profile.query.all()
     return res
 
-
-def alias_tuples_for_deduplication(item):
-    alias_tuples = []
-    if item.alias_rows:
-        alias_tuples = [alias.alias_tuple for alias in item.alias_rows]
-    biblio_dicts_per_provider = item.biblio_dicts_per_provider
-    for provider in biblio_dicts_per_provider:
-        alias_tuple = ("biblio", biblio_dicts_per_provider[provider])
-        alias_tuples += [alias_tuple]
-        # logger.debug(u"tiid={tiid}, for provider {provider} is a new alias {alias_tuple}".format(
-        #     tiid=item.tiid, provider=provider, alias_tuple=alias_tuple))
-
-    cleaned_tuples = [clean_alias_tuple_for_deduplication(alias_tuple) for alias_tuple in alias_tuples]
-    cleaned_tuples = [alias_tuple for alias_tuple in cleaned_tuples if alias_tuple != ("biblio", '{}')]
-
-    # logger.debug(u"tiid={tiid}, cleaned_tuples {cleaned_tuples}".format(
-    #     tiid=item.tiid, cleaned_tuples=cleaned_tuples))
-    return cleaned_tuples
-
-def is_equivalent_alias_tuple_in_list(query_tuple, tuple_list):
-    is_equivalent = (clean_alias_tuple_for_deduplication(query_tuple) in tuple_list)
-    return is_equivalent
-
-def clean_alias_tuple_for_deduplication(alias_tuple):
-    (ns, nid) = alias_tuple
-    if ns == "biblio":
-        keys_to_compare = ["full_citation", "title", "authors", "journal", "year"]
-        if not isinstance(nid, dict):
-            nid = json.loads(nid)
-        if "year" in nid:
-            nid["year"] = str(nid["year"])
-        biblio_dict_for_deduplication = dict([(k, v) for (k, v) in nid.iteritems() if k.lower() in keys_to_compare])
-
-        biblios_as_string = json.dumps(biblio_dict_for_deduplication, sort_keys=True, indent=0, separators=(',', ':'))
-        return ("biblio", biblios_as_string.lower())
-    else:
-        (ns, nid) = normalize_alias((ns, nid))
-        try:
-            cleaned_alias = (ns.lower(), nid.lower())
-        except AttributeError:
-            logger.debug(u"problem cleaning {alias_tuple}".format(
-                alias_tuple=alias_tuple))
-            cleaned_alias = alias_tuple
-        return cleaned_alias
-
-
-def aliases_not_in_existing_products(retrieved_aliases, existing_tiids):
-    if not existing_tiids:
-        return retrieved_aliases
-
-    existing_products = Product.query.filter(Product.tiid.in_(existing_tiids)).all()
-
-    new_aliases = []
-    for alias_tuple in retrieved_aliases:
-        for product in existing_products:
-            if product.has_alias(alias_tuple):
-                # logger.debug(u"already have alias {alias_tuple}".format(
-                #     alias_tuple=alias_tuple))
-                pass
-            else:
-                new_aliases += [alias_tuple]
-    return new_aliases
-
-
-def create_products_from_aliases(profile_id, aliases, analytics_credentials, provider=None):
-    tiid_alias_mapping = {}
-    clean_aliases = [canonical_alias_tuple((ns, nid)) for (ns, nid) in aliases]  
-    dicts_to_update = []  
-    new_products = []
-
-    for alias_tuple in clean_aliases:
-        # logger.debug(u"in create_tiids_from_aliases, with alias_tuple {alias_tuple}".format(
-        #     alias_tuple=alias_tuple))
-        alias_row = Alias()
-        product = add_alias_to_new_item(alias_tuple, provider)
-        tiid = product.tiid
-        product.profile_id = profile_id
-        product.set_last_refresh_start()
-        new_products += [product]
-
-        db.session.merge(product)
-        # logger.debug(u"in create_tiids_from_aliases, made item {item_obj}".format(
-        #     item_obj=item_obj))
-
-        dicts_to_update += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
-
-    try:
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in create_tiids_from_aliases for {tiid}, rolling back.  Message: {message}".format(
-            tiid=tiid, 
-            message=e.message)) 
-
-    # has to be after commits to database
-    start_item_update(dicts_to_update, "high")
-
-    return new_products
-
-
-def importer(profile_id, provider_name, account_name, analytics_credentials={}, existing_tiids=[]):
-    # need to do these ugly deletes because import products not in dict.  fix in future!
-
-    retrieved_aliases = provider_module.import_products(provider_name, account_name)
-    new_aliases = aliases_not_in_existing_products(retrieved_aliases, existing_tiids)
-    products = create_products_from_aliases(profile_id, new_aliases, analytics_credentials, provider_name)
-
-    return products
-
-
-def make_products_for_linked_account(profile_id, provider_name, account_name, analytics_credentials={}, existing_tiids={}):
-    logger.info(u"in make_products_for_linked_account with {provider_name} {account_name}".format(
-        provider_name=provider_name, account_name=account_name))
-
-    try:
-        response = importer(profile_id, provider_name, account_name, analytics_credentials, existing_tiids)
-    except (ImportError, ProviderItemNotFoundError, ProviderItemNotFoundError, ProviderTimeout, ProviderError)
-        response = []
-    return response
-
-
-
-def make_products_for_product_id_strings(profile_id, product_id_type, product_id_strings, analytics_credentials={}, existing_tiids={}):
-    logger.info(u"in make_products_for_product_id_strings with {provider_name} {account_name}".format(
-        provider_name=provider_name, account_name=account_name))
-
-    try:
-        response = importer(profile_id, product_id_type, product_id_strings, analytics_credentials, existing_tiids)
-    except (ImportError, ProviderItemNotFoundError, ProviderItemNotFoundError, ProviderTimeout, ProviderError)
-        response = []
-    return response
 
 
 def hide_profile_secrets(profile):
