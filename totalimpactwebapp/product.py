@@ -861,10 +861,23 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
 def import_and_create_products(profile_id, provider_name, importer_input, analytics_credentials={}, existing_tiids=[]):
     # need to do these ugly deletes because import products not in dict.  fix in future!
 
+    logger.debug(u"in import_and_create_products with importer_input {importer_input}".format(
+        importer_input=importer_input))
+
     retrieved_aliases = provider_module.import_products(provider_name, importer_input)
 
+    logger.debug(u"in import_and_create_products with retrieved_aliases {retrieved_aliases}".format(
+        retrieved_aliases=retrieved_aliases))
+
     new_alias_tuples = aliases_not_in_existing_products(retrieved_aliases, existing_tiids)
+
+    logger.debug(u"in import_and_create_products with new_alias_tuples {new_alias_tuples}".format(
+        new_alias_tuples=new_alias_tuples))
+
     products = create_products_from_alias_tuples(profile_id, new_alias_tuples)
+
+    logger.debug(u"in import_and_create_products with products {products}".format(
+        products=products))
 
     return products
 

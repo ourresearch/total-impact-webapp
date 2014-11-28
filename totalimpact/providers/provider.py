@@ -75,16 +75,22 @@ def is_arxiv(nid):
 def get_aliases_from_product_id_strings(product_id_strings):
     aliases = []
 
-    print "IN get_aliases_from_product_id_strings", product_id_strings
-
     from totalimpact.providers import crossref
     from totalimpact.providers import pubmed
     from totalimpact.providers import arxiv
     from totalimpact.providers import webpage
 
+    logger.debug(u"in import_products with {product_id_strings}".format(
+        product_id_strings=product_id_strings))
+
     for nid in product_id_strings:
         nid = remove_nonprinting_characters(nid)
         nid = nid.strip()  # also remove spaces
+
+        logger.debug(u"in import_products with cleaned nid {nid}".format(
+            nid=nid))
+
+
         if is_doi(nid):
             aliases += crossref.Crossref().member_items(nid)
         elif is_pmid(nid):
@@ -94,7 +100,9 @@ def get_aliases_from_product_id_strings(product_id_strings):
         elif is_url(nid):
             aliases += webpage.Webpage().member_items(nid)
 
-    print "RETURNING FROM get_aliases_from_product_id_strings", aliases
+        logger.debug(u"in import_products with cleaned aliases {aliases}".format(
+            aliases=aliases))
+
     return aliases
 
 
