@@ -2,6 +2,7 @@ from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp.util import commit
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
+from totalimpactwebapp.util import as_int_or_float_if_possible
 from totalimpactwebapp import db
 from totalimpactwebapp.twitter_paging import TwitterPager
 
@@ -39,7 +40,7 @@ def save_specific_tweets(tweet_ids, max_pages=1, pager=None):
         if not data:
             data = []
 
-        store_tweets(profile_id=None, tiid=None, payload_dicts=data)
+        store_tweet_payload_from_twitter(profile_id=None, tiid=None, payload_dicts=data)
 
         tweet_ids_with_response = [tweet["id_str"] for tweet in data]
         tweet_ids_without_response = [tweet for tweet in tweet_ids if tweet not in tweet_ids_with_response]
@@ -75,7 +76,7 @@ def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=
     most_recent_tweet_id = Tweet.most_recent_tweet_id(twitter_handle)
 
     def store_all_tweets_with_profile_id(r):
-        return store_tweets(profile_id, tiid=None, payload_dicts=r.data)
+        return store_tweet_payload_from_twitter(profile_id, tiid=None, payload_dicts=r.data)
 
     try:
         r = pager.paginated_search(
@@ -95,7 +96,8 @@ def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=
         logger.warning("TwitterClientError error, skipping")
 
 
-def store_tweets(profile_id, tiid, payload_dicts):
+
+def store_tweet_payload_from_twitter(profile_id, tiid, payload_dicts):
     for payload_dict in payload_dicts:
         tweet_id = payload_dict["id_str"]
         logger.debug("saving tweet {tweet_id}".format(
@@ -114,26 +116,30 @@ def store_tweets(profile_id, tiid, payload_dicts):
 
 
 
-def save_product_tweets(profile_id, tiid, twitter_posts):
-    for post in twitter_posts:
+def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
+    for post in twitter_posts_from_altmetric:
         tweet_id = post["tweet_id"]
         screen_name = post["author"]["id_on_source"]
         # print ".",
 
         tweet = Tweet.query.get(tweet_id)
         if not tweet:
-            tweet = Tweet(
-                screen_name=screen_name, 
-                tweet_id=tweet_id,
-                tweet_timestamp=post["posted_on"],
-                profile_id=profile_id,
-                tiid=tiid)
-            db.session.add(tweet)
-        
+            tweet = Tweet(tweet_id=tweet_id)
+        #overwrite even if there
+        tweet.screen_name = screen_name
+        tweet.tweet_id = tweet_id
+        tweet.tweet_timestamp = post["posted_on"]
+        tweet.profile_id = profile_id
+        if "geo" in post["author"]:
+            tweet.country = post["author"]["geo"].get("country", None)
+            tweet.latitude = post["author"]["geo"].get("lt", None)
+            tweet.longitude = post["author"]["geo"].get("ln", None)
+        db.session.add(tweet)
+
         #overwrite with new info even if already there
-        tweeter = Tweeter.query.get(screen_name)
+        tweeter = Tweeter.query.get((screen_name, tweet_id))
         if not tweeter:
-            tweeter = Tweeter(screen_name=screen_name)
+            tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
         tweeter.followers = post["author"].get("followers", 0)
         tweeter.name = post["author"].get("name", screen_name)
         tweeter.description = post["author"].get("description", "")
@@ -145,12 +151,15 @@ def save_product_tweets(profile_id, tiid, twitter_posts):
 
 class Tweeter(db.Model):
     screen_name = db.Column(db.Text, primary_key=True)
+    tweet_id = db.Column(db.Text, primary_key=True)  # alter table tweeter add tweet_id text  
     followers = db.Column(db.Integer)
     name = db.Column(db.Text)
     description = db.Column(db.Text)
     image_url = db.Column(db.Text)
 
     def __init__(self, **kwargs):
+        if not "tweet_id" in kwargs:
+            self.tweet_id = 0
         super(Tweeter, self).__init__(**kwargs)
 
     def __repr__(self):
@@ -164,6 +173,7 @@ class Tweeter(db.Model):
         ret = dict_from_dir(self, attributes_to_ignore)
         return ret
 
+
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
@@ -172,6 +182,11 @@ class Tweet(db.Model):
     payload = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
     tiid = db.Column(db.Text)  # alter table tweet add tiid text
     is_deleted = db.Column(db.Boolean)  # alter table tweet add is_deleted bool
+    tweet_url = db.Column(db.Text) # alter table tweet add tweet_url text
+    country = db.Column(db.Text) # alter table tweet add country text
+    # would make lat and long numeric, but ran into problems serializing, ala http://stackoverflow.com/questions/1960516/python-json-serialize-a-decimal-object
+    # latitude = db.Column(db.Text) # alter table tweet add latitude text;
+    # longitude = db.Column(db.Text) # alter table tweet add longitude text;
 
     def __init__(self, **kwargs):
         if "payload" in kwargs:
@@ -180,6 +195,11 @@ class Tweet(db.Model):
             kwargs["screen_name"] = payload_dict["user"]["screen_name"]
             kwargs["payload"] = payload_dict
             kwargs["tweet_timestamp"] = datetime.datetime.strptime(payload_dict["created_at"], r"%a %b %d %H:%M:%S +0000 %Y")
+            if not "country" in kwargs:
+                try:
+                    kwargs["country"] = payload_dict["place"]["country_code"]            
+                except AttributeError:
+                    pass
         super(Tweet, self).__init__(**kwargs)
 
     @classmethod
@@ -194,7 +214,7 @@ class Tweet(db.Model):
         return tweet_id
 
     @cached_property
-    def text(self):
+    def tweet_text(self):
         try:
             return self.payload["text"]
         except TypeError:
@@ -203,13 +223,6 @@ class Tweet(db.Model):
     @cached_property
     def has_country(self):
         return self.country != None
-
-    @cached_property
-    def country(self):
-        try:
-            return self.payload["place"]["country_code"]
-        except TypeError:
-            return None
 
     def __repr__(self):
         return u'<Tweet {tweet_id} {profile_id} {screen_name} {timestamp} {text}>'.format(

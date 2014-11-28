@@ -9,7 +9,6 @@ from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
-from totalimpactwebapp.profile import remove_duplicates_from_profile
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import notification_report
 from totalimpactwebapp.drip_email import drip_email_context

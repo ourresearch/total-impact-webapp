@@ -32,6 +32,8 @@ from totalimpactwebapp.aliases import alias_dict_from_tuples
 from totalimpactwebapp.aliases import alias_tuples_from_dict
 from totalimpactwebapp.aliases import canonical_aliases
 from totalimpactwebapp.aliases import merge_alias_dicts
+ 
+from totalimpactwebapp.tweet import save_product_tweets
 
 import rate_limit
 
@@ -338,6 +340,7 @@ def after_refresh_complete(tiid, task_ids):
         return None
 
     product.embed_markup = product.get_embed_markup() 
+    product.parse_and_save_tweets()
     product.set_last_refresh_finished(myredis)
     db.session.merge(product)
     db.session.commit()

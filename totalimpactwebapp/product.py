@@ -196,7 +196,7 @@ class Product(db.Model):
 
     @cached_property
     def is_refreshing(self):
-        REFRESH_TIMEOUT_IN_SECONDS = 30
+        REFRESH_TIMEOUT_IN_SECONDS = 120
         if self.last_refresh_started and not self.last_refresh_finished:
             last_refresh_started = arrow.get(self.last_refresh_started, 'utc')
             start_time_theshold = arrow.utcnow().replace(seconds=-REFRESH_TIMEOUT_IN_SECONDS)
@@ -496,6 +496,13 @@ class Product(db.Model):
             return requested_metric.display_count >= count
         except AttributeError:
             return False
+
+    def parse_and_save_tweets(self):
+        metric = self.get_metric_by_name("altmetric_com", "posts")
+        if metric and "twitter" in metric.most_recent_snap.raw_value:
+            print ".",
+            twitter_details = metric.most_recent_snap.raw_value["twitter"]
+            save_product_tweets(self.profile_id, self.tiid, twitter_details)
 
     def get_file(self):
         if not self.has_file:

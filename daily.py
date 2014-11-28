@@ -681,12 +681,7 @@ def refresh_tweeted_products(min_tiid=None):
 
 
 def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
-    if url_slug:
-        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
-    else:
-        q = db.session.query(Profile).filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None))
-        if min_url_slug:
-            q = q.filter(Profile.url_slug>=min_url_slug)
+    q = profile_query(url_slug, min_url_slug)
 
     from totalimpactwebapp.tweet import save_product_tweets
 
@@ -729,6 +724,10 @@ def get_tweet_text(min_tiid=None):
             tweet_ids = [tweet.tweet_id for tweet in tweet_batch]
             save_specific_tweets(tweet_ids, pager=pager)
             tweet_batch = []
+    # run it again with stragglers
+    if tweet_batch:
+        tweet_ids = [tweet.tweet_id for tweet in tweet_batch]
+        save_specific_tweets(tweet_ids, pager=pager)
 
 
 def run_through_twitter_pages(url_slug=None, min_url_slug=None):
