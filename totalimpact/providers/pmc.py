@@ -177,8 +177,8 @@ class Pmc(Provider):
         metrics_and_drilldown = {}
 
         # Only lookup metrics for items with appropriate ids
-        from totalimpact import item
-        aliases_dict = item.alias_dict_from_tuples(aliases)
+        from totalimpactwebapp.aliases import alias_dict_from_tuples
+        aliases_dict = alias_dict_from_tuples(aliases)
         try:
             pmid = aliases_dict["pmid"][0]
         except KeyError:

@@ -236,8 +236,8 @@ class Provider(object):
     def get_best_url(self, aliases):
         filtered = self.relevant_aliases(aliases)
         if filtered:
-            from totalimpact import item
-            aliases_dict = item.alias_dict_from_tuples(aliases)
+            from totalimpactwebapp.aliases import alias_dict_from_tuples
+            aliases_dict = alias_dict_from_tuples(aliases)
 
             if "doi" in aliases_dict:
                 return u"http://doi.org/" + aliases_dict["doi"][0]

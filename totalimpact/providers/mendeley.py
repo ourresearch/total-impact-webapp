@@ -133,8 +133,8 @@ class Mendeley(Provider):
 
 
     def _get_doc(self, aliases):
-        from totalimpact import item
-        aliases_dict = item.alias_dict_from_tuples(aliases)
+        from totalimpactwebapp.aliases import alias_dict_from_tuples
+        aliases_dict = alias_dict_from_tuples(aliases)
 
         if not self.session:
             self.session = self._connect()
@@ -215,8 +215,8 @@ class Mendeley(Provider):
         doc = self._get_doc(aliases)
         new_aliases = []
         if doc:  
-            from totalimpact import item
-            aliases_dict = item.alias_dict_from_tuples(aliases)
+            from totalimpactwebapp.aliases import alias_dict_from_tuples
+            aliases_dict = alias_dict_from_tuples(aliases)
             print doc.identifiers
 
             for namespace in doc.identifiers:
