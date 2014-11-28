@@ -165,46 +165,6 @@ def save_product_tweets_for_profile(profile):
     return new_objects
 
 
-def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
-    tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile_id).all()
-    tweets_by_tweet_id = dict([(tweet.tweet_id, tweet) for tweet in tweets])
-
-    new_objects = []
-    for post in twitter_posts_from_altmetric:
-        tweet_id = post["tweet_id"]
-        screen_name = post["author"]["id_on_source"]
-
-        if tweet_id in tweets_by_tweet_id:
-            tweet = tweets_by_tweet_id[tweet_id]
-        else:
-            tweet = Tweet(tweet_id=tweet_id)
-            db.session.merge(tweet)
-
-        #overwrite even if there
-        tweet.screen_name = screen_name
-        tweet.tweet_id = tweet_id
-        tweet.tweet_timestamp = post["posted_on"]
-        tweet.profile_id = profile_id
-        if "geo" in post["author"]:
-            tweet.country = post["author"]["geo"].get("country", None)
-            tweet.latitude = post["author"]["geo"].get("lt", None)
-            tweet.longitude = post["author"]["geo"].get("ln", None)
-        new_objects.append(tweet)
-
-        #overwrite with new info even if already there
-        tweeter = tweet.tweeter
-        if not tweeter:
-            tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
-            db.session.merge(tweeter)
-
-        tweeter.followers = post["author"].get("followers", 0)
-        tweeter.name = post["author"].get("name", screen_name)
-        tweeter.description = post["author"].get("description", "")
-        tweeter.image_url = post["author"].get("image", None)
-        new_objects.append(tweeter)
-
-    commit(db)
-    return new_objects
 
 
 class Tweeter(db.Model):
@@ -300,6 +260,7 @@ class Tweet(db.Model):
 
     def to_dict(self):
         attributes_to_ignore = [
+            "tweeter"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
         return ret
