@@ -109,7 +109,7 @@ class Pmc(Provider):
         try:
             articles = doc.getElementsByTagName("article")
             for article in articles:
-                print article
+                # print article
                 metrics_dict = {}            
                 meta_data = article.getElementsByTagName("meta-data")[0]
                 pmid = meta_data.getAttribute("pubmed-id")
@@ -151,7 +151,7 @@ class Pmc(Provider):
         metrics_dict = {}
         for page in pages:
             one_month_metrics_dict = self._extract_metrics(page, id=pmid)
-            print one_month_metrics_dict
+            # print one_month_metrics_dict
             for metric in one_month_metrics_dict:
                 try:
                     metrics_dict[metric] += one_month_metrics_dict[metric]

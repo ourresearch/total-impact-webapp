@@ -28,16 +28,16 @@ def save_new_board(profile_id):
         profile_id=profile_id,
         contents=contents)
 
-    logger.info(u"saving board for {profile_id}: new contents: {contents}".format(
-        profile_id=profile_id, contents=contents))
+    # logger.info(u"saving board for {profile_id}: new contents: {contents}".format(
+    #     profile_id=profile_id, contents=contents))
 
     return board
 
 def write_to_pinboard(profile_id, list_of_pins, col):
     board = Pinboard.query.filter_by(profile_id=profile_id).first()
     if board:
-        logger.info(u"saving board for {profile_id}: previous contents: {contents}".format(
-            profile_id=profile_id, contents=board.contents))
+        # logger.info(u"saving board for {profile_id}: previous contents: {contents}".format(
+        #     profile_id=profile_id, contents=board.contents))
         try:
             board.contents[col] = list_of_pins
         except TypeError:
@@ -50,8 +50,8 @@ def write_to_pinboard(profile_id, list_of_pins, col):
         board = save_new_board(profile_id)
         board.contents[col] = list_of_pins
 
-        logger.info(u"saving board for {profile_id}: new contents: {contents}".format(
-            profile_id=profile_id, contents=board.contents))
+        # logger.info(u"saving board for {profile_id}: new contents: {contents}".format(
+        #     profile_id=profile_id, contents=board.contents))
     db.session.merge(board)
     commit(db)
     return board.contents

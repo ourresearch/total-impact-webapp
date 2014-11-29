@@ -298,7 +298,6 @@ class Pubmed(Provider):
                     aliases_doi_from_pmid_url = self.aliases_doi_from_pmid_url_template %nid
                     response = self.http_get(aliases_doi_from_pmid_url, cache_enabled=cache_enabled)
                     if response.status_code==200:
-                        print response.text
                         doi = json.loads(response.text)["doi"]
                         new_aliases += [("doi", doi)]
 
