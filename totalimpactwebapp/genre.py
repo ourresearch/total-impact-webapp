@@ -58,21 +58,21 @@ class Genre(object):
     def cards_new_metrics(self):
         return make_genre_new_metrics_cards(self.products)
 
-    @cached_property
-    def journals(self):
-        if self.name == "article":
-            journals = Counter()
-            for product in self.products:
-                try:
-                    if product.biblio.journal:
-                        journals[product.biblio.journal] += 1
-                except (AttributeError, TypeError):
-                    logger.error("error counting journals for profile_id {profile_id}".format(
-                        profile_id=self.profile_id))
-                    pass
-            return dict(journals)
-        else:
-            return []
+    # @cached_property
+    # def journals(self):
+    #     if self.name == "article":
+    #         journals = Counter()
+    #         for product in self.products:
+    #             try:
+    #                 if product.biblio.journal:
+    #                     journals[product.biblio.journal] += 1
+    #             except (AttributeError, TypeError):
+    #                 logger.error("error counting journals for profile_id {profile_id}".format(
+    #                     profile_id=self.profile_id))
+    #                 pass
+    #         return dict(journals)
+    #     else:
+    #         return []
 
 
     def to_dict(self):
