@@ -2,6 +2,7 @@ import util
 import datetime
 import copy
 import unicode_helpers
+import json
 
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp import db
