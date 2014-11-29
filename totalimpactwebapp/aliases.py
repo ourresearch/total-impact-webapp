@@ -64,9 +64,9 @@ def clean_alias_tuple_for_comparing(ns, nid):
         try:
             cleaned_alias = (ns.lower(), nid.lower())
         except AttributeError:
-            logger.debug(u"problem cleaning {alias_tuple}".format(
-                alias_tuple=alias_tuple))
-            cleaned_alias = alias_tuple
+            logger.debug(u"problem cleaning {ns} {nid}".format(
+                ns=ns, nid=nid))
+            cleaned_alias = (ns, nid)
         return cleaned_alias
 
 

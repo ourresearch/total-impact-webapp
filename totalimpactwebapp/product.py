@@ -838,22 +838,15 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
 
     for alias_tuple in clean_aliases:
         new_product = Product(profile_id=profile_id)
-        (namespace, nid) = alias_tuple
-        alias_row = AliasRow(namespace=namespace, nid=nid)
-        new_product.alias_rows = [alias_row]
+        new_product = put_aliases_in_product(new_product, [alias_tuple])
+
         new_product.set_last_refresh_start()
 
         new_products += [new_product]
         dicts_to_update += [{"tiid":new_product.tiid, "aliases_dict": new_product.alias_dict}]
 
-    try:
-        db.session.add_all(new_products)
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in create_tiids_from_aliases for {tiid}, rolling back.  Message: {message}".format(
-            tiid=tiid, 
-            message=e.message)) 
+    db.session.add_all(new_products)
+    commit(db)
 
     # has to be after commits to database
     start_product_update(dicts_to_update, "high")
@@ -949,7 +942,10 @@ def put_aliases_in_product(product, alias_tuples):
                 new_alias_row = AliasRow(tiid=product.tiid, 
                     namespace=ns, 
                     nid=nid)
-                product.alias_rows.append(new_alias_row)    
+                product.alias_rows.append(new_alias_row)   
+        elif ns and nid and ns=="biblio":
+            return put_biblio_in_product(product, nid)
+
     return product
 
 
