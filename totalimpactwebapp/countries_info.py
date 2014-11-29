@@ -8294,7 +8294,7 @@ countries_info = [
         "currency": ["KRW"],
         "callingCode": ["82"],
         "capital": "Seoul",
-        "altSpellings": ["KR", "Republic of Korea, Korea (South)"],
+        "altSpellings": ["KR", "Republic of Korea", "Korea (South)"],
         "relevance": "1.5",
         "region": "Asia",
         "subregion": "Eastern Asia",
