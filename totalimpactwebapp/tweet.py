@@ -265,7 +265,7 @@ class Tweet(db.Model):
             if not "country" in kwargs:
                 try:
                     kwargs["country"] = payload_dict["place"]["country_code"]            
-                except AttributeError:
+                except (AttributeError, TypeError):
                     pass
         super(Tweet, self).__init__(**kwargs)
 
