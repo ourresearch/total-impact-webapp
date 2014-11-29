@@ -79,7 +79,6 @@ class Linkedin(Provider):
             biblio_dict["bio"] = bio
         except AttributeError:
             logger.warning("AttributeError in linkedin")
-            logger.warning(r.text)
 
         return biblio_dict
   

@@ -68,7 +68,7 @@ canvas.chord.type = property(_type)
 @task_postrun.connect()
 def task_postrun_handler(*args, **kwargs):    
     db.session.remove()
-    logger.debug(u"Celery task POST RUN HANDLER")
+    # logger.debug(u"Celery task POST RUN HANDLER")
 
 
 @task_failure.connect
@@ -319,8 +319,8 @@ def provider_run(aliases_dict, tiid, method_name, provider_name):
 
 @task(priority=0)
 def after_refresh_complete(tiid, task_ids):
-    logger.info(u"here in after_refresh_complete with {tiid}".format(
-        tiid=tiid))
+    # logger.info(u"here in after_refresh_complete with {tiid}".format(
+    #     tiid=tiid))
 
     product = Product.query.get(tiid)
 

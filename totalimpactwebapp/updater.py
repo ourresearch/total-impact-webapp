@@ -62,7 +62,7 @@ def import_products_by_url_slug(url_slug, webapp_api_endpoint):
                     headers={'Content-type': 'application/json', 'Accept': 'application/json'})
 
             if r.status_code==200:
-                print r.json()
+                print "in import_products_by_url_slug", r.json()
             elif r.status_code==404:
                 print "after import, no new products"
             else:

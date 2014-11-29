@@ -218,7 +218,6 @@ class Mendeley(Provider):
         if doc:  
             from totalimpactwebapp.aliases import alias_dict_from_tuples
             aliases_dict = alias_dict_from_tuples(aliases)
-            print doc.identifiers
 
             for namespace in doc.identifiers:
                 if namespace in ["doi", "arxiv", "pmid", "scopus"] and (namespace not in aliases_dict):
