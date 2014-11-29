@@ -1,9 +1,12 @@
+import logging
+from urlparse import urlparse
+
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp.util import dict_from_dir
-from urlparse import urlparse
 from totalimpactwebapp import db
 from totalimpactwebapp import json_sqlalchemy
 
+logger = logging.getLogger("tiwebapp.biblio")
 
 
 

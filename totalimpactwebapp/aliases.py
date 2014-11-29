@@ -3,9 +3,13 @@ import datetime
 import copy
 import unicode_helpers
 import json
+import logging
 
 from totalimpactwebapp.util import cached_property
 from totalimpactwebapp import db
+
+logger = logging.getLogger("tiwebapp.aliases")
+
 
 def clean_id(nid):
     try:
