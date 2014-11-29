@@ -65,7 +65,7 @@ from totalimpactwebapp.cards_factory import make_summary_cards
 from totalimpactwebapp.card import GenreNewDiffCard
 from totalimpactwebapp.card import GenreMetricSumCard
 from totalimpactwebapp.card import GenreEngagementSumCard
-from totalimpactwebapp import emailer
+import emailer
 from totalimpactwebapp import configs
 
 from util import camel_to_snake_case

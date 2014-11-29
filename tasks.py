@@ -12,7 +12,7 @@ from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import notification_report
 from totalimpactwebapp.drip_email import drip_email_context
-from totalimpactwebapp import emailer
+import emailer
 
 
 logger = logging.getLogger("webapp.tasks")

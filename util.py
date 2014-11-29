@@ -6,6 +6,7 @@ import jinja2
 from time import sleep
 import datetime
 import stripe
+import emailer
 
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
