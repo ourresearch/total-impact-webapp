@@ -2,7 +2,7 @@ import os, re
 
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderRateLimitError
-from totalimpact.providers.twitter_paging import TwitterPager
+from totalimpactwebapp.twitter_paging_core import TwitterPagerOlder
 from birdy.twitter import AppClient
 from birdy.twitter import TwitterApiError, TwitterRateLimitError, TwitterClientError
 
@@ -100,7 +100,7 @@ class Twitter(Provider):
             if r.data:
                 response_list.extend(r.data)
 
-        pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
+        pager = TwitterPagerOlder(os.getenv("TWITTER_CONSUMER_KEY"), 
                         os.getenv("TWITTER_CONSUMER_SECRET"),
                         os.getenv("TWITTER_ACCESS_TOKEN"), 
                         default_max_pages=max_pages)

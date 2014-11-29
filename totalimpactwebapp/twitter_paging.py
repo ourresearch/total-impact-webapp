@@ -123,7 +123,7 @@ class TwitterPager(object):
             elif query_type=="statuses_lookup":
                 response = self.client.api.statuses.lookup.post(**kwargs)
 
-            logging.debug('Received twitter search response: %s' % str(response))
+            logging.debug('Received twitter search response')
             self.extract_rate_limit(response)
             return response
         except TwitterRateLimitError, e:

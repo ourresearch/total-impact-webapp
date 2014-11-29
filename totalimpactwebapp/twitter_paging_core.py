@@ -1,9 +1,12 @@
 #from https://gist.github.com/scott2b/9219919
 # thank you!!
 
+# should merge this with the one in webapp soon!
+
+
 """
 Utilization:
-    searcher = TwitterPager(
+    searcher = TwitterPagerOlder(
         TWITTER_CONSUMER_KEY,
         TWITTER_CONSUMER_SECRET,
         TWITTER_APP_CLIENT_ACCESS_TOKEN)
@@ -27,7 +30,7 @@ from delorean import parse, epoch
 
 DEFAULT_MAX_PAGES = 10
 
-class TwitterPager(object):
+class TwitterPagerOlder(object):
     """Class to manage searches against the Twitter REST search API.
     Utilizes the birdy AppClient. Handles client reconnection for
     connection pool disconnects. Provides automated pagination.
