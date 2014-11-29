@@ -398,7 +398,7 @@ def get_user_profile_dict(profile_id):
 
     profile_dict = build_profile_dict(profile, hide_keys, embed)
 
-    logger.debug(u"/profile/{slug} built the response; took {elapsed}ms".format(
+    logger.debug(u"took {elapsed}ms to build the response for /profile/{slug}".format(
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))
