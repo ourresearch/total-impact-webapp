@@ -41,6 +41,9 @@ oauth_log = logging.getLogger("oauthlib")
 oauth_log.setLevel(logging.WARNING)
 oauth_log.propagate = True
 
+newrelic_log = logging.getLogger("newrelic")
+newrelic_log.setLevel(logging.WARNING)
+newrelic_log.propagate = True
 
 # set up application
 app = Flask(__name__)
