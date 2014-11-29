@@ -987,9 +987,10 @@ if __name__ == "__main__":
     parser.add_argument('--end_days_ago', default=30, type=int)
 
     args = vars(parser.parse_args())
-    print args
     
-    print u"daily.py starting."
+    print u"daily.py starting with {function} and args {args}".format(
+        function=args["function"], args=args)
+    
     main(args["function"], args)
 
     db.session.remove()
