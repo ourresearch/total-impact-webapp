@@ -136,20 +136,16 @@ def add_to_database_if_nonzero(
     if new_content:
         # don't need item with metrics for this purpose, so don't bother getting metrics from db
 
-
         product = Product.query.get(tiid)
         updated_product = None
         if product:
             if method_name=="aliases":
-                print "**********NEW CONTENT", new_content, method_name, provider_name
                 updated_product = put_aliases_in_product(product, new_content)
             elif method_name=="biblio":
-                print "**********NEW CONTENT", new_content, method_name, provider_name
                 updated_product = put_biblio_in_product(product, new_content, provider_name)
             elif method_name=="metrics":
                 for metric_name in new_content:
                     if new_content[metric_name]:
-                        print "**********NEW CONTENT", metric_name, new_content[metric_name], method_name, provider_name
                         updated_product = put_snap_in_product(product, metric_name, new_content[metric_name])
             else:
                 logger.warning(u"ack, supposed to save something i don't know about: " + str(new_content))

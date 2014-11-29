@@ -565,9 +565,6 @@ class Profile(db.Model):
 
 
     def get_new_products(self, provider_name, account_name, analytics_credentials={}, add_even_if_removed=False):
-        logger.info(u"in make_products with {provider_name} {account_name}".format(
-            provider_name=provider_name, account_name=account_name))
-
         if add_even_if_removed:
             existing_tiids = self.tiids_including_removed
         else:
