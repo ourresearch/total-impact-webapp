@@ -11,6 +11,7 @@ from celery.decorators import task
 from celery.signals import task_postrun, task_prerun, task_failure, worker_process_init
 from celery import group, chain, chord
 from celery import current_app as celery_app
+from celery import Task
 from celery.signals import task_sent
 from celery.utils import uuid
 from eventlet import timeout
@@ -65,10 +66,15 @@ canvas.chord.type = property(_type)
 #### end monkeypatch
 
 
-@task_postrun.connect()
-def task_postrun_handler(*args, **kwargs):    
-    db.session.remove()
-    # logger.debug(u"Celery task POST RUN HANDLER")
+class ClearDbSessionTask(Task):
+    """An abstract Celery Task that ensures that the connection the the
+    database is closed on task completion"""
+    abstract = True
+
+    def after_return(self, status, retval, task_id, args, kwargs, einfo):
+        logger.debug(u"Celery task after_return handler, removing session, args {args}, kwargs={kwargs}".format(
+            args=args, kwargs=kwargs))
+        db.session.remove()
 
 
 @task_failure.connect
@@ -338,7 +344,7 @@ def after_refresh_complete(tiid, task_ids):
 
 
 
-@task()
+@task(base=ClearDbSessionTask)
 def refresh_tiid(tiid, aliases_dict, task_priority):    
     pipeline = sniffer(aliases_dict)
     chain_list = []
