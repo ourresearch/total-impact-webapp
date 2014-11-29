@@ -861,8 +861,11 @@ def send_drip_emails(url_slug=None, min_url_slug=None):
             logger.info(u"in send_drip_emails, SENT EMAIL to: {url_slug}".format(
                 url_slug=profile.url_slug))
         else:
-            logger.info(u"in send_drip_emails, but NOT sending email to: {url_slug}".format(
-                url_slug=profile.url_slug))
+            pass
+            # logger.info(u"in send_drip_emails, but NOT sending email to: {url_slug}".format(
+            #     url_slug=profile.url_slug))
+
+
 
 def ip_deets():
     from totalimpactwebapp.interaction import Interaction

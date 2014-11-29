@@ -115,12 +115,10 @@ class TwitterPager(object):
             self.wait_for_reset()
         try:
 
-
             # response = self.client.api.search.tweets.get(**kwargs)
             response = self.client.api.statuses.user_timeline.get(**kwargs)
 
-
-            logging.debug('Received twitter search response: %s' % str(response))
+            logging.debug('Received twitter search response')
             self.extract_rate_limit(response)
             return response
         except TwitterRateLimitError, e:
