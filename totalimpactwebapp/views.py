@@ -643,6 +643,8 @@ def profile_products_get(url_slug):
     just_stubs = request.args.get("stubs", "False").lower() in ["1", "true"]
     if just_stubs:
         profile = get_profile_stubs_from_url_slug(url_slug)
+        if not profile:
+            abort_json(404, "This profile does not exist.")
         load_times["profile"] = timer.elapsed()
         product_list = [
             {"tiid": p.tiid, "genre": p.genre}
@@ -653,6 +655,9 @@ def profile_products_get(url_slug):
 
     else:
         profile = get_profile_from_id(url_slug)
+        if not profile:
+            abort_json(404, "This profile does not exist.")
+        
         markup = Markup(url_slug, embed=False)
         load_times["profile"] = timer.elapsed()
 
