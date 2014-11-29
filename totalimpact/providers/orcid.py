@@ -127,7 +127,7 @@ class Orcid(Provider):
             provider_url_template=None, 
             cache_enabled=True):
 
-        logger.debug(u"%20s getting member_items for %s" % (self.provider_name, query_string))
+        logger.debug(u"%s getting member_items for %s" % (self.provider_name, query_string))
 
         if not provider_url_template:
             provider_url_template = self.member_items_url_template

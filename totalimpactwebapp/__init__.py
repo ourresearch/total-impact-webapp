@@ -24,7 +24,7 @@ from multiprocessing.util import register_after_fork
 logging.basicConfig(
     stream=sys.stdout,
     level=logging.DEBUG,
-    format='[%(process)d] %(levelname)8s %(threadName)30s %(name)s - %(message)s'
+    format='[%(process)3d] %(levelname)8s %(threadName)30s %(name)s - %(message)s'
 )
 logger = logging.getLogger("tiwebapp")
 

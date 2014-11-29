@@ -84,9 +84,11 @@ class TwitterPager(object):
             self.rate_limit_reset = epoch(int(response.headers['x-rate-limit-reset'])).datetime
             self.twitter_date = parse(response.headers['date']).datetime
             logging.debug(
-                'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
-                'reset: %s, current-time: %s' % (self.rate_limit_limit,
-                self.rate_limit_remaining, self.rate_limit_reset, self.twitter_date))
+                'Twitter rate limit info:: rate-limit: %s, remaining: %s' % (self.rate_limit_limit, self.rate_limit_remaining))
+            # logging.debug(
+            #     'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
+            #     'reset: %s, current-time: %s' % (self.rate_limit_limit,
+            #     self.rate_limit_remaining, self.rate_limit_reset, self.twitter_date))
         except KeyError:
             pass
 
