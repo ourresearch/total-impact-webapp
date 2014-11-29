@@ -75,15 +75,10 @@ def import_products(provider_name, import_input):
         logger.debug(u"in import_products with provider_name {provider_name}: {import_input}".format(
             provider_name=provider_name, import_input=import_input))
 
-
-    logger.debug(u"extra: in import_products with provider_name {provider_name}: {import_input}".format(
-        provider_name=provider_name, import_input=import_input))
-
     aliases = []
 
     # pull in standard items, if we were passed any of these
     if provider_name=="product_id_strings":
-        logger.debug(u"in import_products, going to call get_aliases_from_product_id_strings")
         aliases = get_aliases_from_product_id_strings(import_input)
     elif provider_name=="bibtex":
         provider_module = ProviderFactory.get_provider("bibtex")
@@ -96,7 +91,7 @@ def import_products(provider_name, import_input):
             logger.debug(u"in import_products, got ImportError")
             pass
 
-    logger.debug(u"returning from import_products with aliases {aliases}".format(
-        aliases=aliases))
+    # logger.debug(u"returning from import_products with aliases {aliases}".format(
+    #     aliases=aliases))
 
     return(aliases)

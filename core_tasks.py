@@ -397,8 +397,8 @@ def refresh_tiid(tiid, aliases_dict, task_priority):
 
 
 def put_on_celery_queue(tiid, aliases_dict, task_priority="high"):
-    logger.info(u"put_on_celery_queue {tiid}".format(
-        tiid=tiid))
+    # logger.info(u"put_on_celery_queue {tiid}".format(
+    #     tiid=tiid))
 
     #see http://stackoverflow.com/questions/15239880/task-priority-in-celery-with-redis
     if task_priority == "high":

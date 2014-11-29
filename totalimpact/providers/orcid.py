@@ -21,7 +21,7 @@ class Orcid(Provider):
             return {}
 
         biblio = {}
-        logger.debug(u"%20s parsing orcid work" % (self.provider_name))
+        # logger.debug(u"%20s parsing orcid work" % (self.provider_name))
 
         try:
             if work["work-citation"]["work-citation-type"].lower()=="bibtex":
@@ -106,8 +106,8 @@ class Orcid(Provider):
                 pass
 
             if not new_member:
-                logger.info(u"no external identifiers, try saving whole citation for {orcid}".format(
-                    orcid=query_string))
+                # logger.info(u"no external identifiers, try saving whole citation for {orcid}".format(
+                #     orcid=query_string))
                 biblio = self._parse_orcid_work(work)
                 new_member = ("biblio", biblio)
 

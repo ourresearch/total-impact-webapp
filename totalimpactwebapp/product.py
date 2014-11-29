@@ -603,8 +603,8 @@ class Product(db.Model):
 
 
     def get_embed_markup(self):
-        logger.debug(u"in get_embed_markup for {tiid}".format(
-            tiid=self.tiid))
+        # logger.debug(u"in get_embed_markup for {tiid}".format(
+        #     tiid=self.tiid))
 
         if self.is_account_product:
             return None
@@ -845,8 +845,6 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
 
         new_products += [new_product]
         dicts_to_update += [{"tiid":new_product.tiid, "aliases_dict": new_product.alias_dict}]
-        logger.debug(u"in create_products_from_aliases, made item {new_product}".format(
-            new_product=new_product))
 
     try:
         db.session.add_all(new_products)

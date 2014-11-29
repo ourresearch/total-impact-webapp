@@ -803,11 +803,12 @@ def product_embed_markup(tiid):
 @app.route("/product/<tiid>/interaction", methods=["POST"])
 def product_interaction(tiid):
     if current_user_owns_tiid(tiid):
-        logger.info(u"not logging pageview for {tiid} because current user viewing own tiid".format(
-            tiid=tiid))
+        pass
+        # logger.info(u"not logging pageview for {tiid} because current user viewing own tiid".format(
+        #     tiid=tiid))
     else:
-        logger.info(u"logging pageview for {tiid}".format(
-            tiid=tiid))
+        # logger.info(u"logging pageview for {tiid}".format(
+        #     tiid=tiid))
         log_interaction_event(tiid=tiid,
             event=request.json.get("event", "views"),
             headers=request.headers.to_list(),
