@@ -166,9 +166,10 @@ class Mendeley(Provider):
 
                 by_discipline = {}
                 by_subdiscipline = doc.reader_count_by_subdiscipline
-                for discipline, subdiscipline_breakdown in by_subdiscipline.iteritems():
-                    by_discipline[discipline] = sum(subdiscipline_breakdown.values())
-                metrics_and_drilldown["mendeley:discipline"] = (by_discipline, drilldown_url)
+                if by_subdiscipline:
+                    for discipline, subdiscipline_breakdown in by_subdiscipline.iteritems():
+                        by_discipline[discipline] = sum(subdiscipline_breakdown.values())
+                    metrics_and_drilldown["mendeley:discipline"] = (by_discipline, drilldown_url)
 
                 by_country_iso = {}
                 by_country_names = doc.reader_count_by_country
