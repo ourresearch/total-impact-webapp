@@ -657,7 +657,7 @@ def profile_products_get(url_slug):
         profile = get_profile_from_id(url_slug)
         if not profile:
             abort_json(404, "This profile does not exist.")
-        
+
         markup = Markup(url_slug, embed=False)
         load_times["profile"] = timer.elapsed()
 
@@ -856,6 +856,9 @@ def product_from_tiid(url_slug, tiid):
     local_sleep(1)
 
     product = get_product(tiid)
+    if not product:
+        abort_json(404, "This product does not exist.")
+
     markup = Markup(url_slug, embed=False)
     product_dict = product.to_markup_dict(
         markup=markup

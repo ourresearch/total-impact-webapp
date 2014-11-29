@@ -952,16 +952,21 @@ def put_aliases_in_product(product, alias_tuples):
                 product.alias_rows.append(new_alias_row)    
     return product
 
+
+
 def create_biblio_row_objects(list_of_old_style_biblio_dicts, provider=None, collected_date=datetime.datetime.utcnow()):
     new_biblio_row_objects = []
 
     provider_number = 0
     for biblio_dict in list_of_old_style_biblio_dicts:
+
         if not provider:
             provider_number += 1
             provider = "unknown" + str(provider_number)
+
         for biblio_name in biblio_dict:
-            biblio_row_object = BiblioRow(biblio_name=biblio_name, 
+            biblio_row_object = BiblioRow(
+                    biblio_name=biblio_name, 
                     biblio_value=biblio_dict[biblio_name], 
                     provider=provider, 
                     collected_date=collected_date)

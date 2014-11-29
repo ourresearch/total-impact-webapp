@@ -32,7 +32,9 @@ from totalimpactwebapp.aliases import alias_dict_from_tuples
 from totalimpactwebapp.aliases import alias_tuples_from_dict
 from totalimpactwebapp.aliases import canonical_aliases
 from totalimpactwebapp.aliases import merge_alias_dicts
- 
+
+from totalimpactwebapp.util import commit 
+
 import rate_limit
 
 logger = logging.getLogger("core.core_tasks")
@@ -151,14 +153,8 @@ def add_to_database_if_nonzero(
                 logger.warning(u"ack, supposed to save something i don't know about: " + str(new_content))
 
             if updated_product:
-                try:
-                    db.session.merge(updated_product)
-                    db.session.commit()
-                except (IntegrityError, FlushError) as e:
-                    db.session.rollback()
-                    logger.warning(u"Fails Integrity check in add_aliases_to_item_object for {tiid}, rolling back.  Message: {message}".format(
-                        tiid=product.tiid, 
-                        message=e.message)) 
+                db.session.merge(updated_product)
+                commit(db)
     return
 
 
@@ -337,7 +333,7 @@ def after_refresh_complete(tiid, task_ids):
     product.parse_and_save_tweets()
     product.set_last_refresh_finished(myredis)
     db.session.merge(product)
-    db.session.commit()
+    commit(db)
 
 
 
