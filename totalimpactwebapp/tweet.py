@@ -45,8 +45,8 @@ def save_specific_tweets(tweet_ids, max_pages=1, pager=None):
         tweet_ids_with_response = [tweet["id_str"] for tweet in data]
         tweet_ids_without_response = [tweet for tweet in tweet_ids if tweet not in tweet_ids_with_response]
         for tweet_id in tweet_ids_without_response:
-            logger.debug("deleted tweet {tweet_id}".format(
-                tweet_id=tweet_id))
+            # logger.debug("deleted tweet {tweet_id}".format(
+            #     tweet_id=tweet_id))
             tweet = Tweet.query.get(tweet_id)
             tweet.is_deleted = True
             db.session.add(tweet)
@@ -100,8 +100,8 @@ def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=
 def store_tweet_payload_from_twitter(profile_id, tiid, payload_dicts):
     for payload_dict in payload_dicts:
         tweet_id = payload_dict["id_str"]
-        logger.debug("saving tweet {tweet_id}".format(
-            tweet_id=tweet_id))
+        # logger.debug("saving tweet {tweet_id}".format(
+        #     tweet_id=tweet_id))
         tweet = Tweet.query.get(tweet_id)
         if tweet:
             if not tweet.payload:
