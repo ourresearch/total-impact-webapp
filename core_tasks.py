@@ -164,6 +164,9 @@ def add_to_database_if_nonzero(
     return
 
 
+# need to streamline this with     
+# def _guess_genre_and_host_from_aliases(self) in aliases!! 
+
 def decide_genre(alias_dict):
     # logger.debug(u"in decide_genre with {alias_dict}".format(
     #     alias_dict=alias_dict))        
@@ -225,7 +228,7 @@ def decide_genre(alias_dict):
         elif "linkedin" in joined_url_string:
             genre = "account"
             host = "linkedin"            
-        elif "youtube.com" in joined_url_string:
+        elif ("youtube.com" in joined_url_string) or ("youtu.be" in joined_url_string):
             genre = "video"
             host = "youtube"
         elif "vimeo.com" in joined_url_string:

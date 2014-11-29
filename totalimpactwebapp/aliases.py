@@ -289,7 +289,7 @@ class Aliases(object):
             elif "github.com" in joined_url_string:
                 genre = "software"
                 host = "github"
-            elif "youtube.com" in joined_url_string:
+            elif ("youtube.com" in joined_url_string) or ("youtu.be" in joined_url_string):
                 genre = "video"
                 host = "youtube"
             elif "vimeo.com" in joined_url_string:
