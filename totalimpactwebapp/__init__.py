@@ -45,6 +45,11 @@ newrelic_log = logging.getLogger("newrelic")
 newrelic_log.setLevel(logging.WARNING)
 newrelic_log.propagate = True
 
+ratelimiter_log = logging.getLogger("RateLimiter")
+ratelimiter_log.setLevel(logging.WARNING)
+ratelimiter_log.propagate = True
+
+
 # set up application
 app = Flask(__name__)
 

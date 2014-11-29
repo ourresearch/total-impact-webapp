@@ -121,7 +121,7 @@ class TwitterPagerOlder(object):
             # response = self.client.api.search.tweets.get(**kwargs)
             response = self.client.api.statuses.user_timeline.get(**kwargs)
 
-            logging.debug('Received twitter search response')
+            # logging.debug('Received twitter search response')
             self.extract_rate_limit(response)
             return response
         except TwitterRateLimitError, e:
@@ -161,7 +161,7 @@ class TwitterPagerOlder(object):
                 kwargs.update({ k:v for k,v in urlparse.parse_qsl(
                     response.data.search_metadata.next_results[1:]) })
                 if int(kwargs['max_id']) > int(kwargs.get('since_id',0)):
-                    logging.debug('Paginating query: %s' % str(kwargs))
+                    # logging.debug('Paginating query: %s' % str(kwargs))
                     self.paginated_search(page=page+1,
                             page_handler=page_handler,
                             max_pages=max_pages, **kwargs)
@@ -169,7 +169,7 @@ class TwitterPagerOlder(object):
             except AttributeError:
                 try:
                     kwargs['since_id'] = str(response.data[-1].id)
-                    logging.debug('Paginating query: %s' % str(kwargs))
+                    # logging.debug('Paginating query: %s' % str(kwargs))
                     self.paginated_search(page=page+1,
                             page_handler=page_handler,
                             max_pages=max_pages, **kwargs)

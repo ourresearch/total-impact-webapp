@@ -38,6 +38,7 @@ import redis
 import time
 from itertools import izip
 
+
 class RateLimiter(object):
     """
     RateLimiter is used to define one or more rate limit rules.
