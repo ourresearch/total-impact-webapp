@@ -10,6 +10,8 @@ from celery.result import AsyncResult
 from collections import Counter
 from collections import defaultdict
 import flask
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import FlushError
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -46,6 +48,7 @@ from totalimpactwebapp.aliases import normalize_alias_tuple
 from totalimpact.providers import provider as provider_module
 from totalimpact.importer import import_products
 from totalimpact import tiredis
+
 
 percentile_snap_creations = 0
 
