@@ -800,17 +800,17 @@ def refresh_status(tiid, myredis):
 
 
 
-def aliases_not_in_existing_products(retrieved_aliases, existing_tiids):
-    if not existing_tiids:
+def aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude):
+    if not tiids_to_exclude:
         return retrieved_aliases
 
-    existing_products = Product.query.filter(Product.tiid.in_(existing_tiids)).all()
+    products_to_exclude = Product.query.filter(Product.tiid.in_(tiids_to_exclude)).all()
 
     new_aliases = []
     for alias_tuple in retrieved_aliases:
         found = False
         (ns, namespace) = alias_tuple
-        found = any([product.contains_alias(ns, namespace) for product in existing_products])
+        found = any([product.contains_alias(ns, namespace) for product in products_to_exclude])
         if not found:        
             new_aliases += [alias_tuple]
     return new_aliases
@@ -854,11 +854,11 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
     return new_products
 
 
-def import_and_create_products(profile_id, provider_name, importer_input, analytics_credentials={}, existing_tiids=[]):
+def import_and_create_products(profile_id, provider_name, importer_input, analytics_credentials={}, tiids_to_exclude=[]):
     # need to do these ugly deletes because import products not in dict.  fix in future!
 
     retrieved_aliases = import_products(provider_name, importer_input)
-    new_alias_tuples = aliases_not_in_existing_products(retrieved_aliases, existing_tiids)
+    new_alias_tuples = aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude)
     products = create_products_from_alias_tuples(profile_id, new_alias_tuples)
     return products
 
