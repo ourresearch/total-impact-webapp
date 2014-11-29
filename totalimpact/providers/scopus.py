@@ -71,7 +71,7 @@ class Scopus(Provider):
         return provenance_url
 
     def _get_page(self, url, headers={}):
-        response = self.http_get(url, headers=headers, timeout=30)
+        response = self.http_get(url, headers=headers, timeout=60)
         if response.status_code != 200:
             if response.status_code == 404:
                 return None

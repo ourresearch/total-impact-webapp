@@ -298,7 +298,7 @@ class Crossref(Provider):
         try:
             logger.debug(u"%20s /biblio_print calling crossref at %s" % (self.provider_name, url))
             # doi-lookup call to crossref can take a while, give it a long timeout
-            response = self.http_get(url, timeout=30, cache_enabled=cache_enabled)
+            response = self.http_get(url, timeout=60, cache_enabled=cache_enabled)
         except ProviderTimeout:
             raise ProviderTimeout("CrossRef timeout")
 
