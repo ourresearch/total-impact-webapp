@@ -566,9 +566,9 @@ class Profile(db.Model):
 
     def get_new_products(self, provider_name, account_name, analytics_credentials={}, add_even_if_removed=False):
         if add_even_if_removed:
-            existing_tiids = self.tiids_including_removed
+            existing_tiids = self.tiids
         else:
-            existing_tiids = self.tiids # don't re-import dup or removed products
+            existing_tiids = self.tiids_including_removed # don't re-import dup or removed products
 
         try:
             new_products = import_and_create_products(self.id, provider_name, account_name, analytics_credentials, existing_tiids)
