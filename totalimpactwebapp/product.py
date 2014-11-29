@@ -29,6 +29,7 @@ from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.aliases import AliasRow
 from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.tweet import Tweet
+from totalimpactwebapp.tweet import save_product_tweets
 
 from totalimpactwebapp.util import dict_from_dir
 from totalimpactwebapp.util import cached_property
