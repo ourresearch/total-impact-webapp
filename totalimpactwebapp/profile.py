@@ -834,6 +834,8 @@ def get_profile_stubs_from_url_slug(url_slug):
 
 def get_profile_awards_from_slug(url_slug):
     profile = get_profile_stubs_from_url_slug(url_slug)
+    if not profile:
+        return None
     return profile_award.make_awards_list(profile)
 
 
