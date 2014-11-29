@@ -7,8 +7,8 @@ from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
 from totalimpactwebapp.drip_email import log_drip_email
-from totalimpactwebapp.util import commit
-from totalimpactwebapp.util import dict_from_dir
+from util import commit
+from util import dict_from_dir
 from totalimpactwebapp.tweet import save_product_tweets_for_profile
 from totalimpactwebapp import db
 import tasks

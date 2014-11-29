@@ -1,8 +1,8 @@
 from totalimpactwebapp import json_sqlalchemy
-from totalimpactwebapp.util import commit
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import dict_from_dir
-from totalimpactwebapp.util import as_int_or_float_if_possible
+from util import commit
+from util import cached_property
+from util import dict_from_dir
+from util import as_int_or_float_if_possible
 from totalimpactwebapp import db
 from totalimpactwebapp.twitter_paging import TwitterPager
 

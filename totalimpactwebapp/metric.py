@@ -2,8 +2,8 @@ import configs
 import logging
 import arrow
 import math
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import dict_from_dir
+from util import cached_property
+from util import dict_from_dir
 from totalimpactwebapp.snap import ZeroSnap
 
 

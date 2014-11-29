@@ -11,9 +11,9 @@ from totalimpactwebapp.product import build_duplicates_list
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.drip_email import DripEmail
 from totalimpactwebapp.tweet import save_recent_tweets
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import commit
-from totalimpactwebapp.util import dict_from_dir
+from util import cached_property
+from util import commit
+from util import dict_from_dir
 from totalimpact.providers.provider import ProviderError
 
 from totalimpact import tiredis

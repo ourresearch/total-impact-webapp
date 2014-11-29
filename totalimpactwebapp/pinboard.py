@@ -1,6 +1,6 @@
 from sqlalchemy.schema import Sequence
 from totalimpactwebapp import json_sqlalchemy
-from totalimpactwebapp.util import commit
+from util import commit
 from totalimpactwebapp import db
 
 import datetime

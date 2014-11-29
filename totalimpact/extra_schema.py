@@ -1,4 +1,3 @@
-from totalimpactwebapp import db
 
 # def create_view_min_biblio():
 #     result = db.session.execute("""create or replace view min_biblio as (
@@ -20,8 +19,8 @@ from totalimpactwebapp import db
 #     db.session.commit()
 
 
-def create_doaj_table():
-    doaj_setup_sql = """
+def create_doaj_table(db):
+    sql = """
         CREATE TABLE if not exists doaj (
             title varchar(250),
             publisher varchar(250),
@@ -29,20 +28,19 @@ def create_doaj_table():
             eissn varchar(25),
             "cc license" varchar(25),
             PRIMARY KEY (issn)
-        );"""    
-    result = db.session.execute(doaj_setup_sql)
+        );"""   
+    result = db.session.execute(sql)
     db.session.commit()
 
 
-def create_doaj_view():
-    doaj_setup_sql = """
+def create_doaj_view(db):
+    sql = """
         CREATE or replace VIEW doaj_issn_lookup (issn) AS          
             SELECT replace((doaj.issn)::text, '-'::text, ''::text) AS issn FROM doaj
                 UNION
             SELECT replace((doaj.eissn)::text, '-'::text, ''::text) AS issn FROM doaj;
         """    
-    result = db.session.execute(doaj_setup_sql)
+    result = db.session.execute(sql)
     db.session.commit()
 
-create_doaj_table()    
-create_doaj_view()    
+   

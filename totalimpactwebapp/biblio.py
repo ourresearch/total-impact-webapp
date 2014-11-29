@@ -1,8 +1,8 @@
 import logging
 from urlparse import urlparse
 
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import dict_from_dir
+from util import cached_property
+from util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp import json_sqlalchemy
 

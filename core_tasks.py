@@ -33,7 +33,7 @@ from totalimpactwebapp.aliases import alias_tuples_from_dict
 from totalimpactwebapp.aliases import canonical_aliases
 from totalimpactwebapp.aliases import merge_alias_dicts
 
-from totalimpactwebapp.util import commit 
+from util import commit 
 
 import rate_limit
 

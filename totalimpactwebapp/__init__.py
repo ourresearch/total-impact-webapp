@@ -14,8 +14,8 @@ from sqlalchemy import exc
 from sqlalchemy import event
 from sqlalchemy.pool import Pool
 
-from totalimpactwebapp.util import HTTPMethodOverrideMiddleware
-from totalimpactwebapp.util import commit
+from util import HTTPMethodOverrideMiddleware
+from util import commit
 from multiprocessing.util import register_after_fork
 
 
@@ -131,15 +131,17 @@ commit(db)
 
 from totalimpactwebapp import views
 
-
 try:
     from totalimpact import extra_schema 
+    extra_schema.create_doaj_table(db)    
+    extra_schema.create_doaj_view(db) 
 except exc.ProgrammingError:
     logger.info("SQLAlchemy database tables not found, so creating them")
     db.session.rollback()
     db.create_all()
     from totalimpact import extra_schema 
-
+    extra_schema.create_doaj_table(db)    
+    extra_schema.create_doaj_view(db) 
 
 
 

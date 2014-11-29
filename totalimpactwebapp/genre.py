@@ -2,8 +2,8 @@ import logging
 from collections import Counter
 from totalimpactwebapp.cards_factory import make_summary_cards
 from totalimpactwebapp.cards_factory import make_genre_new_metrics_cards
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import dict_from_dir
+from util import cached_property
+from util import dict_from_dir
 from totalimpactwebapp.configs import get_genre_config
 
 

@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from util import local_sleep
 from util import commit
-from totalimpactwebapp import util
+import util
 
 from flask import request, send_file, abort, make_response, g, redirect
 from flask import render_template
@@ -68,7 +68,7 @@ from totalimpactwebapp.card import GenreEngagementSumCard
 from totalimpactwebapp import emailer
 from totalimpactwebapp import configs
 
-from totalimpactwebapp.util import camel_to_snake_case
+from util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring

@@ -1,5 +1,5 @@
 from totalimpactwebapp import db
-from totalimpactwebapp import util
+import util
 import configs
 import datetime
 import jinja2

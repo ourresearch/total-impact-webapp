@@ -1,11 +1,11 @@
-import util
 import datetime
 import copy
 import unicode_helpers
 import json
 import logging
 
-from totalimpactwebapp.util import cached_property
+from util import cached_property
+from util import dict_from_dir
 from totalimpactwebapp import db
 
 logger = logging.getLogger("tiwebapp.aliases")
@@ -302,5 +302,5 @@ class Aliases(object):
 
 
     def to_dict(self):
-        ret = util.dict_from_dir(self)
+        ret = dict_from_dir(self)
         return ret

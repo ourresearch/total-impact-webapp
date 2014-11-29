@@ -33,10 +33,10 @@ from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.tweet import Tweet
 from totalimpactwebapp.tweet import save_product_tweets
 
-from totalimpactwebapp.util import dict_from_dir
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import commit
-from totalimpactwebapp.util import as_int_or_float_if_possible
+from util import dict_from_dir
+from util import cached_property
+from util import commit
+from util import as_int_or_float_if_possible
 from totalimpactwebapp.configs import get_genre_config
 
 from totalimpactwebapp import db

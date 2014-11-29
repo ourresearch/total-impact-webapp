@@ -5,8 +5,8 @@ import logging
 # this is from https://github.com/mledoze/countries
 from totalimpactwebapp import countries_info
 
-from totalimpactwebapp.util import dict_from_dir
-from totalimpactwebapp.util import cached_property
+from util import dict_from_dir
+from util import cached_property
 
 logger = logging.getLogger("tiwebapp.countries")
 
