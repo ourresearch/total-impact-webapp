@@ -834,7 +834,8 @@ def product_without_needing_profile(tiid):
     local_sleep(1)
 
     product = get_product(tiid)
-    #return json_resp_from_thing(product)
+    if not product:
+        return abort_json(404, "product not found")
 
     markup = Markup("jason", embed=False)
     product_dict = product.to_markup_dict(
@@ -876,6 +877,8 @@ def product_file(tiid):
     if request.method == "GET":
         try:
             product = get_product(tiid)
+            if not product:
+                return abort_json(404, "product not found")
 
             if product.has_file:
                 my_file = product.get_file()
