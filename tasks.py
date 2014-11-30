@@ -76,7 +76,6 @@ def send_email_if_new_diffs(profile):
 
     status = "started"
     now = datetime.datetime.utcnow()    
-    logger.debug(u"in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
     latest_diff_timestamp = profile.latest_diff_ts
     if not latest_diff_timestamp:
         status = "no diff timestamp"
@@ -85,10 +84,10 @@ def send_email_if_new_diffs(profile):
     status = "checking diffs"
 
     if (not profile.last_email_check) or (latest_diff_timestamp > profile.last_email_check):
-        logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=profile.url_slug))
+        # logger.info(u"has diffs since last email check! calling send_email report for {url_slug}".format(url_slug=profile.url_slug))
         status = send_email_report(profile, now)
     else:
-        logger.info(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=profile.url_slug))
+        # logger.info(u"not sending, no new diffs since last email sent for {url_slug}".format(url_slug=profile.url_slug))
         status = "no new diffs"
 
     # set last email check date
@@ -96,7 +95,7 @@ def send_email_if_new_diffs(profile):
     profile.last_email_check = now
     try:
         db.session.commit()
-        logger.info(u"updated profile object in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
+        # logger.info(u"updated profile object in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
     except InvalidRequestError:
         logger.info(u"rollback, trying again to update profile object in send_email_if_new_diffs for {url_slug}".format(url_slug=profile.url_slug))
         db.session.rollback()
@@ -123,19 +122,17 @@ def send_email_report(profile, now=None):
 
         try:
             db.session.commit()
-            logger.info(u"updated profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
         except InvalidRequestError:
             logger.info(u"rollback, trying again to update profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
             db.session.rollback()
             db.session.commit()
-            logger.info(u"after rollback updated profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
 
         msg = emailer.send(email, "Your latest research impacts", "report", report)
         status = "email sent"
         logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=profile.url_slug))
     else:
         status = "not emailed, no cards made"
-        logger.info(u"not sending email, no cards made for {url_slug}".format(url_slug=profile.url_slug))
+        # logger.info(u"not sending email, no cards made for {url_slug}".format(url_slug=profile.url_slug))
 
     return status
 
