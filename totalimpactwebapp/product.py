@@ -71,6 +71,9 @@ def get_product(tiid):
 
 def get_products_from_tiids(tiids, ignore_order=False):
     #  @ignore_order makes it slightly faster by not sorting
+    if not tiids:
+        return []
+        
     unsorted_products = Product.query.filter(Product.tiid.in_(tiids)).all()
     ret = []
 

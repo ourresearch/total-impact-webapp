@@ -14,6 +14,8 @@ import logging
 logger = logging.getLogger('ti.webapp.tweets')
 
 def tweets_from_tiids(tiids):
+    if not tiids:
+        return []
     tweets = db.session.query(Tweet).filter(Tweet.tiid.in_(tiids)).all()
     return tweets
 
