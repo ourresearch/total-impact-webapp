@@ -928,7 +928,7 @@ def patch_biblio(tiid, patch_dict, provider="user_provided"):
     return {"product": product}
 
 def put_aliases_in_product(product, alias_tuples):
-    # logger.debug(u"in add_aliases_to_item_object for {tiid}".format(
+    # logger.debug(u"in put_aliases_in_product for {tiid}".format(
     #     tiid=product.tiid))        
 
     for alias_tuple in alias_tuples:
@@ -950,59 +950,21 @@ def put_aliases_in_product(product, alias_tuples):
 
 
 
-def create_biblio_row_objects(list_of_old_style_biblio_dicts, provider=None, collected_date=datetime.datetime.utcnow()):
-    new_biblio_row_objects = []
+def put_biblio_in_product(product, new_biblio_dict, provider_name="unknown"):
+    logger.debug(u"in put_biblio_in_product for {tiid}".format(
+        tiid=product.tiid))        
 
-    provider_number = 0
-    for biblio_dict in list_of_old_style_biblio_dicts:
-
-        if not provider:
-            provider_number += 1
-            provider = "unknown" + str(provider_number)
-
-        for biblio_name in biblio_dict:
+    for (biblio_name, biblio_value) in new_biblio_dict.iteritems():
+        biblio_row_object = BiblioRow.query.get((product.tiid, provider_name, biblio_name))
+        if not biblio_row_object:
             biblio_row_object = BiblioRow(
                     biblio_name=biblio_name, 
-                    biblio_value=biblio_dict[biblio_name], 
-                    provider=provider, 
-                    collected_date=collected_date)
-            new_biblio_row_objects += [biblio_row_object]
-
-    return new_biblio_row_objects
-
-
-def get_biblio_to_update(old_biblio, new_biblio):
-    if not old_biblio:
-        return new_biblio
-
-    response = {}
-    for biblio_name in new_biblio:
-        if not biblio_name in old_biblio:
-            response[biblio_name] = new_biblio[biblio_name]
-
-        # a few things should get overwritten no matter what
-        if (biblio_name=="title") and ("title" in old_biblio):
-            if old_biblio["title"] == "AOP":
-                response[biblio_name] = new_biblio[biblio_name]
-
-        if (biblio_name in ["is_oa_journal", "oai_id", "free_fulltext_url"]):
-            response[biblio_name] = new_biblio[biblio_name]
-
-    return response
-
-
-def put_biblio_in_product(product, new_biblio_dict, provider_name=None):
-    old_biblio_dict = product.biblio.to_dict()
-
-    # return None if no changes
-    # don't change if biblio already there, except in special cases
-
-    biblio_dict_to_add = get_biblio_to_update(old_biblio_dict, new_biblio_dict)
-    if biblio_dict_to_add:
-        new_biblio_row_objects = create_biblio_row_objects([biblio_dict_to_add], provider=provider_name)
-        for new_biblio_row in new_biblio_row_objects:
-            if not BiblioRow.query.get((new_biblio_row.tiid, new_biblio_row.provider, new_biblio_row.biblio_name)):
-                product.biblio_rows.append(new_biblio_row)
+                    biblio_value=biblio_value, 
+                    provider=provider_name)
+            product.biblio_rows.append(biblio_row_object)
+        biblio_row_object.biblio_value = biblio_value
+        logger.debug(u"in put_biblio_in_product for {biblio_row_object}".format(
+            biblio_row_object=biblio_row_object))        
 
     return product
 

@@ -941,7 +941,7 @@ def update_profiles(limit=5, url_slug=None):
                 limit=limit))
             return
             
-        logger.info(u"**{url_slug} scheduled update; is_live: {is_live}, next_refresh: {next_refresh}".format(
+        logger.info(u"**scheduled update for {url_slug<16} is_live: {is_live}, next_refresh: {next_refresh}".format(
             url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh))
 
         try:
@@ -950,11 +950,11 @@ def update_profiles(limit=5, url_slug=None):
                 number_added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
                 number_products_after = len(profile.tiids)
                 if number_products_before==number_products_after:
-                    logger.info(u" *NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                    logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
                         number_products_before=number_products_before,
                         url_slug=profile.url_slug))
                 else:
-                    logger.info(u" *BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                    logger.info(u"  BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
                         number_products_before=number_products_before,
                         number_products_after=number_products_after,
                         percent=100.0*(number_products_after-number_products_before)/number_products_before,
