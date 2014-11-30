@@ -264,7 +264,6 @@ def load_globals():
     except AttributeError:
         g.user_id = None
 
-    g.api_root = os.getenv("API_ROOT")
     g.api_key = os.getenv("API_KEY")
     g.webapp_root = os.getenv("WEBAPP_ROOT_PRETTY", os.getenv("WEBAPP_ROOT"))
 
