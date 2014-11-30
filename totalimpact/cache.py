@@ -14,7 +14,7 @@ logger = logging.getLogger("ti.cache")
 cache_client = redis.from_url(os.getenv("REDIS_URL"), REDIS_CACHE_DATABASE_NUMBER)
 
 MAX_PAYLOAD_SIZE_BYTES = 1000*1000 # 1mb
-MAX_CACHE_SIZE_BYTES = 100*1000*1000 #100mb
+MAX_CACHE_SIZE_BYTES = 300*1000*1000 #300mb
 
 class CacheException(Exception):
     pass
