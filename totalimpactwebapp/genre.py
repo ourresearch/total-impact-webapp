@@ -2,12 +2,12 @@ import logging
 from collections import Counter
 from totalimpactwebapp.cards_factory import make_summary_cards
 from totalimpactwebapp.cards_factory import make_genre_new_metrics_cards
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import dict_from_dir
+from util import cached_property
+from util import dict_from_dir
 from totalimpactwebapp.configs import get_genre_config
 
 
-logger = logging.getLogger("tiwebapp.genre")
+logger = logging.getLogger("ti.genre")
 
 
 def make_genres_list(profile_id, products):
@@ -58,21 +58,21 @@ class Genre(object):
     def cards_new_metrics(self):
         return make_genre_new_metrics_cards(self.products)
 
-    @cached_property
-    def journals(self):
-        if self.name == "article":
-            journals = Counter()
-            for product in self.products:
-                try:
-                    if product.biblio.journal:
-                        journals[product.biblio.journal] += 1
-                except (AttributeError, TypeError):
-                    logger.error("error counting journals for profile_id {profile_id}".format(
-                        profile_id=self.profile_id))
-                    pass
-            return dict(journals)
-        else:
-            return []
+    # @cached_property
+    # def journals(self):
+    #     if self.name == "article":
+    #         journals = Counter()
+    #         for product in self.products:
+    #             try:
+    #                 if product.biblio.journal:
+    #                     journals[product.biblio.journal] += 1
+    #             except (AttributeError, TypeError):
+    #                 logger.error("error counting journals for profile_id {profile_id}".format(
+    #                     profile_id=self.profile_id))
+    #                 pass
+    #         return dict(journals)
+    #     else:
+    #         return []
 
 
     def to_dict(self):

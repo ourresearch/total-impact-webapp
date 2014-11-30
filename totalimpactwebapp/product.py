@@ -10,6 +10,8 @@ from celery.result import AsyncResult
 from collections import Counter
 from collections import defaultdict
 import flask
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import FlushError
 
 # these imports need to be here for sqlalchemy
 from totalimpactwebapp import snap
@@ -31,10 +33,10 @@ from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.tweet import Tweet
 from totalimpactwebapp.tweet import save_product_tweets
 
-from totalimpactwebapp.util import dict_from_dir
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import commit
-from totalimpactwebapp.util import as_int_or_float_if_possible
+from util import dict_from_dir
+from util import cached_property
+from util import commit
+from util import as_int_or_float_if_possible
 from totalimpactwebapp.configs import get_genre_config
 
 from totalimpactwebapp import db
@@ -47,9 +49,10 @@ from totalimpact.providers import provider as provider_module
 from totalimpact.importer import import_products
 from totalimpact import tiredis
 
+
 percentile_snap_creations = 0
 
-logger = logging.getLogger("tiwebapp.product")
+logger = logging.getLogger("ti.product")
 deprecated_genres = ["twitter", "blog"]
 
 ignore_snaps_older_than = arrow.utcnow().replace(days=-27).datetime
@@ -68,6 +71,9 @@ def get_product(tiid):
 
 def get_products_from_tiids(tiids, ignore_order=False):
     #  @ignore_order makes it slightly faster by not sorting
+    if not tiids:
+        return []
+        
     unsorted_products = Product.query.filter(Product.tiid.in_(tiids)).all()
     ret = []
 
@@ -198,7 +204,7 @@ class Product(db.Model):
 
     @cached_property
     def is_refreshing(self):
-        REFRESH_TIMEOUT_IN_SECONDS = 120
+        REFRESH_TIMEOUT_IN_SECONDS = os.getenv("REFRESH_TIMEOUT_IN_SECONDS", 120)
         if self.last_refresh_started and not self.last_refresh_finished:
             last_refresh_started = arrow.get(self.last_refresh_started, 'utc')
             start_time_theshold = arrow.utcnow().replace(seconds=-REFRESH_TIMEOUT_IN_SECONDS)
@@ -600,8 +606,8 @@ class Product(db.Model):
 
 
     def get_embed_markup(self):
-        logger.debug(u"in get_embed_markup for {tiid}".format(
-            tiid=self.tiid))
+        # logger.debug(u"in get_embed_markup for {tiid}".format(
+        #     tiid=self.tiid))
 
         if self.is_account_product:
             return None
@@ -797,17 +803,17 @@ def refresh_status(tiid, myredis):
 
 
 
-def aliases_not_in_existing_products(retrieved_aliases, existing_tiids):
-    if not existing_tiids:
+def aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude):
+    if not tiids_to_exclude:
         return retrieved_aliases
 
-    existing_products = Product.query.filter(Product.tiid.in_(existing_tiids)).all()
+    products_to_exclude = Product.query.filter(Product.tiid.in_(tiids_to_exclude)).all()
 
     new_aliases = []
     for alias_tuple in retrieved_aliases:
         found = False
         (ns, namespace) = alias_tuple
-        found = any([product.contains_alias(ns, namespace) for product in existing_products])
+        found = any([product.contains_alias(ns, namespace) for product in products_to_exclude])
         if not found:        
             new_aliases += [alias_tuple]
     return new_aliases
@@ -835,24 +841,15 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
 
     for alias_tuple in clean_aliases:
         new_product = Product(profile_id=profile_id)
-        (namespace, nid) = alias_tuple
-        alias_row = AliasRow(namespace=namespace, nid=nid)
-        new_product.alias_rows = [alias_row]
+        new_product = put_aliases_in_product(new_product, [alias_tuple])
+
         new_product.set_last_refresh_start()
 
         new_products += [new_product]
         dicts_to_update += [{"tiid":new_product.tiid, "aliases_dict": new_product.alias_dict}]
-        logger.debug(u"in create_products_from_aliases, made item {new_product}".format(
-            new_product=new_product))
 
-    try:
-        db.session.add_all(new_products)
-        db.session.commit()
-    except (IntegrityError, FlushError) as e:
-        db.session.rollback()
-        logger.warning(u"Fails Integrity check in create_tiids_from_aliases for {tiid}, rolling back.  Message: {message}".format(
-            tiid=tiid, 
-            message=e.message)) 
+    db.session.add_all(new_products)
+    commit(db)
 
     # has to be after commits to database
     start_product_update(dicts_to_update, "high")
@@ -860,11 +857,11 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
     return new_products
 
 
-def import_and_create_products(profile_id, provider_name, importer_input, analytics_credentials={}, existing_tiids=[]):
+def import_and_create_products(profile_id, provider_name, importer_input, analytics_credentials={}, tiids_to_exclude=[]):
     # need to do these ugly deletes because import products not in dict.  fix in future!
 
     retrieved_aliases = import_products(provider_name, importer_input)
-    new_alias_tuples = aliases_not_in_existing_products(retrieved_aliases, existing_tiids)
+    new_alias_tuples = aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude)
     products = create_products_from_alias_tuples(profile_id, new_alias_tuples)
     return products
 
@@ -934,7 +931,7 @@ def patch_biblio(tiid, patch_dict, provider="user_provided"):
     return {"product": product}
 
 def put_aliases_in_product(product, alias_tuples):
-    # logger.debug(u"in add_aliases_to_item_object for {tiid}".format(
+    # logger.debug(u"in put_aliases_in_product for {tiid}".format(
     #     tiid=product.tiid))        
 
     for alias_tuple in alias_tuples:
@@ -948,59 +945,27 @@ def put_aliases_in_product(product, alias_tuples):
                 new_alias_row = AliasRow(tiid=product.tiid, 
                     namespace=ns, 
                     nid=nid)
-                product.alias_rows.append(new_alias_row)    
+                product.alias_rows.append(new_alias_row)   
+        elif ns and nid and ns=="biblio":
+            return put_biblio_in_product(product, nid)
+
     return product
 
-def create_biblio_row_objects(list_of_old_style_biblio_dicts, provider=None, collected_date=datetime.datetime.utcnow()):
-    new_biblio_row_objects = []
-
-    provider_number = 0
-    for biblio_dict in list_of_old_style_biblio_dicts:
-        if not provider:
-            provider_number += 1
-            provider = "unknown" + str(provider_number)
-        for biblio_name in biblio_dict:
-            biblio_row_object = BiblioRow(biblio_name=biblio_name, 
-                    biblio_value=biblio_dict[biblio_name], 
-                    provider=provider, 
-                    collected_date=collected_date)
-            new_biblio_row_objects += [biblio_row_object]
-
-    return new_biblio_row_objects
 
 
-def get_biblio_to_update(old_biblio, new_biblio):
-    if not old_biblio:
-        return new_biblio
+def put_biblio_in_product(product, new_biblio_dict, provider_name="unknown"):
+    # logger.debug(u"in put_biblio_in_product for {tiid}".format(
+    #     tiid=product.tiid))        
 
-    response = {}
-    for biblio_name in new_biblio:
-        if not biblio_name in old_biblio:
-            response[biblio_name] = new_biblio[biblio_name]
-
-        # a few things should get overwritten no matter what
-        if (biblio_name=="title") and ("title" in old_biblio):
-            if old_biblio["title"] == "AOP":
-                response[biblio_name] = new_biblio[biblio_name]
-
-        if (biblio_name in ["is_oa_journal", "oai_id", "free_fulltext_url"]):
-            response[biblio_name] = new_biblio[biblio_name]
-
-    return response
-
-
-def put_biblio_in_product(product, new_biblio_dict, provider_name=None):
-    old_biblio_dict = product.biblio.to_dict()
-
-    # return None if no changes
-    # don't change if biblio already there, except in special cases
-
-    biblio_dict_to_add = get_biblio_to_update(old_biblio_dict, new_biblio_dict)
-    if biblio_dict_to_add:
-        new_biblio_row_objects = create_biblio_row_objects([biblio_dict_to_add], provider=provider_name)
-        for new_biblio_row in new_biblio_row_objects:
-            if not BiblioRow.query.get((new_biblio_row.tiid, new_biblio_row.provider, new_biblio_row.biblio_name)):
-                product.biblio_rows.append(new_biblio_row)
+    for (biblio_name, biblio_value) in new_biblio_dict.iteritems():
+        biblio_row_object = BiblioRow.query.get((product.tiid, provider_name, biblio_name))
+        if not biblio_row_object:
+            biblio_row_object = BiblioRow(
+                    biblio_name=biblio_name, 
+                    biblio_value=biblio_value, 
+                    provider=provider_name)
+            product.biblio_rows.append(biblio_row_object)
+        biblio_row_object.biblio_value = biblio_value
 
     return product
 
@@ -1022,4 +987,30 @@ def put_snap_in_product(product, full_metric_name, metrics_method_response):
     product.snaps.append(snap)
 
     return product
+
+
+def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"):
+    if not tiids:
+        return None
+
+    priority = "high"
+    if source=="scheduled":
+        priority = "low"
+
+    products = Product.query.filter(Product.tiid.in_(tiids)).all()
+    dicts_to_refresh = []  
+
+    for product in products:
+        try:
+            tiid = product.tiid
+            product.set_last_refresh_start()
+            db.session.merge(product)
+            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
+        except AttributeError:
+            logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
+                tiid=tiid))
+
+    db.session.commit()
+    start_product_update(dicts_to_refresh, priority)
+    return tiids
 

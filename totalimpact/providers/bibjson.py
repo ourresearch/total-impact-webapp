@@ -53,7 +53,7 @@ class Bibjson(Provider):
 
 
     def member_items(self, bibjson_contents, cache_enabled=True):
-        logger.debug(u"%20s getting member_items for bibjson" % (self.provider_name))
+        logger.debug(u"%s getting member_items for bibjson" % (self.provider_name))
 
         parsed_bibjson = self.parse(bibjson_contents)
 

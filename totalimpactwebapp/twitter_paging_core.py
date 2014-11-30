@@ -1,9 +1,12 @@
 #from https://gist.github.com/scott2b/9219919
 # thank you!!
 
+# should merge this with the one in webapp soon!
+
+
 """
 Utilization:
-    searcher = TwitterPager(
+    searcher = TwitterPagerOlder(
         TWITTER_CONSUMER_KEY,
         TWITTER_CONSUMER_SECRET,
         TWITTER_APP_CLIENT_ACCESS_TOKEN)
@@ -27,7 +30,7 @@ from delorean import parse, epoch
 
 DEFAULT_MAX_PAGES = 10
 
-class TwitterPager(object):
+class TwitterPagerOlder(object):
     """Class to manage searches against the Twitter REST search API.
     Utilizes the birdy AppClient. Handles client reconnection for
     connection pool disconnects. Provides automated pagination.
@@ -83,9 +86,11 @@ class TwitterPager(object):
             self.rate_limit_reset = epoch(int(response.headers['x-rate-limit-reset'])).datetime
         self.twitter_date = parse(response.headers['date']).datetime
         logging.debug(
-            'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
-            'reset: %s, current-time: %s' % (self.rate_limit_limit,
-            self.rate_limit_remaining, self.rate_limit_reset, self.twitter_date))
+            'Twitter rate limit info:: rate-limit: %s, remaining: %s' % (self.rate_limit_limit, self.rate_limit_remaining))
+        # logging.debug(
+        #     'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
+        #     'reset: %s, current-time: %s' % (self.rate_limit_limit,
+        #     self.rate_limit_remaining, self.rate_limit_reset, self.twitter_date))
 
     def fetch_rate_limit(self):
         """Send search rate limit info request to Twitter API."""
@@ -115,12 +120,10 @@ class TwitterPager(object):
             self.wait_for_reset()
         try:
 
-
             # response = self.client.api.search.tweets.get(**kwargs)
             response = self.client.api.statuses.user_timeline.get(**kwargs)
 
-
-            logging.debug('Received twitter search response: %s' % str(response))
+            # logging.debug('Received twitter search response')
             self.extract_rate_limit(response)
             return response
         except TwitterRateLimitError, e:
@@ -160,7 +163,7 @@ class TwitterPager(object):
                 kwargs.update({ k:v for k,v in urlparse.parse_qsl(
                     response.data.search_metadata.next_results[1:]) })
                 if int(kwargs['max_id']) > int(kwargs.get('since_id',0)):
-                    logging.debug('Paginating query: %s' % str(kwargs))
+                    # logging.debug('Paginating query: %s' % str(kwargs))
                     self.paginated_search(page=page+1,
                             page_handler=page_handler,
                             max_pages=max_pages, **kwargs)
@@ -168,7 +171,7 @@ class TwitterPager(object):
             except AttributeError:
                 try:
                     kwargs['since_id'] = str(response.data[-1].id)
-                    logging.debug('Paginating query: %s' % str(kwargs))
+                    # logging.debug('Paginating query: %s' % str(kwargs))
                     self.paginated_search(page=page+1,
                             page_handler=page_handler,
                             max_pages=max_pages, **kwargs)

@@ -8,12 +8,13 @@ from totalimpactwebapp.product import Product
 from totalimpactwebapp.product import start_product_update
 from totalimpactwebapp.product import import_and_create_products
 from totalimpactwebapp.product import build_duplicates_list
+from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.drip_email import DripEmail
 from totalimpactwebapp.tweet import save_recent_tweets
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import commit
-from totalimpactwebapp.util import dict_from_dir
+from util import cached_property
+from util import commit
+from util import dict_from_dir
 from totalimpact.providers.provider import ProviderError
 
 from totalimpact import tiredis
@@ -46,7 +47,7 @@ import StringIO
 import arrow
 
 
-logger = logging.getLogger("tiwebapp.profile")
+logger = logging.getLogger("ti.profile")
 
 default_free_trial_days = 30
 
@@ -422,7 +423,7 @@ class Profile(db.Model):
             # AnonymousUser doesn't have method
             analytics_credentials = {}    
         product_id_type = product_id_dict.keys()[0]
-        add_even_if_removed = True
+        add_even_if_removed = True  # re-add even if previously removed
         new_products = self.get_new_products(
                 product_id_type, 
                 product_id_dict[product_id_type], 
@@ -437,20 +438,31 @@ class Profile(db.Model):
         return {"deleted_tiids": tiids_to_delete}
 
     def refresh_products(self, source="webapp"):
-        save_profile_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
-        return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
+        resp = refresh_products_from_tiids(self.tiids, analytics_credentials, source)
+        save_profile_last_refreshed_timestamp(self.id)
+        return resp
 
     def update_twitter(self):
-        t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
-        t.daemon = True
-        t.start()
+        if self.twitter_id:
+            t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
+            t.daemon = True
+            t.start()
+        return None
+
+    def update_all_linked_accounts(self, add_even_if_removed=False):
+        added_tiids = []
+        for account_type in ["github", "slideshare", "figshare", "orcid", "twitter", "publons"]:
+            added_tiids += self.update_products_from_linked_account(account_type, add_even_if_removed)
+        return added_tiids
+
 
     def update_products_from_linked_account(self, account, add_even_if_removed):
+        added_tiids = []
         if account=="twitter":
-            return self.update_twitter()
+            self.update_twitter()
         else:
-            account_value = getattr(self, account+"_id")
+            account_value = getattr(self, account+"_id", None)
             tiids_to_add = []        
             if account_value:
                 try:
@@ -465,7 +477,7 @@ class Profile(db.Model):
                         add_even_if_removed)
 
                 added_tiids = [product.tiid for product in new_products]
-            return added_tiids
+        return added_tiids
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -566,12 +578,17 @@ class Profile(db.Model):
 
     def get_new_products(self, provider_name, account_name, analytics_credentials={}, add_even_if_removed=False):
         if add_even_if_removed:
-            existing_tiids = self.tiids_including_removed
+            tiids_to_exclude = self.tiids
         else:
-            existing_tiids = self.tiids # don't re-import dup or removed products
+            tiids_to_exclude = self.tiids_including_removed # don't re-import dup or removed products
 
         try:
-            new_products = import_and_create_products(self.id, provider_name, account_name, analytics_credentials, existing_tiids)
+            new_products = import_and_create_products(
+                self.id, 
+                provider_name, 
+                account_name, 
+                analytics_credentials, 
+                tiids_to_exclude)
         except (ImportError, ProviderError):
             new_products = []
         return new_products
@@ -705,33 +722,6 @@ def delete_products_from_profile(profile, tiids_to_delete):
     return True
 
 
-
-def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"):
-    if not tiids:
-        return None
-
-    priority = "high"
-    if source=="scheduled":
-        priority = "low"
-
-    products = Product.query.filter(Product.tiid.in_(tiids)).all()
-    dicts_to_refresh = []  
-
-    for product in products:
-        try:
-            tiid = product.tiid
-            product.set_last_refresh_start()
-            db.session.merge(product)
-            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
-        except AttributeError:
-            logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
-                tiid=tiid))
-
-    db.session.commit()
-    start_product_update(dicts_to_refresh, priority)
-    return tiids
-
-
 def tiids_to_remove_from_duplicates_list(duplicates_list):
     tiids_to_remove = []    
     for duplicate_group in duplicates_list:
@@ -775,8 +765,8 @@ def save_profile_last_viewed_profile_timestamp(profile_id, timestamp=None):
     return True
 
 def create_profile_from_slug(url_slug, profile_request_dict, db):
-    logger.debug(u"in create_profile_from_slug {url_slug} with profile_dict {profile_request_dict}".format(
-        url_slug=url_slug, profile_request_dict=profile_request_dict))
+    # logger.debug(u"in create_profile_from_slug {url_slug} with profile_dict {profile_request_dict}".format(
+    #     url_slug=url_slug, profile_request_dict=profile_request_dict))
 
     # have to explicitly unicodify ascii-looking strings even when encoding
     # is set by client, it seems:
@@ -834,6 +824,8 @@ def get_profile_stubs_from_url_slug(url_slug):
 
 def get_profile_awards_from_slug(url_slug):
     profile = get_profile_stubs_from_url_slug(url_slug)
+    if not profile:
+        return None
     return profile_award.make_awards_list(profile)
 
 

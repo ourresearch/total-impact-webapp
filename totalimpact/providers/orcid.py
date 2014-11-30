@@ -21,13 +21,13 @@ class Orcid(Provider):
             return {}
 
         biblio = {}
-        logger.debug(u"%20s parsing orcid work" % (self.provider_name))
+        # logger.debug(u"%20s parsing orcid work" % (self.provider_name))
 
         try:
             if work["work-citation"]["work-citation-type"].lower()=="bibtex":
                 biblio = self.bibtex_parser.parse(work["work-citation"]["citation"])[0]
         except (KeyError, TypeError, IndexError):
-            logger.debug(u"%20s error getting work citation type" % (self.provider_name))
+            logger.debug(u"%s error getting work citation type" % (self.provider_name))
             pass
 
         try:
@@ -106,8 +106,8 @@ class Orcid(Provider):
                 pass
 
             if not new_member:
-                logger.info(u"no external identifiers, try saving whole citation for {orcid}".format(
-                    orcid=query_string))
+                # logger.info(u"no external identifiers, try saving whole citation for {orcid}".format(
+                #     orcid=query_string))
                 biblio = self._parse_orcid_work(work)
                 new_member = ("biblio", biblio)
 
@@ -127,7 +127,7 @@ class Orcid(Provider):
             provider_url_template=None, 
             cache_enabled=True):
 
-        logger.debug(u"%20s getting member_items for %s" % (self.provider_name, query_string))
+        logger.debug(u"%s getting member_items for %s" % (self.provider_name, query_string))
 
         if not provider_url_template:
             provider_url_template = self.member_items_url_template

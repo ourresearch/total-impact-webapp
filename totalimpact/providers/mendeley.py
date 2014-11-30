@@ -89,15 +89,11 @@ class Mendeley(Provider):
         return no_punc
 
     def _connect(self):
-        mendeley = mendeley_lib.Mendeley(
+        mendeley_client = mendeley_lib.Mendeley(
             client_id=os.getenv("MENDELEY_OAUTH2_CLIENT_ID"), 
             client_secret=os.getenv("MENDELEY_OAUTH2_SECRET"))
-        try:
-            session = mendeley.start_client_credentials_flow().authenticate()
-        except AttributeError:
-            logger.error(u"Attribute error getting start_client_credentials_flow")
-            raise ProviderAuthenticationError
-
+        auth = mendeley_client.start_client_credentials_flow()
+        session = auth.authenticate()
         return session
 
     def _get_doc_by_id(self, namespace, aliases_dict):
@@ -166,9 +162,10 @@ class Mendeley(Provider):
 
                 by_discipline = {}
                 by_subdiscipline = doc.reader_count_by_subdiscipline
-                for discipline, subdiscipline_breakdown in by_subdiscipline.iteritems():
-                    by_discipline[discipline] = sum(subdiscipline_breakdown.values())
-                metrics_and_drilldown["mendeley:discipline"] = (by_discipline, drilldown_url)
+                if by_subdiscipline:
+                    for discipline, subdiscipline_breakdown in by_subdiscipline.iteritems():
+                        by_discipline[discipline] = sum(subdiscipline_breakdown.values())
+                    metrics_and_drilldown["mendeley:discipline"] = (by_discipline, drilldown_url)
 
                 by_country_iso = {}
                 by_country_names = doc.reader_count_by_country
@@ -217,7 +214,6 @@ class Mendeley(Provider):
         if doc:  
             from totalimpactwebapp.aliases import alias_dict_from_tuples
             aliases_dict = alias_dict_from_tuples(aliases)
-            print doc.identifiers
 
             for namespace in doc.identifiers:
                 if namespace in ["doi", "arxiv", "pmid", "scopus"] and (namespace not in aliases_dict):

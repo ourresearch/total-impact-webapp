@@ -6,7 +6,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 
 
-logger = logging.getLogger("webapp.totalimpactwebapp.product_deets")
+logger = logging.getLogger("ti.product_deets")
 
 
 class ProductDeets(db.Model):

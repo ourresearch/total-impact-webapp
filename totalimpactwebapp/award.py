@@ -1,10 +1,10 @@
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import dict_from_dir
+from util import cached_property
+from util import dict_from_dir
 
 import logging
 import configs
 
-logger = logging.getLogger("tiwebapp.metric_snap")
+logger = logging.getLogger("ti.award")
 
 
 

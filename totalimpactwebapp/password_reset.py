@@ -5,7 +5,7 @@ from itsdangerous import TimestampSigner, SignatureExpired, BadTimeSignature, Ba
 from totalimpactwebapp.profile import Profile, get_profile_from_id
 
 
-logger = logging.getLogger("tiwebapp.password_reset")
+logger = logging.getLogger("ti.password_reset")
 
 
 class PasswordResetError(Exception):

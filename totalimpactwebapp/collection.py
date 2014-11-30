@@ -4,13 +4,13 @@ from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.tweet import tweets_from_tiids
 
 from totalimpactwebapp import countries
-from totalimpactwebapp.util import cached_property
+from util import cached_property
 
 from collections import defaultdict
 
 import logging
 
-logger = logging.getLogger("tiwebapp.profile")
+logger = logging.getLogger("ti.collection")
 
 
 def products_matching_tag(products, tagspace, tag):

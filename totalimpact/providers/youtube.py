@@ -60,21 +60,33 @@ class Youtube(Provider):
 
     def is_relevant_alias(self, alias):
         (namespace, nid) = alias
-        if (("url" == namespace) and ("youtube.com/" in nid)):
+        if (("url" == namespace) and (("youtube.com/" in nid) or ("youtu.be/" in nid))):
             nid_as_youtube_url = self._get_video_id(nid)
             if nid_as_youtube_url:
                 return True
         return False
 
     def _get_video_id(self, video_url):
-        match = re.findall("watch.*[\?|&]v=([\dA-Za-z_\-]+)", video_url)
-        try:
-            nid_as_youtube_url = match[0]
-        except IndexError:
-            nid_as_youtube_url = None
+        nid_as_youtube_url = None
+        pattern = None
+        if "youtube.com/" in video_url:
+            pattern = "watch.*[\?|&]v=([\dA-Za-z_\-]+)"
+        elif "youtu.be/" in video_url:
+            pattern = "youtu.be/([\dA-Za-z_\-]+)"
+
+        if pattern:
+            match = re.findall(pattern, video_url)
+            try:
+                nid_as_youtube_url = match[0]
+            except IndexError:
+                pass
+
+        if not nid_as_youtube_url:
             logging.error(u"couldn't get video_id for {video_url}".format(
                 video_url=video_url))
+
         return nid_as_youtube_url
+
 
     #override because need to break up id
     def _get_templated_url(self, template, nid_as_youtube_url, method=None):

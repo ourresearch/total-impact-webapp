@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from util import local_sleep
 from util import commit
-from totalimpactwebapp import util
+import util
 
 from flask import request, send_file, abort, make_response, g, redirect
 from flask import render_template
@@ -65,10 +65,10 @@ from totalimpactwebapp.cards_factory import make_summary_cards
 from totalimpactwebapp.card import GenreNewDiffCard
 from totalimpactwebapp.card import GenreMetricSumCard
 from totalimpactwebapp.card import GenreEngagementSumCard
-from totalimpactwebapp import emailer
+import emailer
 from totalimpactwebapp import configs
 
-from totalimpactwebapp.util import camel_to_snake_case
+from util import camel_to_snake_case
 from totalimpactwebapp import views_helpers
 from totalimpactwebapp import welcome_email
 from totalimpactwebapp import event_monitoring
@@ -86,7 +86,7 @@ import newrelic.agent
 from sqlalchemy import orm
 from sqlalchemy import or_
 
-logger = logging.getLogger("tiwebapp.views")
+logger = logging.getLogger("ti.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 USER_AGENT = "ImpactStory" # User-Agent string to use on HTTP requests
@@ -398,7 +398,7 @@ def get_user_profile_dict(profile_id):
 
     profile_dict = build_profile_dict(profile, hide_keys, embed)
 
-    logger.debug(u"/profile/{slug} built the response; took {elapsed}ms".format(
+    logger.debug(u"took {elapsed}ms to build the response for /profile/{slug}".format(
         slug=profile.url_slug,
         elapsed=resp_constr_timer.elapsed()
     ))
@@ -643,6 +643,8 @@ def profile_products_get(url_slug):
     just_stubs = request.args.get("stubs", "False").lower() in ["1", "true"]
     if just_stubs:
         profile = get_profile_stubs_from_url_slug(url_slug)
+        if not profile:
+            abort_json(404, "This profile does not exist.")
         load_times["profile"] = timer.elapsed()
         product_list = [
             {"tiid": p.tiid, "genre": p.genre}
@@ -653,6 +655,9 @@ def profile_products_get(url_slug):
 
     else:
         profile = get_profile_from_id(url_slug)
+        if not profile:
+            abort_json(404, "This profile does not exist.")
+
         markup = Markup(url_slug, embed=False)
         load_times["profile"] = timer.elapsed()
 
@@ -803,11 +808,12 @@ def product_embed_markup(tiid):
 @app.route("/product/<tiid>/interaction", methods=["POST"])
 def product_interaction(tiid):
     if current_user_owns_tiid(tiid):
-        logger.info(u"not logging pageview for {tiid} because current user viewing own tiid".format(
-            tiid=tiid))
+        pass
+        # logger.info(u"not logging pageview for {tiid} because current user viewing own tiid".format(
+        #     tiid=tiid))
     else:
-        logger.info(u"logging pageview for {tiid}".format(
-            tiid=tiid))
+        # logger.info(u"logging pageview for {tiid}".format(
+        #     tiid=tiid))
         log_interaction_event(tiid=tiid,
             event=request.json.get("event", "views"),
             headers=request.headers.to_list(),
@@ -828,7 +834,8 @@ def product_without_needing_profile(tiid):
     local_sleep(1)
 
     product = get_product(tiid)
-    #return json_resp_from_thing(product)
+    if not product:
+        return abort_json(404, "product not found")
 
     markup = Markup("jason", embed=False)
     product_dict = product.to_markup_dict(
@@ -850,6 +857,9 @@ def product_from_tiid(url_slug, tiid):
     local_sleep(1)
 
     product = get_product(tiid)
+    if not product:
+        abort_json(404, "This product does not exist.")
+
     markup = Markup(url_slug, embed=False)
     product_dict = product.to_markup_dict(
         markup=markup
@@ -867,6 +877,8 @@ def product_file(tiid):
     if request.method == "GET":
         try:
             product = get_product(tiid)
+            if not product:
+                return abort_json(404, "product not found")
 
             if product.has_file:
                 my_file = product.get_file()

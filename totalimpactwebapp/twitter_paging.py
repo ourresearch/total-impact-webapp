@@ -84,9 +84,11 @@ class TwitterPager(object):
             self.rate_limit_reset = epoch(int(response.headers['x-rate-limit-reset'])).datetime
             self.twitter_date = parse(response.headers['date']).datetime
             logging.debug(
-                'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
-                'reset: %s, current-time: %s' % (self.rate_limit_limit,
-                self.rate_limit_remaining, self.rate_limit_reset, self.twitter_date))
+                'Twitter rate limit info:: rate-limit: %s, remaining: %s' % (self.rate_limit_limit, self.rate_limit_remaining))
+            # logging.debug(
+            #     'Twitter rate limit info:: rate-limit: %s, remaining: %s, '\
+            #     'reset: %s, current-time: %s' % (self.rate_limit_limit,
+            #     self.rate_limit_remaining, self.rate_limit_reset, self.twitter_date))
         except KeyError:
             pass
 
@@ -123,7 +125,7 @@ class TwitterPager(object):
             elif query_type=="statuses_lookup":
                 response = self.client.api.statuses.lookup.post(**kwargs)
 
-            logging.debug('Received twitter search response: %s' % str(response))
+            # logging.debug('Received twitter search response')
             self.extract_rate_limit(response)
             return response
         except TwitterRateLimitError, e:
@@ -162,7 +164,7 @@ class TwitterPager(object):
                 kwargs.update({ k:v for k,v in urlparse.parse_qsl(
                     response.data.search_metadata.next_results[1:]) })
                 if int(kwargs['max_id']) > int(kwargs.get('since_id',0)):
-                    logging.debug('Paginating query: %s' % str(kwargs))
+                    # logging.debug('Paginating query: %s' % str(kwargs))
                     self.paginated_search(page=page+1,
                             page_handler=page_handler,
                             max_pages=max_pages, **kwargs)
@@ -170,7 +172,7 @@ class TwitterPager(object):
             except AttributeError:
                 try:
                     kwargs['max_id'] = str(response.data[-1]["id"])
-                    logging.debug('Paginating query: %s' % str(kwargs))
+                    # logging.debug('Paginating query: %s' % str(kwargs))
                     self.paginated_search(page=page+1,
                             page_handler=page_handler,
                             max_pages=max_pages, **kwargs)
@@ -178,7 +180,8 @@ class TwitterPager(object):
                     logging.debug('error paging, so stop')
 
         else:
-            logging.debug('reached max pages or told no next page, so stop')
+            # logging.debug('reached max pages or told no next page, so stop')
+            pass
         return response
 
 

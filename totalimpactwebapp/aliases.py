@@ -1,10 +1,15 @@
-import util
 import datetime
 import copy
 import unicode_helpers
+import json
+import logging
 
-from totalimpactwebapp.util import cached_property
+from util import cached_property
+from util import dict_from_dir
 from totalimpactwebapp import db
+
+logger = logging.getLogger("ti.aliases")
+
 
 def clean_id(nid):
     try:
@@ -59,9 +64,9 @@ def clean_alias_tuple_for_comparing(ns, nid):
         try:
             cleaned_alias = (ns.lower(), nid.lower())
         except AttributeError:
-            logger.debug(u"problem cleaning {alias_tuple}".format(
-                alias_tuple=alias_tuple))
-            cleaned_alias = alias_tuple
+            logger.debug(u"problem cleaning {ns} {nid}".format(
+                ns=ns, nid=nid))
+            cleaned_alias = (ns, nid)
         return cleaned_alias
 
 
@@ -284,7 +289,7 @@ class Aliases(object):
             elif "github.com" in joined_url_string:
                 genre = "software"
                 host = "github"
-            elif "youtube.com" in joined_url_string:
+            elif ("youtube.com" in joined_url_string) or ("youtu.be" in joined_url_string):
                 genre = "video"
                 host = "youtube"
             elif "vimeo.com" in joined_url_string:
@@ -297,5 +302,5 @@ class Aliases(object):
 
 
     def to_dict(self):
-        ret = util.dict_from_dir(self)
+        ret = dict_from_dir(self)
         return ret

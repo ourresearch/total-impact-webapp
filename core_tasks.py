@@ -11,6 +11,7 @@ from celery.decorators import task
 from celery.signals import task_postrun, task_prerun, task_failure, worker_process_init
 from celery import group, chain, chord
 from celery import current_app as celery_app
+from celery import Task
 from celery.signals import task_sent
 from celery.utils import uuid
 from eventlet import timeout
@@ -32,10 +33,12 @@ from totalimpactwebapp.aliases import alias_dict_from_tuples
 from totalimpactwebapp.aliases import alias_tuples_from_dict
 from totalimpactwebapp.aliases import canonical_aliases
 from totalimpactwebapp.aliases import merge_alias_dicts
- 
+
+from util import commit 
+
 import rate_limit
 
-logger = logging.getLogger("core.core_tasks")
+logger = logging.getLogger("ti.core_tasks")
 myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=REDIS_MAIN_DATABASE_NUMBER)
 
 rate = rate_limit.RateLimiter(redis_url=os.getenv("REDIS_URL"), redis_db=REDIS_MAIN_DATABASE_NUMBER)
@@ -63,10 +66,15 @@ canvas.chord.type = property(_type)
 #### end monkeypatch
 
 
-@task_postrun.connect()
-def task_postrun_handler(*args, **kwargs):    
-    db.session.remove()
-    logger.debug(u"Celery task POST RUN HANDLER")
+class ClearDbSessionTask(Task):
+    """An abstract Celery Task that ensures that the connection the the
+    database is closed on task completion"""
+    abstract = True
+
+    def after_return(self, status, retval, task_id, args, kwargs, einfo):
+        logger.debug(u"Celery task after_return handler, removing session, args {args}, kwargs={kwargs}".format(
+            args=args, kwargs=kwargs))
+        db.session.remove()
 
 
 @task_failure.connect
@@ -151,16 +159,13 @@ def add_to_database_if_nonzero(
                 logger.warning(u"ack, supposed to save something i don't know about: " + str(new_content))
 
             if updated_product:
-                try:
-                    db.session.merge(updated_product)
-                    db.session.commit()
-                except (IntegrityError, FlushError) as e:
-                    db.session.rollback()
-                    logger.warning(u"Fails Integrity check in add_aliases_to_item_object for {tiid}, rolling back.  Message: {message}".format(
-                        tiid=product.tiid, 
-                        message=e.message)) 
+                db.session.merge(updated_product)
+                commit(db)
     return
 
+
+# need to streamline this with     
+# def _guess_genre_and_host_from_aliases(self) in aliases!! 
 
 def decide_genre(alias_dict):
     # logger.debug(u"in decide_genre with {alias_dict}".format(
@@ -223,7 +228,7 @@ def decide_genre(alias_dict):
         elif "linkedin" in joined_url_string:
             genre = "account"
             host = "linkedin"            
-        elif "youtube.com" in joined_url_string:
+        elif ("youtube.com" in joined_url_string) or ("youtu.be" in joined_url_string):
             genre = "video"
             host = "youtube"
         elif "vimeo.com" in joined_url_string:
@@ -306,7 +311,7 @@ def provider_run(aliases_dict, tiid, method_name, provider_name):
                 countdown=estimated_wait_seconds, 
                 max_retries=10)
 
-    timeout_seconds = 30
+    timeout_seconds = 120
     try:
         with timeout.Timeout(timeout_seconds):
             response = provider_method_wrapper(tiid, aliases_dict, provider, method_name)
@@ -323,8 +328,8 @@ def provider_run(aliases_dict, tiid, method_name, provider_name):
 
 @task(priority=0)
 def after_refresh_complete(tiid, task_ids):
-    logger.info(u"here in after_refresh_complete with {tiid}".format(
-        tiid=tiid))
+    # logger.info(u"here in after_refresh_complete with {tiid}".format(
+    #     tiid=tiid))
 
     product = Product.query.get(tiid)
 
@@ -337,12 +342,12 @@ def after_refresh_complete(tiid, task_ids):
     product.parse_and_save_tweets()
     product.set_last_refresh_finished(myredis)
     db.session.merge(product)
-    db.session.commit()
+    commit(db)
 
 
 
 
-@task()
+@task(base=ClearDbSessionTask)
 def refresh_tiid(tiid, aliases_dict, task_priority):    
     pipeline = sniffer(aliases_dict)
     chain_list = []
@@ -397,8 +402,8 @@ def refresh_tiid(tiid, aliases_dict, task_priority):
 
 
 def put_on_celery_queue(tiid, aliases_dict, task_priority="high"):
-    logger.info(u"put_on_celery_queue {tiid}".format(
-        tiid=tiid))
+    # logger.info(u"put_on_celery_queue {tiid}".format(
+    #     tiid=tiid))
 
     #see http://stackoverflow.com/questions/15239880/task-priority-in-celery-with-redis
     if task_priority == "high":

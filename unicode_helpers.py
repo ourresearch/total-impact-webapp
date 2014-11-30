@@ -1,7 +1,7 @@
 import unicodedata
 import logging
 
-logger = logging.getLogger('ti.utils.unicode_helpers')
+logger = logging.getLogger('ti.unicode_helpers')
 
 #from http://farmdev.com/talks/unicode/
 def to_unicode_or_bust(obj, encoding='utf-8'):

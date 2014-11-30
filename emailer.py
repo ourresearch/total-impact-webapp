@@ -5,7 +5,7 @@ import jinja2
 from totalimpactwebapp.testing import is_test_email
 
 
-logger = logging.getLogger("tiwebapp.emailer")
+logger = logging.getLogger("ti.emailer")
 
 def send(address, subject, template_name, context):
 

@@ -1,14 +1,14 @@
 from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.profile import Profile
-from totalimpactwebapp.profile import refresh_products_from_tiids
+from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.pinboard import Pinboard
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
 from totalimpactwebapp.drip_email import log_drip_email
-from totalimpactwebapp.util import commit
-from totalimpactwebapp.util import dict_from_dir
+from util import commit
+from util import dict_from_dir
 from totalimpactwebapp.tweet import save_product_tweets_for_profile
 from totalimpactwebapp import db
 import tasks
@@ -28,8 +28,7 @@ import urllib
 import hashlib
 import json
 
-logger = logging.getLogger("webapp.daily")
-
+# logger is set below, in main
 
 
 """
@@ -323,6 +322,74 @@ def deduplicate_everyone():
         response = tasks.deduplicate.delay(profile.id)
 
 
+def mint_stripe_customers_for_all_profiles():
+
+    stripe.api_key = os.getenv("STRIPE_API_KEY")
+
+    for profile in page_query(Profile.query.order_by(Profile.email.asc())):
+
+        if profile.stripe_id:
+            print u"Already a Stripe customer for {email}; skipping".format(
+                email=profile.email
+            )
+            continue
+
+
+        full_name = u"{first} {last}".format(
+            first=profile.given_name,
+            last=profile.surname
+        )
+        if profile.is_advisor:
+            print u"making an Advisor Stripe customer for {email} ".format(email=profile.email)
+            stripe_customer = stripe.Customer.create(
+                description=full_name,
+                email=profile.email,
+                plan="base",
+                coupon="ADVISOR_96309"
+            )
+        else:
+            print u"making a regular Stripe customer for {email} ".format(email=profile.email)            
+            stripe_customer = stripe.Customer.create(
+                description=full_name,
+                email=profile.email,
+                plan="base" 
+            )
+
+        print u"Successfully made stripe id " + stripe_customer.id
+
+        profile.stripe_id = stripe_customer.id
+        db.session.merge(profile)
+        db.session.commit()
+
+
+def write_500_random_profile_urls():
+    urls = []
+    sample_size = 500
+    for profile in page_query(Profile.query):
+        products_count = len(profile.tiids)
+        if products_count > 0:
+            url = "https://staging-impactstory.org/" + profile.url_slug
+            urls.append([products_count, url])
+            logger.info(u"getting a new profile url out: {url}".format(
+                url=url
+            ))
+
+    sampled_urls = random.sample(urls, sample_size)
+
+    logger.info(u"writing our {sample_size} sampled profile URLs".format(
+        sample_size=sample_size
+    ))
+
+    for row in sampled_urls:
+        try:
+            print "{products_count},{url}".format(
+                products_count=row[0],
+                url=row[1]
+            )
+        except UnicodeEncodeError:
+            pass  # whatever, we don't need exactly 500
+
+
 
 
 def email_report_to_url_slug(url_slug=None):
@@ -343,15 +410,19 @@ def email_report_to_everyone_who_needs_one(max_emails=None):
 
         try:
             if not profile.is_live:
-                logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
+                pass
+                # logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
             elif not profile.email or (u"@" not in profile.email):
-                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
+                pass
+                # logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
             elif profile.notification_email_frequency == "none":
-                logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
+                pass
+                # logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
             elif profile.last_email_sent and ((datetime.datetime.utcnow() - profile.last_email_sent).days < 7):
-                logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
+                pass
+                # logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
             else:
-                logger.info(u"checking email for {url_slug}".format(url_slug=profile.url_slug))
+                # logger.info(u"checking email for {url_slug}".format(url_slug=profile.url_slug))
                 # status = tasks.send_email_if_new_diffs.delay(profile.id)
                 status = tasks.send_email_if_new_diffs(profile)
                 if status=="email sent":
@@ -861,8 +932,11 @@ def send_drip_emails(url_slug=None, min_url_slug=None):
             logger.info(u"in send_drip_emails, SENT EMAIL to: {url_slug}".format(
                 url_slug=profile.url_slug))
         else:
-            logger.info(u"in send_drip_emails, but NOT sending email to: {url_slug}".format(
-                url_slug=profile.url_slug))
+            pass
+            # logger.info(u"in send_drip_emails, but NOT sending email to: {url_slug}".format(
+            #     url_slug=profile.url_slug))
+
+
 
 def ip_deets():
     from totalimpactwebapp.interaction import Interaction
@@ -913,8 +987,55 @@ def countries_for_all_profiles(url_slug=None, min_created_date=None):
             pass
 
 
+def refresh_tiid(tiid):
+    tiids = refresh_products_from_tiids([tiid])
+    print tiids
+    return tiids
 
 
+def update_profiles(limit=5, url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        q = db.session.query(Profile).filter(Profile.next_refresh <= datetime.datetime.utcnow())
+        q = q.order_by(Profile.next_refresh.asc())
+
+    number_profiles = 0.0
+    for profile in windowed_query(q, Profile.next_refresh, 5):  
+
+        if limit and number_profiles >= limit:
+            logger.info(u"updated all {limit} profiles, done for now.".format(
+                limit=limit))
+            return
+            
+        logger.info(u"**updating {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
+            url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh.isoformat()[0:10]))
+
+        try:
+            if profile.is_live:
+                number_products_before = len(profile.tiids)
+                number_added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+                number_products_after = len(profile.tiids)
+                if number_products_before==number_products_after:
+                    logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                        number_products_before=number_products_before,
+                        url_slug=profile.url_slug))
+                else:
+                    logger.info(u"  BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                        number_products_before=number_products_before,
+                        number_products_after=number_products_after,
+                        percent=100.0*(number_products_after-number_products_before)/number_products_before,
+                        url_slug=profile.url_slug))
+
+            # refresh all profiles, live and not, after the update from linked accounts is done
+            profile.refresh_products("scheduled")  # puts them on celery
+
+        except Exception as e:
+            logger.exception(e)
+            logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(
+                url_slug=profile.url_slug))
+
+        number_profiles += 1
 
 
 
@@ -961,6 +1082,10 @@ def main(function, args):
         borked_pinboards_for_life_profiles(args["url_slug"], args["min_url_slug"])
     elif function=="update_mendeley_countries_for_live_profiles":
         update_mendeley_countries_for_live_profiles(args["url_slug"], args["min_url_slug"])
+    elif function=="update_profiles":
+        update_profiles(args["limit"], args["url_slug"])
+    elif function=="refresh_tiid":
+        refresh_tiid(args["tiid"])
 
 
 
@@ -973,21 +1098,28 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run stuff.")
     parser.add_argument('function', type=str, help="one of emailreports, refsets, dedup, productdeets")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
-    parser.add_argument('--tiid', default=None, type=str, help="tiid")
-    parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
-    parser.add_argument('--skip_until_url_slug', default=None, help="when looping don't process till past this url_slug")
-    parser.add_argument('--max_emails', default=None, type=int, help="max number of emails to send")
-    parser.add_argument('--min_tiid', default=None, type=str, help="min_tiid")
     parser.add_argument('--min_url_slug', default=None, type=str, help="min_url_slug")
+    parser.add_argument('--tiid', default=None, type=str, help="tiid")
+    parser.add_argument('--min_tiid', default=None, type=str, help="min_tiid")
+    parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
+    parser.add_argument('--max_emails', default=None, type=int, help="max number of emails to send")
     parser.add_argument('--account_type', default=None, type=str, help="account_type")
-    parser.add_argument('--start_days_ago', default=44, type=int)
-    parser.add_argument('--end_days_ago', default=30, type=int)
+    parser.add_argument('--start_days_ago', type=int)
+    parser.add_argument('--end_days_ago', type=int)
+    parser.add_argument('--limit', type=int)
 
     args = vars(parser.parse_args())
-    print args
+    function = args["function"]
+
+    arg_string = dict((k, v) for (k, v) in args.iteritems() if v and k!="function")
+    print u"daily.py {function} with {arg_string}".format(
+        function=function.upper(), arg_string=arg_string)
+
+    global logger
+    logger = logging.getLogger("ti.daily.{function}".format(
+        function=function))
     
-    print u"daily.py starting."
-    main(args["function"], args)
+    main(function, args)
 
     db.session.remove()
     

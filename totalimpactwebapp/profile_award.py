@@ -2,7 +2,7 @@ from __future__ import division
 import math
 import time
 
-from totalimpactwebapp.util import cached_property
+from util import cached_property
 
 def make_awards_list(user):
 

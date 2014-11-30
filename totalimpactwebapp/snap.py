@@ -1,6 +1,6 @@
 from totalimpactwebapp import db
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import ordinal
+from util import cached_property
+from util import ordinal
 from totalimpactwebapp import json_sqlalchemy
 import shortuuid
 import datetime

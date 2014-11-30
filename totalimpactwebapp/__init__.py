@@ -14,8 +14,8 @@ from sqlalchemy import exc
 from sqlalchemy import event
 from sqlalchemy.pool import Pool
 
-from totalimpactwebapp.util import HTTPMethodOverrideMiddleware
-from totalimpactwebapp.util import commit
+from util import HTTPMethodOverrideMiddleware
+from util import commit
 from multiprocessing.util import register_after_fork
 
 
@@ -24,7 +24,7 @@ from multiprocessing.util import register_after_fork
 logging.basicConfig(
     stream=sys.stdout,
     level=logging.DEBUG,
-    format='[%(process)d] %(levelname)8s %(threadName)30s %(name)s - %(message)s'
+    format='[%(process)3d] %(levelname)8s %(threadName)30s %(name)s - %(message)s'
 )
 logger = logging.getLogger("tiwebapp")
 
@@ -36,6 +36,19 @@ stripe_log = logging.getLogger("stripe")
 stripe_log.setLevel(logging.WARNING)
 stripe_log.propagate = True
 stripe.api_key = os.getenv("STRIPE_API_KEY")
+
+oauth_log = logging.getLogger("oauthlib")
+oauth_log.setLevel(logging.WARNING)
+oauth_log.propagate = True
+
+newrelic_log = logging.getLogger("newrelic")
+newrelic_log.setLevel(logging.WARNING)
+newrelic_log.propagate = True
+
+ratelimiter_log = logging.getLogger("RateLimiter")
+ratelimiter_log.setLevel(logging.WARNING)
+ratelimiter_log.propagate = True
+
 
 # set up application
 app = Flask(__name__)
@@ -117,21 +130,23 @@ from totalimpactwebapp import reference_set
 from totalimpactwebapp import snap
 from totalimpactwebapp import pinboard
 from totalimpactwebapp import tweet
-logger.info(u"calling create_all on SQLAlchemy database tables to make any new ones")
+# logger.info(u"calling create_all on SQLAlchemy database tables to make any new ones")
 db.create_all()
 commit(db)
 
 from totalimpactwebapp import views
 
-
 try:
     from totalimpact import extra_schema 
+    extra_schema.create_doaj_table(db)    
+    extra_schema.create_doaj_view(db) 
 except exc.ProgrammingError:
     logger.info("SQLAlchemy database tables not found, so creating them")
     db.session.rollback()
     db.create_all()
     from totalimpact import extra_schema 
-
+    extra_schema.create_doaj_table(db)    
+    extra_schema.create_doaj_view(db) 
 
 
 

@@ -137,7 +137,7 @@ class Bibtex(Provider):
 
 
     def member_items(self, bibtex_contents, cache_enabled=True):
-        logger.debug(u"%20s getting member_items for bibtex" % (self.provider_name))
+        logger.debug(u"%s getting member_items for bibtex" % (self.provider_name))
 
         parsed_bibtex = self.parse(bibtex_contents)
 

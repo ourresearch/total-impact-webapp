@@ -4,15 +4,15 @@ import shortuuid
 import datetime
 import numpy
 
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import dict_from_dir
+from util import cached_property
+from util import dict_from_dir
 from totalimpactwebapp.configs import get_genre_config
 from totalimpactwebapp import json_sqlalchemy
 from totalimpactwebapp import db
 from totalimpactwebapp import configs
 
 
-logger = logging.getLogger("tiwebapp.reference_set")
+logger = logging.getLogger("ti.reference_set")
 reference_set_lists = None
 
 

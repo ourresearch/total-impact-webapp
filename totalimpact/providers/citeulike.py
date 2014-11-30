@@ -5,7 +5,7 @@ import simplejson
 import re
 
 import logging
-logger = logging.getLogger('providers.citeulike')
+logger = logging.getLogger('ti.citeulike')
 
 class Citeulike(Provider):  
 

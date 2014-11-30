@@ -57,7 +57,11 @@ class Figshare(Provider):
 
     def get_figshare_userid_from_author_url(self, url):
         match = re.findall("figshare.com\/authors\/.*?\/(\d+)", url)
-        return match[0]
+        try:
+            userid = match[0]
+        except IndexError:
+            userid = None
+        return userid
 
 
     def _extract_aliases(self, page, id=None):
@@ -167,9 +171,12 @@ class Figshare(Provider):
         if not provider_url_template:
             provider_url_template = self.member_items_url_template
 
-        figshare_userid = self.get_figshare_userid_from_author_url(account_name)
-        next_page = 1
         members = []
+        figshare_userid = self.get_figshare_userid_from_author_url(account_name)
+        if not figshare_userid:
+            raise ProviderContentMalformedError("no figshare user id found")
+
+        next_page = 1
         while next_page:
 
             url = provider_url_template % (figshare_userid, next_page)

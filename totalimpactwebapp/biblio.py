@@ -1,9 +1,13 @@
-from totalimpactwebapp.util import cached_property
-from totalimpactwebapp.util import dict_from_dir
+import logging
+import datetime
 from urlparse import urlparse
+
+from util import cached_property
+from util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp import json_sqlalchemy
 
+logger = logging.getLogger("ti.biblio")
 
 
 
@@ -19,6 +23,9 @@ class BiblioRow(db.Model):
     collected_date = db.Column(db.DateTime())
 
     def __init__(self, **kwargs):
+        if "collected_date" not in kwargs:
+            self.collected_date = datetime.datetime.utcnow()
+
         super(BiblioRow, self).__init__(**kwargs)
 
         #if aliases.best_url is not None:
