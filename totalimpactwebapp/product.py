@@ -201,7 +201,7 @@ class Product(db.Model):
 
     @cached_property
     def is_refreshing(self):
-        REFRESH_TIMEOUT_IN_SECONDS = 120
+        REFRESH_TIMEOUT_IN_SECONDS = os.getenv("REFRESH_TIMEOUT_IN_SECONDS", 120)
         if self.last_refresh_started and not self.last_refresh_finished:
             last_refresh_started = arrow.get(self.last_refresh_started, 'utc')
             start_time_theshold = arrow.utcnow().replace(seconds=-REFRESH_TIMEOUT_IN_SECONDS)

@@ -918,6 +918,48 @@ def countries_for_all_profiles(url_slug=None, min_created_date=None):
 
 
 
+def update_profiles(limit=5, url_slug=None):
+    if url_slug:
+        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+    else:
+        q = db.session.query(Profile).filter(Profile.next_refresh <= datetime.datetime.utcnow())
+        q = q.order_by(Profile.next_refresh.asc())
+
+    number_profiles = 0.0
+    for profile in windowed_query(q, Profile.next_refresh, 25):  # sort by created
+
+        if number_profiles >= limit:
+            logger.info(u"updated all {limit} profiles, done for now.".format(
+                limit=limit))
+            return
+            
+        logger.info(u"\n\nupdating profile for {url_slug}: is_live: {is_live}, next_refresh: {next_refresh}".format(
+            url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh))
+
+        try:
+            number_products_before = len(profile.tiids)
+
+            number_added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+            profile.refresh_products("scheduled")  # puts them on celery
+            
+            number_products_after = len(profile.tiids)
+            
+            if number_products_before==number_products_after:
+                logger.info(u"***NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                    number_products_before=number_products_before,
+                    url_slug=profile.url_slug))
+            else:
+                logger.info(u"***BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                    number_products_before=number_products_before,
+                    number_products_after=number_products_after,
+                    percent=100.0*(number_products_after-number_products_before)/number_products_before,
+                    url_slug=profile.url_slug))
+
+        except Exception as e:
+            logger.exception(e)
+            logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(
+                url_slug=profile.url_slug))
+        number_profiles += 1
 
 
 
@@ -964,6 +1006,8 @@ def main(function, args):
         borked_pinboards_for_life_profiles(args["url_slug"], args["min_url_slug"])
     elif function=="update_mendeley_countries_for_live_profiles":
         update_mendeley_countries_for_live_profiles(args["url_slug"], args["min_url_slug"])
+    elif function=="update_profiles":
+        update_profiles(args["limit"], args["url_slug"])
 
 
 
@@ -985,6 +1029,7 @@ if __name__ == "__main__":
     parser.add_argument('--account_type', default=None, type=str, help="account_type")
     parser.add_argument('--start_days_ago', default=44, type=int)
     parser.add_argument('--end_days_ago', default=30, type=int)
+    parser.add_argument('--limit', default=5, type=int)
 
     args = vars(parser.parse_args())
     

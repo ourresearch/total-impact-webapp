@@ -437,20 +437,31 @@ class Profile(db.Model):
         return {"deleted_tiids": tiids_to_delete}
 
     def refresh_products(self, source="webapp"):
-        save_profile_last_refreshed_timestamp(self.id)
         analytics_credentials = self.get_analytics_credentials()        
-        return refresh_products_from_tiids(self.tiids, analytics_credentials, source)
+        resp = refresh_products_from_tiids(self.tiids, analytics_credentials, source)
+        save_profile_last_refreshed_timestamp(self.id)
+        return resp
 
     def update_twitter(self):
-        t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
-        t.daemon = True
-        t.start()
+        if self.twitter_id:
+            t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
+            t.daemon = True
+            t.start()
+        return None
+
+    def update_all_linked_accounts(self, add_even_if_removed=False):
+        added_tiids = []
+        for account_type in ["github", "slideshare", "figshare", "orcid", "twitter", "publons"]:
+            added_tiids += self.update_products_from_linked_account(account_type, add_even_if_removed)
+        return added_tiids
+
 
     def update_products_from_linked_account(self, account, add_even_if_removed):
+        added_tiids = []
         if account=="twitter":
-            return self.update_twitter()
+            self.update_twitter()
         else:
-            account_value = getattr(self, account+"_id")
+            account_value = getattr(self, account+"_id", None)
             tiids_to_add = []        
             if account_value:
                 try:
@@ -465,7 +476,7 @@ class Profile(db.Model):
                         add_even_if_removed)
 
                 added_tiids = [product.tiid for product in new_products]
-            return added_tiids
+        return added_tiids
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
