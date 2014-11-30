@@ -919,7 +919,7 @@ def patch_biblio(tiid, patch_dict, provider_name="user_provided"):
                     tiid=tiid, 
                     provider=provider_name, 
                     biblio_name=biblio_name).first()
-        if biblio_object:
+        if biblio_row_object:
             biblio_row_object.biblio_value = biblio_value
             biblio_row_object.provider = provider
         else:
