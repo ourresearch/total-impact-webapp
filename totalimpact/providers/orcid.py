@@ -27,7 +27,7 @@ class Orcid(Provider):
             if work["work-citation"]["work-citation-type"].lower()=="bibtex":
                 biblio = self.bibtex_parser.parse(work["work-citation"]["citation"])[0]
         except (KeyError, TypeError, IndexError):
-            logger.debug(u"%20s error getting work citation type" % (self.provider_name))
+            logger.debug(u"%s error getting work citation type" % (self.provider_name))
             pass
 
         try:
