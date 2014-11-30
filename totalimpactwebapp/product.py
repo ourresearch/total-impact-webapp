@@ -910,7 +910,7 @@ def build_duplicates_list(products):
     return distinct_groups_values
 
 
-def patch_biblio(tiid, patch_dict, provider="user_provided"):
+def patch_biblio(tiid, patch_dict, provider_name="user_provided"):
 
     product = Product.query.get(tiid)
 
@@ -926,7 +926,7 @@ def patch_biblio(tiid, patch_dict, provider="user_provided"):
             biblio_row_object = BiblioRow(
                     biblio_name=biblio_name, 
                     biblio_value=biblio_value, 
-                    provider=provider)
+                    provider=provider_name)
             product.biblio_rows.append(biblio_row_object)
 
     commit(db)
