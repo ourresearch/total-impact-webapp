@@ -311,7 +311,7 @@ def provider_run(aliases_dict, tiid, method_name, provider_name):
                 countdown=estimated_wait_seconds, 
                 max_retries=10)
 
-    timeout_seconds = 30
+    timeout_seconds = 120
     try:
         with timeout.Timeout(timeout_seconds):
             response = provider_method_wrapper(tiid, aliases_dict, provider, method_name)
