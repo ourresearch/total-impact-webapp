@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from embedly import Embedly
 from PyPDF2 import PdfFileReader
 
-logger = logging.getLogger("tiwebapp.embed_markup")
+logger = logging.getLogger("ti.embed_markup")
 
 def wrap_as_div(class_name, div_contents):
     return u"<div class='{class_name}'>{div_contents}</div>".format(

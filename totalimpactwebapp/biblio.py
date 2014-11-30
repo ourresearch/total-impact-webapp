@@ -7,7 +7,7 @@ from util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp import json_sqlalchemy
 
-logger = logging.getLogger("tiwebapp.biblio")
+logger = logging.getLogger("ti.biblio")
 
 
 

@@ -15,7 +15,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='[%(process)d] %(levelname)8s %(threadName)30s %(name)s - %(message)s'
 )
-logger = logging.getLogger("load_batch_pmc")
+logger = logging.getLogger("ti.load_batch_pmc")
 
 def last_minute_of_a_month(year, month):
     first_day = datetime.datetime(year, month, 1)

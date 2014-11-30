@@ -47,7 +47,7 @@ import StringIO
 import arrow
 
 
-logger = logging.getLogger("tiwebapp.profile")
+logger = logging.getLogger("ti.profile")
 
 default_free_trial_days = 30
 

@@ -3,7 +3,7 @@ import argparse
 import logging
 import os
 
-logger = logging.getLogger("webapp.heroku_api")
+logger = logging.getLogger("ti.heroku_api")
 
 def run(app_name, process_name, command):
     cloud = heroku.from_key(os.getenv("HEROKU_API_KEY"))

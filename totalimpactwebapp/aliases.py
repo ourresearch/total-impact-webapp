@@ -8,7 +8,7 @@ from util import cached_property
 from util import dict_from_dir
 from totalimpactwebapp import db
 
-logger = logging.getLogger("tiwebapp.aliases")
+logger = logging.getLogger("ti.aliases")
 
 
 def clean_id(nid):

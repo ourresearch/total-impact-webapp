@@ -15,7 +15,7 @@ from totalimpactwebapp.drip_email import drip_email_context
 import emailer
 
 
-logger = logging.getLogger("webapp.tasks")
+logger = logging.getLogger("ti.tasks")
 
 
 

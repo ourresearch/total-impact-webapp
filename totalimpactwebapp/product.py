@@ -52,7 +52,7 @@ from totalimpact import tiredis
 
 percentile_snap_creations = 0
 
-logger = logging.getLogger("tiwebapp.product")
+logger = logging.getLogger("ti.product")
 deprecated_genres = ["twitter", "blog"]
 
 ignore_snaps_older_than = arrow.utcnow().replace(days=-27).datetime

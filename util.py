@@ -13,7 +13,7 @@ from sqlalchemy.orm.exc import FlushError
 
 
 import logging
-logger = logging.getLogger('ti.webapp.util')
+logger = logging.getLogger('ti.util')
 
 # a slow decorator for tests, so can exclude them when necessary
 # put @slow on its own line above a slow test method

@@ -10,7 +10,7 @@ from collections import defaultdict
 
 import logging
 
-logger = logging.getLogger("tiwebapp.profile")
+logger = logging.getLogger("ti.collection")
 
 
 def products_matching_tag(products, tagspace, tag):

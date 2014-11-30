@@ -12,7 +12,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp import configs
 
 
-logger = logging.getLogger("tiwebapp.reference_set")
+logger = logging.getLogger("ti.reference_set")
 reference_set_lists = None
 
 

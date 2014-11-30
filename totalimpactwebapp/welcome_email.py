@@ -5,7 +5,7 @@ from totalimpactwebapp.testing import is_test_email
 
 
 
-logger = logging.getLogger("tiwebapp.welcome_email")
+logger = logging.getLogger("ti.welcome_email")
 
 
 class WelcomeEmailError(Exception):

@@ -38,7 +38,7 @@ from util import commit
 
 import rate_limit
 
-logger = logging.getLogger("core.core_tasks")
+logger = logging.getLogger("ti.core_tasks")
 myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=REDIS_MAIN_DATABASE_NUMBER)
 
 rate = rate_limit.RateLimiter(redis_url=os.getenv("REDIS_URL"), redis_db=REDIS_MAIN_DATABASE_NUMBER)

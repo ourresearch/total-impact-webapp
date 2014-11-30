@@ -11,7 +11,7 @@ from collections import defaultdict
 import os
 import datetime
 import logging
-logger = logging.getLogger('ti.webapp.tweets')
+logger = logging.getLogger('ti.tweet')
 
 def tweets_from_tiids(tiids):
     if not tiids:

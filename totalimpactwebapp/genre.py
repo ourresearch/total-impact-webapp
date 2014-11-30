@@ -7,7 +7,7 @@ from util import dict_from_dir
 from totalimpactwebapp.configs import get_genre_config
 
 
-logger = logging.getLogger("tiwebapp.genre")
+logger = logging.getLogger("ti.genre")
 
 
 def make_genres_list(profile_id, products):

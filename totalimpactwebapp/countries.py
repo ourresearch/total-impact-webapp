@@ -8,7 +8,7 @@ from totalimpactwebapp import countries_info
 from util import dict_from_dir
 from util import cached_property
 
-logger = logging.getLogger("tiwebapp.countries")
+logger = logging.getLogger("ti.countries")
 
 
 internet_users = {

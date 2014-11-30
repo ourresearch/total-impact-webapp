@@ -4,7 +4,7 @@ from util import dict_from_dir
 import logging
 import configs
 
-logger = logging.getLogger("tiwebapp.metric_snap")
+logger = logging.getLogger("ti.award")
 
 
 

@@ -86,7 +86,7 @@ import newrelic.agent
 from sqlalchemy import orm
 from sqlalchemy import or_
 
-logger = logging.getLogger("tiwebapp.views")
+logger = logging.getLogger("ti.views")
 analytics.init(os.getenv("SEGMENTIO_PYTHON_KEY"), log_level=logging.INFO)
 
 USER_AGENT = "ImpactStory" # User-Agent string to use on HTTP requests

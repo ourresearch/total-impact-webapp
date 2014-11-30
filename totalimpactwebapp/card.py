@@ -8,7 +8,7 @@ import logging
 from collections import defaultdict
 from collections import Counter
 
-logger = logging.getLogger("tiwebapp.card")
+logger = logging.getLogger("ti.card")
 
 
 def get_metrics_by_name(products, provider, interaction):
