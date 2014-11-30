@@ -951,8 +951,8 @@ def put_aliases_in_product(product, alias_tuples):
 
 
 def put_biblio_in_product(product, new_biblio_dict, provider_name="unknown"):
-    logger.debug(u"in put_biblio_in_product for {tiid}".format(
-        tiid=product.tiid))        
+    # logger.debug(u"in put_biblio_in_product for {tiid}".format(
+    #     tiid=product.tiid))        
 
     for (biblio_name, biblio_value) in new_biblio_dict.iteritems():
         biblio_row_object = BiblioRow.query.get((product.tiid, provider_name, biblio_name))
@@ -963,8 +963,6 @@ def put_biblio_in_product(product, new_biblio_dict, provider_name="unknown"):
                     provider=provider_name)
             product.biblio_rows.append(biblio_row_object)
         biblio_row_object.biblio_value = biblio_value
-        logger.debug(u"in put_biblio_in_product for {biblio_row_object}".format(
-            biblio_row_object=biblio_row_object))        
 
     return product
 

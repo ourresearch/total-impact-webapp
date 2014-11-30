@@ -89,15 +89,11 @@ class Mendeley(Provider):
         return no_punc
 
     def _connect(self):
-        mendeley = mendeley_lib.Mendeley(
+        mendeley_client = mendeley_lib.Mendeley(
             client_id=os.getenv("MENDELEY_OAUTH2_CLIENT_ID"), 
             client_secret=os.getenv("MENDELEY_OAUTH2_SECRET"))
-        try:
-            session = mendeley.start_client_credentials_flow().authenticate()
-        except AttributeError:
-            logger.error(u"Attribute error getting start_client_credentials_flow")
-            raise ProviderAuthenticationError
-
+        auth = mendeley_client.start_client_credentials_flow()
+        session = auth.authenticate()
         return session
 
     def _get_doc_by_id(self, namespace, aliases_dict):
