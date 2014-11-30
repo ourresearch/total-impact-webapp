@@ -1003,13 +1003,13 @@ def update_profiles(limit=5, url_slug=None):
     number_profiles = 0.0
     for profile in windowed_query(q, Profile.next_refresh, 5):  
 
-        if number_profiles >= limit:
+        if limit and number_profiles >= limit:
             logger.info(u"updated all {limit} profiles, done for now.".format(
                 limit=limit))
             return
             
-        logger.info(u"**scheduled update for {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
-            url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh))
+        logger.info(u"**updating {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
+            url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh.isoformat()[0:10]))
 
         try:
             if profile.is_live:
