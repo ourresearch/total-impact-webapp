@@ -8,6 +8,7 @@ from totalimpactwebapp.product import Product
 from totalimpactwebapp.product import start_product_update
 from totalimpactwebapp.product import import_and_create_products
 from totalimpactwebapp.product import build_duplicates_list
+from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.drip_email import DripEmail
 from totalimpactwebapp.tweet import save_recent_tweets
@@ -719,33 +720,6 @@ def delete_products_from_profile(profile, tiids_to_delete):
     commit(db)
 
     return True
-
-
-
-def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"):
-    if not tiids:
-        return None
-
-    priority = "high"
-    if source=="scheduled":
-        priority = "low"
-
-    products = Product.query.filter(Product.tiid.in_(tiids)).all()
-    dicts_to_refresh = []  
-
-    for product in products:
-        try:
-            tiid = product.tiid
-            product.set_last_refresh_start()
-            db.session.merge(product)
-            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
-        except AttributeError:
-            logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
-                tiid=tiid))
-
-    db.session.commit()
-    start_product_update(dicts_to_refresh, priority)
-    return tiids
 
 
 def tiids_to_remove_from_duplicates_list(duplicates_list):

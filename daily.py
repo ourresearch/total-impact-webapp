@@ -1,7 +1,7 @@
 from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.profile import Profile
-from totalimpactwebapp.profile import refresh_products_from_tiids
+from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.pinboard import Pinboard
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
@@ -343,15 +343,19 @@ def email_report_to_everyone_who_needs_one(max_emails=None):
 
         try:
             if not profile.is_live:
-                logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
+                pass
+                # logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
             elif not profile.email or (u"@" not in profile.email):
-                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
+                pass
+                # logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
             elif profile.notification_email_frequency == "none":
-                logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
+                pass
+                # logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
             elif profile.last_email_sent and ((datetime.datetime.utcnow() - profile.last_email_sent).days < 7):
-                logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
+                pass
+                # logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
             else:
-                logger.info(u"checking email for {url_slug}".format(url_slug=profile.url_slug))
+                # logger.info(u"checking email for {url_slug}".format(url_slug=profile.url_slug))
                 # status = tasks.send_email_if_new_diffs.delay(profile.id)
                 status = tasks.send_email_if_new_diffs(profile)
                 if status=="email sent":
@@ -916,6 +920,10 @@ def countries_for_all_profiles(url_slug=None, min_created_date=None):
             pass
 
 
+def refresh_tiid(tiid):
+    tiids = refresh_products_from_tiids([tiid])
+    print tiids
+    return tiids
 
 
 def update_profiles(limit=5, url_slug=None):
@@ -926,39 +934,40 @@ def update_profiles(limit=5, url_slug=None):
         q = q.order_by(Profile.next_refresh.asc())
 
     number_profiles = 0.0
-    for profile in windowed_query(q, Profile.next_refresh, 25):  # sort by created
+    for profile in windowed_query(q, Profile.next_refresh, 5):  
 
         if number_profiles >= limit:
             logger.info(u"updated all {limit} profiles, done for now.".format(
                 limit=limit))
             return
             
-        logger.info(u"** updating profile for {url_slug}: is_live: {is_live}, next_refresh: {next_refresh}".format(
+        logger.info(u"**{url_slug} scheduled update; is_live: {is_live}, next_refresh: {next_refresh}".format(
             url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh))
 
         try:
-            number_products_before = len(profile.tiids)
+            if profile.is_live:
+                number_products_before = len(profile.tiids)
+                number_added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+                number_products_after = len(profile.tiids)
+                if number_products_before==number_products_after:
+                    logger.info(u" *NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                        number_products_before=number_products_before,
+                        url_slug=profile.url_slug))
+                else:
+                    logger.info(u" *BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                        number_products_before=number_products_before,
+                        number_products_after=number_products_after,
+                        percent=100.0*(number_products_after-number_products_before)/number_products_before,
+                        url_slug=profile.url_slug))
 
-            number_added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+            # refresh all profiles, live and not, after the update from linked accounts is done
             profile.refresh_products("scheduled")  # puts them on celery
-            
-            number_products_after = len(profile.tiids)
-            
-            if number_products_before==number_products_after:
-                logger.info(u" * NO CHANGE on update for {url_slug}, {number_products_before} products".format(
-                    number_products_before=number_products_before,
-                    url_slug=profile.url_slug))
-            else:
-                logger.info(u" * BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
-                    number_products_before=number_products_before,
-                    number_products_after=number_products_after,
-                    percent=100.0*(number_products_after-number_products_before)/number_products_before,
-                    url_slug=profile.url_slug))
 
         except Exception as e:
             logger.exception(e)
             logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(
                 url_slug=profile.url_slug))
+
         number_profiles += 1
 
 
@@ -1008,6 +1017,8 @@ def main(function, args):
         update_mendeley_countries_for_live_profiles(args["url_slug"], args["min_url_slug"])
     elif function=="update_profiles":
         update_profiles(args["limit"], args["url_slug"])
+    elif function=="refresh_tiid":
+        refresh_tiid(args["tiid"])
 
 
 
