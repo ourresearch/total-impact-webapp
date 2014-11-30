@@ -81,7 +81,10 @@ def get_products_from_tiids(tiids, ignore_order=False):
         ret = unsorted_products
     else:
         for my_tiid in tiids:
-            my_product = [p for p in unsorted_products if p.tiid == my_tiid][0]
+            try:
+                my_product = [p for p in unsorted_products if p.tiid == my_tiid][0]
+            except IndexError:
+                continue
             ret.append(my_product)
 
     return ret
