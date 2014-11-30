@@ -28,8 +28,7 @@ import urllib
 import hashlib
 import json
 
-logger = logging.getLogger("ti.daily")
-
+# logger is set below, in main
 
 
 """
@@ -1099,22 +1098,22 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run stuff.")
     parser.add_argument('function', type=str, help="one of emailreports, refsets, dedup, productdeets")
     parser.add_argument('--url_slug', default=None, type=str, help="url slug")
-    parser.add_argument('--tiid', default=None, type=str, help="tiid")
-    parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
-    parser.add_argument('--skip_until_url_slug', default=None, help="when looping don't process till past this url_slug")
-    parser.add_argument('--max_emails', default=None, type=int, help="max number of emails to send")
-    parser.add_argument('--min_tiid', default=None, type=str, help="min_tiid")
     parser.add_argument('--min_url_slug', default=None, type=str, help="min_url_slug")
+    parser.add_argument('--tiid', default=None, type=str, help="tiid")
+    parser.add_argument('--min_tiid', default=None, type=str, help="min_tiid")
+    parser.add_argument('--save_after_every_profile', action='store_true', help="use to debug refsets, saves refsets to db after every profile.  slow.")
+    parser.add_argument('--max_emails', default=None, type=int, help="max number of emails to send")
     parser.add_argument('--account_type', default=None, type=str, help="account_type")
-    parser.add_argument('--start_days_ago', default=44, type=int)
-    parser.add_argument('--end_days_ago', default=30, type=int)
-    parser.add_argument('--limit', default=5, type=int)
+    parser.add_argument('--start_days_ago', type=int)
+    parser.add_argument('--end_days_ago', type=int)
+    parser.add_argument('--limit', type=int)
 
     args = vars(parser.parse_args())
     function = args["function"]
 
-    print u"daily.py starting with {function} and args {args}".format(
-        function=function, args=args)
+    arg_string = dict((k, v) for (k, v) in args.iteritems() if v and k!="function")
+    print u"daily.py {function} with {arg_string}".format(
+        function=function.upper(), arg_string=arg_string)
 
     global logger
     logger = logging.getLogger("ti.daily.{function}".format(
