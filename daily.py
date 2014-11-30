@@ -941,7 +941,7 @@ def update_profiles(limit=5, url_slug=None):
                 limit=limit))
             return
             
-        logger.info(u"**scheduled update for {url_slug<16} is_live: {is_live}, next_refresh: {next_refresh}".format(
+        logger.info(u"**scheduled update for {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
             url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh))
 
         try:
