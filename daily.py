@@ -990,7 +990,8 @@ def update_profiles(limit=5, url_slug=None):
     if url_slug:
         q = db.session.query(Profile.id).filter(Profile.url_slug==url_slug)
     else:
-        q = db.session.query(Profile.id).limit(limit)
+        q = db.session.query(Profile.id).filter(Profile.next_refresh <= datetime.datetime.utcnow())
+        q = q.limit(limit)
 
     number_profiles = 0.0
     for profile_id in q.all():
@@ -1099,7 +1100,7 @@ if __name__ == "__main__":
     parser.add_argument('--account_type', default=None, type=str, help="account_type")
     parser.add_argument('--start_days_ago', type=int)
     parser.add_argument('--end_days_ago', type=int)
-    parser.add_argument('--limit', type=int)
+    parser.add_argument('--limit', type=int, default=5)
 
     args = vars(parser.parse_args())
     function = args["function"]
