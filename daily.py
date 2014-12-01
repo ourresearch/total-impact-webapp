@@ -991,17 +991,14 @@ def update_profiles(limit=5, url_slug=None):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
     else:
-        q = db.session.query(Profile).filter(Profile.next_refresh <= datetime.datetime.utcnow())
+        q = db.session.query(Profile.id).filter(Profile.next_refresh <= datetime.datetime.utcnow())
+        q = q.limit(limit)
     print "at 2"
 
     number_profiles = 0.0
-    for profile in windowed_query(q, Profile.next_refresh, 5):  
+    for profile_id in q.all(): 
+        profile = Profile.query.get(profile_id)
         print "at 3"
-
-        if limit and number_profiles >= limit:
-            logger.info(u"updated all {limit} profiles, done for now.".format(
-                limit=limit))
-            return
             
         logger.info(u"**updating {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
             url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh.isoformat()[0:10]))
