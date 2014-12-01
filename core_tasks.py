@@ -293,7 +293,7 @@ def chain_dummy(first_arg, **kwargs):
     return response
 
 
-@task()
+@task(base=ClearDbSessionTask)
 def provider_run(aliases_dict, tiid, method_name, provider_name):
 
     provider = ProviderFactory.get_provider(provider_name)
@@ -326,7 +326,7 @@ def provider_run(aliases_dict, tiid, method_name, provider_name):
 
 
 
-@task(priority=0)
+@task(priority=0, base=ClearDbSessionTask)
 def after_refresh_complete(tiid, task_ids):
     # logger.info(u"here in after_refresh_complete with {tiid}".format(
     #     tiid=tiid))
