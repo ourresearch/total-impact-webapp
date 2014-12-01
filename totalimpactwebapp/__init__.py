@@ -28,26 +28,21 @@ logging.basicConfig(
 )
 logger = logging.getLogger("tiwebapp")
 
-requests_log = logging.getLogger("requests.packages.urllib3")
-requests_log.setLevel(logging.WARNING)
-requests_log.propagate = True
+libraries_to_mum = [
+    "requests.packages.urllib3",
+    "stripe",
+    "oauthlib",
+    "boto",
+    "newrelic",
+    "RateLimiter"
+]
 
-stripe_log = logging.getLogger("stripe")
-stripe_log.setLevel(logging.WARNING)
-stripe_log.propagate = True
+for a_library in libraries_to_mum:
+    the_logger = logging.getLogger(a_library)
+    the_logger.setLevel(logging.WARNING)
+    the_logger.propagate = True
+
 stripe.api_key = os.getenv("STRIPE_API_KEY")
-
-oauth_log = logging.getLogger("oauthlib")
-oauth_log.setLevel(logging.WARNING)
-oauth_log.propagate = True
-
-newrelic_log = logging.getLogger("newrelic")
-newrelic_log.setLevel(logging.WARNING)
-newrelic_log.propagate = True
-
-ratelimiter_log = logging.getLogger("RateLimiter")
-ratelimiter_log.setLevel(logging.WARNING)
-ratelimiter_log.propagate = True
 
 
 # set up application
