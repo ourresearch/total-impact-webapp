@@ -113,13 +113,6 @@ def windowed_query(q, column, windowsize):
             yield row
 
 
-    orcid_id = db.Column(db.Text)
-    github_id = db.Column(db.Text)
-    slideshare_id = db.Column(db.Text)
-    twitter_id = db.Column(db.Text)
-    figshare_id = db.Column(db.Text)
-
-
 
 
 def csv_of_dict(mydicts):
@@ -994,14 +987,16 @@ def refresh_tiid(tiid):
 
 
 def update_profiles(limit=5, url_slug=None):
+    print "at 1"
     if url_slug:
         q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
     else:
         q = db.session.query(Profile).filter(Profile.next_refresh <= datetime.datetime.utcnow())
-        q = q.order_by(Profile.next_refresh.asc())
+    print "at 2"
 
     number_profiles = 0.0
     for profile in windowed_query(q, Profile.next_refresh, 5):  
+        print "at 3"
 
         if limit and number_profiles >= limit:
             logger.info(u"updated all {limit} profiles, done for now.".format(
