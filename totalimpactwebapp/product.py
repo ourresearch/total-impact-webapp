@@ -81,7 +81,10 @@ def get_products_from_tiids(tiids, ignore_order=False):
         ret = unsorted_products
     else:
         for my_tiid in tiids:
-            my_product = [p for p in unsorted_products if p.tiid == my_tiid][0]
+            try:
+                my_product = [p for p in unsorted_products if p.tiid == my_tiid][0]
+            except IndexError:
+                continue
             ret.append(my_product)
 
     return ret
@@ -914,9 +917,9 @@ def patch_biblio(tiid, patch_dict, provider="user_provided"):
     for biblio_name, biblio_value in patch_dict.iteritems():
         biblio_row_object = BiblioRow.query.filter_by(
                     tiid=tiid, 
-                    provider=provider_name, 
+                    provider=provider, 
                     biblio_name=biblio_name).first()
-        if biblio_object:
+        if biblio_row_object:
             biblio_row_object.biblio_value = biblio_value
             biblio_row_object.provider = provider
         else:

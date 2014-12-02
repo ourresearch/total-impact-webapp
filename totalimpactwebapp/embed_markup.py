@@ -123,7 +123,8 @@ def extract_pdf_link_from_html(url):
         return None
 
     # if this is a pdf, return this url directly
-    if "application/pdf" in r.headers['content-type'].lower():
+    if ("content-type" in r.headers) and \
+            ("application/pdf" in r.headers['content-type'].lower()):
         return url
     elif ('content-disposition'in r.headers) and \
             ("pdf" in r.headers['content-disposition'].lower()):

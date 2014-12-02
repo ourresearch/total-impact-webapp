@@ -113,13 +113,6 @@ def windowed_query(q, column, windowsize):
             yield row
 
 
-    orcid_id = db.Column(db.Text)
-    github_id = db.Column(db.Text)
-    slideshare_id = db.Column(db.Text)
-    twitter_id = db.Column(db.Text)
-    figshare_id = db.Column(db.Text)
-
-
 
 
 def csv_of_dict(mydicts):
@@ -995,13 +988,14 @@ def refresh_tiid(tiid):
 
 def update_profiles(limit=5, url_slug=None):
     if url_slug:
-        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
+        q = db.session.query(Profile.id).filter(Profile.url_slug==url_slug)
     else:
-        q = db.session.query(Profile).filter(Profile.next_refresh <= datetime.datetime.utcnow())
-        q = q.order_by(Profile.next_refresh.asc())
+        q = db.session.query(Profile.id).filter(Profile.next_refresh <= datetime.datetime.utcnow())
+        q = q.limit(limit)
 
     number_profiles = 0.0
-    for profile in windowed_query(q, Profile.next_refresh, 5):  
+    for profile_id in q.all():
+        profile = Profile.query.get(profile_id)
 
         if limit and number_profiles >= limit:
             logger.info(u"updated all {limit} profiles, done for now.".format(
@@ -1106,7 +1100,7 @@ if __name__ == "__main__":
     parser.add_argument('--account_type', default=None, type=str, help="account_type")
     parser.add_argument('--start_days_ago', type=int)
     parser.add_argument('--end_days_ago', type=int)
-    parser.add_argument('--limit', type=int)
+    parser.add_argument('--limit', type=int, default=5)
 
     args = vars(parser.parse_args())
     function = args["function"]

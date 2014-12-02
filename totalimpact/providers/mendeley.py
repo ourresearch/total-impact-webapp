@@ -108,14 +108,23 @@ class Mendeley(Provider):
     def _get_doc_by_title(self, aliases_dict):
         try:
             biblio = aliases_dict["biblio"][0]
-            biblio_title = self.remove_punctuation(biblio["title"]).lower()
+            biblio_title = self.remove_punctuation(biblio["title"])
             biblio_year = str(biblio["year"])
             if biblio_title and biblio_year:
-                doc = self.session.catalog.advanced_search(
-                        title=biblio_title, 
-                        min_year=biblio_year, 
-                        max_year=biblio_year,
-                        view='stats').list(page_size=1).items[0]
+                try:
+                    doc = self.session.catalog.advanced_search(
+                            title=biblio_title, 
+                            min_year=biblio_year, 
+                            max_year=biblio_year,
+                            view='stats').list(page_size=1).items[0]
+                except UnicodeEncodeError:
+                    biblio_title = self.remove_punctuation(biblio["title"].encode('ascii','ignore'))
+                    doc = self.session.catalog.advanced_search(
+                            title=biblio_title, 
+                            min_year=biblio_year, 
+                            max_year=biblio_year,
+                            view='stats').list(page_size=1).items[0]
+
                 mendeley_title = self.remove_punctuation(doc.title).lower()
                 if biblio_title != mendeley_title:
                     logger.debug(u"Mendeley: titles don't match so not using this match /biblio_print %s and %s" %(

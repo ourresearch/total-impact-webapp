@@ -10,7 +10,7 @@ def run(app_name, process_name_start_to_restart, command):
     app = cloud.apps[app_name]
     if command=="restart":
         print(u"restarting {app_name}, processes that start with {process_name}".format(
-            app_name=app_name, process_name=process_name))
+            app_name=app_name, process_name=process_name_start_to_restart))
         for process in app.processes:
             process_name = process.process
             process_name_start = process_name.split(".")[0]
