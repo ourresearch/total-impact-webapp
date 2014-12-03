@@ -730,6 +730,18 @@ def profile_products_modify(id):
     return json_resp_from_thing(resp)
 
 
+@app.route("/profile/<url_slug>/products/tweets", methods=["GET"])
+@app.route("/profile/<url_slug>/products/tweets.json", methods=["GET"])
+def get_profile_tweets(url_slug):
+    profile = get_user_for_response(url_slug, request, include_products=False)
+
+    tweets = get_product_tweets_for_profile(profile.id)
+
+    return json_resp_from_thing(tweets)
+
+
+
+
 @app.route("/profile/<url_slug>/collection/<tagspace>/<tag>/products", methods=["GET"])
 @app.route("/profile/<url_slug>/collection/<tagspace>/<tag>/products.json", methods=["GET"])
 def get_products_for_collection(url_slug, tagspace, tag):
