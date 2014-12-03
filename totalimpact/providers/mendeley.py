@@ -117,13 +117,16 @@ class Mendeley(Provider):
                             min_year=biblio_year, 
                             max_year=biblio_year,
                             view='stats').list(page_size=1).items[0]
-                except UnicodeEncodeError:
+                except (UnicodeEncodeError, IndexError):
                     biblio_title = self.remove_punctuation(biblio["title"].encode('ascii','ignore'))
-                    doc = self.session.catalog.advanced_search(
-                            title=biblio_title, 
-                            min_year=biblio_year, 
-                            max_year=biblio_year,
-                            view='stats').list(page_size=1).items[0]
+                    try:
+                        doc = self.session.catalog.advanced_search(
+                                title=biblio_title, 
+                                min_year=biblio_year, 
+                                max_year=biblio_year,
+                                view='stats').list(page_size=1).items[0]
+                    except (IndexError):
+                        return None
 
                 mendeley_title = self.remove_punctuation(doc.title).lower()
                 if biblio_title != mendeley_title:

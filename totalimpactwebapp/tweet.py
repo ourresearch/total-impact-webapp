@@ -230,6 +230,7 @@ class Tweeter(db.Model):
 
     def to_dict(self):
         attributes_to_ignore = [
+            "tweet"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
         return ret
@@ -313,7 +314,6 @@ class Tweet(db.Model):
 
     def to_dict(self):
         attributes_to_ignore = [
-            "tweeter"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
         return ret
