@@ -64,21 +64,28 @@
 
    </div>
 
-   <div class="sort-controls">
-      <div class="btn-group sort-select-group" dropdown>
-      <span class="sort-by-label">
-         Sorting by
-      </span>
-         <a class="dropdown-toggle">
-            {{ ProductListSort.get().name }}
-            <span class="caret"></span>
-         </a>
+   <div class="display-controls">
+      <div class="show-tweets">
+         <i class="fa fa-twitter"></i>
+         <input type="checkbox" ng-model="foo.bar" />
+      </div>
 
-         <ul class="dropdown-menu">
-            <li class="sort-by-option" ng-repeat="sortConfig in ProductListSort.options()">
-               <a ng-click="ProductListSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
-            </li>
-         </ul>
+      <div class="sort-controls">
+         <div class="btn-group sort-select-group" dropdown>
+         <span class="sort-by-label">
+            Sorting by
+         </span>
+            <a class="dropdown-toggle">
+               {{ ProductListSort.get().name }}
+               <span class="caret"></span>
+            </a>
+
+            <ul class="dropdown-menu">
+               <li class="sort-by-option" ng-repeat="sortConfig in ProductListSort.options()">
+                  <a ng-click="ProductListSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
+               </li>
+            </ul>
+         </div>
       </div>
    </div>
 </div>
@@ -127,6 +134,9 @@
                class="genre-icon {{ product.genre_icon }}"></i>
          </div>
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
+         <ul class="product-tweets">
+            <li class="tweet" ng-repeat="tweet in product.tweets"></li>
+         </ul>
       </li>
    </ul>
 </div>

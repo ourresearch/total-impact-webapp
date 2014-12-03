@@ -222,37 +222,51 @@ div.product-list-page {
 
       }
 
-      div.sort-controls {
+      div.display-controls {
          top: 0;
          right: 0;
          position: absolute;
          margin: 5px 15px;
          color: #555;
          font-size: 14px;
-         .btn-group.sort-select-group {
-            vertical-align: top;
-            &.open {
-               a.dropdown-toggle {
-                  border: none;
-                  box-shadow: none;
-                  -webkit-box-shadow: none;
-                  -moz-box-shadow:none;
-                  text-decoration: underline;
-                  color: #333;
 
-               }
+         div.show-tweets {
+            display:inline-block;
+            margin-right: 25px;
+            i.fa-twitter {
+               color: @twitterColor;
+               font-size: 24px;
+               vertical-align: middle;
             }
-            a.dropdown-toggle {
-               color: #555;
-               padding: 2px 5px 2px 0;
-               &:hover {
-                  text-decoration: underline;
+         }
+
+         div.sort-controls {
+            display:inline-block;
+            .btn-group.sort-select-group {
+               vertical-align: top;
+               &.open {
+                  a.dropdown-toggle {
+                     border: none;
+                     box-shadow: none;
+                     -webkit-box-shadow: none;
+                     -moz-box-shadow:none;
+                     text-decoration: underline;
+                     color: #333;
+
+                  }
                }
-               font-weight: bold;
-            }
-            ul.dropdown-menu {
-               li {
-                  font-size: 14px;
+               a.dropdown-toggle {
+                  color: #555;
+                  padding: 2px 5px 2px 0;
+                  &:hover {
+                     text-decoration: underline;
+                  }
+                  font-weight: bold;
+               }
+               ul.dropdown-menu {
+                  li {
+                     font-size: 14px;
+                  }
                }
             }
          }

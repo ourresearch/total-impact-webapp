@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-28
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-03
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -8054,21 +8054,28 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"sort-controls\">\n" +
-    "      <div class=\"btn-group sort-select-group\" dropdown>\n" +
-    "      <span class=\"sort-by-label\">\n" +
-    "         Sorting by\n" +
-    "      </span>\n" +
-    "         <a class=\"dropdown-toggle\">\n" +
-    "            {{ ProductListSort.get().name }}\n" +
-    "            <span class=\"caret\"></span>\n" +
-    "         </a>\n" +
+    "   <div class=\"display-controls\">\n" +
+    "      <div class=\"show-tweets\">\n" +
+    "         <i class=\"fa fa-twitter\"></i>\n" +
+    "         <input type=\"checkbox\" ng-model=\"foo.bar\" />\n" +
+    "      </div>\n" +
     "\n" +
-    "         <ul class=\"dropdown-menu\">\n" +
-    "            <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
-    "               <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
+    "      <div class=\"sort-controls\">\n" +
+    "         <div class=\"btn-group sort-select-group\" dropdown>\n" +
+    "         <span class=\"sort-by-label\">\n" +
+    "            Sorting by\n" +
+    "         </span>\n" +
+    "            <a class=\"dropdown-toggle\">\n" +
+    "               {{ ProductListSort.get().name }}\n" +
+    "               <span class=\"caret\"></span>\n" +
+    "            </a>\n" +
+    "\n" +
+    "            <ul class=\"dropdown-menu\">\n" +
+    "               <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
+    "                  <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -8117,6 +8124,9 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "         <ul class=\"product-tweets\">\n" +
+    "            <li class=\"tweet\" ng-repeat=\"tweet in product.tweets\"></li>\n" +
+    "         </ul>\n" +
     "      </li>\n" +
     "   </ul>\n" +
     "</div>");

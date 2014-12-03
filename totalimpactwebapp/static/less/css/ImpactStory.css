@@ -10208,7 +10208,7 @@ div.product-list-page div.product-list-controls div.edit-controls span.num-selec
   margin-left: 10px;
   color: #555;
 }
-div.product-list-page div.product-list-controls div.sort-controls {
+div.product-list-page div.product-list-controls div.display-controls {
   top: 0;
   right: 0;
   position: absolute;
@@ -10216,10 +10216,22 @@ div.product-list-page div.product-list-controls div.sort-controls {
   color: #555;
   font-size: 14px;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group {
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets {
+  display: inline-block;
+  margin-right: 25px;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets i.fa-twitter {
+  color: #55acee;
+  font-size: 24px;
+  vertical-align: middle;
+}
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls {
+  display: inline-block;
+}
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group {
   vertical-align: top;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
   border: none;
   box-shadow: none;
   -webkit-box-shadow: none;
@@ -10227,15 +10239,15 @@ div.product-list-page div.product-list-controls div.sort-controls .btn-group.sor
   text-decoration: underline;
   color: #333;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
   color: #555;
   padding: 2px 5px 2px 0;
   font-weight: bold;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
   text-decoration: underline;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
   font-size: 14px;
 }
 div.product-list-page div.products {
