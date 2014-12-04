@@ -5947,6 +5947,7 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
+                                      SelfCancellingProfileTweetsResource,
                                       SelfCancellingProductsResource){
 
     var loading = true
@@ -5956,7 +5957,7 @@ angular.module('services.profileService', [
 
     function getProductStubs(url_slug){
       data.url_slug = url_slug
-      UsersProducts.get(
+      return UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
           console.log("ProfileService got stubs back", resp)
@@ -5965,7 +5966,7 @@ angular.module('services.profileService', [
         function(resp){
           console.log("stubs call failed", resp)
         }
-      )
+      ).$promise
 
     }
 
@@ -5975,11 +5976,26 @@ angular.module('services.profileService', [
     }
 
 
+    function getTweets(url_slug){
+      return SelfCancellingProfileTweetsResource.createResource().get(
+        {id: url_slug},
+        function(resp){
+          console.log("we got teh tweets!", resp.tweets)
+        }
+      ).$promise
+    }
+
+
     function get(url_slug){
       data.url_slug = url_slug
 
       if (!data.products){
-        getProductStubs(url_slug)
+        getProductStubs(url_slug).then(function(resp){
+          console.log("finished getting the product stubs. now getting tweets")
+          return getTweets(url_slug)
+        }).then(function(resp){
+          console.log("in the profileservice.get(), got the tweets in promise!")
+        })
       }
 
       loading = true
@@ -6170,6 +6186,40 @@ function( $resource, $q ) {
   var createResource = function() {
     cancel();
     return $resource( '/profile/:id/products',
+      {},
+      {
+        get: {
+          method : 'GET',
+          timeout : canceler.promise
+        }
+      });
+  };
+
+  return {
+    createResource: createResource,
+    cancelResource: cancel
+  };
+}])
+
+
+// http://stackoverflow.com/a/24958268
+// copied straight from above; refactor if we make a third one of these.
+.factory( 'SelfCancellingProfileTweetsResource', ['$resource','$q',
+function( $resource, $q ) {
+  var canceler = $q.defer();
+
+  var cancel = function() {
+    canceler.resolve();
+    canceler = $q.defer();
+  };
+
+  // Check if a username exists
+  // create a resource
+  // (we have to re-craete it every time because this is the only
+  // way to renew the promise)
+  var createResource = function() {
+    cancel();
+    return $resource( '/profile/:id/products/tweets',
       {},
       {
         get: {

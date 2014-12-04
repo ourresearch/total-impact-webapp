@@ -736,8 +736,11 @@ def get_profile_tweets(url_slug):
     profile = get_user_for_response(url_slug, request, include_products=False)
 
     tweets = get_product_tweets_for_profile(profile.id)
+    resp = {
+        "tweets": tweets
+    }
 
-    return json_resp_from_thing(tweets)
+    return json_resp_from_thing(resp)
 
 
 
