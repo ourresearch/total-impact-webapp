@@ -208,10 +208,11 @@ class Tweeter(db.Model):
     name = db.Column(db.Text)
     description = db.Column(db.Text)
     image_url = db.Column(db.Text)
+    last_collected_date = db.Column(db.DateTime())   #alter table tweeter add last_collected_date timestamp
 
     def __init__(self, **kwargs):
-        if not "tweet_id" in kwargs:
-            self.tweet_id = 0
+        if not "last_collected_date" in kwargs:
+            self.last_collected_date = datetime.datetime.uctnow()
         super(Tweeter, self).__init__(**kwargs)
 
 
