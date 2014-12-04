@@ -5,6 +5,7 @@ from util import dict_from_dir
 from util import as_int_or_float_if_possible
 from totalimpactwebapp import db
 from totalimpactwebapp.twitter_paging import TwitterPager
+from totalimpactwebapp.tweeter import Tweeter
 
 from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
 from collections import defaultdict
@@ -201,41 +202,6 @@ def save_product_tweets_for_profile(profile):
 
 
 
-
-class Tweeter(db.Model):
-    screen_name = db.Column(db.Text, primary_key=True)
-    followers = db.Column(db.Integer)
-    name = db.Column(db.Text)
-    description = db.Column(db.Text)
-    image_url = db.Column(db.Text)
-    last_collected_date = db.Column(db.DateTime())   #alter table tweeter add last_collected_date timestamp
-
-    def __init__(self, **kwargs):
-        if not "last_collected_date" in kwargs:
-            self.last_collected_date = datetime.datetime.uctnow()
-        super(Tweeter, self).__init__(**kwargs)
-
-
-    def set_attributes_from_post(self, post):
-        self.followers = post["author"].get("followers", 0)
-        self.name = post["author"].get("name", self.screen_name)
-        self.description = post["author"].get("description", "")
-        self.image_url = post["author"].get("image", None)
-        return self
-
-    def __repr__(self):
-        return u'<Tweet {screen_name} {followers}>'.format(
-            screen_name=self.screen_name, 
-            followers=self.followers)
-
-    def to_dict(self):
-        attributes_to_ignore = [
-            "tweet"
-        ]
-        ret = dict_from_dir(self, attributes_to_ignore)
-        return ret
-
-
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
@@ -318,7 +284,7 @@ class Tweet(db.Model):
         return ret
 
 
-example_contents = """{
+twitter_aexample_contents = """{
         "contributors": null, 
         "coordinates": null, 
         "created_at": "Sun Dec 16 22:42:55 +0000 2012", 
