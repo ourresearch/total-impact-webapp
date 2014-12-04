@@ -204,7 +204,6 @@ def save_product_tweets_for_profile(profile):
 
 class Tweeter(db.Model):
     screen_name = db.Column(db.Text, primary_key=True)
-    tweet_id = db.Column(db.Text, db.ForeignKey('tweet.tweet_id'), primary_key=True)  # alter table tweeter add tweet_id text  
     followers = db.Column(db.Integer)
     name = db.Column(db.Text)
     description = db.Column(db.Text)
@@ -239,23 +238,22 @@ class Tweeter(db.Model):
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
-    screen_name = db.Column(db.Text)
+    screen_name = db.Column(db.Text, db.ForeignKey('tweeter.screen_name'))
     tweet_timestamp = db.Column(db.DateTime())
     payload = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
     tiid = db.Column(db.Text)  # alter table tweet add tiid text
     is_deleted = db.Column(db.Boolean)  # alter table tweet add is_deleted bool
     tweet_url = db.Column(db.Text) # alter table tweet add tweet_url text
     country = db.Column(db.Text) # alter table tweet add country text
-    # would make lat and long numeric, but ran into problems serializing, ala http://stackoverflow.com/questions/1960516/python-json-serialize-a-decimal-object
-    # latitude = db.Column(db.Text) # alter table tweet add latitude text;
-    # longitude = db.Column(db.Text) # alter table tweet add longitude text;
+    followers_at_time_of_tweet = db.Column(db.Integer) # alter table tweet add followers_at_time_of_tweet int4
 
     tweeter = db.relationship(
         'Tweeter',
         lazy='joined',
         cascade='all, delete-orphan',
         backref=db.backref("tweet", lazy="joined"), 
-        uselist=False  #onetoone
+        uselist=False,  #onetoone
+        single_parent=True
     )
 
     def __init__(self, **kwargs):
