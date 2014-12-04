@@ -138,11 +138,11 @@ def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
         new_objects.append(tweet)
 
         tweeter = None
-        if (screen_name, tweet_id) in tweeters.keys():
+        if screen_name in tweeters.keys():
             continue  # already saved this one
         if not tweeter:
-            tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
-        tweeters[(screen_name, tweet_id)] = tweeter
+            tweeter = Tweeter(screen_name=screen_name)
+        tweeters[screen_name] = tweeter
 
         tweeter.set_attributes_from_post(post)
         new_objects.append(tweeter)
@@ -184,11 +184,11 @@ def save_product_tweets_for_profile(profile):
                 new_objects.append(tweet)
 
                 tweeter = None
-                if (screen_name, tweet_id) in tweeters.keys():
+                if screen_name in tweeters.keys():
                     continue  # already saved this one
                 if not tweeter:
-                    tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
-                tweeters[(screen_name, tweet_id)] = tweeter
+                    tweeter = Tweeter(screen_name=screen_name)
+                tweeters[screen_name] = tweeter
 
                 tweeter.set_attributes_from_post(post)
                 new_objects.append(tweeter)
