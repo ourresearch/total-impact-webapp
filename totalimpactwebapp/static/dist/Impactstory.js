@@ -5975,12 +5975,20 @@ angular.module('services.profileService', [
       data.products.push(newProduct)
     }
 
+    function appendToProduct(tiid, key, val){
+      _.each(data.products, function(product){
+        if (product.tiid === tiid){
+          product[key] = val
+        }
+      })
+    }
+
 
     function getTweets(url_slug){
       return SelfCancellingProfileTweetsResource.createResource().get(
         {id: url_slug},
         function(resp){
-          console.log("we got teh tweets!", resp.tweets)
+          // could so stuff here.
         }
       ).$promise
     }
@@ -5990,12 +5998,21 @@ angular.module('services.profileService', [
       data.url_slug = url_slug
 
       if (!data.products){
-        getProductStubs(url_slug).then(function(resp){
-          console.log("finished getting the product stubs. now getting tweets")
-          return getTweets(url_slug)
-        }).then(function(resp){
-          console.log("in the profileservice.get(), got the tweets in promise!")
-        })
+        getProductStubs(url_slug)
+          .then(function(resp){
+            return getTweets(url_slug)
+          })
+          .then(function(tweetsResp){
+            console.log("in the profileservice.get(), got the tweets in promise!", resp)
+            _.each(data.products, function(product){
+              var myTweets = tweetsResp.tweets[product.tiid]
+              if (typeof myTweets === "undefined") {
+                myTweets = []
+              }
+              product.tweets = myTweets
+            })
+          })
+
       }
 
       loading = true
@@ -9017,6 +9034,8 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"profile-content animated fadeIn\" ng-if=\"profileAboutService.data.full_name\">\n" +
     "\n" +
     "   <div class=\"profile-header\">\n" +
+    "\n" +
+    "      <pre>{{ profileService.data.products | json }}</pre>\n" +
     "\n" +
     "\n" +
     "      <div class=\"profile-header-loaded\">\n" +
