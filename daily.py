@@ -273,6 +273,7 @@ def profile_deets(url_slug=None,
         logger.info(u"profile_deets: {url_slug}".format(
             url_slug=profile.url_slug))
         profile_deets += [populate_profile_deets(profile)]
+        db.session.expunge(profile)
         # print csv_of_dict(profile_deets)
         # with open("profile_deets.pickle", "wb") as handle:
         #   pickle.dump(profile_deets, handle)
