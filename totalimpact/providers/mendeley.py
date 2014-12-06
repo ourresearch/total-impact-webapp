@@ -4,7 +4,7 @@ from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderAuthenticationError
 from totalimpact import tiredis
 from retry import Retry
-from totalimpactwebapp.countries_info import country_iso_by_name
+from totalimpactwebapp.countries import iso_code_from_name
 
 import simplejson, urllib, os, string, itertools
 import requests
@@ -183,8 +183,8 @@ class Mendeley(Provider):
                 by_country_names = doc.reader_count_by_country
                 if by_country_names:
                     for country_name, country_breakdown in by_country_names.iteritems():
-                        if country_name in country_iso_by_name:
-                            iso = country_iso_by_name[country_name]
+                        iso = iso_code_from_name(country_name)
+                        if iso:
                             by_country_iso[iso] = country_breakdown
                         else:
                             logger.error(u"Can't find country {country} in lookup".format(

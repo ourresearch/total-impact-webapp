@@ -9,7 +9,7 @@ from test.utils import setup_postgres_for_unittests, teardown_postgres_for_unitt
 
 import os
 import collections
-from nose.tools import assert_equals, raises, nottest
+from nose.tools import assert_equals, raises, nottest, assert_items_equal
 
 
 TEST_DOI = "10.1038/nature10658"  # matches UUID sample page
@@ -105,5 +105,5 @@ class TestMendeley(ProviderTestCase):
         new_aliases = self.provider.aliases([alias])
         print new_aliases
         expected = [(u'scopus', u'2-s2.0-84904019573'), (u'doi', u'http://arxiv.org/abs/1203.4745v1'), (u'arxiv', u'1203.4745'), ('url', u'http://www.mendeley.com/research/altmetrics-wild-using-social-media-explore-scholarly-impact'), ('mendeley_uuid', u'dd1ca434-0c00-3d11-8b1f-0226b1d6938c')]
-        assert_equals(new_aliases, expected)
+        assert_items_equal(new_aliases, expected)
 
