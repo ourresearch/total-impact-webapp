@@ -1,5 +1,6 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError
+from totalimpactwebapp.tweet import get_tweet_text_and_followers_from_twitter
 
 import json, re, os, requests, socket
 from operator import itemgetter
@@ -141,15 +142,31 @@ class Altmetric_Com(Provider):
         else:
             aliases_list = []
         return aliases_list
+              
 
+    def calculate_tweeter_followers(self, altmetric_posts):
+        tweeter_followers = []
+        for post in altmetric_posts:
+            twitter_handle = post["author"]["id_on_source"]
+            try:
+                followers = post["author"]["followers"]
+                tweeter_followers.append([twitter_handle, followers])
+            except KeyError:
+                pass
+        return tweeter_followers
+
+    def calculate_impressions(self, tweeter_followers):
+        impressions = sum([followers for (handle, followers) in tweeter_followers]) 
+        return impressions               
+
+    def get_tweet_ids(self, altmetric_posts):
+        tweet_ids = [p["tweet_id"] for p in altmetric_posts]
+        return tweet_ids 
 
     def _extract_metrics_via_fetch(self, page, status_code=200, id=None):
         dict_of_keylists = {
             'altmetric_com:tweets' : ['counts', 'twitter', 'posts_count'],
             'altmetric_com:unique_tweeters' : ['counts', 'twitter', 'unique_users_count'],
-            # 'altmetric_com:news' : ['counts', 'news', 'posts_count'],
-            # 'altmetric_com:unique_news' : ['counts', 'news', 'unique_users_count'],
-            # 'altmetric_com:news_names' : ['counts', 'news', 'unique_users'],
             'altmetric_com:demographics' : ['demographics'],
             'altmetric_com:posts' : ['posts']
         }
@@ -157,22 +174,14 @@ class Altmetric_Com(Provider):
 
         try:
             if metrics_dict['altmetric_com:posts'] and "twitter" in metrics_dict['altmetric_com:posts']:
-                twitter_posts = metrics_dict['altmetric_com:posts']["twitter"]
-                impressions = 0
-                tweeter_followers = []
-                for post in twitter_posts:
-                    # print post["author"]
-                    twitter_handle = post["author"]["id_on_source"]
-                    try:
-                        followers = post["author"]["followers"]
-                        tweeter_followers.append([twitter_handle, followers])
-                    except KeyError:
-                        pass
-                impressions = sum([followers for (handle, followers) in tweeter_followers])
+                altmetric_posts = metrics_dict['altmetric_com:posts']["twitter"]
+
+                tweeter_followers = self.calculate_tweeter_followers(altmetric_posts)
                 if tweeter_followers:
                     metrics_dict['altmetric_com:tweeter_followers'] = tweeter_followers
-                if impressions:
+                    impressions = self.calculate_impressions(tweeter_followers)
                     metrics_dict['altmetric_com:impressions'] = impressions
+
         except KeyError:
             pass  # no posts
 
