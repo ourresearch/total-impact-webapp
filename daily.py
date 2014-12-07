@@ -11,6 +11,7 @@ from util import commit
 from util import dict_from_dir
 from totalimpactwebapp.tweet import save_product_tweets_for_profile
 from totalimpactwebapp import db
+from db_backup_to_s3 import upload_to_s3
 import tasks
 
 from sqlalchemy import and_, or_, func, between
@@ -129,9 +130,9 @@ def csv_of_dict(mydicts):
 
 
 def build_csv_rows_from_dict(mydicts):
+
     columns = []
     for dictrow in mydicts:
-        print dictrow
         columns += dictrow.keys()
     columns = sorted(list(set(columns)))
 
@@ -172,9 +173,12 @@ def populate_profile_deets(profile):
     deets["got_new_metrics_email"] = (None != profile.last_email_sent)
     deets["subscription_date"] = profile.subscription_start_date
     deets["oa_badge"] = profile.awards[0].level_name
+    deets["num_countries"] = len(profile.countries.countries)
+    deets["internationality"] = profile.countries.internationality
+
 
     products = profile.display_products
-    deets["number_products"] = len(products)
+    deets["num_products"] = len(products)
     deets["earliest_publication_year"] = 9999
     mendeley_disciplines = Counter()
     badges = Counter()
@@ -240,7 +244,7 @@ def populate_profile_deets(profile):
             break
         deets["hindex"] = number_of_papers_with_more_citations
         # print deets["hindex"]
-    print deets["hindex"]
+    # print deets["hindex"]
 
     for genre_dict in profile.genres:
         deets["genre_" + genre_dict.name] = genre_dict.num_products
@@ -269,14 +273,22 @@ def profile_deets(url_slug=None,
         logger.info(u"profile_deets: {url_slug}".format(
             url_slug=profile.url_slug))
         profile_deets += [populate_profile_deets(profile)]
+        db.session.expunge(profile)
         # print csv_of_dict(profile_deets)
         # with open("profile_deets.pickle", "wb") as handle:
         #   pickle.dump(profile_deets, handle)
 
-    print json.dumps(profile_deets, sort_keys=True, indent=4)
+    # print json.dumps(profile_deets, sort_keys=True, indent=4)
 
     print "****"
-    print csv_of_dict(profile_deets)
+    csv_contents = csv_of_dict(profile_deets)
+    print csv_contents
+    import tempfile
+    temp_csv_file = tempfile.NamedTemporaryFile(delete=False)
+    temp_csv_file.write(csv_contents)
+    temp_csv_file.close()
+
+    upload_to_s3(temp_csv_file.name, "exploring/profile_deets.csv")
     time.sleep(30)
 
 

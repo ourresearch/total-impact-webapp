@@ -1,4 +1,4 @@
-countries_info = [
+countries_info_list = [
     {
         "name": {
             "common": "Afghanistan",
@@ -9957,11 +9957,9 @@ countries_info = [
 ]
 
 # take this out after daily.py run is done
-country_iso_by_name = dict((country["name"]["common"], country["cca2"]) for country in countries_info)
-country_iso_by_name.update(dict((country["name"]["official"], country["cca2"]) for country in countries_info))
-country_iso_by_name["Korea (South)"] = "KR"
-country_iso_by_name["Serbia and Montenegro"] = "RS"
-country_iso_by_name["Reunion"] = "RE"
-country_iso_by_name["Macao"] = "MO"
-country_iso_by_name["Fiji Islands"] = "FJ"
-
+country_iso_by_name = {}
+for country in countries_info_list:
+    country_iso_by_name[country["name"]["common"]] = country["cca2"]
+    country_iso_by_name[country["name"]["official"]] = country["cca2"]
+    for country_spelling in country["altSpellings"]:
+        country_iso_by_name[country_spelling] = country["cca2"]
