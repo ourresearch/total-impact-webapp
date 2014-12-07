@@ -10,13 +10,12 @@ from boto.s3.key import Key
 
 
 # Amazon S3 settings.
-AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-AWS_SNAPS_BUCKET_NAME = 'impactstory-uploads-production'
-APP_NAME = "total-impact-core" # should be in sync with AWS bucket name wrt staging/production
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+DB_APP_NAME = "total-impact-core" # should be in sync with AWS bucket name wrt staging/production
 
 def get_database_cred_from_heroku_app():
-    cmd_list = ['heroku', 'pg:credentials', 'DATABASE', '--app', APP_NAME]
+    cmd_list = ['heroku', 'pg:credentials', 'DATABASE', '--app', DB_APP_NAME]
     ps = subprocess.Popen(cmd_list, stdout=subprocess.PIPE)
     output = ps.communicate()[0]
     cred_dict = dict([t.split("=") for t in output.splitlines()[1].replace('"',"").split(' ') if t])
@@ -42,12 +41,15 @@ def call_pg_dump(cred_dict, tablename, dumped_file):
     return output
 
 
-def upload_to_s3(dumped_file, aws_filename):
+def upload_to_s3(dumped_file, aws_filename, bucket_name=None):
     """
     Upload a file to an AWS S3 bucket.
     """
+    if not bucket_name:
+        bucket_name = os.getenv("AWS_BUCKET", "impactstory-uploads-local")
+
     conn = boto.connect_s3(AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY)
-    bucket = conn.get_bucket(AWS_SNAPS_BUCKET_NAME)
+    bucket = conn.get_bucket(bucket_name)
     k = Key(bucket)
     k.key = aws_filename
     k.set_contents_from_filename(dumped_file)
@@ -59,7 +61,7 @@ def backup_table(cred_dict, tablename):
 
     output = call_pg_dump(cred_dict, tablename, dumped_file)
 
-    upload_to_s3(dumped_file, aws_filename)
+    upload_to_s3(dumped_file, aws_filename, bucket_name)
 
     try:
         print 'Uploading %s to Amazon S3...' % aws_filename

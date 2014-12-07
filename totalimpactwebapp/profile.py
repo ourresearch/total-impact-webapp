@@ -443,6 +443,7 @@ class Profile(db.Model):
         save_profile_last_refreshed_timestamp(self.id)
         return resp
 
+
     def update_twitter(self):
         if self.twitter_id:
             t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
