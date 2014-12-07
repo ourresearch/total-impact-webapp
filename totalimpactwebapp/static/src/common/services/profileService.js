@@ -70,7 +70,7 @@ angular.module('services.profileService', [
             return getTweets(url_slug)
           })
           .then(function(tweetsResp){
-            console.log("in the profileservice.get(), got the tweets in promise!", resp)
+            console.log("in the profileservice.get(), got the tweets in promise!", tweetsResp)
             _.each(data.products, function(product){
               var myTweets = tweetsResp.tweets[product.tiid]
               if (typeof myTweets === "undefined") {

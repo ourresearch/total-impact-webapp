@@ -8278,6 +8278,22 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   width: 20px;
   text-align: center;
 }
+.product ul.product-tweets {
+  clear: both;
+  margin-left: 50px;
+}
+.product ul.product-tweets li.tweet div.tweet-author {
+  float: left;
+}
+.product ul.product-tweets li.tweet div.tweet-author img {
+  height: 48px;
+  -webkit-border-radius: 24px;
+  -moz-border-radius: 24px;
+  border-radius: 24px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
 .product-container .biblio {
   float: left;
   width: 420px;

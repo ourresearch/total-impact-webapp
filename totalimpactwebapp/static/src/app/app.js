@@ -172,6 +172,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   })
 
+  $scope.moment = moment
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;

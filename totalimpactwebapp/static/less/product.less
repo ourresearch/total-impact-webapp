@@ -48,8 +48,33 @@
          text-align: center;
       }
    }
+
+   .product-container {
+      // see below.
+   }
+
+   ul.product-tweets {
+      clear:both;
+      margin-left: 50px;
+
+      li.tweet {
+         div.tweet-author {
+            float: left;
+            img {
+               height: 48px;
+               .rounded(24px);
+            }
+         }
+         div.tweet-content {
+            span.text {
+
+            }
+         }
+      }
+   }
 }
 
+// this is actually inside .product, it's here because otherwise was unwieldy.
 .product-container {
 
    .biblio{

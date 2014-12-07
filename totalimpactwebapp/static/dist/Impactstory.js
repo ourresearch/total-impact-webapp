@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-03
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-06
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -667,6 +667,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   })
 
+  $scope.moment = moment
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;
@@ -6003,7 +6004,7 @@ angular.module('services.profileService', [
             return getTweets(url_slug)
           })
           .then(function(tweetsResp){
-            console.log("in the profileservice.get(), got the tweets in promise!", resp)
+            console.log("in the profileservice.get(), got the tweets in promise!", tweetsResp)
             _.each(data.products, function(product){
               var myTweets = tweetsResp.tweets[product.tiid]
               if (typeof myTweets === "undefined") {
@@ -8192,7 +8193,42 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "         <ul class=\"product-tweets\">\n" +
-    "            <li class=\"tweet\" ng-repeat=\"tweet in product.tweets\"></li>\n" +
+    "            <li class=\"tweet\" ng-repeat=\"tweet in product.tweets\">\n" +
+    "               <div class=\"tweeter\">\n" +
+    "                  <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
+    "                  <div class=\"tweeter-data f16\">\n" +
+    "                     <span class=\"tweeter-name\">\n" +
+    "                        <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
+    "                        <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
+    "                     </span>\n" +
+    "\n" +
+    "                     <span class=\"tweeter-followers\">\n" +
+    "                        <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
+    "                        <span class=\"descr\">followers</span>\n" +
+    "                     </span>\n" +
+    "                  </div>\n" +
+    "\n" +
+    "               </div>\n" +
+    "               <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
+    "               </div>\n" +
+    "               <div class=\"after-tweet\">\n" +
+    "                  <div class=\"tweet-date\"\n" +
+    "                       tooltip=\"Posted at {{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
+    "                     {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
+    "                  </div>\n" +
+    "                  <div class=\"tweet-controls\">\n" +
+    "                     <a href=\"https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}\">\n" +
+    "                        <i class=\"fa fa-reply\"></i>\n" +
+    "                     </a>\n" +
+    "                     <a href=\"https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "                        <i class=\"fa fa-retweet\"></i>\n" +
+    "                     </a>\n" +
+    "                     <a href=\"https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "                        <i class=\"fa fa-star-o\"></i>\n" +
+    "                     </a>\n" +
+    "                  </div>\n" +
+    "               </div>\n" +
+    "            </li>\n" +
     "         </ul>\n" +
     "      </li>\n" +
     "   </ul>\n" +
