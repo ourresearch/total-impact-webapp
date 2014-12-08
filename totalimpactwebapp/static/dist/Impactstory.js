@@ -8193,7 +8193,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "         <ul class=\"product-tweets\">\n" +
-    "            <li class=\"tweet\" ng-repeat=\"tweet in product.tweets | orderBy: '-tweet_timestamp'\">\n" +
+    "            <li class=\"tweet\" ng-repeat=\"tweet in product.tweets | orderBy: '-tweet_timestamp' | limitTo: 5\">\n" +
     "               <div class=\"tweeter\">\n" +
     "                  <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
     "                  <div class=\"tweeter-data f16\">\n" +

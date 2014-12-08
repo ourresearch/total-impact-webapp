@@ -135,7 +135,7 @@
          </div>
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
          <ul class="product-tweets">
-            <li class="tweet" ng-repeat="tweet in product.tweets | orderBy: '-tweet_timestamp'">
+            <li class="tweet" ng-repeat="tweet in product.tweets | orderBy: '-tweet_timestamp' | limitTo: 5">
                <div class="tweeter">
                   <img ng-src="{{ tweet.tweeter.image_url }}" />
                   <div class="tweeter-data f16">
