@@ -264,7 +264,7 @@ class Tweet(db.Model):
         # the tweet text has just stub links. replace these with real ones
         ret = re.sub(r"(http://.+?)(\s|$)", r"<link>", ret)
         for url_info in self.urls:
-            my_link = u" <a class='linkout' href='{url}'>{display_url}</a> ".format(
+            my_link = u" <a class='linkout entity' href='{url}'>{display_url}</a> ".format(
                 url=url_info["expanded_url"],
                 display_url=url_info["display_url"]
             )

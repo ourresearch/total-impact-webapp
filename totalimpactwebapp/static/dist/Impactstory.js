@@ -8213,6 +8213,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "               </div>\n" +
     "               <div class=\"after-tweet\">\n" +
     "                  <span class=\"tweet-date\"\n" +
+    "                       tooltip-placement=\"left\"\n" +
     "                       tooltip=\"Posted at {{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
     "                     {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
     "                  </span>\n" +
