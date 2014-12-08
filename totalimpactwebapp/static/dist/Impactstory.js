@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-06
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-07
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -8193,7 +8193,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "         <ul class=\"product-tweets\">\n" +
-    "            <li class=\"tweet\" ng-repeat=\"tweet in product.tweets\">\n" +
+    "            <li class=\"tweet\" ng-repeat=\"tweet in product.tweets | orderBy: '-tweet_timestamp'\">\n" +
     "               <div class=\"tweeter\">\n" +
     "                  <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
     "                  <div class=\"tweeter-data f16\">\n" +
@@ -8212,10 +8212,10 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "               <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
     "               </div>\n" +
     "               <div class=\"after-tweet\">\n" +
-    "                  <div class=\"tweet-date\"\n" +
+    "                  <span class=\"tweet-date\"\n" +
     "                       tooltip=\"Posted at {{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
     "                     {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
-    "                  </div>\n" +
+    "                  </span>\n" +
     "                  <div class=\"tweet-controls\">\n" +
     "                     <a href=\"https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}\">\n" +
     "                        <i class=\"fa fa-reply\"></i>\n" +

@@ -264,15 +264,18 @@ class Tweet(db.Model):
         # the tweet text has just stub links. replace these with real ones
         ret = re.sub(r"(http://.+?)(\s|$)", r"<link>", ret)
         for url_info in self.urls:
-            my_link = u"<a href='{url}'>{display_url}</a>".format(
+            my_link = u" <a class='linkout' href='{url}'>{display_url}</a> ".format(
                 url=url_info["expanded_url"],
                 display_url=url_info["display_url"]
             )
             ret = re.sub(r"<link>", my_link, ret, 1)
 
-        # then add more links for #hashtags and @usernames
-        ret = re.sub(r"#(\w+)", r"<a href='http://twitter.com/hashtag/\1' class='entity hashtag'>#\1</a>", ret)
-        ret = re.sub(r"@(\w+)", r"<a href='http://twitter.com/\1' class='entity at-name'>@\1</a>", ret)
+        # make links for #hashtags
+        # this and the @usernames one both based on http://stackoverflow.com/a/13398311/226013
+        ret = re.sub(r"(^|[^#\w])#(\w+)\b", r"\1<a href='http://twitter.com/hashtag/\2' class='entity hashtag'>#\2</a>", ret)
+
+        # make links for @usernames
+        ret = re.sub(r"(^|[^@\w])@(\w+)\b", r"\1<a href='http://twitter.com/\2' class='entity at-name'>@\2</a> ", ret)
         return ret
 
 

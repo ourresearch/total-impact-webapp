@@ -21,7 +21,7 @@
       }
       span.feature-product-controls {
          a.feature-product {
-            color: @gray-light;
+            color: #777;
             &:hover {
                color: #000;
             }
@@ -58,16 +58,64 @@
       margin-left: 50px;
 
       li.tweet {
-         div.tweet-author {
-            float: left;
+         font-size: 14px;
+         clear:both;
+         .clearfix();
+         margin-bottom: 20px;
+         div.tweeter {
             img {
                height: 48px;
                .rounded(24px);
+               float:left;
+               margin-right: 10px;
             }
+            div.tweeter-data {
+               width: 160px;
+               float: left;
+               .tweeter-name {
+                  display: inline;
+               }
+               .tweeter-followers {
+                  display: block;
+               }
+            }
+
          }
          div.tweet-content {
-            span.text {
+            width: 500px;
+            float: left;
+            a.entity {
+               border: 1px solid #ddd;
+               .rounded(3px);
+               margin: 0 2px;
+               padding: 0 2px;
+               color: #333;
+               background: #fafafa;
+               &:hover {
+                  background: #ddd;
+                  color: #000;
+                  border-color: #bbb;
+               }
 
+            }
+            a.linkout {
+               color: #333;
+               border-bottom: 1px dotted #333;
+               &:hover {
+                  border-bottom: 1px solid #333;
+               }
+            }
+         }
+         div.after-tweet {
+            a {
+               color: #ddd;
+               padding: 2px 3px;
+               &:hover {
+                  color: #777;
+               }
+            }
+            .after-tweet {
+               color: #777;
             }
          }
       }

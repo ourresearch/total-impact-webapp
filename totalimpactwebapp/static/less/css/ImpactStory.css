@@ -8254,7 +8254,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   padding: 3px 5px;
 }
 .product div.product-margin span.feature-product-controls a.feature-product {
-  color: #999999;
+  color: #777;
 }
 .product div.product-margin span.feature-product-controls a.feature-product:hover {
   color: #000;
@@ -8282,10 +8282,28 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   clear: both;
   margin-left: 50px;
 }
-.product ul.product-tweets li.tweet div.tweet-author {
-  float: left;
+.product ul.product-tweets li.tweet {
+  font-size: 14px;
+  clear: both;
+  margin-bottom: 20px;
 }
-.product ul.product-tweets li.tweet div.tweet-author img {
+.product ul.product-tweets li.tweet:before,
+.product ul.product-tweets li.tweet:after {
+  content: " ";
+  display: table;
+}
+.product ul.product-tweets li.tweet:after {
+  clear: both;
+}
+.product ul.product-tweets li.tweet:before,
+.product ul.product-tweets li.tweet:after {
+  content: " ";
+  display: table;
+}
+.product ul.product-tweets li.tweet:after {
+  clear: both;
+}
+.product ul.product-tweets li.tweet div.tweeter img {
   height: 48px;
   -webkit-border-radius: 24px;
   -moz-border-radius: 24px;
@@ -8293,6 +8311,57 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+  float: left;
+  margin-right: 10px;
+}
+.product ul.product-tweets li.tweet div.tweeter div.tweeter-data {
+  width: 160px;
+  float: left;
+}
+.product ul.product-tweets li.tweet div.tweeter div.tweeter-data .tweeter-name {
+  display: inline;
+}
+.product ul.product-tweets li.tweet div.tweeter div.tweeter-data .tweeter-followers {
+  display: block;
+}
+.product ul.product-tweets li.tweet div.tweet-content {
+  width: 500px;
+  float: left;
+}
+.product ul.product-tweets li.tweet div.tweet-content a.entity {
+  border: 1px solid #ddd;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  margin: 0 2px;
+  padding: 0 2px;
+  color: #333;
+  background: #fafafa;
+}
+.product ul.product-tweets li.tweet div.tweet-content a.entity:hover {
+  background: #ddd;
+  color: #000;
+  border-color: #bbb;
+}
+.product ul.product-tweets li.tweet div.tweet-content a.linkout {
+  color: #333;
+  border-bottom: 1px dotted #333;
+}
+.product ul.product-tweets li.tweet div.tweet-content a.linkout:hover {
+  border-bottom: 1px solid #333;
+}
+.product ul.product-tweets li.tweet div.after-tweet a {
+  color: #ddd;
+  padding: 2px 3px;
+}
+.product ul.product-tweets li.tweet div.after-tweet a:hover {
+  color: #777;
+}
+.product ul.product-tweets li.tweet div.after-tweet .after-tweet {
+  color: #777;
 }
 .product-container .biblio {
   float: left;
