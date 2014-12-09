@@ -90,24 +90,22 @@
             margin-right: 20px;
             a.entity {
                color: #333;
+               &:hover {
+                  color: @linkColor;
+                  text-decoration: underline;
+               }
                &.hashtag {
-                  border: 1px solid #ddd;
-                  .rounded(3px);
-                  margin: 0 2px;
-                  padding: 0 2px;
-                  background: #fafafa;
-                  &:hover {
-                     background: #ddd;
-                     color: #000;
-                     border-color: #bbb;
-                  }
+                  font-weight: bold;
                }
 
-               &.linkout, &.at-name {
-                  color: #333;
-                  border-bottom: 1px dotted #333;
+               &.at-name {
+                  font-weight: bold;
+               }
+
+               &.linkout {
+//                  border-bottom: 1px dotted #333;
                   &:hover {
-                     border-bottom: 1px solid #333;
+//                     border-bottom-style: solid;
                   }
                }
             }
@@ -119,7 +117,10 @@
             a.tweet-date {
                display:inline-block;
                color: #777;
-               &:hover {text-decoration: underline;}
+               &:hover {
+                  color: @linkColor;
+                  text-decoration: underline;
+               }
             }
             div.tweet-controls {
                a {

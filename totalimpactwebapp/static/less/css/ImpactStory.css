@@ -8350,31 +8350,15 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 .product div.product-tweets li.tweet div.tweet-content a.entity {
   color: #333;
 }
+.product div.product-tweets li.tweet div.tweet-content a.entity:hover {
+  color: #ff4000;
+  text-decoration: underline;
+}
 .product div.product-tweets li.tweet div.tweet-content a.entity.hashtag {
-  border: 1px solid #ddd;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  margin: 0 2px;
-  padding: 0 2px;
-  background: #fafafa;
+  font-weight: bold;
 }
-.product div.product-tweets li.tweet div.tweet-content a.entity.hashtag:hover {
-  background: #ddd;
-  color: #000;
-  border-color: #bbb;
-}
-.product div.product-tweets li.tweet div.tweet-content a.entity.linkout,
 .product div.product-tweets li.tweet div.tweet-content a.entity.at-name {
-  color: #333;
-  border-bottom: 1px dotted #333;
-}
-.product div.product-tweets li.tweet div.tweet-content a.entity.linkout:hover,
-.product div.product-tweets li.tweet div.tweet-content a.entity.at-name:hover {
-  border-bottom: 1px solid #333;
+  font-weight: bold;
 }
 .product div.product-tweets li.tweet div.after-tweet {
   float: left;
@@ -8386,6 +8370,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   color: #777;
 }
 .product div.product-tweets li.tweet div.after-tweet a.tweet-date:hover {
+  color: #ff4000;
   text-decoration: underline;
 }
 .product div.product-tweets li.tweet div.after-tweet div.tweet-controls a {
