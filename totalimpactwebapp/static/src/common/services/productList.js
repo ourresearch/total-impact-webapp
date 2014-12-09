@@ -15,7 +15,12 @@ angular.module("services.productList", [])
     Page,
     ProfileService){
 
-  var genreChangeDropdown = {}
+  var ui = {
+    genreChangeDropdownIsOpen: false,
+    showTweets: false
+
+  }
+
   var filterFn
 
   var startRender = function($scope){
@@ -54,7 +59,7 @@ angular.module("services.productList", [])
   var changeProductsGenre = function(newGenre){
     ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
-    genreChangeDropdown.isOpen = false
+    ui.genreChangeDropdownIsOpen = false
 
     // handle moving the last product in our current genre
     if (!len()){
@@ -92,7 +97,7 @@ angular.module("services.productList", [])
     removeSelectedProducts: removeSelectedProducts,
     startRender: startRender,
     finishRender: finishRender,
-    genreChangeDropdown: genreChangeDropdown,
+    ui: ui,
     setFilterFn: function(fn){
       filterFn = fn
     },
