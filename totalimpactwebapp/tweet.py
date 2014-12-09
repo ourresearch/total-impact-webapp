@@ -257,6 +257,14 @@ class Tweet(db.Model):
         except TypeError:
             return None
 
+    @cached_property
+    def place_name(self):
+        try:
+            print "TWEET PLACE: "
+            print self.payload["place"]
+            return self.payload["place"]["full_name"]
+        except (TypeError, KeyError):
+            return None
 
     @cached_property
     def tweet_text_with_links(self):
@@ -314,7 +322,7 @@ class Tweet(db.Model):
 
     def to_dict(self):
         attributes_to_ignore = [
-            "payload"
+            #"payload"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
         return ret

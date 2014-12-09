@@ -53,9 +53,11 @@
       // see below.
    }
 
-   ul.product-tweets {
+   div.product-tweets {
       clear:both;
-      margin-left: 50px;
+      margin: 0 0 40px 50px;
+      padding-top: 15px;
+      .clearfix();
 
       li.tweet {
          font-size: 14px;
@@ -68,6 +70,7 @@
                .rounded(24px);
                float:left;
                margin-right: 10px;
+               border: 1px solid #555;
             }
             div.tweeter-data {
                width: 160px;
@@ -113,19 +116,31 @@
             float:left;
             width: 100px;
             color: #777;
-            span.tweet-date {
+            a.tweet-date {
                display:inline-block;
+               color: #777;
+               &:hover {text-decoration: underline;}
             }
-            a {
-               color: #ddd;
-               padding: 2px 3px;
-               &:hover {
-                  color: #777;
+            div.tweet-controls {
+               a {
+                  color: #ddd;
+                  padding: 2px 3px;
+                  &:hover {
+                     color: #777;
+                  }
                }
             }
          }
       }
    }
+
+   div.link-to-more-tweets {
+      margin: 40px 0 20px 10px;
+      a {
+
+      }
+   }
+
 }
 
 // this is actually inside .product, it's here because otherwise was unwieldy.

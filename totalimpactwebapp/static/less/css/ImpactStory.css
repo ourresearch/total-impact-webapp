@@ -8278,32 +8278,49 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   width: 20px;
   text-align: center;
 }
-.product ul.product-tweets {
+.product div.product-tweets {
+  margin: 0 0 40px 50px;
+  padding-top: 15px;
   clear: both;
-  margin-left: 50px;
 }
-.product ul.product-tweets li.tweet {
+.product div.product-tweets:before,
+.product div.product-tweets:after {
+  content: " ";
+  display: table;
+}
+.product div.product-tweets:after {
+  clear: both;
+}
+.product div.product-tweets:before,
+.product div.product-tweets:after {
+  content: " ";
+  display: table;
+}
+.product div.product-tweets:after {
+  clear: both;
+}
+.product div.product-tweets li.tweet {
   font-size: 14px;
   clear: both;
   margin-bottom: 20px;
 }
-.product ul.product-tweets li.tweet:before,
-.product ul.product-tweets li.tweet:after {
+.product div.product-tweets li.tweet:before,
+.product div.product-tweets li.tweet:after {
   content: " ";
   display: table;
 }
-.product ul.product-tweets li.tweet:after {
+.product div.product-tweets li.tweet:after {
   clear: both;
 }
-.product ul.product-tweets li.tweet:before,
-.product ul.product-tweets li.tweet:after {
+.product div.product-tweets li.tweet:before,
+.product div.product-tweets li.tweet:after {
   content: " ";
   display: table;
 }
-.product ul.product-tweets li.tweet:after {
+.product div.product-tweets li.tweet:after {
   clear: both;
 }
-.product ul.product-tweets li.tweet div.tweeter img {
+.product div.product-tweets li.tweet div.tweeter img {
   height: 48px;
   -webkit-border-radius: 24px;
   -moz-border-radius: 24px;
@@ -8313,26 +8330,27 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   background-clip: padding-box;
   float: left;
   margin-right: 10px;
+  border: 1px solid #555;
 }
-.product ul.product-tweets li.tweet div.tweeter div.tweeter-data {
+.product div.product-tweets li.tweet div.tweeter div.tweeter-data {
   width: 160px;
   float: left;
 }
-.product ul.product-tweets li.tweet div.tweeter div.tweeter-data .tweeter-name {
+.product div.product-tweets li.tweet div.tweeter div.tweeter-data .tweeter-name {
   display: inline;
 }
-.product ul.product-tweets li.tweet div.tweeter div.tweeter-data .tweeter-followers {
+.product div.product-tweets li.tweet div.tweeter div.tweeter-data .tweeter-followers {
   display: block;
 }
-.product ul.product-tweets li.tweet div.tweet-content {
+.product div.product-tweets li.tweet div.tweet-content {
   width: 460px;
   float: left;
   margin-right: 20px;
 }
-.product ul.product-tweets li.tweet div.tweet-content a.entity {
+.product div.product-tweets li.tweet div.tweet-content a.entity {
   color: #333;
 }
-.product ul.product-tweets li.tweet div.tweet-content a.entity.hashtag {
+.product div.product-tweets li.tweet div.tweet-content a.entity.hashtag {
   border: 1px solid #ddd;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -8344,34 +8362,41 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   padding: 0 2px;
   background: #fafafa;
 }
-.product ul.product-tweets li.tweet div.tweet-content a.entity.hashtag:hover {
+.product div.product-tweets li.tweet div.tweet-content a.entity.hashtag:hover {
   background: #ddd;
   color: #000;
   border-color: #bbb;
 }
-.product ul.product-tweets li.tweet div.tweet-content a.entity.linkout,
-.product ul.product-tweets li.tweet div.tweet-content a.entity.at-name {
+.product div.product-tweets li.tweet div.tweet-content a.entity.linkout,
+.product div.product-tweets li.tweet div.tweet-content a.entity.at-name {
   color: #333;
   border-bottom: 1px dotted #333;
 }
-.product ul.product-tweets li.tweet div.tweet-content a.entity.linkout:hover,
-.product ul.product-tweets li.tweet div.tweet-content a.entity.at-name:hover {
+.product div.product-tweets li.tweet div.tweet-content a.entity.linkout:hover,
+.product div.product-tweets li.tweet div.tweet-content a.entity.at-name:hover {
   border-bottom: 1px solid #333;
 }
-.product ul.product-tweets li.tweet div.after-tweet {
+.product div.product-tweets li.tweet div.after-tweet {
   float: left;
   width: 100px;
   color: #777;
 }
-.product ul.product-tweets li.tweet div.after-tweet span.tweet-date {
+.product div.product-tweets li.tweet div.after-tweet a.tweet-date {
   display: inline-block;
+  color: #777;
 }
-.product ul.product-tweets li.tweet div.after-tweet a {
+.product div.product-tweets li.tweet div.after-tweet a.tweet-date:hover {
+  text-decoration: underline;
+}
+.product div.product-tweets li.tweet div.after-tweet div.tweet-controls a {
   color: #ddd;
   padding: 2px 3px;
 }
-.product ul.product-tweets li.tweet div.after-tweet a:hover {
+.product div.product-tweets li.tweet div.after-tweet div.tweet-controls a:hover {
   color: #777;
+}
+.product div.link-to-more-tweets {
+  margin: 40px 0 20px 10px;
 }
 .product-container .biblio {
   float: left;

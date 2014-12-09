@@ -162,6 +162,12 @@
                   <i class="icon-globe left"></i>
                   Map
                </div>
+               <div class="tab tab-tweets"
+                    ng-class="{selected: ProductPage.tabIs('tweets')}"
+                    ng-click="ProductPage.setTab('tweets')">
+                  <i class="fa fa-twitter left"></i>
+                  Tweets
+               </div>
                
             </div>
 
@@ -516,17 +522,25 @@
                            </tr>
                         </tbody>
                      </table>
-
-
-
                   </div>
-
                </div>
 
 
 
 
-               </div><!-- end of the Maps Tab section -->
+            </div><!-- end of the Maps Tab section -->
+
+
+
+
+
+
+
+            <div class="tab-content tab-tweets" ng-show="ProductPage.tabIs('tweets')">
+               <p>This is where we show teh tweets omg so kewl</p>
+
+            </div><!-- end of the Tweets Tab section -->
+
 
 
             </div>

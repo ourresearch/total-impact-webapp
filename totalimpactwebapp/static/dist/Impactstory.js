@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-07
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-09
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -8192,45 +8192,58 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
-    "         <ul class=\"product-tweets\">\n" +
-    "            <li class=\"tweet\" ng-repeat=\"tweet in product.tweets | orderBy: '-tweet_timestamp' | limitTo: 5\">\n" +
-    "               <div class=\"tweeter\">\n" +
-    "                  <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
-    "                  <div class=\"tweeter-data f16\">\n" +
-    "                     <span class=\"tweeter-name\">\n" +
-    "                        <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
-    "                        <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
-    "                     </span>\n" +
+    "         <div class=\"product-tweets\">\n" +
+    "            <ul>\n" +
+    "               <li class=\"tweet\" ng-repeat=\"tweet in product.tweets | orderBy: '-tweet_timestamp' | limitTo: 5\">\n" +
+    "                  <div class=\"tweeter\">\n" +
+    "                     <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
+    "                     <div class=\"tweeter-data f16\">\n" +
+    "                        <span class=\"tweeter-name\">\n" +
+    "                           <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
+    "                           <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
+    "                        </span>\n" +
     "\n" +
-    "                     <span class=\"tweeter-followers\">\n" +
-    "                        <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
-    "                        <span class=\"descr\">followers</span>\n" +
-    "                     </span>\n" +
-    "                  </div>\n" +
+    "                        <span class=\"tweeter-followers\">\n" +
+    "                           <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
+    "                           <span class=\"descr\">followers</span>\n" +
+    "                        </span>\n" +
+    "                     </div>\n" +
     "\n" +
-    "               </div>\n" +
-    "               <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
-    "               </div>\n" +
-    "               <div class=\"after-tweet\">\n" +
-    "                  <span class=\"tweet-date\"\n" +
-    "                       tooltip-placement=\"left\"\n" +
-    "                       tooltip=\"Posted at {{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
-    "                     {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
-    "                  </span>\n" +
-    "                  <div class=\"tweet-controls\">\n" +
-    "                     <a href=\"https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}\">\n" +
-    "                        <i class=\"fa fa-reply\"></i>\n" +
-    "                     </a>\n" +
-    "                     <a href=\"https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}\">\n" +
-    "                        <i class=\"fa fa-retweet\"></i>\n" +
-    "                     </a>\n" +
-    "                     <a href=\"https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}\">\n" +
-    "                        <i class=\"fa fa-star-o\"></i>\n" +
-    "                     </a>\n" +
     "                  </div>\n" +
-    "               </div>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
+    "                  <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
+    "                  </div>\n" +
+    "                  <div class=\"after-tweet\">\n" +
+    "                     <a class=\"tweet-date\"\n" +
+    "                          href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}\"\n" +
+    "                          tooltip-placement=\"left\"\n" +
+    "                          tooltip=\"{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
+    "                        {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
+    "                     </a>\n" +
+    "                     <div class=\"tweet-controls\">\n" +
+    "                        <a href=\"https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}\">\n" +
+    "                           <i class=\"fa fa-reply\"></i>\n" +
+    "                        </a>\n" +
+    "                        <a href=\"https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "                           <i class=\"fa fa-retweet\"></i>\n" +
+    "                        </a>\n" +
+    "                        <a href=\"https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "                           <i class=\"fa fa-star-o\"></i>\n" +
+    "                        </a>\n" +
+    "                     </div>\n" +
+    "                  </div>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > 5\">\n" +
+    "               <a class=\"how-many-more btn btn-sm btn-default\"\n" +
+    "                  tooltip-placement=\"right\"\n" +
+    "                  tooltip=\"Click to see all {{ product.tweets.length }} tweets mentioning this research product.\"\n" +
+    "                  href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/tweets\">\n" +
+    "                  <i class=\"fa fa-plus\"></i>\n" +
+    "                  <span class=\"text\">{{ product.tweets.length - 5 }} more</span>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
     "      </li>\n" +
     "   </ul>\n" +
     "</div>");
@@ -8437,6 +8450,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                    ng-click=\"ProductPage.setTab('map')\">\n" +
     "                  <i class=\"icon-globe left\"></i>\n" +
     "                  Map\n" +
+    "               </div>\n" +
+    "               <div class=\"tab tab-tweets\"\n" +
+    "                    ng-class=\"{selected: ProductPage.tabIs('tweets')}\"\n" +
+    "                    ng-click=\"ProductPage.setTab('tweets')\">\n" +
+    "                  <i class=\"fa fa-twitter left\"></i>\n" +
+    "                  Tweets\n" +
     "               </div>\n" +
     "               \n" +
     "            </div>\n" +
@@ -8792,17 +8811,25 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           </tr>\n" +
     "                        </tbody>\n" +
     "                     </table>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "                  </div>\n" +
-    "\n" +
     "               </div>\n" +
     "\n" +
     "\n" +
     "\n" +
     "\n" +
-    "               </div><!-- end of the Maps Tab section -->\n" +
+    "            </div><!-- end of the Maps Tab section -->\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"tab-content tab-tweets\" ng-show=\"ProductPage.tabIs('tweets')\">\n" +
+    "               <p>This is where we show teh tweets omg so kewl</p>\n" +
+    "\n" +
+    "            </div><!-- end of the Tweets Tab section -->\n" +
+    "\n" +
     "\n" +
     "\n" +
     "            </div>\n" +
