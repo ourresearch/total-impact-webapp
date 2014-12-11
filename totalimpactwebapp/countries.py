@@ -3,7 +3,8 @@ import re
 import logging
 
 # this is from https://github.com/mledoze/countries
-from totalimpactwebapp import countries_info
+from totalimpactwebapp.countries_info import country_iso_by_name
+from totalimpactwebapp.countries_info import countries_info_list
 
 from util import dict_from_dir
 from util import cached_property
@@ -255,10 +256,9 @@ def gini(list_of_values):
     return (fair_area - area) / fair_area
 
 
-def get_country_names():
+def get_country_names_from_iso():
     ret = {}
-    info = countries_info.countries_info
-    for country in info:
+    for country in countries_info_list:
         iso2_code = country["cca2"]
         ret[iso2_code] = country["name"]["common"]
 
@@ -267,7 +267,7 @@ def get_country_names():
 
 
 def common_name_from_iso_code(iso_code):
-    country_names = get_country_names()
+    country_names = get_country_names_from_iso()
     try:
         return country_names[iso_code]
     except KeyError:
@@ -303,18 +303,11 @@ def iso_code_from_name(name):
     if not name:
         return None
 
-    if name in [c["cca2"] for c in countries_info.countries_info]:
+    if name in country_iso_by_name.keys():
         return name  # we got an ISO code, give it back.
 
-    for country in countries_info.countries_info:
-        name_versions = [c for c in country["altSpellings"]]
-        name_versions.append(country["name"]["common"])
-        name_versions.append(country["name"]["official"])
-
-        simplified_name_versions = [simplify_name(n) for n in name_versions]
-
-        if simplify_name(name) in simplified_name_versions:
-            return country["cca2"]
+    if country_name in country_iso_by_name:
+        return country_iso_by_name[country_name]
 
     logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
         country_name=name))

@@ -22,7 +22,7 @@ from boto.s3.connection import S3ResponseError
 from totalimpactwebapp import app
 from totalimpactwebapp import db
 from totalimpactwebapp import login_manager
-from totalimpactwebapp import countries
+from totalimpactwebapp.countries import get_country_names_from_iso
 from totalimpactwebapp import unis
 
 from totalimpactwebapp.password_reset import send_reset_token
@@ -730,6 +730,18 @@ def profile_products_modify(id):
     return json_resp_from_thing(resp)
 
 
+@app.route("/profile/<url_slug>/products/tweets", methods=["GET"])
+@app.route("/profile/<url_slug>/products/tweets.json", methods=["GET"])
+def get_profile_tweets(url_slug):
+    profile = get_user_for_response(url_slug, request, include_products=False)
+
+    tweets = get_product_tweets_for_profile(profile.id)
+
+    return json_resp_from_thing(tweets)
+
+
+
+
 @app.route("/profile/<url_slug>/collection/<tagspace>/<tag>/products", methods=["GET"])
 @app.route("/profile/<url_slug>/collection/<tagspace>/<tag>/products.json", methods=["GET"])
 def get_products_for_collection(url_slug, tagspace, tag):
@@ -1145,7 +1157,7 @@ def get_js_top():
         newrelic_header=newrelic_header,
         current_user=current_user_dict,
         genre_configs=configs.genre_configs(),
-        country_names=countries.get_country_names()
+        country_names=get_country_names_from_iso()
     )
 
 

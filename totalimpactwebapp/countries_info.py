@@ -1,4 +1,4 @@
-countries_info = [
+countries_info_list = [
     {
         "name": {
             "common": "Afghanistan",
@@ -2108,7 +2108,7 @@ countries_info = [
         "currency": ["CDF"],
         "callingCode": ["243"],
         "capital": "Kinshasa",
-        "altSpellings": ["CD", "DR Congo", "Congo-Kinshasa", "DRC"],
+        "altSpellings": ["CD", "DR Congo", "Congo-Kinshasa", "DRC", "Congo (Dem. Rep.)"],
         "relevance": "0",
         "region": "Africa",
         "subregion": "Middle Africa",
@@ -6750,7 +6750,7 @@ countries_info = [
         "currency": ["ILS"],
         "callingCode": ["970"],
         "capital": "Ramallah",
-        "altSpellings": ["PS", "State of Palestine", "Dawlat Filas\u1e6din"],
+        "altSpellings": ["PS", "State of Palestine", "Dawlat Filas\u1e6din", "Palestinian Territory"],
         "relevance": "0",
         "region": "Asia",
         "subregion": "Western Asia",
@@ -7613,7 +7613,7 @@ countries_info = [
         "currency": ["XCD"],
         "callingCode": ["1784"],
         "capital": "Kingstown",
-        "altSpellings": ["VC"],
+        "altSpellings": ["VC", "Saint Vincent and The Grenadines"],
         "relevance": "0",
         "region": "Americas",
         "subregion": "Caribbean",
@@ -9522,7 +9522,7 @@ countries_info = [
         "currency": ["USD"],
         "callingCode": ["1340"],
         "capital": "Charlotte Amalie",
-        "altSpellings": ["VI"],
+        "altSpellings": ["VI", "U.S. Virgin Islands"],
         "relevance": "0.5",
         "region": "Americas",
         "subregion": "Caribbean",
@@ -9957,11 +9957,9 @@ countries_info = [
 ]
 
 # take this out after daily.py run is done
-country_iso_by_name = dict((country["name"]["common"], country["cca2"]) for country in countries_info)
-country_iso_by_name.update(dict((country["name"]["official"], country["cca2"]) for country in countries_info))
-country_iso_by_name["Korea (South)"] = "KR"
-country_iso_by_name["Serbia and Montenegro"] = "RS"
-country_iso_by_name["Reunion"] = "RE"
-country_iso_by_name["Macao"] = "MO"
-country_iso_by_name["Fiji Islands"] = "FJ"
-
+country_iso_by_name = {}
+for country in countries_info_list:
+    country_iso_by_name[country["name"]["common"]] = country["cca2"]
+    country_iso_by_name[country["name"]["official"]] = country["cca2"]
+    for country_spelling in country["altSpellings"]:
+        country_iso_by_name[country_spelling] = country["cca2"]

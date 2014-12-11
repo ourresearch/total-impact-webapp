@@ -5,6 +5,7 @@ from util import dict_from_dir
 from util import as_int_or_float_if_possible
 from totalimpactwebapp import db
 from totalimpactwebapp.twitter_paging import TwitterPager
+from totalimpactwebapp.tweeter import Tweeter
 
 from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
 from collections import defaultdict
@@ -138,11 +139,11 @@ def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
         new_objects.append(tweet)
 
         tweeter = None
-        if (screen_name, tweet_id) in tweeters.keys():
+        if screen_name in tweeters.keys():
             continue  # already saved this one
         if not tweeter:
-            tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
-        tweeters[(screen_name, tweet_id)] = tweeter
+            tweeter = Tweeter(screen_name=screen_name)
+        tweeters[screen_name] = tweeter
 
         tweeter.set_attributes_from_post(post)
         new_objects.append(tweeter)
@@ -184,11 +185,11 @@ def save_product_tweets_for_profile(profile):
                 new_objects.append(tweet)
 
                 tweeter = None
-                if (screen_name, tweet_id) in tweeters.keys():
+                if screen_name in tweeters.keys():
                     continue  # already saved this one
                 if not tweeter:
-                    tweeter = Tweeter(screen_name=screen_name, tweet_id=tweet_id)
-                tweeters[(screen_name, tweet_id)] = tweeter
+                    tweeter = Tweeter(screen_name=screen_name)
+                tweeters[screen_name] = tweeter
 
                 tweeter.set_attributes_from_post(post)
                 new_objects.append(tweeter)
@@ -201,60 +202,25 @@ def save_product_tweets_for_profile(profile):
 
 
 
-
-class Tweeter(db.Model):
-    screen_name = db.Column(db.Text, primary_key=True)
-    tweet_id = db.Column(db.Text, db.ForeignKey('tweet.tweet_id'), primary_key=True)  # alter table tweeter add tweet_id text  
-    followers = db.Column(db.Integer)
-    name = db.Column(db.Text)
-    description = db.Column(db.Text)
-    image_url = db.Column(db.Text)
-
-    def __init__(self, **kwargs):
-        if not "tweet_id" in kwargs:
-            self.tweet_id = 0
-        super(Tweeter, self).__init__(**kwargs)
-
-
-    def set_attributes_from_post(self, post):
-        self.followers = post["author"].get("followers", 0)
-        self.name = post["author"].get("name", self.screen_name)
-        self.description = post["author"].get("description", "")
-        self.image_url = post["author"].get("image", None)
-        return self
-
-    def __repr__(self):
-        return u'<Tweet {screen_name} {followers}>'.format(
-            screen_name=self.screen_name, 
-            followers=self.followers)
-
-    def to_dict(self):
-        attributes_to_ignore = [
-        ]
-        ret = dict_from_dir(self, attributes_to_ignore)
-        return ret
-
-
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
-    screen_name = db.Column(db.Text)
+    screen_name = db.Column(db.Text, db.ForeignKey('tweeter.screen_name'))
     tweet_timestamp = db.Column(db.DateTime())
     payload = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
     tiid = db.Column(db.Text)  # alter table tweet add tiid text
     is_deleted = db.Column(db.Boolean)  # alter table tweet add is_deleted bool
     tweet_url = db.Column(db.Text) # alter table tweet add tweet_url text
     country = db.Column(db.Text) # alter table tweet add country text
-    # would make lat and long numeric, but ran into problems serializing, ala http://stackoverflow.com/questions/1960516/python-json-serialize-a-decimal-object
-    # latitude = db.Column(db.Text) # alter table tweet add latitude text;
-    # longitude = db.Column(db.Text) # alter table tweet add longitude text;
+    followers_at_time_of_tweet = db.Column(db.Integer) # alter table tweet add followers_at_time_of_tweet int4
 
     tweeter = db.relationship(
         'Tweeter',
         lazy='joined',
         cascade='all, delete-orphan',
         backref=db.backref("tweet", lazy="joined"), 
-        uselist=False  #onetoone
+        uselist=False,  #onetoone
+        single_parent=True
     )
 
     def __init__(self, **kwargs):
@@ -313,13 +279,12 @@ class Tweet(db.Model):
 
     def to_dict(self):
         attributes_to_ignore = [
-            "tweeter"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
         return ret
 
 
-example_contents = """{
+twitter_aexample_contents = """{
         "contributors": null, 
         "coordinates": null, 
         "created_at": "Sun Dec 16 22:42:55 +0000 2012", 
