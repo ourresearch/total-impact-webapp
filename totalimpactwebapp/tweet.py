@@ -257,17 +257,12 @@ class Tweet(db.Model):
         except TypeError:
             return None
 
-    @cached_property
-    def place_name(self):
-        try:
-            print "TWEET PLACE: "
-            print self.payload["place"]
-            return self.payload["place"]["full_name"]
-        except (TypeError, KeyError):
-            return None
 
     @cached_property
     def tweet_text_with_links(self):
+        if self.tweet_text is None:
+            return None
+
         ret = self.tweet_text
         # the tweet text has just stub links. replace these with real ones
         ret = re.sub(r"(http://.+?)(\s|$)", r"<link>", ret)

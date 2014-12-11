@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-09
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-10
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5656,7 +5656,6 @@ angular.module("services.productList", [])
   var changeProductsGenre = function(newGenre){
     ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
-    ui.genreChangeDropdownIsOpen = false
 
     // handle moving the last product in our current genre
     if (!len()){
@@ -8129,8 +8128,11 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "\n" +
     "   <div class=\"display-controls\">\n" +
     "      <div class=\"show-tweets\">\n" +
-    "         <i class=\"fa fa-twitter\"></i>\n" +
-    "         <input type=\"checkbox\" ng-model=\"foo.bar\" />\n" +
+    "         <label for=\"show-tweets-checkbox\">\n" +
+    "            <i class=\"fa fa-twitter\"></i>\n" +
+    "            <span class=\"text\">Show tweets</span>\n" +
+    "         </label>\n" +
+    "         <input type=\"checkbox\" id=\"show-tweets-checkbox\" ng-model=\"ProductList.ui.showTweets\" />\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"sort-controls\">\n" +
@@ -8197,7 +8199,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
-    "         <div class=\"product-tweets\">\n" +
+    "         <div class=\"product-tweets\" ng-show=\"product.tweets.length && ProductList.ui.showTweets\">\n" +
     "            <ul>\n" +
     "               <li class=\"tweet\" ng-repeat=\"tweet in product.tweets | orderBy: '-tweet_timestamp' | limitTo: 5\">\n" +
     "                  <div class=\"tweeter\">\n" +
@@ -9103,9 +9105,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"profile-content animated fadeIn\" ng-if=\"profileAboutService.data.full_name\">\n" +
     "\n" +
     "   <div class=\"profile-header\">\n" +
-    "\n" +
-    "      <pre>{{ profileService.data.products | json }}</pre>\n" +
-    "\n" +
     "\n" +
     "      <div class=\"profile-header-loaded\">\n" +
     "\n" +

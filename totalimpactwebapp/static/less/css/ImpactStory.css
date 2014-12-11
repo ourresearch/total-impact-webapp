@@ -10325,9 +10325,13 @@ div.product-list-page div.product-list-controls div.display-controls div.show-tw
   display: inline-block;
   margin-right: 25px;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets i.fa-twitter {
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets label {
+  cursor: pointer;
+  font-weight: normal;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets label i.fa-twitter {
   color: #55acee;
-  font-size: 24px;
+  font-size: 20px;
   vertical-align: middle;
 }
 div.product-list-page div.product-list-controls div.display-controls div.sort-controls {

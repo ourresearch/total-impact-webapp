@@ -66,8 +66,11 @@
 
    <div class="display-controls">
       <div class="show-tweets">
-         <i class="fa fa-twitter"></i>
-         <input type="checkbox" ng-model="foo.bar" />
+         <label for="show-tweets-checkbox">
+            <i class="fa fa-twitter"></i>
+            <span class="text">Show tweets</span>
+         </label>
+         <input type="checkbox" id="show-tweets-checkbox" ng-model="ProductList.ui.showTweets" />
       </div>
 
       <div class="sort-controls">
@@ -134,7 +137,7 @@
                class="genre-icon {{ product.genre_icon }}"></i>
          </div>
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
-         <div class="product-tweets">
+         <div class="product-tweets" ng-show="product.tweets.length && ProductList.ui.showTweets">
             <ul>
                <li class="tweet" ng-repeat="tweet in product.tweets | orderBy: '-tweet_timestamp' | limitTo: 5">
                   <div class="tweeter">

@@ -875,14 +875,7 @@ def product_from_tiid(url_slug, tiid):
     if not product:
         abort_json(404, "This product does not exist.")
 
-    markup = Markup(url_slug, embed=False)
-    product_dict = product.to_markup_dict(
-        markup=markup
-    )
-
-    product_dict["metrics"] = product.metrics
-    product_dict["countries"] = product.countries
-
+    product_dict = product.to_dict()
     return json_resp_from_thing(product_dict)
 
 

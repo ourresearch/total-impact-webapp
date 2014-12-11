@@ -682,6 +682,7 @@ class Product(db.Model):
         ret["_tiid"] = self.tiid
         return ret
 
+
     def to_markup_dict(self, markup, hide_keys=None, show_keys="all"):
         keys_to_show = [
             "tiid",
@@ -723,26 +724,6 @@ class Product(db.Model):
 
         return my_dict
 
-
-    def to_markup_dict_multi(self, markups_dict, hide_keys=None):
-        ret = self.to_dict()
-
-        rendered_markups = {}
-        for name, markup in markups_dict.iteritems():
-            rendered_markups[name] = markup.make(ret)
-
-        ret["markups_dict"] = rendered_markups
-
-        try:
-            for key_to_hide in hide_keys:
-                try:
-                    del ret[key_to_hide]
-                except KeyError:
-                    pass
-        except TypeError:  # hide_keys=None is not iterable
-            pass
-
-        return ret
 
 
 
