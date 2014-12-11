@@ -2,6 +2,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp import profile_award
 from totalimpactwebapp import configs
 from totalimpactwebapp import countries
+from totalimpactwebapp.tweet import hydrate_twitter_text_and_followers
 from totalimpactwebapp.account import account_factory
 from totalimpactwebapp.product_markup import Markup
 from totalimpactwebapp.product import Product
@@ -11,7 +12,6 @@ from totalimpactwebapp.product import build_duplicates_list
 from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.drip_email import DripEmail
-from totalimpactwebapp.tweet import save_recent_tweets
 from util import cached_property
 from util import commit
 from util import dict_from_dir
@@ -75,6 +75,10 @@ class UrlSlugExistsError(Exception):
 class RefreshStatus(object):
     def __init__(self, products):
         self.products = products
+
+    @property
+    def is_done_refreshing(self):
+        return self.num_refreshing==0
 
     @property
     def num_refreshing(self):
@@ -445,11 +449,23 @@ class Profile(db.Model):
 
 
     def update_twitter(self):
-        if self.twitter_id:
-            t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
-            t.daemon = True
-            t.start()
-        return None
+        return
+        # if self.twitter_id:
+        #     t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
+        #     t.daemon = True
+        #     t.start()
+        # return None
+
+    def parse_and_save_tweets(self):
+        twitter_details_dict = {}
+        for product in self.products_not_removed:
+            for metric in product.metrics:
+                posts_metric = product.get_metric_by_name("altmetric_com", "posts")
+                if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
+                    twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
+        if twitter_details_dict:
+            hydrate_twitter_text_and_followers(self.id, twitter_details_dict)
+
 
     def update_all_linked_accounts(self, add_even_if_removed=False):
         added_tiids = []
@@ -910,7 +926,7 @@ def hide_profile_secrets(profile):
     try:
         for key in secrets:
             delattr(profile, key)
-    except AttributeError:
+    except (AttributeError, KeyError):
         pass
 
     return profile
@@ -920,6 +936,10 @@ def delete_profile(profile):
     db.session.delete(profile)
     commit(db)
 
+def are_all_products_done_refreshing_from_profile_id(profile):
+    bare_products = profile.products_not_removed  # can be bare products
+    refresh_status = RefreshStatus(profile.products_not_removed)
+    return refresh_status.is_done_refreshing
 
 def _make_id(len=6):
     '''Make an id string.

@@ -31,7 +31,6 @@ from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.aliases import AliasRow
 from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.tweet import Tweet
-from totalimpactwebapp.tweet import save_product_tweets
 
 from util import dict_from_dir
 from util import cached_property
@@ -507,12 +506,6 @@ class Product(db.Model):
             return requested_metric.display_count >= count
         except AttributeError:
             return False
-
-    def parse_and_save_tweets(self):
-        metric = self.get_metric_by_name("altmetric_com", "posts")
-        if metric and "twitter" in metric.most_recent_snap.raw_value:
-            twitter_details = metric.most_recent_snap.raw_value["twitter"]
-            save_product_tweets(self.profile_id, self.tiid, twitter_details)
 
     def get_file(self):
         if not self.has_file:

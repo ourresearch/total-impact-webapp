@@ -1,6 +1,5 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError
-from totalimpactwebapp.tweet import get_tweet_text_and_followers_from_twitter
 
 import json, re, os, requests, socket
 from operator import itemgetter

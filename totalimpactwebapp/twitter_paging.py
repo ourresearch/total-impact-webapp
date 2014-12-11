@@ -92,7 +92,7 @@ class TwitterPager(object):
         except KeyError:
             pass
 
-    def fetch_rate_limit(self):
+    def fetch_rate_limit(self, query_type):
         """Send search rate limit info request to Twitter API."""
         response = self.client.api.application.rate_limit_status.get(
             resources='/statuses/user_timeline')
@@ -112,14 +112,15 @@ class TwitterPager(object):
     def query(self, **kwargs):
         """Passes kwargs to search.tweets.get of the AppClient.
         For kwargs requirements, see docs for birdy AppClient."""
+        query_type = kwargs.get("query_type", "user_timeline")
         if self.first_request:
-            self.fetch_rate_limit()
+            self.fetch_rate_limit(query_type)
             self.first_request = False
         if self.rate_limit_remaining <= 0:
             logging.info('Reached Twitter rate limit.')
             self.wait_for_reset()
         try:
-            query_type = kwargs.get("query_type", "user_timeline")
+            
             if query_type=="user_timeline":
                 response = self.client.api.statuses.user_timeline.get(**kwargs)
             elif query_type=="statuses_lookup":
@@ -133,7 +134,7 @@ class TwitterPager(object):
             # headers = e.headers ## this seems to always be None
             # Birdy does not seem to be attaching headers to the exception
             # object, so we need to get the wait time from Twitter.
-            self.fetch_rate_limit()
+            self.fetch_rate_limit(query_type)
             self.wait_for_reset()
             return self.query(**kwargs)
         except TwitterClientError, e:
