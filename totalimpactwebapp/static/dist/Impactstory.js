@@ -8235,7 +8235,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "                  tooltip=\"Click to see all {{ product.tweets.length }} tweets mentioning this research product.\"\n" +
     "                  href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/tweets\">\n" +
     "                  <i class=\"fa fa-plus\"></i>\n" +
-    "                  <span class=\"text\">{{ product.tweets.length - filteredTweets.length }} more</span>\n" +
+    "                  <span class=\"text\">plus {{ product.tweets.length - filteredTweets.length }} more</span>\n" +
     "               </a>\n" +
     "            </div>\n" +
     "         </div>\n" +
