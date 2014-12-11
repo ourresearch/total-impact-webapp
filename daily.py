@@ -995,7 +995,7 @@ def update_tweet_text_for_live_profiles(url_slug=None, min_url_slug=None):
     q = profile_query(url_slug, min_url_slug)
 
     for profile in windowed_query(q, Profile.url_slug, 25):
-        logger.info(u"updating profile for {url_slug}".format(
+        logger.info(u"in update_tweet_text_for_live_profiles for {url_slug}".format(
             url_slug=profile.url_slug))
 
         profile.parse_and_save_tweets()

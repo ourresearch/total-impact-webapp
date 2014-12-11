@@ -36,17 +36,19 @@ def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, twe
 
     for payload_dict in payload_dicts_from_twitter:
         tweet_id = payload_dict["id_str"]
-        # logger.debug("saving tweets with {tweet_id}".format(
-        #     tweet_id=tweet_id))
+        logger.debug("saving unsaved parts for tweet_id {tweet_id}".format(
+            tweet_id=tweet_id))
         for tweet in tweets_by_tweet_id[tweet_id]:
             # print "tweet_id", tweet_id
             if not tweet.payload:
                 tweet.payload = payload_dict
-                # print "updated tweet payload", tweet_id
+                logger.info(u"updated tweet payload for {tweet_id}".format(
+                    tweet_id=tweet_id))
             if "user" in payload_dict:
                 this_tweeter = tweet.tweeter
                 this_tweeter.set_attributes_from_twitter_data(payload_dict["user"])
-                # print "updated tweeter", this_tweeter, tweet_id
+                logger.info(u"updated tweeter followers for {screen_name}".format(
+                    screen_name=this_tweeter.screen_name))
             db.session.merge(tweet)
             
 
@@ -88,6 +90,9 @@ def get_and_save_tweet_text_and_tweeter_followers(tweet_ids):
         access_token=os.getenv("TWITTER_ACCESS_TOKEN")
     )
 
+    logger.info(u"in get_and_save_tweet_text_and_tweeter_followers for {num} tweet_ids".format(
+        num=len(tweet_ids)))
+
     # print "lenth of tweet_ids", len(tweet_ids)
 
     # from http://stackoverflow.com/a/1624988/596939
@@ -119,6 +124,10 @@ def get_and_save_tweet_text_and_tweeter_followers(tweet_ids):
 
 
 def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
+
+    logger.info(u"in hydrate_twitter_text_and_followers for profile {profile_id}".format(
+        profile_id=profile_id))
+
     tweets_to_hydrate_from_twitter = []
 
     for tiid, post_list in altmetric_twitter_posts.iteritems():
@@ -147,8 +156,10 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
     if tweets_to_hydrate_from_twitter:
         tweet_ids = [tweet.tweet_id for tweet in tweets_to_hydrate_from_twitter]
         get_and_save_tweet_text_and_tweeter_followers(tweet_ids)
-
-    commit(db)
+        commit(db)
+    else:
+        logger.info(u"no tweets to hydrate for profile {profile_id}".format(
+            profile_id=profile_id))
 
     return
 
