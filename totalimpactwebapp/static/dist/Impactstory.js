@@ -1250,9 +1250,17 @@ angular.module("productListPage", [
         return false
       }
     }
+
+
+
     ProductList.setFilterFn(filterFn)
 
     $scope.productsFilter = filterFn
+
+    // only show tweets if they are for sure from this country
+    $scope.tweetsFilterFn = function(tweet){
+      return tweet.country === myCountryCode
+    }
 
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -1307,8 +1315,11 @@ angular.module("productListPage", [
       }
     }
 
-    $scope.productsFilter = filterFn
     ProductList.setFilterFn(filterFn)
+    $scope.productsFilter = filterFn
+    $scope.tweetsFilterFn = function(tweet){
+      return true
+    }
 
 
     $scope.ProductList = ProductList
@@ -1494,6 +1505,11 @@ angular.module("productPage", [
       Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
+      $scope.ui = {
+        tweetsSortBy: "-tweet_timestamp"
+      }
+
+
       $scope.userSlug = slug
       $scope.loading = Loading
       $scope.aliases = myProduct.aliases
@@ -1507,6 +1523,11 @@ angular.module("productPage", [
       $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
+
+      // should've just done this in the first place instead of a bunch of
+      // individual assignments (above). Get rid of those some day, replace
+      // with this in the template.
+      $scope.product = myProduct
 
       if (myProduct.embed_markup) {
         $scope.iframeToEmbed = myProduct.embed_markup
@@ -5612,18 +5633,17 @@ angular.module("services.productList", [])
     Page,
     ProfileService){
 
-  var ui = {
-    genreChangeDropdownIsOpen: false,
-    showTweets: false
-
-  }
-
+  var ui = {}
   var filterFn
+
+
 
   var startRender = function($scope){
     if (!ProfileService.hasFullProducts()){
       Loading.startPage()
     }
+    ui.genreChangeDropdownIsOpen = false
+    ui.showTweets = false
     Timer.start("productListRender")
     SelectedProducts.removeAll()
 
@@ -5641,6 +5661,7 @@ angular.module("services.productList", [])
       finishRender()
     });
   }
+
 
   var finishRender = function(){
     Loading.finishPage()
@@ -5699,6 +5720,7 @@ angular.module("services.productList", [])
     },
     len: len,
     selectEverything: selectEverything
+
   }
 
 
@@ -6600,7 +6622,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -8199,54 +8221,21 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
-    "         <div class=\"product-tweets\" ng-show=\"product.tweets.length && ProductList.ui.showTweets\">\n" +
+    "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && ProductList.ui.showTweets\">\n" +
+    "\n" +
     "            <ul>\n" +
-    "               <li class=\"tweet\" ng-repeat=\"tweet in product.tweets | orderBy: '-tweet_timestamp' | limitTo: 5\">\n" +
-    "                  <div class=\"tweeter\">\n" +
-    "                     <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
-    "                     <div class=\"tweeter-data f16\">\n" +
-    "                        <span class=\"tweeter-name\">\n" +
-    "                           <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
-    "                           <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
-    "                        </span>\n" +
-    "\n" +
-    "                        <span class=\"tweeter-followers\">\n" +
-    "                           <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
-    "                           <span class=\"descr\">followers</span>\n" +
-    "                        </span>\n" +
-    "                     </div>\n" +
-    "\n" +
-    "                  </div>\n" +
-    "                  <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
-    "                  </div>\n" +
-    "                  <div class=\"after-tweet\">\n" +
-    "                     <a class=\"tweet-date\"\n" +
-    "                          href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}\"\n" +
-    "                          tooltip-placement=\"left\"\n" +
-    "                          tooltip=\"{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
-    "                        {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
-    "                     </a>\n" +
-    "                     <div class=\"tweet-controls\">\n" +
-    "                        <a href=\"https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}\">\n" +
-    "                           <i class=\"fa fa-reply\"></i>\n" +
-    "                        </a>\n" +
-    "                        <a href=\"https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}\">\n" +
-    "                           <i class=\"fa fa-retweet\"></i>\n" +
-    "                        </a>\n" +
-    "                        <a href=\"https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}\">\n" +
-    "                           <i class=\"fa fa-star-o\"></i>\n" +
-    "                        </a>\n" +
-    "                     </div>\n" +
-    "                  </div>\n" +
-    "               </li>\n" +
+    "               <li class=\"tweet\"\n" +
+    "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: tweetsFilterFn | limitTo: 5)\">\n" +
+    "                </li>\n" +
     "            </ul>\n" +
-    "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > 5\">\n" +
+    "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > filteredTweets.length\">\n" +
     "               <a class=\"how-many-more btn btn-sm btn-default\"\n" +
     "                  tooltip-placement=\"right\"\n" +
     "                  tooltip=\"Click to see all {{ product.tweets.length }} tweets mentioning this research product.\"\n" +
     "                  href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/tweets\">\n" +
     "                  <i class=\"fa fa-plus\"></i>\n" +
-    "                  <span class=\"text\">{{ product.tweets.length - 5 }} more</span>\n" +
+    "                  <span class=\"text\">{{ product.tweets.length - filteredTweets.length }} more</span>\n" +
     "               </a>\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -8451,18 +8440,21 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                    ng-click=\"ProductPage.setTab('metrics')\">\n" +
     "                  <i class=\"icon-bar-chart left\"></i>\n" +
     "                  Metrics\n" +
-    "               </div>               \n" +
+    "                  <span class=\"count\">({{ filteredMetrics.length }})</span>\n" +
+    "               </div>\n" +
     "               <div class=\"tab tab-map\"\n" +
     "                    ng-class=\"{selected: ProductPage.tabIs('map')}\"\n" +
     "                    ng-click=\"ProductPage.setTab('map')\">\n" +
     "                  <i class=\"icon-globe left\"></i>\n" +
     "                  Map\n" +
+    "                  <span class=\"count\">({{ countries.length }})</span>\n" +
     "               </div>\n" +
     "               <div class=\"tab tab-tweets\"\n" +
     "                    ng-class=\"{selected: ProductPage.tabIs('tweets')}\"\n" +
     "                    ng-click=\"ProductPage.setTab('tweets')\">\n" +
     "                  <i class=\"fa fa-twitter left\"></i>\n" +
     "                  Tweets\n" +
+    "                  <span class=\"count\">({{ product.tweets.length }})</span>\n" +
     "               </div>\n" +
     "               \n" +
     "            </div>\n" +
@@ -8576,11 +8568,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
     "                        </span>\n" +
     "                     </div>\n" +
-    "\n" +
     "                  </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "               </div><!-- end Summary Tab content -->\n" +
     "\n" +
     "\n" +
@@ -8668,7 +8656,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <div id=\"metrics\">\n" +
     "                     <ul class=\"metric-details-list\">\n" +
     "\n" +
-    "                        <li class=\"metric-detail\" ng-repeat=\"metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}\">\n" +
+    "                        <li class=\"metric-detail\" ng-repeat=\"metric in filteredMetrics = (metrics | orderBy:'-display_order' | filter: {hide_badge: false})\">\n" +
     "                           <span class=\"metric-text\">\n" +
     "                              <a class=\"value-and-name\"\n" +
     "                                 href=\"{{ metric.drilldown_url }}\"\n" +
@@ -8819,43 +8807,49 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        </tbody>\n" +
     "                     </table>\n" +
     "                  </div>\n" +
-    "               </div>\n" +
+    "               </div><!-- end of the Maps Tab section -->\n" +
     "\n" +
     "\n" +
+    "               <div class=\"tab-content tab-tweets\" ng-show=\"ProductPage.tabIs('tweets')\">\n" +
+    "                  <div class=\"empty-tab\" ng-show=\"!product.tweets.length\">\n" +
+    "                     There aren't yet any tweets mentioning this product.\n" +
+    "                  </div>\n" +
+    "                  <div class=\"product-tweets\" ng-show=\"product.tweets.length\">\n" +
+    "                     <div class=\"tweet-view-controls\">\n" +
+    "                        <span class=\"descr\">Sort tweets by</span>\n" +
+    "                        <span class=\"sort-options\">\n" +
+    "                           <label>\n" +
+    "                              <input type=\"radio\"\n" +
+    "                                     name=\"sort-tweets-by\"\n" +
+    "                                     ng-model=\"ui.tweetsSortBy\"\n" +
+    "                                     value=\"-tweet_timestamp\" />\n" +
+    "                              date\n" +
+    "                           </label>\n" +
+    "                           <label>\n" +
+    "                              <input type=\"radio\"\n" +
+    "                                     name=\"sort-tweets-by\"\n" +
+    "                                     ng-model=\"ui.tweetsSortBy\"\n" +
+    "                                     value=\"-tweeter.followers\" />\n" +
+    "                              followers count\n" +
+    "                           </label>\n" +
     "\n" +
-    "\n" +
-    "            </div><!-- end of the Maps Tab section -->\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "            <div class=\"tab-content tab-tweets\" ng-show=\"ProductPage.tabIs('tweets')\">\n" +
-    "               <p>This is where we show teh tweets omg so kewl</p>\n" +
-    "\n" +
-    "            </div><!-- end of the Tweets Tab section -->\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "            </div>\n" +
-    "         </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "                        </span>\n" +
+    "                     </div>\n" +
+    "                     <ul>\n" +
+    "                        <li class=\"tweet\"\n" +
+    "                            ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "                            ng-repeat=\"tweet in product.tweets | orderBy: ui.tweetsSortBy\">\n" +
+    "                         </li>\n" +
+    "                     </ul>\n" +
+    "                  </div>\n" +
+    "               </div><!-- end of the Tweets Tab section -->\n" +
+    "            </div><!-- end of the tabs-content section -->\n" +
+    "         </div><!-- end of the product-tabs section (includes the tabs themselves and the content they show/hide -->\n" +
     "      </div><!-- end main-content -->\n" +
     "\n" +
     "\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "      <div id=\"product-page-sidebar\">\n" +
-    "\n" +
     "      </div><!-- end sidebar -->\n" +
     "\n" +
     "   </div>\n" +
@@ -10441,6 +10435,49 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "</div>\n" +
     "\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tweet/tweet.tpl.html",
+    "<div class=\"tweet-container\">\n" +
+    "\n" +
+    "   <div class=\"tweeter\">\n" +
+    "      <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
+    "      <div class=\"tweeter-data f16\">\n" +
+    "                  <span class=\"tweeter-name\">\n" +
+    "                     <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
+    "                     <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"tweeter-followers\">\n" +
+    "                     <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
+    "                     <span class=\"descr\">followers</span>\n" +
+    "                  </span>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
+    "   </div>\n" +
+    "   <div class=\"after-tweet\">\n" +
+    "      <a class=\"tweet-date\"\n" +
+    "         href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}\"\n" +
+    "         tooltip-placement=\"left\"\n" +
+    "         tooltip=\"{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
+    "         {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
+    "      </a>\n" +
+    "      <div class=\"tweet-controls\">\n" +
+    "         <a href=\"https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-reply\"></i>\n" +
+    "         </a>\n" +
+    "         <a href=\"https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-retweet\"></i>\n" +
+    "         </a>\n" +
+    "         <a href=\"https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-star-o\"></i>\n" +
+    "         </a>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
     "");
 }]);
 

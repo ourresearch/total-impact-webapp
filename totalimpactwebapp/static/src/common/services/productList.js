@@ -15,18 +15,17 @@ angular.module("services.productList", [])
     Page,
     ProfileService){
 
-  var ui = {
-    genreChangeDropdownIsOpen: false,
-    showTweets: false
-
-  }
-
+  var ui = {}
   var filterFn
+
+
 
   var startRender = function($scope){
     if (!ProfileService.hasFullProducts()){
       Loading.startPage()
     }
+    ui.genreChangeDropdownIsOpen = false
+    ui.showTweets = false
     Timer.start("productListRender")
     SelectedProducts.removeAll()
 
@@ -44,6 +43,7 @@ angular.module("services.productList", [])
       finishRender()
     });
   }
+
 
   var finishRender = function(){
     Loading.finishPage()
@@ -102,6 +102,7 @@ angular.module("services.productList", [])
     },
     len: len,
     selectEverything: selectEverything
+
   }
 
 

@@ -155,18 +155,21 @@
                     ng-click="ProductPage.setTab('metrics')">
                   <i class="icon-bar-chart left"></i>
                   Metrics
-               </div>               
+                  <span class="count">({{ filteredMetrics.length }})</span>
+               </div>
                <div class="tab tab-map"
                     ng-class="{selected: ProductPage.tabIs('map')}"
                     ng-click="ProductPage.setTab('map')">
                   <i class="icon-globe left"></i>
                   Map
+                  <span class="count">({{ countries.length }})</span>
                </div>
                <div class="tab tab-tweets"
                     ng-class="{selected: ProductPage.tabIs('tweets')}"
                     ng-click="ProductPage.setTab('tweets')">
                   <i class="fa fa-twitter left"></i>
                   Tweets
+                  <span class="count">({{ product.tweets.length }})</span>
                </div>
                
             </div>
@@ -280,11 +283,7 @@
                            <span class="host"> {{ biblio.display_host }}</span>
                         </span>
                      </div>
-
                   </div>
-
-
-
                </div><!-- end Summary Tab content -->
 
 
@@ -372,7 +371,7 @@
                   <div id="metrics">
                      <ul class="metric-details-list">
 
-                        <li class="metric-detail" ng-repeat="metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}">
+                        <li class="metric-detail" ng-repeat="metric in filteredMetrics = (metrics | orderBy:'-display_order' | filter: {hide_badge: false})">
                            <span class="metric-text">
                               <a class="value-and-name"
                                  href="{{ metric.drilldown_url }}"
@@ -523,43 +522,49 @@
                         </tbody>
                      </table>
                   </div>
-               </div>
+               </div><!-- end of the Maps Tab section -->
 
 
+               <div class="tab-content tab-tweets" ng-show="ProductPage.tabIs('tweets')">
+                  <div class="empty-tab" ng-show="!product.tweets.length">
+                     There aren't yet any tweets mentioning this product.
+                  </div>
+                  <div class="product-tweets" ng-show="product.tweets.length">
+                     <div class="tweet-view-controls">
+                        <span class="descr">Sort tweets by</span>
+                        <span class="sort-options">
+                           <label>
+                              <input type="radio"
+                                     name="sort-tweets-by"
+                                     ng-model="ui.tweetsSortBy"
+                                     value="-tweet_timestamp" />
+                              date
+                           </label>
+                           <label>
+                              <input type="radio"
+                                     name="sort-tweets-by"
+                                     ng-model="ui.tweetsSortBy"
+                                     value="-tweeter.followers" />
+                              followers count
+                           </label>
 
-
-            </div><!-- end of the Maps Tab section -->
-
-
-
-
-
-
-
-            <div class="tab-content tab-tweets" ng-show="ProductPage.tabIs('tweets')">
-               <p>This is where we show teh tweets omg so kewl</p>
-
-            </div><!-- end of the Tweets Tab section -->
-
-
-
-            </div>
-         </div>
-
-
-
-
-
-
+                        </span>
+                     </div>
+                     <ul>
+                        <li class="tweet"
+                            ng-include="'tweet/tweet.tpl.html'"
+                            ng-repeat="tweet in product.tweets | orderBy: ui.tweetsSortBy">
+                         </li>
+                     </ul>
+                  </div>
+               </div><!-- end of the Tweets Tab section -->
+            </div><!-- end of the tabs-content section -->
+         </div><!-- end of the product-tabs section (includes the tabs themselves and the content they show/hide -->
       </div><!-- end main-content -->
 
 
 
-
-
-
       <div id="product-page-sidebar">
-
       </div><!-- end sidebar -->
 
    </div>

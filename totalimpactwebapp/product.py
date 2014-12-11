@@ -431,7 +431,8 @@ class Product(db.Model):
     @cached_property
     def tweets(self):
         tweets = db.session.query(Tweet).filter(Tweet.tiid==self.tiid).all()
-        return tweets
+        tweets_with_text = [t for t in tweets if t.tweet_text is not None]
+        return tweets_with_text
 
     @cached_property
     def countries_str(self):

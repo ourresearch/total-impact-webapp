@@ -7,6 +7,7 @@ div.product-page {
 
    div.main-content {
       float: left;
+      width: 100%;
 
       #main-biblio {
 
@@ -182,12 +183,17 @@ div.product-page {
                   .rounded(25px);
                   color: #fff;
                }
+               span.count {
+                  font-weight: 300;
+                  font-size: 80%;
+               }
 
             }
          }
 
          div.tabs-content {
             margin-bottom: 100px;
+            clear:both;
             .tab-summary {
                div.summary-metrics {
                   margin-top: 20px;
@@ -452,6 +458,27 @@ div.product-page {
                }
             }
 
+            .tab-tweets {
+               div.tweet-view-controls {
+                  font-size: 14px;
+                  text-align: right;
+                  margin: 20px 70px 20px 0;
+                  padding-top: 20px;
+                  border-bottom: 1px solid #eee;
+                  color: #555;
+                  span.descr {
+                     font-weight: 300;
+                  }
+                  label {
+                     cursor: pointer;
+                     padding-left: 10px;
+                     input {
+                        margin-right: 5px;
+                     }
+                  }
+
+               }
+            }
          }
       }
    }

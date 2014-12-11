@@ -163,6 +163,11 @@ angular.module("productPage", [
       Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
+      $scope.ui = {
+        tweetsSortBy: "-tweet_timestamp"
+      }
+
+
       $scope.userSlug = slug
       $scope.loading = Loading
       $scope.aliases = myProduct.aliases
@@ -176,6 +181,11 @@ angular.module("productPage", [
       $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
+
+      // should've just done this in the first place instead of a bunch of
+      // individual assignments (above). Get rid of those some day, replace
+      // with this in the template.
+      $scope.product = myProduct
 
       if (myProduct.embed_markup) {
         $scope.iframeToEmbed = myProduct.embed_markup

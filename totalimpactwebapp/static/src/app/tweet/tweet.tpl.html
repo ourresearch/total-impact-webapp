@@ -1,0 +1,38 @@
+<div class="tweet-container">
+
+   <div class="tweeter">
+      <img ng-src="{{ tweet.tweeter.image_url }}" />
+      <div class="tweeter-data f16">
+                  <span class="tweeter-name">
+                     <span class="text">{{ tweet.tweeter.name }}</span>
+                     <span class="flag {{ tweet.country.toLowerCase() }}"></span>
+                  </span>
+
+                  <span class="tweeter-followers">
+                     <span class="val">{{ nFormat(tweet.tweeter.followers) }}</span>
+                     <span class="descr">followers</span>
+                  </span>
+      </div>
+   </div>
+   <div class="tweet-content" ng-bind-html="trustHtml(tweet.tweet_text_with_links)">
+   </div>
+   <div class="after-tweet">
+      <a class="tweet-date"
+         href="https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}"
+         tooltip-placement="left"
+         tooltip="{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}">
+         {{ moment(tweet.tweet_timestamp).fromNow() }}
+      </a>
+      <div class="tweet-controls">
+         <a href="https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}">
+            <i class="fa fa-reply"></i>
+         </a>
+         <a href="https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}">
+            <i class="fa fa-retweet"></i>
+         </a>
+         <a href="https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}">
+            <i class="fa fa-star-o"></i>
+         </a>
+      </div>
+   </div>
+</div>
