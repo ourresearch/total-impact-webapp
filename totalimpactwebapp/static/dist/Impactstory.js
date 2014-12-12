@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-28
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-12
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1069,7 +1069,6 @@ angular.module( 'infopages', [
 //    })
 
     TiMixpanel.track("viewed landing page")
-
     var signupFormShowing = false
     $scope.landingPageType = "main"
     Page.setName("landing")
@@ -1080,6 +1079,7 @@ angular.module( 'infopages', [
 
   .controller("hIndexLandingPageCtrl", function($scope, Page){
     $scope.landingPageType = "h-index"
+    Page.setName("landing")
     Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
@@ -7487,16 +7487,52 @@ angular.module("infopages/landing.tpl.html", []).run(["$templateCache", function
     "\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +
-    "               <h1>You're more than your h-index.</h1>\n" +
-    "               <h2>Discover the full impact of your research</h2>\n" +
-    "            </div>\n" +
     "\n" +
     "            <div class=\"landing-page main\" ng-show=\"landingPageType=='open-science'\">\n" +
-    "               <h1>For open scientists.</h1>\n" +
-    "               <h2>Discover the full impact of all your open science</h2>\n" +
+    "               <h1>Open Metrics for Open Science.</h1>\n" +
+    "               <div class=\"main-testimonial\">\n" +
+    "                  <q>\n" +
+    "                     The future is here and I like it.\n" +
+    "                  </q>\n" +
+    "                  <div class=\"quote-source\">\n" +
+    "                     &ndash;\n" +
+    "                     <span class=\"name\">Jonathon Eisen,</span>\n" +
+    "                     <span class=\"affiliation\">Professor, UC-Davis</span>\n" +
+    "                  </div>\n" +
+    "               </div>\n" +
     "            </div>\n" +
     "\n" +
+    "\n" +
+    "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +
+    "               <h1>You are more than your h-index.</h1>\n" +
+    "               <div class=\"main-testimonial\">\n" +
+    "                  <q>\n" +
+    "                     Impactstory looks great and works beautifully. The new standard for scientific CVs.\n" +
+    "                  </q>\n" +
+    "                  <div class=\"quote-source\">\n" +
+    "                     &ndash;\n" +
+    "                     <span class=\"name\">Pietro Gatti Lafranconi,</span>\n" +
+    "                     <span class=\"affiliation\">Cambridge University</span>\n" +
+    "                  </div>\n" +
+    "               </div>\n" +
+    "\n" +
+    "            </div>\n" +
+    "\n" +
+    "\n" +
+    "            <div class=\"landing-page main\" ng-show=\"landingPageType=='h-index'\">\n" +
+    "               <h1>You are more than your h-index.</h1>\n" +
+    "               <div class=\"main-testimonial\">\n" +
+    "                  <q>\n" +
+    "                     Impactstory looks great and works beautifully. The new standard for scientific CVs.\n" +
+    "                  </q>\n" +
+    "                  <div class=\"quote-source\">\n" +
+    "                     &ndash;\n" +
+    "                     <span class=\"name\">Pietro Gatti Lafranconi,</span>\n" +
+    "                     <span class=\"affiliation\">Cambridge University</span>\n" +
+    "                  </div>\n" +
+    "               </div>\n" +
+    "\n" +
+    "            </div>\n" +
     "\n" +
     "\n" +
     "            <div id=\"call-to-action\">\n" +
@@ -8977,11 +9013,13 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </div>\n" +
     "\n" +
     "\n" +
+    "               <!--\n" +
     "               <ul class=\"profile-award-list\">\n" +
     "                  <li class=\"profile-award-container level-{{ ProfileAwardService.awards.oa.level }}\"\n" +
     "                      ng-include=\"'profile-award/profile-award.tpl.html'\">\n" +
     "                  </li>\n" +
     "               </ul>\n" +
+    "               -->\n" +
     "            </div>\n" +
     "\n" +
     "\n" +
