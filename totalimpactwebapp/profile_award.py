@@ -123,7 +123,6 @@ class OAAward(ProfileAward):
         oa_articles = [p for p in article_products if p.is_free_to_read]
         oa_article_count = len(oa_articles)
 
-
         self.extra["oa_articles_count"] = oa_article_count
 
         try:
@@ -131,10 +130,6 @@ class OAAward(ProfileAward):
         except ZeroDivisionError:
             oa_proportion = 0
 
-
-
-        # @todo this is dummy data for testing!
-        oa_article_count = 10
 
         self.extra["oa_articles_proportion"] = oa_proportion
         
