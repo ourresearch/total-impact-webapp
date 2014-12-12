@@ -132,10 +132,6 @@ class OAAward(ProfileAward):
             oa_proportion = 0
 
 
-
-        # @todo this is dummy data for testing!
-        oa_article_count = 10
-
         self.extra["oa_articles_proportion"] = oa_proportion
         
         # calculate level
