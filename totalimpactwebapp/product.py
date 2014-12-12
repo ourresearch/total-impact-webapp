@@ -419,7 +419,7 @@ class Product(db.Model):
 
     @cached_property
     def has_free_fulltext_url(self):
-        return None == self.biblio.free_fulltext_host
+        return self.biblio.free_fulltext_host != None
 
 
     def get_metric_raw_value(self, provider, interaction):

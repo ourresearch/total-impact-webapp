@@ -123,7 +123,6 @@ class OAAward(ProfileAward):
         oa_articles = [p for p in article_products if p.is_free_to_read]
         oa_article_count = len(oa_articles)
 
-
         self.extra["oa_articles_count"] = oa_article_count
 
         try:
