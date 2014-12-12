@@ -9013,13 +9013,11 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </div>\n" +
     "\n" +
     "\n" +
-    "               <!--\n" +
     "               <ul class=\"profile-award-list\">\n" +
     "                  <li class=\"profile-award-container level-{{ ProfileAwardService.awards.oa.level }}\"\n" +
     "                      ng-include=\"'profile-award/profile-award.tpl.html'\">\n" +
     "                  </li>\n" +
     "               </ul>\n" +
-    "               -->\n" +
     "            </div>\n" +
     "\n" +
     "\n" +
