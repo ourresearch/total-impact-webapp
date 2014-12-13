@@ -188,19 +188,19 @@ def abort_if_user_not_logged_in(profile):
         abort_json(405, "You can't do this because you're not logged in.")
 
 
-def is_logged_in(profile):
+def current_user_owns_profile(profile):
     try:
-        return current_user.id != profile.id
-    except AttributeError:
+        return current_user.id == profile.id
+    except AttributeError:  #Anonymous
         return False
 
 
 
 def current_user_owns_tiid(tiid):
     try:
-        profile = db.session.query(Profile).get(int(current_user.id))
-        db.session.expunge(profile)
-        return tiid in profile.tiids
+        profile_for_current_user = db.session.query(Profile).get(int(current_user.id))
+        db.session.expunge(profile_for_current_user)
+        return tiid in profile_for_current_user.tiids
     except AttributeError:  #Anonymous
         return False
 
@@ -350,21 +350,22 @@ def login():
     password = unicode(request.json["password"])
 
     if "@" in email:
-        user = Profile.query.filter_by(email=email.lower()).first()
+        profile = Profile.query.filter_by(email=email.lower()).first()
     else:
         # maybe we got a url slug instead of an email
-        user = Profile.query.filter_by(url_slug=email).first()
+        profile = Profile.query.filter_by(url_slug=email).first()
 
 
-    if user is None:
+    if profile is None:
         abort(404, "Email doesn't exist")
-    elif not user.check_password(password):
+    elif not profile.check_password(password):
         abort(401, "Wrong password")
     else:
         # Yay, no errors! Log the user in.
-        login_user(user)
+        login_user(profile)
+        profile.update_last_viewed_profile(async=True)
 
-    return json_resp_from_thing({"user": user.dict_about()})
+    return json_resp_from_thing({"user": profile.dict_about()})
 
 
 
@@ -425,6 +426,10 @@ def profile_about(profile_id):
 
     profile = get_user_for_response(profile_id, request, include_products=False)
     dict_about = profile.dict_about(show_secrets=False)
+
+    if current_user_owns_profile(profile):
+        profile.update_last_viewed_profile(async=True)
+
     return json_resp_from_thing(dict_about)
 
 

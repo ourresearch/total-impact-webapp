@@ -321,11 +321,17 @@ def add_product_deets_for_everyone(url_slug=None, skip_until_url_slug=None):
         db.session.commit()
 
 
-def deduplicate_everyone():
+def dedup_everyone(url_slug=None, min_url_slug=None):
     q = db.session.query(Profile)
+    if url_slug:
+        q = q.filter(Profile.url_slug==url_slug)
+    elif min_url_slug:
+        q = q.filter(Profile.url_slug>=min_url_slug)
+
     for profile in windowed_query(q, Profile.url_slug, 25):
-        logger.info(u"deduplicate_everyone: {url_slug}".format(url_slug=profile.url_slug))
-        response = tasks.deduplicate.delay(profile.id)
+        logger.info(u"dedup: {url_slug}".format(url_slug=profile.url_slug))
+        response = profile.remove_duplicates()
+
 
 
 def mint_stripe_customers_for_all_profiles():
@@ -1023,9 +1029,9 @@ def update_profiles(limit=5, url_slug=None):
         try:
             if profile.is_live:
                 number_products_before = len(profile.tiids)
-                number_added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
-                number_products_after = len(profile.tiids)
-                if number_products_before==number_products_after:
+                added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+                number_products_after = number_products_before + len(added_tiids)
+                if len(added_tiids)==0:
                     logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
                         number_products_before=number_products_before,
                         url_slug=profile.url_slug))
@@ -1056,7 +1062,7 @@ def main(function, args):
         else:    
             email_report_to_everyone_who_needs_one(args["max_emails"])
     elif function=="dedup":
-        deduplicate_everyone()
+        dedup_everyone(args["url_slug"], args["min_url_slug"])
     elif function=="productdeets":
         add_product_deets_for_everyone(args["url_slug"], args["skip_until_url_slug"])
     elif function=="refsets":
