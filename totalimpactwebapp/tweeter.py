@@ -53,7 +53,7 @@ def get_and_save_tweeter_followers(tweeters):
     # print "length of tweeters", len(tweeters)
 
     screen_names_string = ",".join([tweeter.screen_name for tweeter in tweeters])
-    # print ", ".join([tweeter.screen_name for tweeter in tweeters])
+    print ", ".join([tweeter.screen_name for tweeter in tweeters])
 
     try:
         response = client.api.users.lookup.post(screen_name=screen_names_string)
@@ -103,17 +103,17 @@ class Tweeter(db.Model):
         return self
 
     def set_attributes_from_twitter_data(self, data):
-        self.followers = data.get("followers_count", 0)
-        self.name = data.get("name", self.screen_name)
-        self.description = data.get("description", "")
+        # self.followers = data.get("followers_count", 0)
+        # self.name = data.get("name", self.screen_name)
+        # self.description = data.get("description", "")
         self.image_url = data.get("profile_image_url", None)
-        self.profile_url = data.get("url", None)
-        self.location = data.get("location", None)
-        self.num_statuses = data.get("statuses_count", None)
-        self.num_follows = data.get("friends_count", None)
-        self.twitter_id = data.get("id", None)
-        if data.get("created_at", None):
-            self.twitter_join_date = dateutil.parser.parse(data.get("created_at"))
+        # self.profile_url = data.get("url", None)
+        # self.location = data.get("location", None)
+        # self.num_statuses = data.get("statuses_count", None)
+        # self.num_follows = data.get("friends_count", None)
+        # self.twitter_id = data.get("id", None)
+        # if data.get("created_at", None):
+        #     self.twitter_join_date = dateutil.parser.parse(data.get("created_at"), 'UTC')
         self.last_collected_date = datetime.datetime.utcnow()
         return self
 
