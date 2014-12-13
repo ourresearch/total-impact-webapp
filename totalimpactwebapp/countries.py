@@ -306,8 +306,8 @@ def iso_code_from_name(name):
     if name in country_iso_by_name.keys():
         return name  # we got an ISO code, give it back.
 
-    if country_name in country_iso_by_name:
-        return country_iso_by_name[country_name]
+    if name in country_iso_by_name:
+        return country_iso_by_name[name]
 
     logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
         country_name=name))
