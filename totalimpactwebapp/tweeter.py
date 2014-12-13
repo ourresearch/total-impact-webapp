@@ -80,6 +80,7 @@ class Tweeter(db.Model):
     name = db.Column(db.Text)
     description = db.Column(db.Text)
     location = db.Column(db.Text) # alter table tweeter add location text
+    image_url = db.Column(db.Text)
     profile_url = db.Column(db.Text) # alter table tweeter add profile_url text
     twitter_join_date = db.Column(db.DateTime()) # alter table tweeter add twitter_join_date timestamp
     num_statuses = db.Column(db.Integer) # alter table tweeter add num_statuses numeric
