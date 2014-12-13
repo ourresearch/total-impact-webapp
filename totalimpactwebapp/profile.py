@@ -457,7 +457,9 @@ class Profile(db.Model):
     def update_products_from_linked_account(self, account, add_even_if_removed):
         added_tiids = []
         if account=="twitter":
-            self.update_twitter()
+            pass
+            # don't update twitter right now
+            # self.update_twitter()
         else:
             account_value = getattr(self, account+"_id", None)
             tiids_to_add = []        
