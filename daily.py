@@ -320,8 +320,13 @@ def add_product_deets_for_everyone(url_slug=None, skip_until_url_slug=None):
         db.session.commit()
 
 
-def dedup(url_slug=None, min_url_slug=None):
-    q = profile_query(url_slug, min_url_slug)
+def dedup_everyone(url_slug=None, min_url_slug=None):
+    q = db.session.query(Profile)
+    if url_slug:
+        q = q.filter(Profile.url_slug==url_slug)
+    elif min_url_slug:
+        q = q.filter(Profile.url_slug>=min_url_slug)
+
     for profile in windowed_query(q, Profile.url_slug, 25):
         logger.info(u"dedup: {url_slug}".format(url_slug=profile.url_slug))
         response = profile.remove_duplicates()
@@ -1054,7 +1059,7 @@ def main(function, args):
         else:    
             email_report_to_everyone_who_needs_one(args["max_emails"])
     elif function=="dedup":
-        dedup(args["url_slug"], args["min_url_slug"])
+        dedup_everyone(args["url_slug"], args["min_url_slug"])
     elif function=="productdeets":
         add_product_deets_for_everyone(args["url_slug"], args["skip_until_url_slug"])
     elif function=="refsets":
