@@ -9,6 +9,7 @@ from collections import defaultdict
 import os
 import datetime
 import logging
+import dateutil.parser
 logger = logging.getLogger('ti.tweeter')
 
 # from https://github.com/inueni/birdy/issues/7
@@ -22,14 +23,13 @@ class AppDictClient(AppClient):
 def handle_all_user_lookups(user_dicts_from_twitter, tweeters):
     dicts_by_screen_name = defaultdict(str)
     for user_dict in user_dicts_from_twitter:
-        screen_name = user_dict["screen_name"]
-        dicts_by_screen_name[screen_name.lower()] = user_dict
+        dicts_by_screen_name[user_dict["screen_name"].lower()] = user_dict
 
     i = 0
     for tweeter in tweeters:
         i += 1
         if tweeter.screen_name.lower() in dicts_by_screen_name.keys():
-            user_dict = dicts_by_screen_name[screen_name.lower()]
+            user_dict = dicts_by_screen_name[tweeter.screen_name.lower()]
             tweeter.set_attributes_from_twitter_data(user_dict)
             # print i, "updated tweeter", tweeter, tweeter.last_collected_date
         else:
@@ -75,10 +75,15 @@ def get_and_save_tweeter_followers(tweeters):
 
 class Tweeter(db.Model):
     screen_name = db.Column(db.Text, primary_key=True)
+    twitter_id = db.Column(db.Integer) # alter table tweeter add twitter_id numeric
     followers = db.Column(db.Integer)
     name = db.Column(db.Text)
     description = db.Column(db.Text)
-    image_url = db.Column(db.Text)
+    location = db.Column(db.Text) # alter table tweeter add location text
+    profile_url = db.Column(db.Text) # alter table tweeter add profile_url text
+    twitter_join_date = db.Column(db.DateTime()) # alter table tweeter add twitter_join_date timestamp
+    num_statuses = db.Column(db.Integer) # alter table tweeter add num_statuses numeric
+    num_follows = db.Column(db.Integer) # alter table tweeter add num_follows numeric
     last_collected_date = db.Column(db.DateTime())   #alter table tweeter add last_collected_date timestamp
     is_deleted = db.Column(db.Boolean)  # alter table tweeter add is_deleted bool
 
@@ -101,6 +106,13 @@ class Tweeter(db.Model):
         self.name = data.get("name", self.screen_name)
         self.description = data.get("description", "")
         self.image_url = data.get("profile_image_url", None)
+        self.profile_url = data.get("url", None)
+        self.location = data.get("location", None)
+        self.num_statuses = data.get("statuses_count", None)
+        self.num_follows = data.get("friends_count", None)
+        self.twitter_id = data.get("id", None)
+        if data.get("created_at", None):
+            self.twitter_join_date = dateutil.parser.parse(data.get("created_at"))
         self.last_collected_date = datetime.datetime.utcnow()
         return self
 
@@ -218,50 +230,6 @@ class Tweeter(db.Model):
 #     "notifications": false,
 #     "time_zone": "Pacific Time (US & Canada)",
 #     "statuses_count": 1379,
-#     "status": {
-#       "coordinates": null,
-#       "created_at": "Tue Aug 21 19:04:00 +0000 2012",
-#       "favorited": false,
-#       "truncated": false,
-#       "id_str": "237988442338897920",
-#       "retweeted_status": {
-#         "coordinates": null,
-#         "created_at": "Tue Aug 21 18:51:44 +0000 2012",
-#         "favorited": false,
-#         "truncated": false,
-#         "id_str": "237985351858278400",
-#         "in_reply_to_user_id_str": null,
-#         "text": "Arijit Guha fought for insurance coverage, and won.\n http://t.co/ZvQ6fU2O #twitterstories http://t.co/bVYPNnV7",
-#         "contributors": [
-#           16896060
-#         ],
-#         "retweet_count": 118,
-#         "id": 237985351858278400,
-#         "in_reply_to_status_id_str": null,
-#         "geo": null,
-#         "retweeted": false,
-#         "possibly_sensitive": false,
-#         "in_reply_to_user_id": null,
-#         "place": null,
-#         "source": "web",
-#         "in_reply_to_screen_name": null,
-#         "in_reply_to_status_id": null
-#       },
-#       "in_reply_to_user_id_str": null,
-#       "text": "RT @TwitterStories: Arijit Guha fought for insurance coverage, and won.\n http://t.co/ZvQ6fU2O #twitterstories http://t.co/bVYPNnV7",
-#       "contributors": null,
-#       "retweet_count": 118,
-#       "id": 237988442338897920,
-#       "in_reply_to_status_id_str": null,
-#       "geo": null,
-#       "retweeted": false,
-#       "possibly_sensitive": false,
-#       "in_reply_to_user_id": null,
-#       "place": null,
-#       "source": "web",
-#       "in_reply_to_screen_name": null,
-#       "in_reply_to_status_id": null
-#     },
 #     "profile_background_image_url": "http://a0.twimg.com/profile_background_images/378245879/Twitter_1544x2000.png",
 #     "default_profile_image": false,
 #     "friends_count": 1195,
