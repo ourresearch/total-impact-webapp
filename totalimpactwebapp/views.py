@@ -350,21 +350,22 @@ def login():
     password = unicode(request.json["password"])
 
     if "@" in email:
-        user = Profile.query.filter_by(email=email.lower()).first()
+        profile = Profile.query.filter_by(email=email.lower()).first()
     else:
         # maybe we got a url slug instead of an email
-        user = Profile.query.filter_by(url_slug=email).first()
+        profile = Profile.query.filter_by(url_slug=email).first()
 
 
-    if user is None:
+    if profile is None:
         abort(404, "Email doesn't exist")
-    elif not user.check_password(password):
+    elif not profile.check_password(password):
         abort(401, "Wrong password")
     else:
         # Yay, no errors! Log the user in.
-        login_user(user)
+        login_user(profile)
+        profile.update_last_viewed_profile(async=True)
 
-    return json_resp_from_thing({"user": user.dict_about()})
+    return json_resp_from_thing({"user": profile.dict_about()})
 
 
 

@@ -480,7 +480,7 @@ class Profile(db.Model):
     def update_last_viewed_profile(self, async=True):
         now = datetime.datetime.now()
         if async:
-            t = threading.Thread(target=save_profile_last_viewed_profile_timestamp, args=(self.id))
+            t = threading.Thread(target=save_profile_last_viewed_profile_timestamp, args=(self.id,))
             t.daemon = True
             t.start()
         else:
