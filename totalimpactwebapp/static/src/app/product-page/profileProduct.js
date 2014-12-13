@@ -368,7 +368,7 @@ angular.module("productPage", [
                                                 Loading,
                                                 TiMixpanel,
                                                 ProductBiblio){
-  var tiid = $location.path().match(/\/product\/(.+)$/)[1]
+  var tiid = $location.path().match(/\/product\/([0-9a-z]+)\/fulltext$/)[1]  //needs to allow /fulltext at the end
 
   $scope.free_fulltext_url = ""
   $scope.onSave = function() {

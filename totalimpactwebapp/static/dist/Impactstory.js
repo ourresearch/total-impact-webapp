@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-28
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-13
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1699,7 +1699,7 @@ angular.module("productPage", [
                                                 Loading,
                                                 TiMixpanel,
                                                 ProductBiblio){
-  var tiid = $location.path().match(/\/product\/(.+)$/)[1]
+  var tiid = $location.path().match(/\/product\/([0-9a-z]+)\/fulltext$/)[1]  //needs to allow /fulltext at the end
 
   $scope.free_fulltext_url = ""
   $scope.onSave = function() {
