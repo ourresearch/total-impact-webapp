@@ -47,13 +47,13 @@ def get_and_save_tweeter_followers(tweeters):
         access_token=os.getenv("TWITTER_ACCESS_TOKEN")
     )
 
-    logger.exception(u"Length of tweeters {num}".format(
+    logger.info(u"Length of tweeters {num}".format(
          num=len(tweeters)))
 
     # print "length of tweeters", len(tweeters)
 
     screen_names_string = ",".join([tweeter.screen_name for tweeter in tweeters])
-    print ", ".join([tweeter.screen_name for tweeter in tweeters])
+    # print ", ".join([tweeter.screen_name for tweeter in tweeters])
 
     try:
         response = client.api.users.lookup.post(screen_name=screen_names_string)
