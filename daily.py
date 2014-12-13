@@ -1021,9 +1021,9 @@ def update_profiles(limit=5, url_slug=None):
         try:
             if profile.is_live:
                 number_products_before = len(profile.tiids)
-                number_added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
-                number_products_after = len(profile.tiids)
-                if number_products_before==number_products_after:
+                added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+                number_products_after = number_products_before + len(added_tiids)
+                if len(added_tiids)==0:
                     logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
                         number_products_before=number_products_before,
                         url_slug=profile.url_slug))

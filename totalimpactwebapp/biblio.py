@@ -143,11 +143,13 @@ class Biblio(object):
     def dedup_key(self):
         nid = self.to_dict()
         biblio_for_comparing = clean_alias_tuple_for_comparing("biblio", nid)
-        return ("biblio", biblio_for_comparing)
+        return biblio_for_comparing
+
 
     def is_equivalent_biblio(self, biblio_dict):
         if not biblio_dict:
             return False
+
         return self.dedup_key == clean_alias_tuple_for_comparing("biblio", biblio_dict)
 
     def to_dict(self):
