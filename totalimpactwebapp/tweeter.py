@@ -53,11 +53,10 @@ def get_and_save_tweeter_followers(tweeters):
     # print "length of tweeters", len(tweeters)
 
     screen_names_string = ",".join([tweeter.screen_name for tweeter in tweeters])
-    print "\n".join([tweeter.screen_name for tweeter in tweeters])
+    print ", ".join([tweeter.screen_name for tweeter in tweeters])
 
     try:
         response = client.api.users.lookup.post(screen_name=screen_names_string)
-        print response
         handle_all_user_lookups(response.data, tweeters)
     except TwitterApiError, e:
         logger.exception("TwitterApiError error, skipping")
