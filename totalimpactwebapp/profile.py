@@ -390,10 +390,6 @@ class Profile(db.Model):
                     return True
         return False
 
-    def update_last_viewed_profile(self):
-        save_profile_last_viewed_profile_timestamp(self.id)
-        return True
-
     def is_authenticated(self):
         # this gets overriden by Flask-login
         return True
@@ -479,6 +475,19 @@ class Profile(db.Model):
 
                 added_tiids = [product.tiid for product in new_products]
         return added_tiids
+
+
+    def update_last_viewed_profile(self, async=True):
+        now = datetime.datetime.now()
+        if async:
+            t = threading.Thread(target=save_profile_last_viewed_profile_timestamp, args=(self.id))
+            t.daemon = True
+            t.start()
+        else:
+            save_profile_last_viewed_profile_timestamp(self.id)
+        return
+
+
 
     def patch(self, newValuesDict):
         for k, v in newValuesDict.iteritems():
@@ -707,6 +716,7 @@ def build_profile_dict(profile, hide_keys, embed):
         profile_dict["awards"] = profile.awards
 
     return profile_dict
+
 
 
 def delete_products_from_profile(profile, tiids_to_delete):

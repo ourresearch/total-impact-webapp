@@ -188,19 +188,19 @@ def abort_if_user_not_logged_in(profile):
         abort_json(405, "You can't do this because you're not logged in.")
 
 
-def is_logged_in(profile):
+def current_user_owns_profile(profile):
     try:
-        return current_user.id != profile.id
-    except AttributeError:
+        return current_user.id == profile.id
+    except AttributeError:  #Anonymous
         return False
 
 
 
 def current_user_owns_tiid(tiid):
     try:
-        profile = db.session.query(Profile).get(int(current_user.id))
-        db.session.expunge(profile)
-        return tiid in profile.tiids
+        profile_for_current_user = db.session.query(Profile).get(int(current_user.id))
+        db.session.expunge(profile_for_current_user)
+        return tiid in profile_for_current_user.tiids
     except AttributeError:  #Anonymous
         return False
 
@@ -425,6 +425,10 @@ def profile_about(profile_id):
 
     profile = get_user_for_response(profile_id, request, include_products=False)
     dict_about = profile.dict_about(show_secrets=False)
+
+    if current_user_owns_profile(profile):
+        profile.update_last_viewed_profile(async=True)
+
     return json_resp_from_thing(dict_about)
 
 
