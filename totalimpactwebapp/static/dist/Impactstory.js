@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-13
-=======
 /*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-10
->>>>>>> show-tweets
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
