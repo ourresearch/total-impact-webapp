@@ -15,13 +15,17 @@ angular.module("services.productList", [])
     Page,
     ProfileService){
 
-  var genreChangeDropdown = {}
+  var ui = {}
   var filterFn
+
+
 
   var startRender = function($scope){
     if (!ProfileService.hasFullProducts()){
       Loading.startPage()
     }
+    ui.genreChangeDropdownIsOpen = false
+    ui.showTweets = false
     Timer.start("productListRender")
     SelectedProducts.removeAll()
 
@@ -40,6 +44,7 @@ angular.module("services.productList", [])
     });
   }
 
+
   var finishRender = function(){
     Loading.finishPage()
     $timeout(function(){
@@ -54,7 +59,6 @@ angular.module("services.productList", [])
   var changeProductsGenre = function(newGenre){
     ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
-    genreChangeDropdown.isOpen = false
 
     // handle moving the last product in our current genre
     if (!len()){
@@ -92,12 +96,13 @@ angular.module("services.productList", [])
     removeSelectedProducts: removeSelectedProducts,
     startRender: startRender,
     finishRender: finishRender,
-    genreChangeDropdown: genreChangeDropdown,
+    ui: ui,
     setFilterFn: function(fn){
       filterFn = fn
     },
     len: len,
     selectEverything: selectEverything
+
   }
 
 

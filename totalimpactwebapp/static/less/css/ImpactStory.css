@@ -8254,7 +8254,7 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   padding: 3px 5px;
 }
 .product div.product-margin span.feature-product-controls a.feature-product {
-  color: #999999;
+  color: #777;
 }
 .product div.product-margin span.feature-product-controls a.feature-product:hover {
   color: #000;
@@ -8277,6 +8277,30 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   font-size: 18px;
   width: 20px;
   text-align: center;
+}
+.product div.product-tweets {
+  margin: 0 0 40px 50px;
+  padding-top: 15px;
+  clear: both;
+}
+.product div.product-tweets:before,
+.product div.product-tweets:after {
+  content: " ";
+  display: table;
+}
+.product div.product-tweets:after {
+  clear: both;
+}
+.product div.product-tweets:before,
+.product div.product-tweets:after {
+  content: " ";
+  display: table;
+}
+.product div.product-tweets:after {
+  clear: both;
+}
+.product div.link-to-more-tweets {
+  margin: 40px 0 20px 10px;
 }
 .product-container .biblio {
   float: left;
@@ -8546,6 +8570,7 @@ div.product-page {
 }
 div.product-page div.main-content {
   float: left;
+  width: 100%;
 }
 div.product-page div.main-content #main-biblio h2.title {
   font-size: 28px;
@@ -8705,8 +8730,13 @@ div.product-page div.main-content #product-tabs-section div.tabs div.tab.selecte
   background-clip: padding-box;
   color: #fff;
 }
+div.product-page div.main-content #product-tabs-section div.tabs div.tab span.count {
+  font-weight: 300;
+  font-size: 80%;
+}
 div.product-page div.main-content #product-tabs-section div.tabs-content {
   margin-bottom: 100px;
+  clear: both;
 }
 div.product-page div.main-content #product-tabs-section div.tabs-content .tab-summary div.summary-metrics {
   margin-top: 20px;
@@ -8973,6 +9003,24 @@ div.product-page div.main-content #product-tabs-section div.tabs-content .tab-me
 }
 div.product-page div.main-content #product-tabs-section div.tabs-content .tab-map p {
   text-align: center;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls {
+  font-size: 14px;
+  text-align: right;
+  margin: 20px 70px 20px 0;
+  padding-top: 20px;
+  border-bottom: 1px solid #eee;
+  color: #555;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls span.descr {
+  font-weight: 300;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls label {
+  cursor: pointer;
+  padding-left: 10px;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls label input {
+  margin-right: 5px;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;
@@ -10208,7 +10256,7 @@ div.product-list-page div.product-list-controls div.edit-controls span.num-selec
   margin-left: 10px;
   color: #555;
 }
-div.product-list-page div.product-list-controls div.sort-controls {
+div.product-list-page div.product-list-controls div.display-controls {
   top: 0;
   right: 0;
   position: absolute;
@@ -10216,10 +10264,26 @@ div.product-list-page div.product-list-controls div.sort-controls {
   color: #555;
   font-size: 14px;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group {
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets {
+  display: inline-block;
+  margin-right: 25px;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets label {
+  cursor: pointer;
+  font-weight: normal;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets label i.fa-twitter {
+  color: #55acee;
+  font-size: 20px;
+  vertical-align: middle;
+}
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls {
+  display: inline-block;
+}
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group {
   vertical-align: top;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
   border: none;
   box-shadow: none;
   -webkit-box-shadow: none;
@@ -10227,15 +10291,15 @@ div.product-list-page div.product-list-controls div.sort-controls .btn-group.sor
   text-decoration: underline;
   color: #333;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
   color: #555;
   padding: 2px 5px 2px 0;
   font-weight: bold;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
   text-decoration: underline;
 }
-div.product-list-page div.product-list-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
+div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
   font-size: 14px;
 }
 div.product-list-page div.products {
@@ -10263,4 +10327,85 @@ div.product-list-page div.products ul.products-list:after {
 }
 div.product-list-page div.products ul.products-list li.product {
   position: relative;
+}
+li.tweet {
+  font-size: 14px;
+  clear: both;
+  margin-bottom: 20px;
+}
+li.tweet:before,
+li.tweet:after {
+  content: " ";
+  display: table;
+}
+li.tweet:after {
+  clear: both;
+}
+li.tweet:before,
+li.tweet:after {
+  content: " ";
+  display: table;
+}
+li.tweet:after {
+  clear: both;
+}
+li.tweet div.tweeter img {
+  height: 48px;
+  -webkit-border-radius: 24px;
+  -moz-border-radius: 24px;
+  border-radius: 24px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  float: left;
+  margin-right: 10px;
+  border: 1px solid #555;
+}
+li.tweet div.tweeter div.tweeter-data {
+  width: 160px;
+  float: left;
+}
+li.tweet div.tweeter div.tweeter-data .tweeter-name {
+  display: inline;
+}
+li.tweet div.tweeter div.tweeter-data .tweeter-followers {
+  display: block;
+}
+li.tweet div.tweet-content {
+  width: 460px;
+  float: left;
+  margin-right: 20px;
+}
+li.tweet div.tweet-content a.entity {
+  color: #333;
+}
+li.tweet div.tweet-content a.entity:hover {
+  color: #ff4000;
+  text-decoration: underline;
+}
+li.tweet div.tweet-content a.entity.hashtag {
+  font-weight: bold;
+}
+li.tweet div.tweet-content a.entity.at-name {
+  font-weight: bold;
+}
+li.tweet div.after-tweet {
+  float: left;
+  width: 100px;
+  color: #777;
+}
+li.tweet div.after-tweet a.tweet-date {
+  display: inline-block;
+  color: #777;
+}
+li.tweet div.after-tweet a.tweet-date:hover {
+  color: #ff4000;
+  text-decoration: underline;
+}
+li.tweet div.after-tweet div.tweet-controls a {
+  color: #ddd;
+  padding: 2px 3px;
+}
+li.tweet div.after-tweet div.tweet-controls a:hover {
+  color: #777;
 }

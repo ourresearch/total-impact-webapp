@@ -51,9 +51,17 @@ angular.module("productListPage", [
         return false
       }
     }
+
+
+
     ProductList.setFilterFn(filterFn)
 
     $scope.productsFilter = filterFn
+
+    // only show tweets if they are for sure from this country
+    $scope.tweetsFilterFn = function(tweet){
+      return tweet.country === myCountryCode
+    }
 
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -108,8 +116,11 @@ angular.module("productListPage", [
       }
     }
 
-    $scope.productsFilter = filterFn
     ProductList.setFilterFn(filterFn)
+    $scope.productsFilter = filterFn
+    $scope.tweetsFilterFn = function(tweet){
+      return true
+    }
 
 
     $scope.ProductList = ProductList

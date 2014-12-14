@@ -9,6 +9,7 @@ from totalimpactwebapp.tweeter import Tweeter
 from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
 from collections import defaultdict
 import os
+import re
 import datetime
 import logging
 logger = logging.getLogger('ti.tweet')
@@ -23,7 +24,7 @@ def get_product_tweets_for_profile(profile_id):
     tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile_id).all()
     response = defaultdict(list)
     for tweet in tweets:
-        if tweet.tiid:
+        if tweet.tiid and tweet.tweet_text:
             response[tweet.tiid].append(tweet)
     return response
 
@@ -201,6 +202,7 @@ class Tweet(db.Model):
                     pass
         super(Tweet, self).__init__(**kwargs)
 
+
     @classmethod
     def most_recent_tweet_id(cls, screen_name):
         screen_name = screen_name.replace("@", "")
@@ -218,6 +220,42 @@ class Tweet(db.Model):
             return self.payload["text"]
         except TypeError:
             return None
+
+
+    @cached_property
+    def tweet_text_with_links(self):
+        if self.tweet_text is None:
+            return None
+
+        ret = self.tweet_text
+        # the tweet text has just stub links. replace these with real ones
+        ret = re.sub(r"(http://.+?)(\s|$)", r"<link>", ret)
+        for url_info in self.urls:
+            my_link = u" <a class='linkout entity' href='{url}'>{display_url}</a> ".format(
+                url=url_info["expanded_url"],
+                display_url=url_info["display_url"]
+            )
+            ret = re.sub(r"<link>", my_link, ret, 1)
+
+        # make links for #hashtags
+        # this and the @usernames one both based on http://stackoverflow.com/a/13398311/226013
+        ret = re.sub(r"(^|[^#\w])#(\w+)\b", r"\1<a href='http://twitter.com/hashtag/\2' class='entity hashtag'>#\2</a>", ret)
+
+        # make links for @usernames
+        ret = re.sub(r"(^|[^@\w])@(\w+)\b", r"\1<a href='http://twitter.com/\2' class='entity at-name'>@\2</a> ", ret)
+        return ret
+
+
+    @cached_property
+    def urls(self):
+        try:
+            return self.payload["entities"]["urls"]
+        except TypeError:
+            return None
+        except KeyError:
+            return []
+
+
 
     @cached_property
     def has_country(self):

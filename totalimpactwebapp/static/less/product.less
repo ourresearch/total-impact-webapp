@@ -21,7 +21,7 @@
       }
       span.feature-product-controls {
          a.feature-product {
-            color: @gray-light;
+            color: #777;
             &:hover {
                color: #000;
             }
@@ -48,8 +48,31 @@
          text-align: center;
       }
    }
+
+   .product-container {
+      // see below.
+   }
+
+
+   // see tweets.less for more tweets styles.
+   div.product-tweets {
+      clear:both;
+      margin: 0 0 40px 50px;
+      padding-top: 15px;
+      .clearfix();
+   }
+
+
+   div.link-to-more-tweets {
+      margin: 40px 0 20px 10px;
+      a {
+
+      }
+   }
+
 }
 
+// this is actually inside .product, it's here because otherwise was unwieldy.
 .product-container {
 
    .biblio{

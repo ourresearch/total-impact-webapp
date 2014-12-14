@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 /*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-13
+=======
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-10
+>>>>>>> show-tweets
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -493,7 +497,6 @@ angular.module('accounts.allTheAccounts', [
 
 })
 
-angular.module("accounts.allTheAccounts",["accounts.account"]).factory("AllTheAccounts",function(){var e=[],t={figshare:{displayName:"figshare",url:"http://figshare.com",sync:!0,descr:"Figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner.",username:{inputNeeded:"author page URL",placeholder:"http://figshare.com/authors/your_username/12345"},usernameCleanupFunction:function(e){return"undefined"==typeof e?e:"http://"+e.replace("http://","")}},github:{displayName:"GitHub",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://github.com",descr:"GitHub is an online code repository emphasizing community collaboration features.",username:{inputNeeded:"username",help:"Your GitHub account ID is at the top right of your screen when you're logged in."}},google_scholar:{displayName:"Google Scholar",sync:!1,usernameCleanupFunction:function(e){return e},url:"http://scholar.google.com/citations",descr:"Google Scholar profiles find and show scientists' articles as well as their citation impact.",username:{inputNeeded:"profile URL",placeholder:"http://scholar.google.ca/citations?user=your_user_id"}},orcid:{displayName:"ORCID",sync:!0,username:{inputNeeded:"ID",placeholder:"http://orcid.org/xxxx-xxxx-xxxx-xxxx",help:"You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."},usernameCleanupFunction:function(e){return e.replace("http://orcid.org/","")},url:"http://orcid.org",signupUrl:"http://orcid.org/register",descr:"ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",extra:"If ORCID has listed any of your products as 'private,' you'll need to change them to 'public' to be imported."},publons:{displayName:"Publons",url:"https://publons.com",sync:!0,descr:"Publons hosts and aggregates open peer reviews.",username:{inputNeeded:"author page URL",placeholder:"https://publons.com/author/12345/your-username/"},usernameCleanupFunction:function(e){return"undefined"==typeof e?e:"https://"+e.replace("https://","")}},slideshare:{displayName:"SlideShare",sync:!0,usernameCleanupFunction:function(e){return e},url:"http://slideshare.net",descr:"SlideShare is community for sharing presentations online.",username:{help:'Your username is right after "slideshare.net/" in your profile\'s URL.',inputNeeded:"username"}},twitter:{displayName:"Twitter",sync:!0,usernameCleanupFunction:function(e){return"@"+e.replace("@","")},url:"http://twitter.com",descr:"Twitter is a social networking site for sharing short messages.",username:{inputNeeded:"username",placeholder:"@example",help:"Your Twitter username is often written starting with @."}}},r=function(e){return"/static/img/logos/"+_(e.toLowerCase()).dasherize()+".png"},n=function(e){return e.endpoint?e.endpoint:makeName(e.displayName)},o=function(e){return e.replace(/ /g,"-").toLowerCase()};return{addProducts:function(t){e=e.concat(t)},getProducts:function(){return e},accountServiceNamesFromUserAboutDict:function(e){},foo:function(e){console.log("in foo")},get:function(e){console.log("in GET in alltheaccounts");var n=[],a=angular.copy(t);return console.log("accountsConfig",a),_.each(a,function(t,a){var s=a+"_id";t.username.value=e[s],t.accountHost=a,t.CSSname=o(t.displayName),t.logoPath=r(t.displayName),n.push(t)}),console.log("ret",n),_.sortBy(n,function(e){return e.displayName.toLocaleLowerCase()})}}});
 // setup libs outside angular-land. this may break some unit tests at some point...#problemForLater
 // Underscore string functions: https://github.com/epeli/underscore.string
 _.mixin(_.str.exports());
@@ -668,6 +671,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   })
 
+  $scope.moment = moment
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;
@@ -1250,9 +1254,17 @@ angular.module("productListPage", [
         return false
       }
     }
+
+
+
     ProductList.setFilterFn(filterFn)
 
     $scope.productsFilter = filterFn
+
+    // only show tweets if they are for sure from this country
+    $scope.tweetsFilterFn = function(tweet){
+      return tweet.country === myCountryCode
+    }
 
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -1307,8 +1319,11 @@ angular.module("productListPage", [
       }
     }
 
-    $scope.productsFilter = filterFn
     ProductList.setFilterFn(filterFn)
+    $scope.productsFilter = filterFn
+    $scope.tweetsFilterFn = function(tweet){
+      return true
+    }
 
 
     $scope.ProductList = ProductList
@@ -1494,6 +1509,11 @@ angular.module("productPage", [
       Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
+      $scope.ui = {
+        tweetsSortBy: "-tweet_timestamp"
+      }
+
+
       $scope.userSlug = slug
       $scope.loading = Loading
       $scope.aliases = myProduct.aliases
@@ -1507,6 +1527,11 @@ angular.module("productPage", [
       $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
+
+      // should've just done this in the first place instead of a bunch of
+      // individual assignments (above). Get rid of those some day, replace
+      // with this in the template.
+      $scope.product = myProduct
 
       if (myProduct.embed_markup) {
         $scope.iframeToEmbed = myProduct.embed_markup
@@ -2024,7 +2049,6 @@ angular.module('profileSingleProducts', [
     }
 
   })
-angular.module("profile",["resources.users","resources.products","services.page","ui.bootstrap","security","services.loading","services.timer","profileSingleProducts","profileLinkedAccounts","services.userMessage","services.tour","directives.jQueryTools","update.update"]).config(["$routeProvider",function(e,r){e.when("/embed/:url_slug",{templateUrl:"profile/profile.tpl.html",controller:"ProfileCtrl"})}]).factory("UserProfile",function(e,r,t,o,n,i){var l={},u=!1;return{useCache:function(e){return"undefined"!=typeof e&&(u=!!e),u},makeAnchorLink:function(e,r){var o=e;return r&&(o+=":"+encodeURIComponent(r)),t.path()+"#"+o},filterProducts:function(e,r){var t=_.filter(e,function(e){return _.size(e.metrics)}),o=_.filter(e,function(e){return e.metrics&&0==_.size(e.metrics)});return"withMetrics"==r?t:"withoutMetrics"===r?o:t.concat(o)},scrollToCorrectLocation:function(){t.hash()&&r()},makeSlug:function(){l.url_slug=n.make(l.givenName,l.surname)},readyToCreateOnServer:function(){return l.url_slug&&!id},reset:function(){l={}},setId:function(e){id=e},getId:function(){return id},getSlug:function(){return l.url_slug},about:l}}).controller("ProfileCtrl",function(e,r,t,o,n,i,l,u,s,c,a,f,d,p,g,h,m,v,k,b,w,P,S,L,C){e.pinboardService=w,e.$watch("pinboardService.cols",function(e,r){w.saveState(!0)},!0),e.sortableOptions={},k.hasFullProducts()||(console.log("no full products!"),v.startPage()),S.start("profileViewRender"),S.start("profileViewRender.load"),C.setName("overview");var y=o.url_slug;i(function(){twttr.widgets.load()},1e3),e.profileLoading=k.isLoading,e.url_slug=y,e.hideSignupBannerNow=function(){e.hideSignupBanner=!0},e.refresh=function(){var e="/profile/"+y+"/products?action=refresh";console.log("POSTing to ",e),l.post(e,{}).success(function(e,r,t,o){console.log("POST returned. We're refreshing these tiids: ",e),renderProducts()})},e.humanDate=function(e){return moment(e).fromNow()},e.clickSignupLink=function(){p.track("Clicked profile footer signup link")},e.openProfileEmbedModal=function(){n.open({templateUrl:"profile/profile-embed-modal.tpl.html",controller:"profileEmbedModalCtrl",resolve:{url_slug:function(e){return e.when(y)}}})},e.sliceSortedCards=function(e,r,t){var o=_.sortBy(e,"sort_by").reverse(),n=o.concat([]);return n.slice(r,t)},e.nFormat=function(e){return e>=1e6?(e/1e6).toFixed(1).replace(/\.0$/,"")+"M":e>=1e3?(e/1e3).toFixed(1).replace(/\.0$/,"")+"k":e},e.$watch("profileService.data",function(e,r){k.hasFullProducts()&&v.finishPage(),e.full_name?(C.setTitle(e.about.full_name),L.isLoggedInPromise(y).then(function(){p.track("viewed own profile",{"Number of products":e.products.length}),0===e.products.length&&(console.log("logged-in user looking at own profile with no products. showing tour."),P.start(e.about))})):e.is404},!0)}).directive("backToProfile",function(e,r){return{restrict:"A",replace:!0,template:"<a ng-show='returnLink' class='back-to-profile btn btn-info btn-sm' href='{{ returnLink }}' ng-disabled='loading.is()'><i class='icon-chevron-left left'></i>back to profile</a>",link:function(r,t){console.log("path: ",e.path()),r.returnLink=e.path().split("/")[1],"/embed"===r.returnLink&&(r.returnLink=null)}}});
 angular.module("profile", [
   'resources.users',
   'resources.products',
@@ -4138,7 +4162,6 @@ angular.module('resources.products',['ngResource'])
 
 
 
-angular.module("resources.users",["ngResource"]).factory("Users",function(e){return e("/user/:id?id_type=:idType",{idType:"userid"})}).factory("UsersProducts",function(e){return e("/user/:id/products?id_type=:idType&include_heading_products=:includeHeadingProducts",{idType:"url_slug",includeHeadingProducts:!1},{update:{method:"PUT"},patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"}},"delete":{method:"DELETE",headers:{"Content-Type":"application/json"}},query:{method:"GET",isArray:!0,cache:!0},poll:{method:"GET",isArray:!0,cache:!1}})}).factory("UsersProduct",function(e){return e("/user/:id/product/:tiid?id_type=:idType",{idType:"url_slug"},{update:{method:"PUT"}})}).factory("UsersAbout",function(e){return e("/user/:id/about?id_type=:idType",{idType:"url_slug"},{patch:{method:"POST",headers:{"X-HTTP-METHOD-OVERRIDE":"PATCH"},params:{id:"@about.id"}}})}).factory("UsersPassword",function(e){return e("/user/:id/password?id_type=:idType",{idType:"url_slug"})}).factory("UsersProductsCache",function(e){var t=[];return{query:function(){}}});
 angular.module('resources.users',['ngResource'])
 
   .factory('Users', function ($resource) {
@@ -5100,9 +5123,6 @@ angular.module("services.map", [
     }
   }
 })
-angular.module("services.pinboardService",["resources.users"]).factory("PinboardService",function(n,o){function t(n){return g[e(n)]}function e(n){return"product"==n[0]?"one":"two"}function r(n){console.log("pinning this id: ",n),t(n).push(n),i()}function i(t){var e=o.getCurrentUserSlug();return e?t&&l()?!1:void n.save({id:e},{contents:g},function(n){},function(n){}):!1}function u(o){console.log("calling ProfilePinboard.get("+o+")",g,a),a.url_slug=o,n.get({id:o},function(n){g.one=n.one,g.two=n.two},function(n){console.log("no pinboard set yet."),c()})}function c(){g.one=[],g.two=[];for(var n in a)a.hasOwnProperty(n)&&delete a[n]}function l(){return!g.one.length&&!g.two.length}function s(n){return console.log("unpin this!",n),g[e(n)]=_.filter(t(n),function(o){return!_.isEqual(n,o)}),i(),!0}function f(n){return!!_.find(t(n),function(o){return _.isEqual(n,o)})}var a={},g={one:[],two:[]};return{cols:g,pin:r,unPin:s,isPinned:f,get:u,saveState:i,getUrlSlug:function(){return a.url_slug},clear:c}});
-angular.module("services.profileService",["resources.users"]).factory("ProfileService",function(e,r,n,t,o,u,c,i,s,d,a,l,f){function g(e){d.query({id:e,stubs:!0},function(e){F.products=e},function(e){console.log("stubs call failed",e)})}function p(e){return F.products||g(e),C=!0,l.createResource().get({id:e,embedded:!1},function(r){console.log("ProfileService got a response",r),_.each(F,function(e,r){delete F[r]}),angular.extend(F,r),C=!1,n.showUpdateModal(e,r.is_refreshing).then(function(r){console.log("updater (resolved):",r),p(e,!0)},function(e){})},function(e){console.log("ProfileService got a failure response",e),404==e.status&&(F.is404=!0),C=!1}).$promise}function v(e){return e.length?(_.each(e,function(e){var r=P(e);F.products.splice(r,1)}),t.setStr("Deleted "+e.length+" items.","success"),void d.delete({id:F.about.url_slug,tiids:e.join(",")},function(r){console.log("finished deleting",e),p(F.about.url_slug,!0)})):!1}function h(){return F.products?F.products[0]&&F.products[0].metrics?!0:void 0:!1}function m(e,r){return e.length?(_.each(e,function(e){var n=y(e);n&&(n.genre=r)}),t.setStr("Moved "+e.length+" items to "+s.get(r,"plural_name")+".","success"),void a.patch({commaSeparatedTiids:e.join(",")},{genre:r},function(e){console.log("ProfileService.changeProductsGenre() successful.",e),p(F.about.url_slug,!0)},function(e){console.log("ProfileService.changeProductsGenre() FAILED.",e)})):!1}function P(e){for(var r=0;r<F.products.length;r++)if(F.products[r].tiid==e)return r;return-1}function y(e){var r=P(e);return r>-1?F.products[r]:null}function S(){return C}function b(e,r){if("undefined"==typeof F.genres)return[];var n,t=_.findWhere(F.genres,{name:e});if("undefined"==typeof t)return[];var o=_.sortBy(t.cards,"sort_by"),n=o.concat([]).reverse();return n.slice(0,r).reverse()}function G(e){if("undefined"==typeof F.genres)return void 0;var r=_.findWhere(F.genres,{url_representation:e});return r}function W(e){if("undefined"==typeof F.products)return void 0;var r=_.where(F.products,{genre:e});return r}function B(){var e=_.countBy(F.products,function(e){return e.genre});return e}function R(e){return _.findWhere(F.products,{tiid:e})}function w(){for(var e in F)F.hasOwnProperty(e)&&delete F[e]}function x(e){return console.log("calling getAccountProducts"),"undefined"==typeof F.account_products?void 0:(console.log("account_products",F.account_products),_.findWhere(F.account_products,{index_name:e}))}function A(e){if(!F.genres)return!1;var r=[];_.each(F.genres,function(e){r.push(e.cards)});var n=_.flatten(r),t=_.findWhere(n,{genre_card_address:e});if(!t)return!1;var o=_.findWhere(F.genres,{name:t.genre}),u={genre_num_products:o.num_products,genre_icon:o.icon,genre_plural_name:o.plural_name,genre_url_representation:o.url_representation};return _.extend(t,u)}var C=!0,F={};return{data:F,loading:C,isLoading:S,get:p,productsByGenre:W,genreCards:b,productByTiid:R,removeProducts:v,changeProductsGenre:m,getAccountProduct:x,getFromPinId:A,getGenreCounts:B,hasFullProducts:h,clear:w,getUrlSlug:function(){return F&&F.about?F.about.url_slug:void 0}}}).factory("SelfCancellingProfileResource",["$resource","$q",function(e,r){var n=r.defer(),t=function(){n.resolve(),n=r.defer()},o=function(){return t(),e("/profile/:id",{},{get:{method:"GET",timeout:n.promise}})};return{createResource:o,cancelResource:t}}]);
-angular.module("services.page",["signup"]);angular.module("services.page").factory("Page",function(e,t){var n="",r="header",i="right",s={},o=_(e.path()).startsWith("/embed/"),u={header:"",footer:""},a=function(e){return e?e+".tpl.html":""},f={signup:"signup/signup-header.tpl.html"};return{setTemplates:function(e,t){u.header=a(e);u.footer=a(t)},getTemplate:function(e){return u[e]},setNotificationsLoc:function(e){r=e},showNotificationsIn:function(e){return r==e},getBodyClasses:function(){return{"show-tab-on-bottom":i=="bottom","show-tab-on-right":i=="right",embedded:o}},getBaseUrl:function(){return"http://"+window.location.host},isEmbedded:function(){return o},setUservoiceTabLoc:function(e){i=e},getTitle:function(){return n},setTitle:function(e){n="ImpactStory: "+e},isLandingPage:function(){return e.path()=="/"},setLastScrollPosition:function(e,t){e&&(s[t]=e)},getLastScrollPosition:function(e){return s[e]}}});
 angular.module("services.page", [
   'signup'
 ])
@@ -5617,13 +5637,17 @@ angular.module("services.productList", [])
     Page,
     ProfileService){
 
-  var genreChangeDropdown = {}
+  var ui = {}
   var filterFn
+
+
 
   var startRender = function($scope){
     if (!ProfileService.hasFullProducts()){
       Loading.startPage()
     }
+    ui.genreChangeDropdownIsOpen = false
+    ui.showTweets = false
     Timer.start("productListRender")
     SelectedProducts.removeAll()
 
@@ -5642,6 +5666,7 @@ angular.module("services.productList", [])
     });
   }
 
+
   var finishRender = function(){
     Loading.finishPage()
     $timeout(function(){
@@ -5656,7 +5681,6 @@ angular.module("services.productList", [])
   var changeProductsGenre = function(newGenre){
     ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
-    genreChangeDropdown.isOpen = false
 
     // handle moving the last product in our current genre
     if (!len()){
@@ -5694,12 +5718,13 @@ angular.module("services.productList", [])
     removeSelectedProducts: removeSelectedProducts,
     startRender: startRender,
     finishRender: finishRender,
-    genreChangeDropdown: genreChangeDropdown,
+    ui: ui,
     setFilterFn: function(fn){
       filterFn = fn
     },
     len: len,
     selectEverything: selectEverything
+
   }
 
 
@@ -5953,6 +5978,7 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
+                                      SelfCancellingProfileTweetsResource,
                                       SelfCancellingProductsResource){
 
     var loading = true
@@ -5962,7 +5988,7 @@ angular.module('services.profileService', [
 
     function getProductStubs(url_slug){
       data.url_slug = url_slug
-      UsersProducts.get(
+      return UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
           console.log("ProfileService got stubs back", resp)
@@ -5971,7 +5997,7 @@ angular.module('services.profileService', [
         function(resp){
           console.log("stubs call failed", resp)
         }
-      )
+      ).$promise
 
     }
 
@@ -5980,12 +6006,44 @@ angular.module('services.profileService', [
       data.products.push(newProduct)
     }
 
+    function appendToProduct(tiid, key, val){
+      _.each(data.products, function(product){
+        if (product.tiid === tiid){
+          product[key] = val
+        }
+      })
+    }
+
+
+    function getTweets(url_slug){
+      return SelfCancellingProfileTweetsResource.createResource().get(
+        {id: url_slug},
+        function(resp){
+          // could so stuff here.
+        }
+      ).$promise
+    }
+
 
     function get(url_slug){
       data.url_slug = url_slug
 
       if (!data.products){
         getProductStubs(url_slug)
+          .then(function(resp){
+            return getTweets(url_slug)
+          })
+          .then(function(tweetsResp){
+            console.log("in the profileservice.get(), got the tweets in promise!", tweetsResp)
+            _.each(data.products, function(product){
+              var myTweets = tweetsResp.tweets[product.tiid]
+              if (typeof myTweets === "undefined") {
+                myTweets = []
+              }
+              product.tweets = myTweets
+            })
+          })
+
       }
 
       loading = true
@@ -6176,6 +6234,40 @@ function( $resource, $q ) {
   var createResource = function() {
     cancel();
     return $resource( '/profile/:id/products',
+      {},
+      {
+        get: {
+          method : 'GET',
+          timeout : canceler.promise
+        }
+      });
+  };
+
+  return {
+    createResource: createResource,
+    cancelResource: cancel
+  };
+}])
+
+
+// http://stackoverflow.com/a/24958268
+// copied straight from above; refactor if we make a third one of these.
+.factory( 'SelfCancellingProfileTweetsResource', ['$resource','$q',
+function( $resource, $q ) {
+  var canceler = $q.defer();
+
+  var cancel = function() {
+    canceler.resolve();
+    canceler = $q.defer();
+  };
+
+  // Check if a username exists
+  // create a resource
+  // (we have to re-craete it every time because this is the only
+  // way to renew the promise)
+  var createResource = function() {
+    cancel();
+    return $resource( '/profile/:id/products/tweets',
       {},
       {
         get: {
@@ -6534,7 +6626,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -8032,7 +8124,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "         </span>\n" +
     "\n" +
     "         <span class=\"action\">\n" +
-    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"ProductList.genreChangeDropdown.isOpen\">\n" +
+    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"ProductList.ui.genreChangeDropdownIsOpen\">\n" +
     "               <button type=\"button\"\n" +
     "                       tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
     "                       class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
@@ -8060,21 +8152,31 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"sort-controls\">\n" +
-    "      <div class=\"btn-group sort-select-group\" dropdown>\n" +
-    "      <span class=\"sort-by-label\">\n" +
-    "         Sorting by\n" +
-    "      </span>\n" +
-    "         <a class=\"dropdown-toggle\">\n" +
-    "            {{ ProductListSort.get().name }}\n" +
-    "            <span class=\"caret\"></span>\n" +
-    "         </a>\n" +
+    "   <div class=\"display-controls\">\n" +
+    "      <div class=\"show-tweets\">\n" +
+    "         <label for=\"show-tweets-checkbox\">\n" +
+    "            <i class=\"fa fa-twitter\"></i>\n" +
+    "            <span class=\"text\">Show tweets</span>\n" +
+    "         </label>\n" +
+    "         <input type=\"checkbox\" id=\"show-tweets-checkbox\" ng-model=\"ProductList.ui.showTweets\" />\n" +
+    "      </div>\n" +
     "\n" +
-    "         <ul class=\"dropdown-menu\">\n" +
-    "            <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
-    "               <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
+    "      <div class=\"sort-controls\">\n" +
+    "         <div class=\"btn-group sort-select-group\" dropdown>\n" +
+    "         <span class=\"sort-by-label\">\n" +
+    "            Sorting by\n" +
+    "         </span>\n" +
+    "            <a class=\"dropdown-toggle\">\n" +
+    "               {{ ProductListSort.get().name }}\n" +
+    "               <span class=\"caret\"></span>\n" +
+    "            </a>\n" +
+    "\n" +
+    "            <ul class=\"dropdown-menu\">\n" +
+    "               <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
+    "                  <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -8123,6 +8225,25 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && ProductList.ui.showTweets\">\n" +
+    "\n" +
+    "            <ul>\n" +
+    "               <li class=\"tweet\"\n" +
+    "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: tweetsFilterFn | limitTo: 5)\">\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > filteredTweets.length\">\n" +
+    "               <a class=\"how-many-more btn btn-sm btn-default\"\n" +
+    "                  tooltip-placement=\"right\"\n" +
+    "                  tooltip=\"Click to see all {{ product.tweets.length }} tweets mentioning this research product.\"\n" +
+    "                  href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/tweets\">\n" +
+    "                  <i class=\"fa fa-plus\"></i>\n" +
+    "                  <span class=\"text\">plus {{ product.tweets.length - filteredTweets.length }} more</span>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
     "      </li>\n" +
     "   </ul>\n" +
     "</div>");
@@ -8323,12 +8444,21 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                    ng-click=\"ProductPage.setTab('metrics')\">\n" +
     "                  <i class=\"icon-bar-chart left\"></i>\n" +
     "                  Metrics\n" +
-    "               </div>               \n" +
+    "                  <span class=\"count\">({{ filteredMetrics.length }})</span>\n" +
+    "               </div>\n" +
     "               <div class=\"tab tab-map\"\n" +
     "                    ng-class=\"{selected: ProductPage.tabIs('map')}\"\n" +
     "                    ng-click=\"ProductPage.setTab('map')\">\n" +
     "                  <i class=\"icon-globe left\"></i>\n" +
     "                  Map\n" +
+    "                  <span class=\"count\">({{ countries.length }})</span>\n" +
+    "               </div>\n" +
+    "               <div class=\"tab tab-tweets\"\n" +
+    "                    ng-class=\"{selected: ProductPage.tabIs('tweets')}\"\n" +
+    "                    ng-click=\"ProductPage.setTab('tweets')\">\n" +
+    "                  <i class=\"fa fa-twitter left\"></i>\n" +
+    "                  Tweets\n" +
+    "                  <span class=\"count\">({{ product.tweets.length }})</span>\n" +
     "               </div>\n" +
     "               \n" +
     "            </div>\n" +
@@ -8442,11 +8572,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
     "                        </span>\n" +
     "                     </div>\n" +
-    "\n" +
     "                  </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "               </div><!-- end Summary Tab content -->\n" +
     "\n" +
     "\n" +
@@ -8534,7 +8660,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <div id=\"metrics\">\n" +
     "                     <ul class=\"metric-details-list\">\n" +
     "\n" +
-    "                        <li class=\"metric-detail\" ng-repeat=\"metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}\">\n" +
+    "                        <li class=\"metric-detail\" ng-repeat=\"metric in filteredMetrics = (metrics | orderBy:'-display_order' | filter: {hide_badge: false})\">\n" +
     "                           <span class=\"metric-text\">\n" +
     "                              <a class=\"value-and-name\"\n" +
     "                                 href=\"{{ metric.drilldown_url }}\"\n" +
@@ -8684,36 +8810,50 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           </tr>\n" +
     "                        </tbody>\n" +
     "                     </table>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "                  </div>\n" +
-    "\n" +
-    "               </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "               </div><!-- end of the Maps Tab section -->\n" +
     "\n" +
     "\n" +
-    "            </div>\n" +
-    "         </div>\n" +
+    "               <div class=\"tab-content tab-tweets\" ng-show=\"ProductPage.tabIs('tweets')\">\n" +
+    "                  <div class=\"empty-tab\" ng-show=\"!product.tweets.length\">\n" +
+    "                     There aren't yet any tweets mentioning this product.\n" +
+    "                  </div>\n" +
+    "                  <div class=\"product-tweets\" ng-show=\"product.tweets.length\">\n" +
+    "                     <div class=\"tweet-view-controls\">\n" +
+    "                        <span class=\"descr\">Sort tweets by</span>\n" +
+    "                        <span class=\"sort-options\">\n" +
+    "                           <label>\n" +
+    "                              <input type=\"radio\"\n" +
+    "                                     name=\"sort-tweets-by\"\n" +
+    "                                     ng-model=\"ui.tweetsSortBy\"\n" +
+    "                                     value=\"-tweet_timestamp\" />\n" +
+    "                              date\n" +
+    "                           </label>\n" +
+    "                           <label>\n" +
+    "                              <input type=\"radio\"\n" +
+    "                                     name=\"sort-tweets-by\"\n" +
+    "                                     ng-model=\"ui.tweetsSortBy\"\n" +
+    "                                     value=\"-tweeter.followers\" />\n" +
+    "                              followers count\n" +
+    "                           </label>\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "                        </span>\n" +
+    "                     </div>\n" +
+    "                     <ul>\n" +
+    "                        <li class=\"tweet\"\n" +
+    "                            ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "                            ng-repeat=\"tweet in product.tweets | orderBy: ui.tweetsSortBy\">\n" +
+    "                         </li>\n" +
+    "                     </ul>\n" +
+    "                  </div>\n" +
+    "               </div><!-- end of the Tweets Tab section -->\n" +
+    "            </div><!-- end of the tabs-content section -->\n" +
+    "         </div><!-- end of the product-tabs section (includes the tabs themselves and the content they show/hide -->\n" +
     "      </div><!-- end main-content -->\n" +
     "\n" +
     "\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "      <div id=\"product-page-sidebar\">\n" +
-    "\n" +
     "      </div><!-- end sidebar -->\n" +
     "\n" +
     "   </div>\n" +
@@ -8963,7 +9103,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "<div class=\"profile-content animated fadeIn\" ng-if=\"profileAboutService.data.full_name\">\n" +
     "\n" +
     "   <div class=\"profile-header\">\n" +
-    "\n" +
     "\n" +
     "      <div class=\"profile-header-loaded\">\n" +
     "\n" +
@@ -10300,6 +10439,49 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "</div>\n" +
     "\n" +
     "\n" +
+    "");
+}]);
+
+angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tweet/tweet.tpl.html",
+    "<div class=\"tweet-container\">\n" +
+    "\n" +
+    "   <div class=\"tweeter\">\n" +
+    "      <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
+    "      <div class=\"tweeter-data f16\">\n" +
+    "                  <span class=\"tweeter-name\">\n" +
+    "                     <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
+    "                     <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
+    "                  </span>\n" +
+    "\n" +
+    "                  <span class=\"tweeter-followers\">\n" +
+    "                     <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
+    "                     <span class=\"descr\">followers</span>\n" +
+    "                  </span>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "   <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
+    "   </div>\n" +
+    "   <div class=\"after-tweet\">\n" +
+    "      <a class=\"tweet-date\"\n" +
+    "         href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}\"\n" +
+    "         tooltip-placement=\"left\"\n" +
+    "         tooltip=\"{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
+    "         {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
+    "      </a>\n" +
+    "      <div class=\"tweet-controls\">\n" +
+    "         <a href=\"https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-reply\"></i>\n" +
+    "         </a>\n" +
+    "         <a href=\"https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-retweet\"></i>\n" +
+    "         </a>\n" +
+    "         <a href=\"https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-star-o\"></i>\n" +
+    "         </a>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
     "");
 }]);
 
