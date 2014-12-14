@@ -12,7 +12,9 @@
    </span>
 </div>
 
+
 <div class="award-container" ng-show="security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge">
+   <tweet-this text="I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!"></tweet-this>
    <span class="profile-award"
         data-content="You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>"
         data-original-title="{{ ProfileAwardService.awards.oa.level_name }} level award"
@@ -24,5 +26,5 @@
       <span class="text">{{ ProfileAwardService.awards.oa.name }}</span>
 
    </span>
-   <a href="https://twitter.com/share" class="twitter-share-button" data-url="https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter" data-text="I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!" data-via="impactstory" data-count="none"></a>
 </div>
+
