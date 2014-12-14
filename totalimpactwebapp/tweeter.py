@@ -75,7 +75,7 @@ def get_and_save_tweeter_followers(tweeters):
 
 class Tweeter(db.Model):
     screen_name = db.Column(db.Text, primary_key=True)
-    twitter_id = db.Column(db.Integer) # alter table tweeter add twitter_id numeric
+    # twitter_id = db.Column(db.Integer) # alter table tweeter add twitter_id numeric
     followers = db.Column(db.Integer)
     name = db.Column(db.Text)
     description = db.Column(db.Text)
@@ -83,8 +83,8 @@ class Tweeter(db.Model):
     image_url = db.Column(db.Text)
     profile_url = db.Column(db.Text) # alter table tweeter add profile_url text
     twitter_join_date = db.Column(db.DateTime()) # alter table tweeter add twitter_join_date timestamp
-    num_statuses = db.Column(db.Integer) # alter table tweeter add num_statuses numeric
-    num_follows = db.Column(db.Integer) # alter table tweeter add num_follows numeric
+    # num_statuses = db.Column(db.Integer) # alter table tweeter add num_statuses numeric
+    # num_follows = db.Column(db.Integer) # alter table tweeter add num_follows numeric
     last_collected_date = db.Column(db.DateTime())   #alter table tweeter add last_collected_date timestamp
     is_deleted = db.Column(db.Boolean)  # alter table tweeter add is_deleted bool
 
@@ -93,6 +93,13 @@ class Tweeter(db.Model):
             self.last_collected_date = datetime.datetime.utcnow()
         super(Tweeter, self).__init__(**kwargs)
 
+    @cached_property
+    def number_statuses(self):
+        return 42
+
+    @cached_property
+    def number_follows(self):
+        return 24
 
     def set_attributes_from_altmetric_post(self, post):
         self.followers = post["author"].get("followers", 0)
