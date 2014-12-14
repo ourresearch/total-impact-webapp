@@ -8589,6 +8589,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        </span>\n" +
     "                     </div>\n" +
     "                  </div>\n" +
+    "                  <div class=\"product-as-json\">\n" +
+    "                     <a class=\"btn btn-default btn-xs\" href=\"profile/jason/product/ej2ghqrp693pb8k09vybeikl\">\n" +
+    "                        <i class=\"fa fa-gears\"></i>\n" +
+    "                        view as JSON\n" +
+    "                     </a>\n" +
+    "                  </div>\n" +
     "               </div><!-- end Summary Tab content -->\n" +
     "\n" +
     "\n" +
