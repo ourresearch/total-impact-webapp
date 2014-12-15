@@ -149,6 +149,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
+  $rootScope.adminMode = $location.search().admin == 42
+  console.log("$location.search().admin", $location.search().admin)
+  console.log("$rootScope.adminMode", $rootScope.adminMode)
+
 
 
 

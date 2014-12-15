@@ -644,6 +644,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
+  $rootScope.adminMode = $location.search().admin == 42
+  console.log("$location.search().admin", $location.search().admin)
+  console.log("$rootScope.adminMode", $rootScope.adminMode)
+
 
 
 
@@ -749,9 +753,13 @@ angular.module('deadProfile', []).config(function ($routeProvider) {
 })
 
 
-.controller("DeadProfileCtrl", function($scope, security){
+.controller("DeadProfileCtrl", function($scope, $location, $rootScope, $routeParams, security){
     console.log("dead profile ctrl")
     $scope.showLogin = security.showLogin
+    if ($rootScope.adminMode){
+      $location.path($routeParams.url_slug)
+      $location.search("admin", null)
+    }
   })
 // nothing here for now.
 angular.module( 'giftSubscriptionPage', [
@@ -5836,7 +5844,7 @@ angular.module("services.productList", [])
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
-  .factory("ProfileAboutService", function($q, $timeout, $location, Update, Users, ProfileAbout){
+  .factory("ProfileAboutService", function($q, $rootScope, $timeout, $location, Update, Users, ProfileAbout){
 
     var loading = true
     var data = {}
@@ -5860,6 +5868,12 @@ angular.module('services.profileAboutService', [
 
           _.each(data, function(v, k){delete data[k]})
           angular.extend(data, resp)  // this sets the url_slug too
+
+          // admin mode means profile is always live.
+          if ($rootScope.adminMode){
+            data.is_live = true
+          }
+
           loading = false
         },
 
