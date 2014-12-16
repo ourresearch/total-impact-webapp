@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-10
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-14
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -514,6 +514,7 @@ angular.module('app', [
   'security',
   'directives.crud',
   'directives.jQueryTools',
+  'directives.tweetThis',
   'templates.app',
   'templates.common',
   'infopages',
@@ -3948,6 +3949,25 @@ angular.module("directives.spinner")
 
     }
     })
+angular.module("directives.tweetThis", [])
+  .directive("tweetThis", function($location){
+    return {
+      restrict: 'E',
+      replace: true,
+      template: '<a class="tweet-this btn btn-default btn-xs" href="https://twitter.com/intent/tweet' +
+        '?original_referer={{ myUrl }}' +
+        '&text={{ textToTweet }}' +
+        '&url={{ myUrl }}' +
+        '&via=impactstory"><i class="fa fa-twitter left"></i>Tweet it</a>',
+      link: function(scope, elem, attr, ctrl){
+        scope.myUrl = encodeURI($location.absUrl())
+        attr.$observe('text', function(newVal){
+          scope.textToTweet = newVal
+        })
+
+      }
+    }
+  })
 angular.module('directives.forms', ["services.loading"])
 
 
@@ -8569,6 +8589,12 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        </span>\n" +
     "                     </div>\n" +
     "                  </div>\n" +
+    "                  <div class=\"product-as-json\">\n" +
+    "                     <a class=\"btn btn-default btn-xs\" href=\"profile/jason/product/ej2ghqrp693pb8k09vybeikl\">\n" +
+    "                        <i class=\"fa fa-gears\"></i>\n" +
+    "                        view as JSON\n" +
+    "                     </a>\n" +
+    "                  </div>\n" +
     "               </div><!-- end Summary Tab content -->\n" +
     "\n" +
     "\n" +
@@ -8873,7 +8899,9 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "   </span>\n" +
     "</div>\n" +
     "\n" +
+    "\n" +
     "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
+    "   <tweet-this text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!\"></tweet-this>\n" +
     "   <span class=\"profile-award\"\n" +
     "        data-content=\"You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>\"\n" +
     "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
@@ -8885,8 +8913,9 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "      <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
     "\n" +
     "   </span>\n" +
-    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
-    "</div>");
+    "</div>\n" +
+    "\n" +
+    "");
 }]);
 
 angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {

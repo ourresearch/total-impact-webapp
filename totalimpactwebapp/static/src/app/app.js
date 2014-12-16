@@ -19,6 +19,7 @@ angular.module('app', [
   'security',
   'directives.crud',
   'directives.jQueryTools',
+  'directives.tweetThis',
   'templates.app',
   'templates.common',
   'infopages',
