@@ -10480,8 +10480,9 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
 angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("tweet/tweet.tpl.html",
     "<div class=\"tweet-container\">\n" +
-    "\n" +
     "   <a class=\"tweeter\"\n" +
+    "        href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}\"\n" +
+    "        target=\"_blank\"\n" +
     "        data-placement=\"left\"\n" +
     "        data-toggle=\"popover\"\n" +
     "        data-content=\"\n" +
