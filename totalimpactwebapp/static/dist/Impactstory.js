@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-14
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-17
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -645,11 +645,6 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileAboutService = ProfileAboutService
 
   $rootScope.adminMode = $location.search().admin == 42
-  console.log("$location.search().admin", $location.search().admin)
-  console.log("$rootScope.adminMode", $rootScope.adminMode)
-
-
-
 
 
   // init the genre configs service
@@ -3803,7 +3798,6 @@ angular.module("directives.jQueryTools", [])
         $("body").popover({
           html:true,
           trigger:'hover',
-          placement:'auto',
           selector: "[data-content]"
         })
       }
@@ -6656,7 +6650,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -8901,6 +8895,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
   $templateCache.put("profile-award/profile-award.tpl.html",
     "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
     "   <span class=\"profile-award\"\n" +
+    "        data-placement=\"auto\"\n" +
     "        data-content=\"{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}\"\n" +
     "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
     "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
@@ -8917,6 +8912,7 @@ angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache"
     "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
     "   <tweet-this text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!\"></tweet-this>\n" +
     "   <span class=\"profile-award\"\n" +
+    "        data-placement=\"auto\"\n" +
     "        data-content=\"You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>\"\n" +
     "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
     "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
@@ -10485,22 +10481,54 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
   $templateCache.put("tweet/tweet.tpl.html",
     "<div class=\"tweet-container\">\n" +
     "\n" +
-    "   <div class=\"tweeter\">\n" +
-    "      <img ng-src=\"{{ tweet.tweeter.image_url }}\" />\n" +
+    "   <a class=\"tweeter\"\n" +
+    "        data-placement=\"left\"\n" +
+    "        data-toggle=\"popover\"\n" +
+    "        data-content=\"\n" +
+    "        <img src='{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}' />\n" +
+    "        <div class='names'>\n" +
+    "            <span class='name'>{{ tweet.tweeter.name }}</span>\n" +
+    "            <span class='screen-name'>@{{ tweet.tweeter.screen_name }}</span>\n" +
+    "        </div>\n" +
+    "        <div class='description'>{{ tweet.tweeter.description }}</div>\n" +
+    "        <div class='under-description'>\n" +
+    "            <span class='location len-{{ tweet.tweeter.location.length }}'>\n" +
+    "               <i class='fa fa-map-marker'></i>\n" +
+    "               {{ tweet.tweeter.location }}\n" +
+    "            </span>\n" +
+    "         </div>\n" +
+    "         <div class='bio-footer'>\n" +
+    "            <span class='followers footer-stat'>\n" +
+    "               <span class='descr'>Followers</span>\n" +
+    "               <span class='val'>{{ tweet.tweeter.followers }}</span>\n" +
+    "            </span>\n" +
+    "            <span class='number-follows footer-stat'>\n" +
+    "               <span class='descr'>Follows</span>\n" +
+    "               <span class='val'>{{ tweet.tweeter.number_follows }}</span>\n" +
+    "            </span>\n" +
+    "            <span class='number-statuses footer-stat'>\n" +
+    "               <span class='descr'>Tweets</span>\n" +
+    "               <span class='val'>{{ tweet.tweeter.number_statuses }}</span>\n" +
+    "            </span>\n" +
+    "         </div>\n" +
+    "        \">\n" +
+    "      <img ng-src=\"{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}\" />\n" +
     "      <div class=\"tweeter-data f16\">\n" +
-    "                  <span class=\"tweeter-name\">\n" +
-    "                     <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
-    "                     <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
-    "                  </span>\n" +
+    "         <span class=\"tweeter-name\">\n" +
+    "            <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
+    "            <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
+    "         </span>\n" +
     "\n" +
-    "                  <span class=\"tweeter-followers\">\n" +
-    "                     <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
-    "                     <span class=\"descr\">followers</span>\n" +
-    "                  </span>\n" +
+    "         <span class=\"tweeter-followers\">\n" +
+    "            <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
+    "            <span class=\"descr\">followers</span>\n" +
+    "         </span>\n" +
     "      </div>\n" +
-    "   </div>\n" +
+    "   </a>\n" +
+    "\n" +
     "   <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
     "   </div>\n" +
+    "\n" +
     "   <div class=\"after-tweet\">\n" +
     "      <a class=\"tweet-date\"\n" +
     "         href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}\"\n" +
@@ -10522,6 +10550,16 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
     "   </div>\n" +
     "</div>\n" +
     "");
+}]);
+
+angular.module("tweet/tweeter-popover.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tweet/tweeter-popover.tpl.html",
+    "<h1>h1 is here!</h1>\n" +
+    "<ul>\n" +
+    "   <li>this</li>\n" +
+    "   <li>and this</li>\n" +
+    "   <li>and this some more</li>\n" +
+    "</ul>");
 }]);
 
 angular.module("under-construction.tpl.html", []).run(["$templateCache", function($templateCache) {

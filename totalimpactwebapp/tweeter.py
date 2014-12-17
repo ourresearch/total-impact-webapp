@@ -95,11 +95,17 @@ class Tweeter(db.Model):
 
     @cached_property
     def number_statuses(self):
-        return 42
+        return 187619
+        return 1042
+
+    @cached_property
+    def fake_followers(self):
+        return 187619
+        return 1042
 
     @cached_property
     def number_follows(self):
-        return 24
+        return self.followers - 100
 
     def set_attributes_from_altmetric_post(self, post):
         self.followers = post["author"].get("followers", 0)

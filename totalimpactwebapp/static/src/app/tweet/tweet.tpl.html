@@ -1,21 +1,53 @@
 <div class="tweet-container">
 
-   <div class="tweeter">
-      <img ng-src="{{ tweet.tweeter.image_url }}" />
+   <a class="tweeter"
+        data-placement="left"
+        data-toggle="popover"
+        data-content="
+        <img src='{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}' />
+        <div class='names'>
+            <span class='name'>{{ tweet.tweeter.name }}</span>
+            <span class='screen-name'>@{{ tweet.tweeter.screen_name }}</span>
+        </div>
+        <div class='description'>{{ tweet.tweeter.description }}</div>
+        <div class='under-description'>
+            <span class='location len-{{ tweet.tweeter.location.length }}'>
+               <i class='fa fa-map-marker'></i>
+               {{ tweet.tweeter.location }}
+            </span>
+         </div>
+         <div class='bio-footer'>
+            <span class='followers footer-stat'>
+               <span class='descr'>Followers</span>
+               <span class='val'>{{ tweet.tweeter.followers }}</span>
+            </span>
+            <span class='number-follows footer-stat'>
+               <span class='descr'>Follows</span>
+               <span class='val'>{{ tweet.tweeter.number_follows }}</span>
+            </span>
+            <span class='number-statuses footer-stat'>
+               <span class='descr'>Tweets</span>
+               <span class='val'>{{ tweet.tweeter.number_statuses }}</span>
+            </span>
+         </div>
+        ">
+      <img ng-src="{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}" />
       <div class="tweeter-data f16">
-                  <span class="tweeter-name">
-                     <span class="text">{{ tweet.tweeter.name }}</span>
-                     <span class="flag {{ tweet.country.toLowerCase() }}"></span>
-                  </span>
+         <span class="tweeter-name">
+            <span class="text">{{ tweet.tweeter.name }}</span>
+            <span class="flag {{ tweet.country.toLowerCase() }}"></span>
+         </span>
 
-                  <span class="tweeter-followers">
-                     <span class="val">{{ nFormat(tweet.tweeter.followers) }}</span>
-                     <span class="descr">followers</span>
-                  </span>
+         <span class="tweeter-followers">
+            <span class="val">{{ nFormat(tweet.tweeter.followers) }}</span>
+            <span class="descr">followers</span>
+         </span>
       </div>
-   </div>
+   </a>
+
    <div class="tweet-content" ng-bind-html="trustHtml(tweet.tweet_text_with_links)">
    </div>
+
    <div class="after-tweet">
       <a class="tweet-date"
          href="https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}"
