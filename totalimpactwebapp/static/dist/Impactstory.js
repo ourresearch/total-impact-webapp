@@ -694,6 +694,11 @@ angular.module('app').controller('AppCtrl', function($scope,
     return num;
   }
 
+  $scope.nFormatCommas = function(num){
+    // from http://stackoverflow.com/a/2901298
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
 
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
@@ -10501,15 +10506,15 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
     "         <div class='bio-footer'>\n" +
     "            <span class='followers footer-stat'>\n" +
     "               <span class='descr'>Followers</span>\n" +
-    "               <span class='val'>{{ tweet.tweeter.followers }}</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.followers) }}</span>\n" +
     "            </span>\n" +
     "            <span class='number-follows footer-stat'>\n" +
     "               <span class='descr'>Follows</span>\n" +
-    "               <span class='val'>{{ tweet.tweeter.number_follows }}</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.number_follows) }}</span>\n" +
     "            </span>\n" +
     "            <span class='number-statuses footer-stat'>\n" +
     "               <span class='descr'>Tweets</span>\n" +
-    "               <span class='val'>{{ tweet.tweeter.number_statuses }}</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.number_statuses) }}</span>\n" +
     "            </span>\n" +
     "         </div>\n" +
     "        \">\n" +

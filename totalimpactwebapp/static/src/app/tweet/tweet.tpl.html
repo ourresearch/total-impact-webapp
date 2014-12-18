@@ -20,15 +20,15 @@
          <div class='bio-footer'>
             <span class='followers footer-stat'>
                <span class='descr'>Followers</span>
-               <span class='val'>{{ tweet.tweeter.followers }}</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.followers) }}</span>
             </span>
             <span class='number-follows footer-stat'>
                <span class='descr'>Follows</span>
-               <span class='val'>{{ tweet.tweeter.number_follows }}</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.number_follows) }}</span>
             </span>
             <span class='number-statuses footer-stat'>
                <span class='descr'>Tweets</span>
-               <span class='val'>{{ tweet.tweeter.number_statuses }}</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.number_statuses) }}</span>
             </span>
          </div>
         ">

@@ -199,6 +199,11 @@ angular.module('app').controller('AppCtrl', function($scope,
     return num;
   }
 
+  $scope.nFormatCommas = function(num){
+    // from http://stackoverflow.com/a/2901298
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
 
 
   $scope.$on('$routeChangeError', function(event, current, previous, rejection){
