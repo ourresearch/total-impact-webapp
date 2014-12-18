@@ -1055,10 +1055,21 @@ div.pagination-controls-container {
    text-align: center;
 }
 ul.pagination {
+   border-top: 1px solid #ddd;
+   padding-top: 30px;
+
    li {
       font-size: 14px;
       background: #fff;
       &:last-child, &:first-child {
+         a {
+            font-size: 18px;
+            margin-top: -2px;
+            color: #999;
+            &:hover {
+               color: @accentColor;
+            }
+         }
       }
       a {
          border: none;
@@ -1070,7 +1081,7 @@ ul.pagination {
          .rounded(100px);
          &:hover {
             background: none;
-            text-decoration: underline;
+            color: @accentColor;
          }
       }
       &.active {

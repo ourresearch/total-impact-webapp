@@ -6922,9 +6922,23 @@ code {
 div.pagination-controls-container {
   text-align: center;
 }
+ul.pagination {
+  border-top: 1px solid #ddd;
+  padding-top: 30px;
+}
 ul.pagination li {
   font-size: 14px;
   background: #fff;
+}
+ul.pagination li:last-child a,
+ul.pagination li:first-child a {
+  font-size: 18px;
+  margin-top: -2px;
+  color: #999;
+}
+ul.pagination li:last-child a:hover,
+ul.pagination li:first-child a:hover {
+  color: #0053b0;
 }
 ul.pagination li a {
   border: none;
@@ -6939,7 +6953,7 @@ ul.pagination li a {
 }
 ul.pagination li a:hover {
   background: none;
-  text-decoration: underline;
+  color: #0053b0;
 }
 ul.pagination li.active a {
   background: #999 !important;
@@ -9055,7 +9069,6 @@ div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tw
   margin-right: 5px;
 }
 div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.product-tweets {
-  border-bottom: 1px solid #ddd;
   padding-bottom: 20px;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
