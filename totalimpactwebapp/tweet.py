@@ -41,17 +41,17 @@ def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, twe
         logger.debug("saving unsaved parts for tweet_id {tweet_id}".format(
             tweet_id=tweet_id))
         for tweet in tweets_by_tweet_id[tweet_id]:
-            # print "tweet_id", tweet_id
             if not tweet.payload:
                 tweet.payload = payload_dict
-                logger.info(u"updated tweet payload for {tweet_id}".format(
-                    tweet_id=tweet_id))
-            if "user" in payload_dict:
-                this_tweeter = tweet.tweeter
-                this_tweeter.set_attributes_from_twitter_data(payload_dict["user"])
-                logger.info(u"updated tweeter followers for {screen_name}".format(
-                    screen_name=this_tweeter.screen_name))
-            db.session.merge(tweet)
+                logger.info(u"updated tweet payload for {tweet_id} {tiid}".format(
+                    tweet_id=tweet_id, tiid=tweet.tiid))
+                # print "tweet_payload_len", len(tweet.payload)
+                if "user" in payload_dict:
+                    this_tweeter = tweet.tweeter
+                    this_tweeter.set_attributes_from_twitter_data(payload_dict["user"])
+                    logger.info(u"updated tweeter followers for {screen_name}".format(
+                        screen_name=this_tweeter.screen_name))
+                db.session.merge(tweet)
             
 
 def flag_deleted_tweets(tweet_ids):
@@ -156,9 +156,15 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
                     db.session.merge(tweeter)
 
     if tweets_to_hydrate_from_twitter:
+        # save the altmetric stuff first
+        commit(db)
         tweet_ids = [tweet.tweet_id for tweet in tweets_to_hydrate_from_twitter]
+        logger.info(u"in hydrate_twitter_text_and_followers for profile {profile_id}".format(
+            profile_id=profile_id))
+
         get_and_save_tweet_text_and_tweeter_followers(tweet_ids)
         commit(db)
+
     else:
         logger.info(u"no tweets to hydrate for profile {profile_id}".format(
             profile_id=profile_id))
@@ -166,10 +172,10 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
     return
 
 
+# see http://docs.sqlalchemy.org/en/rel_0_9/orm/relationships.html#non-relational-comparisons-materialized-path
+handle_workaround_join_string = "remote(Tweeter.screen_name)==case([(foreign(Tweet.screen_name)=='Dr_Bik', 'hollybik')], else_=foreign(Tweet.screen_name))"
+
 # info from twitter at: https://dev.twitter.com/rest/reference/get/statuses/lookup
-
-handle_workaround_join_string = "foreign(Tweeter.screen_name)==case([(Tweet.screen_name=='Dr_Bik', 'hollybik')], else_=Tweet.screen_name)"
-
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)  # alter table tweet add tiid text
@@ -185,10 +191,9 @@ class Tweet(db.Model):
     tweeter = db.relationship(
         'Tweeter',
         lazy='joined',
-        cascade='all, delete-orphan',
-        backref=db.backref("tweet", lazy="joined"), 
-        uselist=False,  #onetoone
-        single_parent=True,
+        cascade='all',
+        backref=db.backref("tweet", lazy="joined"),
+        uselist=False,
         primaryjoin=handle_workaround_join_string
     )
 

@@ -83,7 +83,6 @@ class Tweeter(db.Model):
     location = db.Column(db.Text) # alter table tweeter add location text
     image_url = db.Column(db.Text)
     profile_url = db.Column(db.Text) # alter table tweeter add profile_url text
-    twitter_join_date = db.Column(db.DateTime()) # alter table tweeter add twitter_join_date timestamp
     num_statuses = db.Column(db.Integer) # alter table tweeter add num_statuses int4
     num_follows = db.Column(db.Integer) # alter table tweeter add num_follows int4
     last_collected_date = db.Column(db.DateTime())   #alter table tweeter add last_collected_date timestamp
@@ -118,8 +117,6 @@ class Tweeter(db.Model):
         self.num_statuses = data.get("statuses_count", None)
         self.num_follows = data.get("friends_count", None)
         self.twitter_id = data.get("id", None)
-        if data.get("created_at", None):
-            self.twitter_join_date = dateutil.parser.parse(data.get("created_at"), 'UTC')
         self.last_collected_date = datetime.datetime.utcnow()
         return self
 
