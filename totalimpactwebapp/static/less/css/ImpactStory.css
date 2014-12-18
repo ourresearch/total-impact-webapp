@@ -6915,6 +6915,49 @@ code {
 #multiple-subscriptions-page div.main-content form {
   width: 700px;
 }
+/* pagination directive controls
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div.pagination-controls-container {
+  text-align: center;
+}
+ul.pagination {
+  border-top: 1px solid #ddd;
+  padding-top: 30px;
+}
+ul.pagination li {
+  font-size: 14px;
+  background: #fff;
+}
+ul.pagination li:last-child a,
+ul.pagination li:first-child a {
+  font-size: 18px;
+  margin-top: -2px;
+  color: #999;
+}
+ul.pagination li:last-child a:hover,
+ul.pagination li:first-child a:hover {
+  color: #0053b0;
+}
+ul.pagination li a {
+  border: none;
+  background: #fff !important;
+  color: #999;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+ul.pagination li a:hover {
+  background: none;
+  color: #0053b0;
+}
+ul.pagination li.active a {
+  background: #999 !important;
+}
 /* profile map
 *****************************************************************************
 *****************************************************************************
@@ -9007,23 +9050,63 @@ div.product-page div.main-content #product-tabs-section div.tabs-content .tab-me
 div.product-page div.main-content #product-tabs-section div.tabs-content .tab-map p {
   text-align: center;
 }
-div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls {
-  font-size: 14px;
-  text-align: right;
-  margin: 20px 70px 20px 0;
-  padding-top: 20px;
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls {
   border-bottom: 1px solid #eee;
-  color: #555;
+  clear: both;
+  font-size: 14px;
+  margin: 90px 0 30px;
+  position: relative;
 }
-div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls span.descr {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls:before,
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls:after {
+  content: " ";
+  display: table;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls:after {
+  clear: both;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls:before,
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls:after {
+  content: " ";
+  display: table;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls:after {
+  clear: both;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls div.tweets-list-info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  text-align: left;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls div.tweets-list-info .page-current {
+  font-size: 20px;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls div.tweets-list-info .page-current span.current-tweets-page-val {
+  font-weight: bold;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls div.tweets-list-info .num-tweets-pages-val {
+  font-size: 14px;
   font-weight: 300;
 }
-div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls label {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls div.tweets-list-actions {
+  color: #555;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls div.tweets-list-actions span.descr {
+  font-weight: 300;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls div.tweets-list-actions label {
   cursor: pointer;
   padding-left: 10px;
 }
-div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls label input {
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweets-list-controls div.tweets-list-actions label input {
   margin-right: 5px;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.product-tweets {
+  padding-bottom: 20px;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;

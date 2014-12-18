@@ -536,33 +536,56 @@
                      There aren't yet any tweets mentioning this product.
                   </div>
                   <div class="product-tweets" ng-show="product.tweets.length">
-                     <div class="tweet-view-controls">
-                        <span class="descr">Sort tweets by</span>
-                        <span class="sort-options">
-                           <label>
-                              <input type="radio"
-                                     name="sort-tweets-by"
-                                     ng-model="ui.tweetsSortBy"
-                                     value="-tweet_timestamp" />
-                              date
-                           </label>
-                           <label>
-                              <input type="radio"
-                                     name="sort-tweets-by"
-                                     ng-model="ui.tweetsSortBy"
-                                     value="-tweeter.followers" />
-                              followers count
-                           </label>
+                     <div class="tweets-list-controls">
+                        <div class="tweets-list-info" ng-show="tweetsList.numPages > 1">
+                           <span class="page-current">
+                              <span class="descr">page</span>
+                              <span class="current-tweets-page-val val">{{ tweetsList.currentPage }}</span>
+                           </span>
+                           <span class="num-tweets-pages-val">of {{ tweetsList.numPages }}</span>
+                        </div>
 
-                        </span>
+                        <div class="tweets-list-actions">
+                           <span class="descr">Sort tweets by</span>
+                           <span class="sort-options">
+                              <label>
+                                 <input type="radio"
+                                        name="sort-tweets-by"
+                                        ng-model="tweetsList.sortBy"
+                                        value="-tweet_timestamp" />
+                                 date
+                              </label>
+                              <label>
+                                 <input type="radio"
+                                        name="sort-tweets-by"
+                                        ng-model="tweetsList.sortBy"
+                                        value="-tweeter.followers" />
+                                 followers count
+                              </label>
+
+                           </span>
+                        </div>
+
+
+
                      </div>
+
                      <ul>
                         <li class="tweet"
                             ng-include="'tweet/tweet.tpl.html'"
-                            ng-repeat="tweet in product.tweets | orderBy: ui.tweetsSortBy">
+                            current-page="tweetsList.currentPage"
+                            dir-paginate="tweet in product.tweets | orderBy: tweetsList.sortBy | itemsPerPage: tweetsList.perPage">
                          </li>
                      </ul>
                   </div>
+                  <div class="pagination-controls-container">
+                     <dir-pagination-controls
+                             on-page-change="tweetsList.onPageChange(newPageNumber)">
+                     </dir-pagination-controls>
+                  </div>
+
+
+
                </div><!-- end of the Tweets Tab section -->
             </div><!-- end of the tabs-content section -->
          </div><!-- end of the product-tabs section (includes the tabs themselves and the content they show/hide -->

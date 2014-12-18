@@ -1043,6 +1043,56 @@ code {
 }
 
 
+
+
+
+/* pagination directive controls
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+
+div.pagination-controls-container {
+   text-align: center;
+}
+ul.pagination {
+   border-top: 1px solid #ddd;
+   padding-top: 30px;
+
+   li {
+      font-size: 14px;
+      background: #fff;
+      &:last-child, &:first-child {
+         a {
+            font-size: 18px;
+            margin-top: -2px;
+            color: #999;
+            &:hover {
+               color: @accentColor;
+            }
+         }
+      }
+      a {
+         border: none;
+          // the !important is a hack to solve what appears to be a Chrome bug
+          // involving :hover not being removed;
+          // it gets overridden by another !important below in &.active a.
+         background: #fff !important;
+         color: #999;
+         .rounded(100px);
+         &:hover {
+            background: none;
+            color: @accentColor;
+         }
+      }
+      &.active {
+         a {
+            background: #999 !important;// hack to solve what appears to be a Chrome bug.
+         }
+      }
+   }
+}
+
+
 /* profile map
 *****************************************************************************
 *****************************************************************************
