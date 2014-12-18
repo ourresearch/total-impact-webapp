@@ -5,7 +5,7 @@
         data-placement="left"
         data-toggle="popover"
         data-content="
-        <img src='{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}' />
+        <img src='{{ tweet.tweeter.display_image_url }}' />
         <div class='names'>
             <span class='name'>{{ tweet.tweeter.name }}</span>
             <span class='screen-name'>@{{ tweet.tweeter.screen_name }}</span>
@@ -32,7 +32,7 @@
             </span>
          </div>
         ">
-      <img ng-src="{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}" />
+      <img ng-src="{{ tweet.tweeter.display_image_url }}" />
       <div class="tweeter-data f16">
          <span class="tweeter-name">
             <span class="text">{{ tweet.tweeter.name }}</span>

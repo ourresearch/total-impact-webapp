@@ -7,6 +7,7 @@ from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, Twi
 
 from collections import defaultdict
 import os
+import re
 import datetime
 import logging
 import dateutil.parser
@@ -98,9 +99,16 @@ class Tweeter(db.Model):
         return 187619
         return 1042
 
+
+    @cached_property
+    def display_image_url(self):
+        ret = self.image_url.replace("http://", "https://")
+        ret = ret.replace("_normal", "_reasonably_small")
+        return ret
+
+
     @cached_property
     def fake_followers(self):
-        return 187619
         return 1042
 
     @cached_property

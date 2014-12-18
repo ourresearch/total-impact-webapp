@@ -2207,11 +2207,6 @@ angular.module("profile", [
     Timer.start("profileViewRender.load")
     Page.setName('overview')
 
-
-    $timeout(function(){
-        twttr.widgets.load()
-    }, 1000)
-
     $scope.profileLoading =  ProfileService.isLoading
     $scope.url_slug = url_slug
 
@@ -10491,7 +10486,7 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
     "        data-placement=\"left\"\n" +
     "        data-toggle=\"popover\"\n" +
     "        data-content=\"\n" +
-    "        <img src='{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}' />\n" +
+    "        <img src='{{ tweet.tweeter.display_image_url }}' />\n" +
     "        <div class='names'>\n" +
     "            <span class='name'>{{ tweet.tweeter.name }}</span>\n" +
     "            <span class='screen-name'>@{{ tweet.tweeter.screen_name }}</span>\n" +
@@ -10518,7 +10513,7 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
     "            </span>\n" +
     "         </div>\n" +
     "        \">\n" +
-    "      <img ng-src=\"{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}\" />\n" +
+    "      <img ng-src=\"{{ tweet.tweeter.display_image_url }}\" />\n" +
     "      <div class=\"tweeter-data f16\">\n" +
     "         <span class=\"tweeter-name\">\n" +
     "            <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
