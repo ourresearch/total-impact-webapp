@@ -559,10 +559,16 @@
                      <ul>
                         <li class="tweet"
                             ng-include="'tweet/tweet.tpl.html'"
-                            ng-repeat="tweet in product.tweets | orderBy: ui.tweetsSortBy">
+                            dir-paginate="tweet in product.tweets | orderBy: ui.tweetsSortBy | itemsPerPage: 25">
                          </li>
                      </ul>
                   </div>
+                  <div class="pagination-controls-container">
+                     <dir-pagination-controls></dir-pagination-controls>
+                  </div>
+
+
+
                </div><!-- end of the Tweets Tab section -->
             </div><!-- end of the tabs-content section -->
          </div><!-- end of the product-tabs section (includes the tabs themselves and the content they show/hide -->

@@ -6915,6 +6915,35 @@ code {
 #multiple-subscriptions-page div.main-content form {
   width: 700px;
 }
+/* pagination directive controls
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div.pagination-controls-container {
+  text-align: center;
+}
+ul.pagination li {
+  font-size: 14px;
+  background: #fff;
+}
+ul.pagination li a {
+  border: none;
+  background: #fff !important;
+  color: #999;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  border-radius: 100px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
+ul.pagination li a:hover {
+  background: none;
+  text-decoration: underline;
+}
+ul.pagination li.active a {
+  background: #999 !important;
+}
 /* profile map
 *****************************************************************************
 *****************************************************************************
@@ -9024,6 +9053,10 @@ div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tw
 }
 div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.tweet-view-controls label input {
   margin-right: 5px;
+}
+div.product-page div.main-content #product-tabs-section div.tabs-content .tab-tweets div.product-tweets {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
 }
 div.modal-body.free-fulltext-url div.add-link div.buttons-group {
   height: 40px;

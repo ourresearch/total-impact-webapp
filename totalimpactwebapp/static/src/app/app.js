@@ -20,6 +20,7 @@ angular.module('app', [
   'directives.crud',
   'directives.jQueryTools',
   'directives.tweetThis',
+  'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',
   'infopages',
@@ -56,9 +57,10 @@ angular.module('app').constant('TEST', {
 
 angular.module('app').config(function ($routeProvider,
                                        $sceDelegateProvider,
+                                       paginationTemplateProvider,
                                        $locationProvider) {
   $locationProvider.html5Mode(true);
-
+  paginationTemplateProvider.setPath('directives/pagination.tpl.html')
   $sceDelegateProvider.resourceUrlWhitelist([
     // Allow same origin resource loads.
     'self',
