@@ -8,7 +8,6 @@ angular.module("directives.jQueryTools", [])
         $("body").popover({
           html:true,
           trigger:'hover',
-          placement:'auto',
           selector: "[data-content]"
         })
       }

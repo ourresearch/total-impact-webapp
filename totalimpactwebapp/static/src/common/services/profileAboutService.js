@@ -1,7 +1,7 @@
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
-  .factory("ProfileAboutService", function($q, $timeout, $location, Update, Users, ProfileAbout){
+  .factory("ProfileAboutService", function($q, $rootScope, $timeout, $location, Update, Users, ProfileAbout){
 
     var loading = true
     var data = {}
@@ -25,6 +25,12 @@ angular.module('services.profileAboutService', [
 
           _.each(data, function(v, k){delete data[k]})
           angular.extend(data, resp)  // this sets the url_slug too
+
+          // admin mode means profile is always live.
+          if ($rootScope.adminMode){
+            data.is_live = true
+          }
+
           loading = false
         },
 

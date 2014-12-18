@@ -93,16 +93,6 @@ class Tweeter(db.Model):
             self.last_collected_date = datetime.datetime.utcnow()
         super(Tweeter, self).__init__(**kwargs)
 
-    #delete this soon, rename client use to num_statuses
-    @cached_property
-    def number_statuses(self):
-        return self.num_statuses
-
-    #delete this soon, rename client use to num_follows
-    @cached_property
-    def number_follows(self):
-        return self.num_follows
-
     def set_attributes_from_altmetric_post(self, post):
         self.followers = post["author"].get("followers", 0)
         self.name = post["author"].get("name", self.screen_name)

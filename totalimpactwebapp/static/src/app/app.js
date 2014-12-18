@@ -149,8 +149,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-
-
+  $rootScope.adminMode = $location.search().admin == 42
 
 
   // init the genre configs service
