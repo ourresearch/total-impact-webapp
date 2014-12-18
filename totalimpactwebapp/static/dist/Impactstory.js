@@ -1516,9 +1516,6 @@ angular.module("productPage", [
       Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
-      $scope.ui = {
-        tweetsSortBy: "-tweet_timestamp"
-      }
 
 
       $scope.userSlug = slug
@@ -1534,6 +1531,25 @@ angular.module("productPage", [
       $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
+
+      // tweet stuff
+      $scope.tweetsList = {}
+      $scope.tweetsList.currentPage = 1
+      $scope.tweetsList.perPage = 25
+      $scope.tweetsList.sortBy = "-tweet_timestamp"
+      $scope.tweetsList.onPageChange = function(newPageNumber){
+        window.scrollTo(0,0)
+      }
+      $scope.tweetsList.numPages =  Math.ceil(product.tweets.length / $scope.tweetsList.perPage)
+
+      $scope.$watch('tweetsList.sortBy', function(newVal, oldVal){
+        console.log("tweetsList.sortBy watch triggered", newVal, oldVal)
+        if (newVal !== oldVal){
+          console.log("changing tweets page")
+          $scope.tweetsList.currentPage = 1
+          $scope.tweetsList.onPageChange(1)
+        }
+      })
 
       // should've just done this in the first place instead of a bunch of
       // individual assignments (above). Get rid of those some day, replace
@@ -1606,6 +1622,7 @@ angular.module("productPage", [
       console.log("hostname", urlParser.hostname)
       return urlParser.hostname.replace("www.", "")
     }
+
 
 
 
@@ -9220,35 +9237,52 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                     There aren't yet any tweets mentioning this product.\n" +
     "                  </div>\n" +
     "                  <div class=\"product-tweets\" ng-show=\"product.tweets.length\">\n" +
-    "                     <div class=\"tweet-view-controls\">\n" +
-    "                        <span class=\"descr\">Sort tweets by</span>\n" +
-    "                        <span class=\"sort-options\">\n" +
-    "                           <label>\n" +
-    "                              <input type=\"radio\"\n" +
-    "                                     name=\"sort-tweets-by\"\n" +
-    "                                     ng-model=\"ui.tweetsSortBy\"\n" +
-    "                                     value=\"-tweet_timestamp\" />\n" +
-    "                              date\n" +
-    "                           </label>\n" +
-    "                           <label>\n" +
-    "                              <input type=\"radio\"\n" +
-    "                                     name=\"sort-tweets-by\"\n" +
-    "                                     ng-model=\"ui.tweetsSortBy\"\n" +
-    "                                     value=\"-tweeter.followers\" />\n" +
-    "                              followers count\n" +
-    "                           </label>\n" +
+    "                     <div class=\"tweets-list-controls\">\n" +
+    "                        <div class=\"tweets-list-info\" ng-show=\"tweetsList.numPages > 1\">\n" +
+    "                           <span class=\"page-current\">\n" +
+    "                              <span class=\"descr\">page</span>\n" +
+    "                              <span class=\"current-tweets-page-val val\">{{ tweetsList.currentPage }}</span>\n" +
+    "                           </span>\n" +
+    "                           <span class=\"num-tweets-pages-val\">of {{ tweetsList.numPages }}</span>\n" +
+    "                        </div>\n" +
     "\n" +
-    "                        </span>\n" +
+    "                        <div class=\"tweets-list-actions\">\n" +
+    "                           <span class=\"descr\">Sort tweets by</span>\n" +
+    "                           <span class=\"sort-options\">\n" +
+    "                              <label>\n" +
+    "                                 <input type=\"radio\"\n" +
+    "                                        name=\"sort-tweets-by\"\n" +
+    "                                        ng-model=\"tweetsList.sortBy\"\n" +
+    "                                        value=\"-tweet_timestamp\" />\n" +
+    "                                 date\n" +
+    "                              </label>\n" +
+    "                              <label>\n" +
+    "                                 <input type=\"radio\"\n" +
+    "                                        name=\"sort-tweets-by\"\n" +
+    "                                        ng-model=\"tweetsList.sortBy\"\n" +
+    "                                        value=\"-tweeter.followers\" />\n" +
+    "                                 followers count\n" +
+    "                              </label>\n" +
+    "\n" +
+    "                           </span>\n" +
+    "                        </div>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "                     </div>\n" +
+    "\n" +
     "                     <ul>\n" +
     "                        <li class=\"tweet\"\n" +
     "                            ng-include=\"'tweet/tweet.tpl.html'\"\n" +
-    "                            dir-paginate=\"tweet in product.tweets | orderBy: ui.tweetsSortBy | itemsPerPage: 25\">\n" +
+    "                            current-page=\"tweetsList.currentPage\"\n" +
+    "                            dir-paginate=\"tweet in product.tweets | orderBy: tweetsList.sortBy | itemsPerPage: tweetsList.perPage\">\n" +
     "                         </li>\n" +
     "                     </ul>\n" +
     "                  </div>\n" +
     "                  <div class=\"pagination-controls-container\">\n" +
-    "                     <dir-pagination-controls></dir-pagination-controls>\n" +
+    "                     <dir-pagination-controls\n" +
+    "                             on-page-change=\"tweetsList.onPageChange(newPageNumber)\">\n" +
+    "                     </dir-pagination-controls>\n" +
     "                  </div>\n" +
     "\n" +
     "\n" +

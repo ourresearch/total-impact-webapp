@@ -459,25 +459,50 @@ div.product-page {
             }
 
             .tab-tweets {
-               div.tweet-view-controls {
-                  font-size: 14px;
-                  text-align: right;
-                  margin: 20px 70px 20px 0;
-                  padding-top: 20px;
+
+               div.tweets-list-controls {
                   border-bottom: 1px solid #eee;
-                  color: #555;
-                  span.descr {
-                     font-weight: 300;
-                  }
-                  label {
-                     cursor: pointer;
-                     padding-left: 10px;
-                     input {
-                        margin-right: 5px;
+                  .clearfix();
+                  font-size: 14px;
+                  margin: 90px 0 30px;
+                  position: relative;
+
+                  div.tweets-list-info {
+                     position: absolute;
+                     bottom: 0;
+                     left: 0;
+                     text-align: left;
+                     .page-current {
+                        font-size: 20px;
+                        span.current-tweets-page-val {
+                           font-weight: bold;
+                        }
+                     }
+                     .num-tweets-pages-val {
+                        font-size: 14px;
+                        font-weight: 300;
                      }
                   }
 
+                  div.tweets-list-actions {
+                     color: #555;
+                     span.descr {
+                        font-weight: 300;
+                     }
+                     bottom: 0;
+                     right: 0;
+                     position: absolute;
+                     label {
+                        cursor: pointer;
+                        padding-left: 10px;
+                        input {
+                           margin-right: 5px;
+                        }
+                     }
+                  }
                }
+
+
                div.product-tweets {
                   padding-bottom: 20px;
                }
