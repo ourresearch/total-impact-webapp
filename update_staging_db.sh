@@ -3,6 +3,8 @@
 # turn debugging on.  turn it off at the end of the script
 set -x
 
+date
+
 # install heroku toolbelt
 # inspired by https://toolbelt.heroku.com/install.sh
 curl -s https://s3.amazonaws.com/assets.heroku.com/heroku-client/heroku-client.tgz | tar xz
@@ -15,6 +17,8 @@ PATH="bin:$PATH"
 #heroku pgbackups:capture HEROKU_POSTGRESQL_MAROON_URL --expire --app total-impact-core
 heroku pg:reset HEROKU_POSTGRESQL_YELLOW_URL  --app total-impact-core-staging --confirm total-impact-core-staging
 heroku pgbackups:restore HEROKU_POSTGRESQL_YELLOW_URL `heroku pgbackups:url --app total-impact-core` --app total-impact-core-staging --confirm total-impact-core-staging
+
+date
 
 # turn debugging off
 set +x

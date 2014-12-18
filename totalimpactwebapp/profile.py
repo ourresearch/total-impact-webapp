@@ -453,13 +453,20 @@ class Profile(db.Model):
         # return None
 
     def parse_and_save_tweets(self):
+        print "NOW HERE HERE in parse_and_save_tweets"
         twitter_details_dict = {}
         for product in self.products_not_removed:
+            print "checking", product.tiid
+            posts_metric = product.get_metric_by_name("altmetric_com", "posts")
             for metric in product.metrics:
-                posts_metric = product.get_metric_by_name("altmetric_com", "posts")
-                if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
-                    twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
+                print product.tiid, metric.provider, metric.interaction
+
+            if posts_metric:
+                print "GOT POSTS METRIC", posts_metric.most_recent_snap.raw_value
+            if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
+                twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
         if twitter_details_dict:
+            print "GOING INTO hydrate_twitter_text_and_followers"
             hydrate_twitter_text_and_followers(self.id, twitter_details_dict)
 
 
@@ -935,6 +942,7 @@ def delete_profile(profile):
 def are_all_products_done_refreshing_from_profile_id(profile):
     bare_products = profile.products_not_removed  # can be bare products
     refresh_status = RefreshStatus(profile.products_not_removed)
+    print "NOW HERE refresh_status", refresh_status
     return refresh_status.is_done_refreshing
 
 def _make_id(len=6):

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-17
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-18
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -693,6 +693,11 @@ angular.module('app').controller('AppCtrl', function($scope,
         return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
     }
     return num;
+  }
+
+  $scope.nFormatCommas = function(num){
+    // from http://stackoverflow.com/a/2901298
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
 
@@ -2203,11 +2208,6 @@ angular.module("profile", [
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
     Page.setName('overview')
-
-
-    $timeout(function(){
-        twttr.widgets.load()
-    }, 1000)
 
     $scope.profileLoading =  ProfileService.isLoading
     $scope.url_slug = url_slug
@@ -10492,7 +10492,7 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
     "        data-placement=\"left\"\n" +
     "        data-toggle=\"popover\"\n" +
     "        data-content=\"\n" +
-    "        <img src='{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}' />\n" +
+    "        <img src='{{ tweet.tweeter.display_image_url }}' />\n" +
     "        <div class='names'>\n" +
     "            <span class='name'>{{ tweet.tweeter.name }}</span>\n" +
     "            <span class='screen-name'>@{{ tweet.tweeter.screen_name }}</span>\n" +
@@ -10507,19 +10507,19 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
     "         <div class='bio-footer'>\n" +
     "            <span class='followers footer-stat'>\n" +
     "               <span class='descr'>Followers</span>\n" +
-    "               <span class='val'>{{ tweet.tweeter.followers }}</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.followers) }}</span>\n" +
     "            </span>\n" +
     "            <span class='number-follows footer-stat'>\n" +
     "               <span class='descr'>Follows</span>\n" +
-    "               <span class='val'>{{ tweet.tweeter.num_follows }}</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.num_follows) }}</span>\n" +
     "            </span>\n" +
     "            <span class='number-statuses footer-stat'>\n" +
     "               <span class='descr'>Tweets</span>\n" +
-    "               <span class='val'>{{ tweet.tweeter.num_statuses }}</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.num_statuses) }}</span>\n" +
     "            </span>\n" +
     "         </div>\n" +
     "        \">\n" +
-    "      <img ng-src=\"{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}\" />\n" +
+    "      <img ng-src=\"{{ tweet.tweeter.display_image_url }}\" />\n" +
     "      <div class=\"tweeter-data f16\">\n" +
     "         <span class=\"tweeter-name\">\n" +
     "            <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +

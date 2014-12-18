@@ -151,11 +151,6 @@ angular.module("profile", [
     Timer.start("profileViewRender.load")
     Page.setName('overview')
 
-
-    $timeout(function(){
-        twttr.widgets.load()
-    }, 1000)
-
     $scope.profileLoading =  ProfileService.isLoading
     $scope.url_slug = url_slug
 

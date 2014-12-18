@@ -7,6 +7,7 @@ from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, Twi
 
 from collections import defaultdict
 import os
+import re
 import datetime
 import logging
 import dateutil.parser
@@ -92,6 +93,12 @@ class Tweeter(db.Model):
         if not "last_collected_date" in kwargs:
             self.last_collected_date = datetime.datetime.utcnow()
         super(Tweeter, self).__init__(**kwargs)
+
+    @cached_property
+    def display_image_url(self):
+        ret = self.image_url.replace("http://", "https://")
+        ret = ret.replace("_normal", "_reasonably_small")
+        return ret
 
     def set_attributes_from_altmetric_post(self, post):
         self.followers = post["author"].get("followers", 0)

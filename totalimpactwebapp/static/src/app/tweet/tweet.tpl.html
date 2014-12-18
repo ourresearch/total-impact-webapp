@@ -5,7 +5,7 @@
         data-placement="left"
         data-toggle="popover"
         data-content="
-        <img src='{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}' />
+        <img src='{{ tweet.tweeter.display_image_url }}' />
         <div class='names'>
             <span class='name'>{{ tweet.tweeter.name }}</span>
             <span class='screen-name'>@{{ tweet.tweeter.screen_name }}</span>
@@ -20,19 +20,19 @@
          <div class='bio-footer'>
             <span class='followers footer-stat'>
                <span class='descr'>Followers</span>
-               <span class='val'>{{ tweet.tweeter.followers }}</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.followers) }}</span>
             </span>
             <span class='number-follows footer-stat'>
                <span class='descr'>Follows</span>
-               <span class='val'>{{ tweet.tweeter.num_follows }}</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.num_follows) }}</span>
             </span>
             <span class='number-statuses footer-stat'>
                <span class='descr'>Tweets</span>
-               <span class='val'>{{ tweet.tweeter.num_statuses }}</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.num_statuses) }}</span>
             </span>
          </div>
         ">
-      <img ng-src="{{ tweet.tweeter.image_url.replace('_normal', '_reasonably_small') }}" />
+      <img ng-src="{{ tweet.tweeter.display_image_url }}" />
       <div class="tweeter-data f16">
          <span class="tweeter-name">
             <span class="text">{{ tweet.tweeter.name }}</span>
