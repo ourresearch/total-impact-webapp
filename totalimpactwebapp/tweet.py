@@ -168,7 +168,7 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
 
 # info from twitter at: https://dev.twitter.com/rest/reference/get/statuses/lookup
 
-handle_workaround_join_string = "foreign(Tweeter.screen_name)==case([(Tweet.screen_name=='Dr_Bik', 'HollyBik')], else_=Tweet.screen_name)"
+handle_workaround_join_string = "foreign(Tweeter.screen_name)==case([(Tweet.screen_name=='Dr_Bik', 'hollybik')], else_=Tweet.screen_name)"
 
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
