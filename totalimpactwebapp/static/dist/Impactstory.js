@@ -8585,11 +8585,11 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "                        <li class=\"doi\" ng-show=\"aliases.display_doi\">\n" +
     "                           <span class=\"key\">DOI:</span>\n" +
-    "                           <a class=\"value\" href=\"http://dx.doi.org/{{ aliases.display_doi }}\">{{ aliases.display_doi }}<i class=\"icon-external-link right\"></i></a>\n" +
+    "                           <a class=\"value\" href=\"http://doi.org/{{ aliases.display_doi }}\">{{ aliases.display_doi }}<i class=\"icon-external-link right\"></i></a>\n" +
     "                        </li>\n" +
     "                        <li class=\"pmid\" ng-show=\"aliases.display_pmid\">\n" +
     "                           <span class=\"key\">PubMed ID:</span>\n" +
-    "                           <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_doi }}<i class=\"icon-external-link\"></i></a>\n" +
+    "                           <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_pmid }}<i class=\"icon-external-link right\"></i></a>\n" +
     "                        </li>\n" +
     "                     </ul>\n" +
     "\n" +
@@ -8604,7 +8604,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                     </div>\n" +
     "                  </div>\n" +
     "                  <div class=\"product-as-json\">\n" +
-    "                     <a class=\"btn btn-default btn-xs\" href=\"profile/jason/product/ej2ghqrp693pb8k09vybeikl\">\n" +
+    "                     <a class=\"btn btn-default btn-xs\" href=\"profile/{{ userSlug }}/product/{{ tiid }}\">\n" +
     "                        <i class=\"fa fa-gears\"></i>\n" +
     "                        view as JSON\n" +
     "                     </a>\n" +
