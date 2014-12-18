@@ -8,6 +8,7 @@ from totalimpactwebapp.tweeter import Tweeter
 
 from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
 from collections import defaultdict
+from sqlalchemy import case
 import os
 import re
 import datetime
@@ -167,6 +168,8 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
 
 # info from twitter at: https://dev.twitter.com/rest/reference/get/statuses/lookup
 
+handle_workaround_join_string = "Tweet.screen_name==case([(foreign(Tweeter.screen_name)=='Dr_Bik', 'HollyBik')], else_=foreign(Tweeter.screen_name))"
+
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
     tiid = db.Column(db.Text, primary_key=True)  # alter table tweet add tiid text
@@ -185,7 +188,8 @@ class Tweet(db.Model):
         cascade='all, delete-orphan',
         backref=db.backref("tweet", lazy="joined"), 
         uselist=False,  #onetoone
-        single_parent=True
+        single_parent=True,
+        primaryjoin=handle_workaround_join_string
     )
 
     def __init__(self, **kwargs):
