@@ -30,8 +30,7 @@ def get_product_tweets_for_profile(profile_id):
     return response
 
 
-def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, tweet_ids):
-    tweets = Tweet.query.filter(Tweet.tweet_id.in_(tweet_ids))
+def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, tweets):
     tweets_by_tweet_id = defaultdict(list)
     for tweet in tweets:
         tweets_by_tweet_id[tweet.tweet_id].append(tweet)
@@ -47,11 +46,9 @@ def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, twe
                     tweet_id=tweet_id, tiid=tweet.tiid))
                 # print "tweet_payload_len", len(tweet.payload)
                 if "user" in payload_dict:
-                    this_tweeter = tweet.tweeter
-                    this_tweeter.set_attributes_from_twitter_data(payload_dict["user"])
+                    tweet.tweeter.set_attributes_from_twitter_data(payload_dict["user"])
                     logger.info(u"updated tweeter followers for {screen_name}".format(
-                        screen_name=this_tweeter.screen_name))
-                db.session.merge(tweet)
+                        screen_name=tweet.tweeter.screen_name))
             
 
 def flag_deleted_tweets(tweet_ids):
@@ -64,9 +61,10 @@ def flag_deleted_tweets(tweet_ids):
         db.session.merge(tweet)
 
 
-def handle_all_tweets(data, tweet_ids):
+def handle_all_tweets(data, tweets):
     # update with tweet text, tweeter
-    store_tweet_payload_and_tweeter_from_twitter(data, tweet_ids)
+    store_tweet_payload_and_tweeter_from_twitter(data, tweets)
+    tweet_ids = [tweet.tweet_id for tweet in tweets]
 
     # flag the rest as deleted
     tweet_ids_with_response = [tweet["id_str"] for tweet in data]
@@ -84,7 +82,7 @@ class AppDictClient(AppClient):
         return data
 
 
-def get_and_save_tweet_text_and_tweeter_followers(tweet_ids):
+def get_and_save_tweet_text_and_tweeter_followers(tweets):
 
     client = AppDictClient(
         os.getenv("TWITTER_CONSUMER_KEY"),
@@ -93,22 +91,22 @@ def get_and_save_tweet_text_and_tweeter_followers(tweet_ids):
     )
 
     logger.info(u"in get_and_save_tweet_text_and_tweeter_followers for {num} tweet_ids".format(
-        num=len(tweet_ids)))
+        num=len(tweets)))
 
     # print "lenth of tweet_ids", len(tweet_ids)
 
     # from http://stackoverflow.com/a/1624988/596939
     group_size = 100
-    list_of_groups = [ tweet_ids[i:i+group_size] for i in range(0, len(tweet_ids), group_size) ]
+    list_of_groups = [ tweets[i:i+group_size] for i in range(0, len(tweets), group_size) ]
 
     # print "number of groups", len(list_of_groups)
 
-    for tweet_id_subset in list_of_groups:
-        tweet_id_string = ",".join(tweet_id_subset)
+    for tweet_subset in list_of_groups:
+        tweet_id_string = ",".join([tweet.tweet_id for tweet in tweet_subset])
 
         try:
             response = client.api.statuses.lookup.post(id=tweet_id_string, trim_user=False)
-            handle_all_tweets(response.data, tweet_ids)
+            handle_all_tweets(response.data, tweet_subset)
         except TwitterApiError, e:
             logger.exception("TwitterApiError error, skipping")
         except TwitterClientError, e:
@@ -133,6 +131,7 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
     tweets_to_hydrate_from_twitter = []
     # get them all at once into the session so gets below go faster
     tweets = Tweet.query.filter(Tweet.profile_id==profile_id)
+    tweet_dict = dict([((tweet.tweet_id, tweet.tiid), tweet) for tweet in tweets])
 
     for tiid, post_list in altmetric_twitter_posts.iteritems():
         for post in post_list:
@@ -140,28 +139,32 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
             tweet_id = post["tweet_id"]
             screen_name = post["author"]["id_on_source"]
 
-            tweet = Tweet.query.get((tweet_id, tiid))
-            if tweet:
+            if (tweet_id, tiid) in tweet_dict.keys():
+                tweet = tweet_dict[(tweet_id, tiid)]
                 if not tweet.tweet_text and not tweet.is_deleted:
                     tweets_to_hydrate_from_twitter.append(tweet)
             else:
-                tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
-                tweets_to_hydrate_from_twitter.append(tweet)
-                tweet.set_attributes_from_altmetric_post(post)
-                tweet.profile_id = profile_id
-                if not tweet.tweeter:
-                    tweeter = Tweeter(screen_name=screen_name)
-                    tweeter.set_attributes_from_altmetric_post(post)
-                db.session.add(tweet)
+                if not Tweet.query.get((tweet_id, tiid)):
+                    tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
+                    tweets_to_hydrate_from_twitter.append(tweet)
+                    tweet.set_attributes_from_altmetric_post(post)
+                    tweet.profile_id = profile_id
+                    if not tweet.tweeter:
+                        tweeter = Tweeter(screen_name=screen_name)
+                        tweeter.set_attributes_from_altmetric_post(post)
+                    db.session.add(tweet)
 
+    logger.info(u"before tweets_to_hydrate_from_twitter for {profile_id}".format(
+        profile_id=profile_id))
     if tweets_to_hydrate_from_twitter:
         # save the altmetric stuff first
         commit(db)
+
         tweet_ids = [tweet.tweet_id for tweet in tweets_to_hydrate_from_twitter]
         logger.info(u"calling get_and_save_tweet_text_and_tweeter_followers for profile {profile_id}".format(
             profile_id=profile_id))
 
-        get_and_save_tweet_text_and_tweeter_followers(tweet_ids)
+        get_and_save_tweet_text_and_tweeter_followers(tweets_to_hydrate_from_twitter)
         commit(db)
 
     else:
