@@ -131,6 +131,8 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
         profile_id=profile_id))
 
     tweets_to_hydrate_from_twitter = []
+    # get them all at once into the session so gets below go faster
+    tweets = Tweet.query.filter(Tweet.profile_id==profile_id)
 
     for tiid, post_list in altmetric_twitter_posts.iteritems():
         for post in post_list:
@@ -147,19 +149,16 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
                 tweets_to_hydrate_from_twitter.append(tweet)
                 tweet.set_attributes_from_altmetric_post(post)
                 tweet.profile_id = profile_id
-                db.session.merge(tweet)
-
-                tweeter = Tweeter.query.get(screen_name)
-                if not tweeter:
+                if not tweet.tweeter:
                     tweeter = Tweeter(screen_name=screen_name)
                     tweeter.set_attributes_from_altmetric_post(post)
-                    db.session.merge(tweeter)
+                db.session.add(tweet)
 
     if tweets_to_hydrate_from_twitter:
         # save the altmetric stuff first
         commit(db)
         tweet_ids = [tweet.tweet_id for tweet in tweets_to_hydrate_from_twitter]
-        logger.info(u"in hydrate_twitter_text_and_followers for profile {profile_id}".format(
+        logger.info(u"calling get_and_save_tweet_text_and_tweeter_followers for profile {profile_id}".format(
             profile_id=profile_id))
 
         get_and_save_tweet_text_and_tweeter_followers(tweet_ids)

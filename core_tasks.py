@@ -118,7 +118,7 @@ def provider_method_wrapper(tiid, input_aliases_dict, provider, method_name):
             exception_type=type(e).__name__, 
             exception_arguments=e.args))
 
-    logger.info(u"{:20}: /biblio_print, RETURNED {tiid} {method_name} {provider_name} : {method_response}".format(
+    logger.info(u"{:20}: /biblio_print, RETURNED {tiid} {method_name} {provider_name} : {method_response:.25}".format(
         worker_name, tiid=tiid, method_name=method_name.upper(), 
         provider_name=provider_name.upper(), method_response=method_response))
 

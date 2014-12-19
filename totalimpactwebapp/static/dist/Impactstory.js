@@ -8977,7 +8977,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        </li>\n" +
     "                        <li class=\"pmid\" ng-show=\"aliases.display_pmid\">\n" +
     "                           <span class=\"key\">PubMed ID:</span>\n" +
-    "                           <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_pmid }}<i class=\"icon-external-link right\"></i></a>\n" +
+    "                           <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/{{ aliases.display_pmid }}\">{{ aliases.display_pmid }}<i class=\"icon-external-link right\"></i></a>\n" +
     "                        </li>\n" +
     "                     </ul>\n" +
     "\n" +
