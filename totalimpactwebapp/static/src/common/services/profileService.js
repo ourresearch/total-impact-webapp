@@ -87,8 +87,6 @@ angular.module('services.profileService', [
         function(resp){
 //          _.each(data, function(v, k){delete data[k]})
 
-          console.log("got the full products back", resp.list)
-
           _.each(resp.list, function(newProduct){
             var oldProduct = getProductFromTiid(newProduct.tiid)
             if (!oldProduct){

@@ -282,6 +282,11 @@ angular.module("productPage", [
       function(data){
         console.log("inserting this new product data into the ProfileProducts service:", data)
         ProfileService.overwriteProduct(data)
+
+        // this is way overkill, but currently the only way to get new markup
+        // for this product into the ProfileService is to reload EVERY product
+        // from scratch.
+        ProfileService.get(url_slug)
         renderProduct(data)
       },
       function(data){

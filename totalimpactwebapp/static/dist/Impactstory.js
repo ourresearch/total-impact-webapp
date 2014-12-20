@@ -1635,6 +1635,11 @@ angular.module("productPage", [
       function(data){
         console.log("inserting this new product data into the ProfileProducts service:", data)
         ProfileService.overwriteProduct(data)
+
+        // this is way overkill, but currently the only way to get new markup
+        // for this product into the ProfileService is to reload EVERY product
+        // from scratch.
+        ProfileService.get(url_slug)
         renderProduct(data)
       },
       function(data){
@@ -6465,8 +6470,6 @@ angular.module('services.profileService', [
         {id: url_slug, embedded:false}, // pretend is never embedded for now
         function(resp){
 //          _.each(data, function(v, k){delete data[k]})
-
-          console.log("got the full products back", resp.list)
 
           _.each(resp.list, function(newProduct){
             var oldProduct = getProductFromTiid(newProduct.tiid)
