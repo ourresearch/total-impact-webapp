@@ -19,7 +19,10 @@ angular.module('services.profileAwardService', [
       {id: url_slug},
       function(resp){
         console.log("ProfileAwards got a response", resp)
-        awards.oa = resp[0]
+        awards.oa = _.findWhere(resp, {name: "Open Access"})
+        console.log("awards.oa", awards.oa)
+        awards.globalReach = _.findWhere(resp, {name: "Global Reach"})
+        console.log("awards.globalReach", awards.globalReach)
         loading = false
       },
 

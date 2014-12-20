@@ -6367,7 +6367,10 @@ angular.module('services.profileAwardService', [
       {id: url_slug},
       function(resp){
         console.log("ProfileAwards got a response", resp)
-        awards.oa = resp[0]
+        awards.oa = _.findWhere(resp, {name: "Open Access"})
+        console.log("awards.oa", awards.oa)
+        awards.globalReach = _.findWhere(resp, {name: "Global Reach"})
+        console.log("awards.globalReach", awards.globalReach)
         loading = false
       },
 
@@ -9323,38 +9326,81 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
-    "   <span class=\"profile-award\"\n" +
-    "        data-placement=\"auto\"\n" +
-    "        data-content=\"{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}\"\n" +
-    "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
-    "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
+    "<li class=\"profile-award-container level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
     "\n" +
-    "      <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
-    "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "      </span>\n" +
-    "      <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
+    "  <div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
     "\n" +
-    "   </span>\n" +
-    "</div>\n" +
+    "     <span class=\"profile-award\"\n" +
+    "          data-placement=\"auto\"\n" +
+    "          data-content=\"{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}\"\n" +
+    "          data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
+    "          ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
+    "\n" +
+    "        <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
+    "           <i class=\"icon-unlock-alt\"></i>\n" +
+    "        </span>\n" +
+    "        <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
+    "\n" +
+    "     </span>\n" +
+    "  </div>\n" +
     "\n" +
     "\n" +
-    "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
-    "   <tweet-this text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!\"></tweet-this>\n" +
-    "   <span class=\"profile-award\"\n" +
-    "        data-placement=\"auto\"\n" +
-    "        data-content=\"You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>\"\n" +
-    "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
-    "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
+    "  <div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
+    "     <tweet-this text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!\"></tweet-this>\n" +
+    "     <span class=\"profile-award\"\n" +
+    "          data-placement=\"auto\"\n" +
+    "          data-content=\"You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>\"\n" +
+    "          data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
+    "          ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
     "\n" +
-    "      <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
-    "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "      </span>\n" +
-    "      <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
+    "        <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
+    "           <i class=\"icon-unlock-alt\"></i>\n" +
+    "        </span>\n" +
+    "        <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
     "\n" +
-    "   </span>\n" +
-    "</div>\n" +
+    "     </span>\n" +
+    "  </div>\n" +
     "\n" +
+    "</li>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "<li class=\"profile-award-container level-{{ ProfileAwardService.awards.globalReach.level }}\">\n" +
+    "\n" +
+    "  <div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.globalReach.award_badge\">\n" +
+    "     <span class=\"profile-award\"\n" +
+    "          data-placement=\"auto\"\n" +
+    "          data-content=\"{{ profileAboutService.data.given_name }} has made impact in at least {{ ProfileAwardService.awards.globalReach.extra.num_countries }} countries.  Click to learn more.\"\n" +
+    "          data-original-title=\"{{ ProfileAwardService.awards.globalReach.level_name }} level award\"\n" +
+    "          ng-show=\"ProfileAwardService.awards.globalReach.level>0\">\n" +
+    "\n" +
+    "        <span class=\"icon level-{{ ProfileAwardService.awards.globalReach.level }}\">\n" +
+    "           <i class=\"fa fa-globe\"></i>\n" +
+    "        </span>\n" +
+    "        <span class=\"text\">{{ ProfileAwardService.awards.globalReach.name }}</span>\n" +
+    "\n" +
+    "     </span>\n" +
+    "  </div>\n" +
+    "\n" +
+    "\n" +
+    "  <div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.globalReach.award_badge\">\n" +
+    "     <tweet-this text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.globalReach.name }}!\"></tweet-this>\n" +
+    "     <span class=\"profile-award\"\n" +
+    "          data-placement=\"auto\"\n" +
+    "          data-content=\"You've made impact in at least {{ ProfileAwardService.awards.globalReach.extra.num_countries }} countries.  Nice work!  Click to learn more.<div class='call-to-action'>{{ ProfileAwardService.awards.globalReach.call_to_action }}.</div>\"\n" +
+    "          data-original-title=\"{{ ProfileAwardService.awards.globalReach.level_name }} level award\"\n" +
+    "          ng-show=\"ProfileAwardService.awards.globalReach.level>0\">\n" +
+    "\n" +
+    "        <span class=\"icon level-{{ ProfileAwardService.awards.globalReach.level }}\">\n" +
+    "           <i class=\"fa fa-globe\"></i>\n" +
+    "        </span>\n" +
+    "        <span class=\"text\">{{ ProfileAwardService.awards.globalReach.name }}</span>\n" +
+    "\n" +
+    "     </span>\n" +
+    "  </div>\n" +
+    "\n" +
+    "</li>\n" +
     "");
 }]);
 
@@ -9587,10 +9633,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </div>\n" +
     "\n" +
     "\n" +
-    "               <ul class=\"profile-award-list\">\n" +
-    "                  <li class=\"profile-award-container level-{{ ProfileAwardService.awards.oa.level }}\"\n" +
-    "                      ng-include=\"'profile-award/profile-award.tpl.html'\">\n" +
-    "                  </li>\n" +
+    "               <ul class=\"profile-award-list\" ng-include=\"'profile-award/profile-award.tpl.html'\">\n" +
     "               </ul>\n" +
     "            </div>\n" +
     "\n" +

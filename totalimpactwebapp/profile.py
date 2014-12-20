@@ -338,14 +338,6 @@ class Profile(db.Model):
     def event_sums_by_country(self):
         return {k: v["sum"] for k, v in self.countries.iteritems()}
 
-    @cached_property
-    def internationality(self):
-        return 42
-        return self.countries.internationality
-
-    @cached_property
-    def awards(self):
-        return profile_award.make_awards_list(self)
 
     @cached_property
     def countries(self):
@@ -605,6 +597,10 @@ class Profile(db.Model):
         return new_products
 
 
+    def get_profile_awards(self):
+        return profile_award.make_awards_list(self)
+
+
     def remove_duplicates(self):
         duplicates_list = build_duplicates_list(self.products_not_removed)
 
@@ -710,7 +706,6 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["account_products_dict"] = profile.account_products_dict
     profile_dict["drip_emails"] = profile.drip_emails
     profile_dict["countries"] = profile.countries
-    profile_dict["internationality"] = profile.internationality
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)
@@ -832,13 +827,6 @@ def get_profile_stubs_from_url_slug(url_slug):
                                         orm.subqueryload(Profile.products, Product.alias_rows))
     profile = query_base.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
     return profile
-
-
-def get_profile_awards_from_slug(url_slug):
-    profile = get_profile_stubs_from_url_slug(url_slug)
-    if not profile:
-        return None
-    return profile_award.make_awards_list(profile)
 
 
 def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_products=True, include_product_relationships=True):
