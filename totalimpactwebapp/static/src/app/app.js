@@ -202,6 +202,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   }
 
   $scope.nFormatCommas = function(num){
+    if (num === null){
+      return ""
+    }
+
     // from http://stackoverflow.com/a/2901298
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }

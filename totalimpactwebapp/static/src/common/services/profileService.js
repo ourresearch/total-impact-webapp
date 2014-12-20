@@ -18,6 +18,7 @@ angular.module('services.profileService', [
                                       SelfCancellingProductsResource){
 
     var loading = true
+    var tweetsLoading = true
     var data = {
       products:[]
     }
@@ -52,10 +53,11 @@ angular.module('services.profileService', [
 
 
     function getTweets(url_slug){
+        tweetsLoading = true
       return SelfCancellingProfileTweetsResource.createResource().get(
         {id: url_slug},
         function(resp){
-          // could so stuff here.
+          tweetsLoading = false
         }
       ).$promise
     }
@@ -242,6 +244,9 @@ angular.module('services.profileService', [
       data: data,
       loading: loading,
       isLoading: isLoading,
+      tweetsAreLoading: function(){
+        return tweetsLoading
+      },
       get: get,
       productByTiid: productByTiid,
       removeProducts: removeProducts,
