@@ -4,6 +4,7 @@ angular.module("services.productList", [])
     $location,
     $timeout,
     $window,
+    $rootScope,
     SelectedProducts,
     GenreConfigs,
     PinboardService,
@@ -17,6 +18,14 @@ angular.module("services.productList", [])
 
   var ui = {}
   var filterFn
+
+
+  $rootScope.$watch(function(){
+    return ui.showTweets
+  }, function(newVal, oldVal){
+    console.log("showTweets value changed", newVal, oldVal)
+  })
+
 
 
 
@@ -42,6 +51,8 @@ angular.module("services.productList", [])
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       finishRender()
     });
+
+
   }
 
 

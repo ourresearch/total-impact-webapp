@@ -87,6 +87,8 @@ angular.module("productListPage", [
     Page.setName($routeParams.genre_name)
     ProductList.startRender($scope)
 
+
+
     SummaryCards.query(
       {
         id: $routeParams.url_slug,
