@@ -76,16 +76,15 @@ def get_and_save_tweeter_followers(tweeters):
 
 class Tweeter(db.Model):
     screen_name = db.Column(db.Text, primary_key=True)
-    # twitter_id = db.Column(db.Integer) # alter table tweeter add twitter_id numeric
+    twitter_id = db.Column(db.Integer) # alter table tweeter add twitter_id int4
     followers = db.Column(db.Integer)
     name = db.Column(db.Text)
     description = db.Column(db.Text)
     location = db.Column(db.Text) # alter table tweeter add location text
     image_url = db.Column(db.Text)
     profile_url = db.Column(db.Text) # alter table tweeter add profile_url text
-    twitter_join_date = db.Column(db.DateTime()) # alter table tweeter add twitter_join_date timestamp
-    # num_statuses = db.Column(db.Integer) # alter table tweeter add num_statuses numeric
-    # num_follows = db.Column(db.Integer) # alter table tweeter add num_follows numeric
+    num_statuses = db.Column(db.Integer) # alter table tweeter add num_statuses int4
+    num_follows = db.Column(db.Integer) # alter table tweeter add num_follows int4
     last_collected_date = db.Column(db.DateTime())   #alter table tweeter add last_collected_date timestamp
     is_deleted = db.Column(db.Boolean)  # alter table tweeter add is_deleted bool
 
@@ -95,25 +94,10 @@ class Tweeter(db.Model):
         super(Tweeter, self).__init__(**kwargs)
 
     @cached_property
-    def number_statuses(self):
-        return 187619
-        return 1042
-
-
-    @cached_property
     def display_image_url(self):
         ret = self.image_url.replace("http://", "https://")
         ret = ret.replace("_normal", "_reasonably_small")
         return ret
-
-
-    @cached_property
-    def fake_followers(self):
-        return 1042
-
-    @cached_property
-    def number_follows(self):
-        return self.followers - 100
 
     def set_attributes_from_altmetric_post(self, post):
         self.followers = post["author"].get("followers", 0)
@@ -133,8 +117,6 @@ class Tweeter(db.Model):
         self.num_statuses = data.get("statuses_count", None)
         self.num_follows = data.get("friends_count", None)
         self.twitter_id = data.get("id", None)
-        if data.get("created_at", None):
-            self.twitter_join_date = dateutil.parser.parse(data.get("created_at"), 'UTC')
         self.last_collected_date = datetime.datetime.utcnow()
         return self
 

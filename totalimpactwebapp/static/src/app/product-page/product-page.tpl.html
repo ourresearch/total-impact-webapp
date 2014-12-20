@@ -266,11 +266,11 @@
 
                         <li class="doi" ng-show="aliases.display_doi">
                            <span class="key">DOI:</span>
-                           <a class="value" href="http://dx.doi.org/{{ aliases.display_doi }}">{{ aliases.display_doi }}<i class="icon-external-link right"></i></a>
+                           <a class="value" href="http://doi.org/{{ aliases.display_doi }}">{{ aliases.display_doi }}<i class="icon-external-link right"></i></a>
                         </li>
                         <li class="pmid" ng-show="aliases.display_pmid">
                            <span class="key">PubMed ID:</span>
-                           <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/">{{ aliases.display_doi }}<i class="icon-external-link"></i></a>
+                           <a class="value" href="http://www.ncbi.nlm.nih.gov/pubmed/{{ aliases.display_pmid }}">{{ aliases.display_pmid }}<i class="icon-external-link right"></i></a>
                         </li>
                      </ul>
 
@@ -285,7 +285,7 @@
                      </div>
                   </div>
                   <div class="product-as-json">
-                     <a class="btn btn-default btn-xs" href="profile/jason/product/ej2ghqrp693pb8k09vybeikl">
+                     <a class="btn btn-default btn-xs" href="profile/{{ userSlug }}/product/{{ tiid }}">
                         <i class="fa fa-gears"></i>
                         view as JSON
                      </a>

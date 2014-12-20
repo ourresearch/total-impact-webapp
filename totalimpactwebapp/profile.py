@@ -455,10 +455,9 @@ class Profile(db.Model):
     def parse_and_save_tweets(self):
         twitter_details_dict = {}
         for product in self.products_not_removed:
-            for metric in product.metrics:
-                posts_metric = product.get_metric_by_name("altmetric_com", "posts")
-                if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
-                    twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
+            posts_metric = product.get_metric_by_name("altmetric_com", "posts")
+            if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
+                twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
         if twitter_details_dict:
             hydrate_twitter_text_and_followers(self.id, twitter_details_dict)
 
