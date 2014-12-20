@@ -292,15 +292,12 @@ def iso_code_from_name(name):
     if not name:
         return None
 
-    if name in country_iso_by_name.keys():
-        return name  # we got an ISO code, give it back.
-
-    if name in country_iso_by_name:
+    try:
         return country_iso_by_name[name]
-
-    logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
-        country_name=name))
-    return None
+    except KeyError:
+        logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
+            country_name=name))
+        return None
 
 
 class Country(object):
