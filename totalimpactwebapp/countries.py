@@ -300,18 +300,17 @@ def iso_code_from_name(name):
     Makes a few guesses based on alternate versions found in the country_info.py
     file. If you give it an ISO code it just gives you that back.
     """
+
     if not name:
         return None
 
-    if name in country_iso_by_name.keys():
-        return name  # we got an ISO code, give it back.
+    try:
+         return country_iso_by_name[name]
+    except KeyError:
+        logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
+            country_name=name))
+        return None
 
-    if name in country_iso_by_name:
-        return country_iso_by_name[name]
-
-    logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
-        country_name=name))
-    return None
 
 
 class Country(object):
