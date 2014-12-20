@@ -24,6 +24,12 @@ angular.module("services.productList", [])
     return ui.showTweets
   }, function(newVal, oldVal){
     console.log("showTweets value changed", newVal, oldVal)
+    if (newVal){
+      $location.search("show_tweets", "foo")
+    }
+    else {
+      $location.search("show_tweets", null)
+    }
   })
 
 
@@ -35,7 +41,7 @@ angular.module("services.productList", [])
     }
     ui.genreChangeDropdownIsOpen = false
     ui.showTweets = false
-    Timer.start("productListRender")
+    Timer.start("collectionRender")
     SelectedProducts.removeAll()
 
 
@@ -62,7 +68,7 @@ angular.module("services.productList", [])
       var lastScrollPos = Page.getLastScrollPosition($location.path())
       $window.scrollTo(0, lastScrollPos)
     }, 0)
-    console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
+    console.log("finished rendering collection in " + Timer.elapsed("collectionRender") + "ms"
     )
   }
 

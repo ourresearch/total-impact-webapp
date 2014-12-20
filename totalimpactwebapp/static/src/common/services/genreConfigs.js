@@ -72,7 +72,6 @@ angular.module("services.genreConfigs", [])
           myConfig = getDefaultConfigFromUrlRepresentation(urlRepresentation)
         }
 
-        console.log("returning genre config:", myConfig)
         return myConfig
       },
 
