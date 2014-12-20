@@ -72,10 +72,10 @@ angular.module('services.profileAboutService', [
     }
 
     function handleSlug(profileServices, newSlug){
-      console.log("refreshing the profile with new slug", newSlug)
 
       // handle new slugs; we need to load a whole new profile
       if (slugIsNew(newSlug)){
+        console.log("refreshing the profile with new slug", newSlug)
         _.each(profileServices, function(service){
           service.clear()
           if (!service.handleSlug){ // don't run the ProfileAboutService here, we need to return it.
@@ -87,6 +87,7 @@ angular.module('services.profileAboutService', [
 
       // this is the same profile; don't nothin' change.
       else {
+       console.log("not refreshing profile; slug is the same.")
        return $q.when(data)
       }
 

@@ -1225,7 +1225,8 @@ angular.module("productListPage", [
 
   $routeProvider.when("/:url_slug/products/:genre_name", {
     templateUrl:'product-list-page/genre-page.tpl.html',
-    controller:'GenrePageCtrl'
+    controller:'GenrePageCtrl',
+    reloadOnSearch: false
   })
 
 }])
@@ -1235,7 +1236,8 @@ angular.module("productListPage", [
 
   $routeProvider.when("/:url_slug/country/:country_name", {
     templateUrl:'product-list-page/country-page.tpl.html',
-    controller:'CountryPageCtrl'
+    controller:'CountryPageCtrl',
+    reloadOnSearch: false
   })
 
 }])
@@ -1297,6 +1299,8 @@ angular.module("productListPage", [
     SummaryCards,
     ProductList,
     Page) {
+
+    console.log("loading the genre page controller.")
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
@@ -5336,7 +5340,6 @@ angular.module("services.genreConfigs", [])
           myConfig = getDefaultConfigFromUrlRepresentation(urlRepresentation)
         }
 
-        console.log("returning genre config:", myConfig)
         return myConfig
       },
 
@@ -6069,6 +6072,12 @@ angular.module("services.productList", [])
     return ui.showTweets
   }, function(newVal, oldVal){
     console.log("showTweets value changed", newVal, oldVal)
+    if (newVal){
+      $location.search("show_tweets", "foo")
+    }
+    else {
+      $location.search("show_tweets", null)
+    }
   })
 
 
@@ -6080,7 +6089,7 @@ angular.module("services.productList", [])
     }
     ui.genreChangeDropdownIsOpen = false
     ui.showTweets = false
-    Timer.start("productListRender")
+    Timer.start("collectionRender")
     SelectedProducts.removeAll()
 
 
@@ -6107,7 +6116,7 @@ angular.module("services.productList", [])
       var lastScrollPos = Page.getLastScrollPosition($location.path())
       $window.scrollTo(0, lastScrollPos)
     }, 0)
-    console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
+    console.log("finished rendering collection in " + Timer.elapsed("collectionRender") + "ms"
     )
   }
 
@@ -6328,10 +6337,10 @@ angular.module('services.profileAboutService', [
     }
 
     function handleSlug(profileServices, newSlug){
-      console.log("refreshing the profile with new slug", newSlug)
 
       // handle new slugs; we need to load a whole new profile
       if (slugIsNew(newSlug)){
+        console.log("refreshing the profile with new slug", newSlug)
         _.each(profileServices, function(service){
           service.clear()
           if (!service.handleSlug){ // don't run the ProfileAboutService here, we need to return it.
@@ -6343,6 +6352,7 @@ angular.module('services.profileAboutService', [
 
       // this is the same profile; don't nothin' change.
       else {
+       console.log("not refreshing profile; slug is the same.")
        return $q.when(data)
       }
 

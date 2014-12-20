@@ -10,7 +10,8 @@ angular.module("productListPage", [
 
   $routeProvider.when("/:url_slug/products/:genre_name", {
     templateUrl:'product-list-page/genre-page.tpl.html',
-    controller:'GenrePageCtrl'
+    controller:'GenrePageCtrl',
+    reloadOnSearch: false
   })
 
 }])
@@ -20,7 +21,8 @@ angular.module("productListPage", [
 
   $routeProvider.when("/:url_slug/country/:country_name", {
     templateUrl:'product-list-page/country-page.tpl.html',
-    controller:'CountryPageCtrl'
+    controller:'CountryPageCtrl',
+    reloadOnSearch: false
   })
 
 }])
@@ -82,6 +84,8 @@ angular.module("productListPage", [
     SummaryCards,
     ProductList,
     Page) {
+
+    console.log("loading the genre page controller.")
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
