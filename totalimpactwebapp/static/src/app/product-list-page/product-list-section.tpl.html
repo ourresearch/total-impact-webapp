@@ -134,7 +134,7 @@
             </span>
 
             <i tooltip="{{ product.genre }}"
-               class="genre-icon {{ product.genre_icon }}"></i>
+               class="genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}"></i>
          </div>
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
          <div class="product-tweets" ng-show="filteredTweets.length && ProductList.ui.showTweets">

@@ -60,6 +60,9 @@ angular.module("services.productList", [])
     ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
 
+    // close the change-genre dialog
+    ui.genreChangeDropdownIsOpen = false
+
     // handle moving the last product in our current genre
     if (!len()){
       var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-18
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-19
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6088,6 +6088,9 @@ angular.module("services.productList", [])
     ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
 
+    // close the change-genre dialog
+    ui.genreChangeDropdownIsOpen = false
+
     // handle moving the last product in our current genre
     if (!len()){
       var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
@@ -6455,7 +6458,6 @@ angular.module('services.profileService', [
               product.tweets = myTweets
             })
           })
-
       }
 
       loading = true
@@ -6464,8 +6466,18 @@ angular.module('services.profileService', [
         function(resp){
 //          _.each(data, function(v, k){delete data[k]})
 
-          data.products.length = 0
-          angular.extend(data.products, resp.list)
+          console.log("got the full products back", resp.list)
+
+          _.each(resp.list, function(newProduct){
+            var oldProduct = getProductFromTiid(newProduct.tiid)
+            if (!oldProduct){
+              data.products.push(newProduct)
+            }
+            else {
+              angular.extend(oldProduct, newProduct)
+            }
+          })
+
 
           // got the new stuff. but does the server say it's
           // actually still updating there? if so, show
@@ -6473,7 +6485,9 @@ angular.module('services.profileService', [
           Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
-              get(url_slug, true)
+              // this won't overwrite anything, just adds new products.
+              // i think we don't need it maybe? not sure so leaving it tho.
+              get(url_slug)
             },
             function(msg){
               // great, everything's all up-to-date.
@@ -6516,8 +6530,6 @@ angular.module('services.profileService', [
         {id: data.url_slug, tiids: tiids.join(",")},
         function(resp){
           console.log("finished deleting", tiids)
-          get(data.url_slug, true)
-
         }
       )
     }
@@ -6526,7 +6538,6 @@ angular.module('services.profileService', [
       if (!data.products){
         return false
       }
-
       if (data.products[0] && data.products[0].markup){
         return true
       }
@@ -6554,7 +6565,6 @@ angular.module('services.profileService', [
         {genre: newGenre},
         function(resp){
           console.log("ProfileService.changeProductsGenre() successful.", resp)
-          get(data.url_slug)
         },
         function(resp){
           console.log("ProfileService.changeProductsGenre() FAILED.", resp)
@@ -8634,7 +8644,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "            </span>\n" +
     "\n" +
     "            <i tooltip=\"{{ product.genre }}\"\n" +
-    "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
+    "               class=\"genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}\"></i>\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && ProductList.ui.showTweets\">\n" +
