@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-19
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-20
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6065,9 +6065,8 @@ angular.module("services.productList", [])
   $rootScope.$watch(function(){
     return ui.showTweets
   }, function(newVal, oldVal){
-    console.log("showTweets value changed", newVal, oldVal)
     if (newVal){
-      $location.search("show_tweets", "foo")
+      $location.search("show_tweets", "true")
     }
     else {
       $location.search("show_tweets", null)
@@ -6082,7 +6081,8 @@ angular.module("services.productList", [])
       Loading.startPage()
     }
     ui.genreChangeDropdownIsOpen = false
-    ui.showTweets = false
+    ui.showTweets = !!$location.search().show_tweets
+
     Timer.start("collectionRender")
     SelectedProducts.removeAll()
 
