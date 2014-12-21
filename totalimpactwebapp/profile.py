@@ -709,7 +709,7 @@ def build_profile_dict(profile, hide_keys, embed):
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)
-        profile_dict["awards"] = profile.awards
+        profile_dict["awards"] = profile.get_profile_awards()
 
     return profile_dict
 
