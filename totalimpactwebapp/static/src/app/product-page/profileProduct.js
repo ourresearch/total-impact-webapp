@@ -413,7 +413,7 @@ angular.module("productPage", [
       {free_fulltext_url: $scope.free_fulltext_url},
       function(resp){
         Loading.finish("saveButton")
-        return $scope.$close(resp)
+        return $scope.$close(resp.msg)
       }
     )
   }

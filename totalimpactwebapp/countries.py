@@ -289,6 +289,7 @@ def iso_code_from_name(name):
     Makes a few guesses based on alternate versions found in the country_info.py
     file. If you give it an ISO code it just gives you that back.
     """
+
     if not name:
         return None
 

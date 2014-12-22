@@ -101,7 +101,6 @@ angular.module( 'infopages', [
 //    })
 
     TiMixpanel.track("viewed landing page")
-
     var signupFormShowing = false
     $scope.landingPageType = "main"
     Page.setName("landing")
@@ -112,6 +111,7 @@ angular.module( 'infopages', [
 
   .controller("hIndexLandingPageCtrl", function($scope, Page){
     $scope.landingPageType = "h-index"
+    Page.setName("landing")
     Page.setInfopage(true)
     Page.setTitle("Share the full story of your research impact.")
   })
