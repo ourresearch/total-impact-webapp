@@ -1,7 +1,7 @@
 
 # set env variables for local running.
-# import config
-# config.set_env_vars_from_dot_env()
+import config
+config.set_env_vars_from_dot_env()
 
 """
 this is just for troubleshooting New Relic...normally we dont' want

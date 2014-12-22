@@ -1,0 +1,146 @@
+@import "variables";
+
+li.tweet {
+   font-size: 14px;
+   clear:both;
+   .clearfix();
+   margin-bottom: 20px;
+   a.tweeter {
+      float:left;
+      display:block;
+      color: #333;
+      img {
+         height: 37px;
+         margin-top: 4px;
+         .rounded(24px);
+         float:left;
+         margin-right: 10px;
+//         border: 1px solid #555;
+      }
+      div.tweeter-data {
+         width: 160px;
+         float: left;
+         .tweeter-name {
+            display: inline;
+         }
+         .tweeter-followers {
+            display: block;
+            font-weight: 300;
+            font-size: 13px;
+         }
+      }
+   }
+   div.popover {
+      width: 500px !important;
+   }
+
+   div.popover-content {
+      text-align: center;
+      .len-0 { // hackish thing because ng-hide doesn't work in attr string
+         display:none !important;
+      }
+
+      img {
+         .rounded(3px);
+      }
+      div.names {
+         span.name {
+            font-size: 22px;
+
+         }
+         span.screen-name {
+            color: #777;
+            display:block;
+            margin-top: -6px;
+         }
+      }
+      div.description {
+         margin-top: 10px;
+         line-height: 1.3;
+      }
+      div.under-description {
+         margin-top: 15px;
+         i {
+            width: 20px;
+            text-align: center;
+            color: #999;
+            font-size: 16px;
+         }
+         span.location {
+            color: #777;
+            display:block;
+         }
+         span.twitter-join-date {
+            color: #777;
+         }
+      }
+      div.bio-footer {
+         margin: 15px 0 10px;
+         span.footer-stat {
+            display: inline-block;
+            text-align: center;
+            margin: 0 10px;
+            span.descr {
+               font-size: 12px;
+            }
+            span.val {
+               font-size: 16px;
+               display: block;
+               font-weight: bold;
+            }
+
+
+         }
+
+      }
+   }
+
+   div.tweet-content {
+      width: 460px;
+      float: left;
+      margin-right: 20px;
+      a.entity {
+         color: #333;
+         &:hover {
+            color: @linkColor;
+            text-decoration: underline;
+         }
+         &.hashtag {
+            font-weight: bold;
+         }
+
+         &.at-name {
+            font-weight: bold;
+         }
+
+         &.linkout {
+//                  border-bottom: 1px dotted #333;
+            &:hover {
+//                     border-bottom-style: solid;
+            }
+         }
+      }
+   }
+   div.after-tweet {
+      float:left;
+      width: 100px;
+      color: #777;
+      a.tweet-date {
+         display:inline-block;
+         color: #777;
+         &:hover {
+            color: @linkColor;
+            text-decoration: underline;
+         }
+      }
+      div.tweet-controls {
+         a {
+            color: #ddd;
+            padding: 2px 3px;
+            &:hover {
+               color: #777;
+            }
+         }
+      }
+   }
+}

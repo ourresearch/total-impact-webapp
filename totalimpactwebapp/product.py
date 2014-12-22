@@ -311,8 +311,6 @@ class Product(db.Model):
     def fulltext_cta(self):
         return get_genre_config(self.genre)["fulltext_cta"]
 
-
-
     def get_metric_by_name(self, provider, interaction):
         for metric in self.metrics:
             if metric.provider==provider and metric.interaction==interaction:
@@ -436,7 +434,8 @@ class Product(db.Model):
     @cached_property
     def tweets(self):
         tweets = db.session.query(Tweet).filter(Tweet.tiid==self.tiid).all()
-        return tweets
+        tweets_with_text = [t for t in tweets if t.tweet_text is not None]
+        return tweets_with_text
 
     @cached_property
     def countries_str(self):
@@ -681,6 +680,7 @@ class Product(db.Model):
         ret["_tiid"] = self.tiid
         return ret
 
+
     def to_markup_dict(self, markup, hide_keys=None, show_keys="all"):
         keys_to_show = [
             "tiid",
@@ -722,26 +722,6 @@ class Product(db.Model):
 
         return my_dict
 
-
-    def to_markup_dict_multi(self, markups_dict, hide_keys=None):
-        ret = self.to_dict()
-
-        rendered_markups = {}
-        for name, markup in markups_dict.iteritems():
-            rendered_markups[name] = markup.make(ret)
-
-        ret["markups_dict"] = rendered_markups
-
-        try:
-            for key_to_hide in hide_keys:
-                try:
-                    del ret[key_to_hide]
-                except KeyError:
-                    pass
-        except TypeError:  # hide_keys=None is not iterable
-            pass
-
-        return ret
 
 
 

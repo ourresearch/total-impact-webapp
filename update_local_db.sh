@@ -3,6 +3,9 @@
 # turn debugging on.  turn it off at the end of the script
 set -x
 
+# get this in logs
+date
+
 # make sure database url is set to this.  Script assumes db named "workingdb".
 # export DATABASE_URL=postgres://localhost/workingdb
 # echo "set DATABASE_URL to postgres://localhost/workingdb"
@@ -38,6 +41,9 @@ rm fresh.db
 # show the newest snap on local, after update
 psql -d workingdb -c 'select max(last_collected_date) from snap;'
 echo "******** SUCCESS!  DONE!  :)  **************"
+
+# get this in logs
+date
 
 # turn debugging off
 set +x

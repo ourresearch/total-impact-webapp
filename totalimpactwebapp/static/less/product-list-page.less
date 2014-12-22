@@ -75,11 +75,10 @@ div.product-list-page {
                   clear:both;
                }
                div.cards-loading {
-                  i {font-size: 90%;}
                   float:right;
                   margin: 17px 15px 0 0;
                   color: #999;
-                  font-size: 13px;
+                  font-size: 14px;
                   font-weight: 300;
                }
 
@@ -222,37 +221,75 @@ div.product-list-page {
 
       }
 
-      div.sort-controls {
+      div.display-controls {
          top: 0;
          right: 0;
          position: absolute;
          margin: 5px 15px;
          color: #555;
          font-size: 14px;
-         .btn-group.sort-select-group {
-            vertical-align: top;
-            &.open {
-               a.dropdown-toggle {
-                  border: none;
-                  box-shadow: none;
-                  -webkit-box-shadow: none;
-                  -moz-box-shadow:none;
-                  text-decoration: underline;
-                  color: #333;
 
+         div.show-tweets {
+            display:inline-block;
+            margin-right: 25px;
+            label {
+               cursor: pointer;
+               font-weight: normal;
+               i.fa-twitter {
+                  color: @twitterColor;
+                  font-size: 20px;
+                  vertical-align: middle;
+               }
+               span.num-tweets {
+                  font-weight: 300;
                }
             }
-            a.dropdown-toggle {
-               color: #555;
-               padding: 2px 5px 2px 0;
-               &:hover {
-                  text-decoration: underline;
-               }
-               font-weight: bold;
+
+            .has-tweets {
+
             }
-            ul.dropdown-menu {
-               li {
-                  font-size: 14px;
+            .has-no-tweets {
+               color: #ccc;
+               label {
+                  cursor: not-allowed;
+                  font-weight: 300;
+               }
+               i.fa-twitter { color: #ddd;}
+            }
+
+            &.tweets-loading {
+               color: #999;
+               font-weight: 300;
+            }
+         }
+
+         div.sort-controls {
+            display:inline-block;
+            .btn-group.sort-select-group {
+               vertical-align: top;
+               &.open {
+                  a.dropdown-toggle {
+                     border: none;
+                     box-shadow: none;
+                     -webkit-box-shadow: none;
+                     -moz-box-shadow:none;
+                     text-decoration: underline;
+                     color: #333;
+
+                  }
+               }
+               a.dropdown-toggle {
+                  color: #555;
+                  padding: 2px 5px 2px 0;
+                  &:hover {
+                     text-decoration: underline;
+                  }
+                  font-weight: bold;
+               }
+               ul.dropdown-menu {
+                  li {
+                     font-size: 14px;
+                  }
                }
             }
          }

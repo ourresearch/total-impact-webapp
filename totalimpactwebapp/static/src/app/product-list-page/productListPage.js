@@ -10,7 +10,8 @@ angular.module("productListPage", [
 
   $routeProvider.when("/:url_slug/products/:genre_name", {
     templateUrl:'product-list-page/genre-page.tpl.html',
-    controller:'GenrePageCtrl'
+    controller:'GenrePageCtrl',
+    reloadOnSearch: false
   })
 
 }])
@@ -20,7 +21,8 @@ angular.module("productListPage", [
 
   $routeProvider.when("/:url_slug/country/:country_name", {
     templateUrl:'product-list-page/country-page.tpl.html',
-    controller:'CountryPageCtrl'
+    controller:'CountryPageCtrl',
+    reloadOnSearch: false
   })
 
 }])
@@ -51,9 +53,17 @@ angular.module("productListPage", [
         return false
       }
     }
+
+
+
     ProductList.setFilterFn(filterFn)
 
     $scope.productsFilter = filterFn
+
+    // only show tweets if they are for sure from this country
+    $scope.tweetsFilterFn = function(tweet){
+      return tweet.country === myCountryCode
+    }
 
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -75,9 +85,13 @@ angular.module("productListPage", [
     ProductList,
     Page) {
 
+    console.log("loading the genre page controller.")
+
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
     ProductList.startRender($scope)
+
+
 
     SummaryCards.query(
       {
@@ -108,8 +122,11 @@ angular.module("productListPage", [
       }
     }
 
-    $scope.productsFilter = filterFn
     ProductList.setFilterFn(filterFn)
+    $scope.productsFilter = filterFn
+    $scope.tweetsFilterFn = function(tweet){
+      return true
+    }
 
 
     $scope.ProductList = ProductList

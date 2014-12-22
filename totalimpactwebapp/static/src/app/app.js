@@ -19,6 +19,8 @@ angular.module('app', [
   'security',
   'directives.crud',
   'directives.jQueryTools',
+  'directives.tweetThis',
+  'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',
   'infopages',
@@ -55,9 +57,10 @@ angular.module('app').constant('TEST', {
 
 angular.module('app').config(function ($routeProvider,
                                        $sceDelegateProvider,
+                                       paginationTemplateProvider,
                                        $locationProvider) {
   $locationProvider.html5Mode(true);
-
+  paginationTemplateProvider.setPath('directives/pagination.tpl.html')
   $sceDelegateProvider.resourceUrlWhitelist([
     // Allow same origin resource loads.
     'self',
@@ -148,8 +151,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-
-
+  $rootScope.adminMode = $location.search().admin == 42
 
 
   // init the genre configs service
@@ -172,6 +174,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   })
 
+  $scope.moment = moment
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;
@@ -196,6 +199,15 @@ angular.module('app').controller('AppCtrl', function($scope,
         return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
     }
     return num;
+  }
+
+  $scope.nFormatCommas = function(num){
+    if (num === null){
+      return ""
+    }
+
+    // from http://stackoverflow.com/a/2901298
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
 

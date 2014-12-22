@@ -338,14 +338,6 @@ class Profile(db.Model):
     def event_sums_by_country(self):
         return {k: v["sum"] for k, v in self.countries.iteritems()}
 
-    @cached_property
-    def internationality(self):
-        return 42
-        return self.countries.internationality
-
-    @cached_property
-    def awards(self):
-        return profile_award.make_awards_list(self)
 
     @cached_property
     def countries(self):
@@ -455,12 +447,16 @@ class Profile(db.Model):
     def parse_and_save_tweets(self):
         twitter_details_dict = {}
         for product in self.products_not_removed:
-            for metric in product.metrics:
-                posts_metric = product.get_metric_by_name("altmetric_com", "posts")
-                if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
-                    twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
+            posts_metric = product.get_metric_by_name("altmetric_com", "posts")
+            if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
+                twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
         if twitter_details_dict:
+            logger.info(u"going into hydrate_twitter_text_and_followers for profile {url_slug}".format(
+                url_slug=self.url_slug))
             hydrate_twitter_text_and_followers(self.id, twitter_details_dict)
+        else:
+            logger.info(u"no need to hydrate_twitter_text_and_followers for profile {url_slug}".format(
+                url_slug=self.url_slug))
 
 
     def update_all_linked_accounts(self, add_even_if_removed=False):
@@ -536,23 +532,7 @@ class Profile(db.Model):
 
         return product_dicts
 
-    def get_single_product_markup(self, tiid, markup_factory):
 
-        biblio_markup = markup_factory.make_markup()
-        biblio_markup.set_template("product-markup-biblio.html")
-        biblio_markup.context["profile"] = self
-
-        metrics_markup = markup_factory.make_markup()
-        metrics_markup.set_template("product-markup-metrics.html")
-        metrics_markup.context["profile"] = self
-
-        markups = {
-            "biblio": biblio_markup,
-            "metrics": metrics_markup
-        }
-
-        product = [p for p in self.display_products if p.tiid == tiid][0]
-        return product.to_markup_dict_multi(markups)
 
     def csv_of_products(self):
         (header, rows) = self.build_csv_rows()
@@ -620,6 +600,10 @@ class Profile(db.Model):
         except (ImportError, ProviderError):
             new_products = []
         return new_products
+
+
+    def get_profile_awards(self):
+        return profile_award.make_awards_list(self)
 
 
     def remove_duplicates(self):
@@ -727,11 +711,10 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["account_products_dict"] = profile.account_products_dict
     profile_dict["drip_emails"] = profile.drip_emails
     profile_dict["countries"] = profile.countries
-    profile_dict["internationality"] = profile.internationality
 
     if not "about" in hide_keys:
         profile_dict["about"] = profile.dict_about(show_secrets=False)
-        profile_dict["awards"] = profile.awards
+        profile_dict["awards"] = profile.get_profile_awards()
 
     return profile_dict
 
@@ -849,13 +832,6 @@ def get_profile_stubs_from_url_slug(url_slug):
                                         orm.subqueryload(Profile.products, Product.alias_rows))
     profile = query_base.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
     return profile
-
-
-def get_profile_awards_from_slug(url_slug):
-    profile = get_profile_stubs_from_url_slug(url_slug)
-    if not profile:
-        return None
-    return profile_award.make_awards_list(profile)
 
 
 def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_products=True, include_product_relationships=True):

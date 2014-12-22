@@ -118,7 +118,7 @@ def provider_method_wrapper(tiid, input_aliases_dict, provider, method_name):
             exception_type=type(e).__name__, 
             exception_arguments=e.args))
 
-    logger.info(u"{:20}: /biblio_print, RETURNED {tiid} {method_name} {provider_name} : {method_response}".format(
+    logger.info(u"{:20}: /biblio_print, RETURNED {tiid} {method_name} {provider_name} : {method_response:.25}".format(
         worker_name, tiid=tiid, method_name=method_name.upper(), 
         provider_name=provider_name.upper(), method_response=method_response))
 
@@ -348,6 +348,7 @@ def after_refresh_complete(tiid, task_ids):
 
     profile_bare_products = get_profile_from_id(product.profile_id, "id", include_product_relationships=False)
     if are_all_products_done_refreshing_from_profile_id(profile_bare_products):
+        db.session.expunge(profile_bare_products)
         profile = get_profile_from_id(product.profile_id, "id", include_product_relationships=True)
         profile.parse_and_save_tweets()
 

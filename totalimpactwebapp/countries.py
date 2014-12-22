@@ -245,17 +245,6 @@ def get_internet_users_millions(country_code, adjust_for_access=False):
 
 
 
-# from http://planspace.org/2013/06/21/how-to-calculate-gini-coefficient-from-raw-data-in-python/
-def gini(list_of_values):
-    sorted_list = sorted(list_of_values)
-    height, area = 0, 0
-    for value in sorted_list:
-        height += value
-        area += height - value / 2.
-    fair_area = height * len(list_of_values) / 2
-    return (fair_area - area) / fair_area
-
-
 def get_country_names_from_iso():
     ret = {}
     for country in countries_info_list:
@@ -305,12 +294,11 @@ def iso_code_from_name(name):
         return None
 
     try:
-         return country_iso_by_name[name]
+        return country_iso_by_name[name]
     except KeyError:
         logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
             country_name=name))
         return None
-
 
 
 class Country(object):
@@ -370,32 +358,20 @@ class CountryList(object):
                         count
                     )
 
-    @cached_property
-    def internationality(self):
-        counts = [c.impact_per_million_internet_users for c in self.countries]
-        num_countries = len(internet_users.keys())
-
-        # pad list with zeros so there's one item per country
-        # from http://stackoverflow.com/a/3438818
-        padded_counts = counts + [0] * (num_countries - len(counts))
-
-        try:
-            gini_as_percent = (1 - gini(padded_counts)) * 100
-        except ZeroDivisionError:
-            gini_as_percent = None
-
-        return gini_as_percent
-
 
     @cached_property
     def countries(self):
         return [c for c in self.countries_dict.values() if c.name is not None]
 
 
+    @cached_property
+    def country_names(self):
+        return sorted([c.name for c in self.countries_dict.values() if c.name is not None])
+
+
     def to_dict(self):
         return {
-            "list": self.countries,
-            "internationality": self.internationality
+            "list": self.countries
         }
 
     def to_string(self):

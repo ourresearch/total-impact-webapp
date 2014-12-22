@@ -1,0 +1,71 @@
+<div class="tweet-container">
+   <a class="tweeter"
+        href="https://twitter.com/{{ tweet.tweeter.screen_name }}"
+        target="_blank"
+        data-placement="left"
+        data-toggle="popover"
+        data-content="
+        <img src='{{ tweet.tweeter.display_image_url }}' />
+        <div class='names'>
+            <span class='name'>{{ tweet.tweeter.name }}</span>
+            <span class='screen-name'>@{{ tweet.tweeter.screen_name }}</span>
+        </div>
+        <div class='description'>{{ tweet.tweeter.description }}</div>
+        <div class='under-description'>
+            <span class='location len-{{ tweet.tweeter.location.length }}'>
+               <i class='fa fa-map-marker'></i>
+               {{ tweet.tweeter.location }}
+            </span>
+         </div>
+         <div class='bio-footer'>
+            <span class='followers footer-stat'>
+               <span class='descr'>Followers</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.followers) }}</span>
+            </span>
+            <span class='number-follows footer-stat'>
+               <span class='descr'>Follows</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.num_follows) }}</span>
+            </span>
+            <span class='number-statuses footer-stat'>
+               <span class='descr'>Tweets</span>
+               <span class='val'>{{ nFormatCommas(tweet.tweeter.num_statuses) }}</span>
+            </span>
+         </div>
+        ">
+      <img ng-src="{{ tweet.tweeter.display_image_url }}" />
+      <div class="tweeter-data f16">
+         <span class="tweeter-name">
+            <span class="text">{{ tweet.tweeter.name }}</span>
+            <span class="flag {{ tweet.country.toLowerCase() }}"></span>
+         </span>
+
+         <span class="tweeter-followers">
+            <span class="val">{{ nFormat(tweet.tweeter.followers) }}</span>
+            <span class="descr">followers</span>
+         </span>
+      </div>
+   </a>
+
+   <div class="tweet-content" ng-bind-html="trustHtml(tweet.tweet_text_with_links)">
+   </div>
+
+   <div class="after-tweet">
+      <a class="tweet-date"
+         href="https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}"
+         tooltip-placement="left"
+         tooltip="{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}">
+         {{ moment(tweet.tweet_timestamp).fromNow() }}
+      </a>
+      <div class="tweet-controls">
+         <a href="https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}">
+            <i class="fa fa-reply"></i>
+         </a>
+         <a href="https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}">
+            <i class="fa fa-retweet"></i>
+         </a>
+         <a href="https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}">
+            <i class="fa fa-star-o"></i>
+         </a>
+      </div>
+   </div>
+</div>

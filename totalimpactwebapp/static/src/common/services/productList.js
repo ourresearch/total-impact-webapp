@@ -4,6 +4,7 @@ angular.module("services.productList", [])
     $location,
     $timeout,
     $window,
+    $rootScope,
     SelectedProducts,
     GenreConfigs,
     PinboardService,
@@ -15,14 +16,32 @@ angular.module("services.productList", [])
     Page,
     ProfileService){
 
-  var genreChangeDropdown = {}
+  var ui = {}
   var filterFn
+
+
+  $rootScope.$watch(function(){
+    return ui.showTweets
+  }, function(newVal, oldVal){
+    if (newVal){
+      $location.search("show_tweets", "true")
+    }
+    else {
+      $location.search("show_tweets", null)
+    }
+  })
+
+
+
 
   var startRender = function($scope){
     if (!ProfileService.hasFullProducts()){
       Loading.startPage()
     }
-    Timer.start("productListRender")
+    ui.genreChangeDropdownIsOpen = false
+    ui.showTweets = !!$location.search().show_tweets
+
+    Timer.start("collectionRender")
     SelectedProducts.removeAll()
 
 
@@ -38,7 +57,10 @@ angular.module("services.productList", [])
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       finishRender()
     });
+
+
   }
+
 
   var finishRender = function(){
     Loading.finishPage()
@@ -46,7 +68,7 @@ angular.module("services.productList", [])
       var lastScrollPos = Page.getLastScrollPosition($location.path())
       $window.scrollTo(0, lastScrollPos)
     }, 0)
-    console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
+    console.log("finished rendering collection in " + Timer.elapsed("collectionRender") + "ms"
     )
   }
 
@@ -54,7 +76,9 @@ angular.module("services.productList", [])
   var changeProductsGenre = function(newGenre){
     ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
-    genreChangeDropdown.isOpen = false
+
+    // close the change-genre dialog
+    ui.genreChangeDropdownIsOpen = false
 
     // handle moving the last product in our current genre
     if (!len()){
@@ -76,14 +100,28 @@ angular.module("services.productList", [])
     }
   }
 
+  var productsInThisCollection = function(){
+    return _.filter(ProfileService.data.products, filterFn)
+
+  }
+
+
   var len = function(){
-    var filtered = _.filter(ProfileService.data.products, filterFn)
-    return filtered.length
+    return productsInThisCollection().length
   }
 
   var selectEverything = function(){
-    var filtered = _.filter(ProfileService.data.products, filterFn)
-    SelectedProducts.addFromObjects(filtered)
+    SelectedProducts.addFromObjects(productsInThisCollection())
+  }
+
+  var numTweets = function(){
+    var count = 0
+    _.each(productsInThisCollection(), function(product){
+      if (product.tweets) {
+        count += product.tweets.length
+      }
+    })
+    return count
   }
 
 
@@ -92,12 +130,14 @@ angular.module("services.productList", [])
     removeSelectedProducts: removeSelectedProducts,
     startRender: startRender,
     finishRender: finishRender,
-    genreChangeDropdown: genreChangeDropdown,
+    numTweets: numTweets,
+    ui: ui,
     setFilterFn: function(fn){
       filterFn = fn
     },
     len: len,
     selectEverything: selectEverything
+
   }
 
 

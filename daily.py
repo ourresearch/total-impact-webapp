@@ -175,7 +175,6 @@ def populate_profile_deets(profile):
     deets["subscription_date"] = profile.subscription_start_date
     deets["oa_badge"] = profile.awards[0].level_name
     deets["num_countries"] = len(profile.countries.countries)
-    deets["internationality"] = profile.countries.internationality
 
 
     products = profile.display_products

@@ -33,7 +33,6 @@ from totalimpactwebapp.password_reset import PasswordResetError
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.profile import create_profile_from_slug
 from totalimpactwebapp.profile import get_profile_stubs_from_url_slug
-from totalimpactwebapp.profile import get_profile_awards_from_slug
 from totalimpactwebapp.profile import get_profile_from_id
 from totalimpactwebapp.profile import delete_profile
 from totalimpactwebapp.profile import EmailExistsError
@@ -538,7 +537,8 @@ def refresh_status(profile_id):
 @app.route("/profile/<profile_id>/awards")
 @app.route("/profile/<profile_id>/awards.json")
 def oa_badge(profile_id):
-    awards = get_profile_awards_from_slug(profile_id)
+    profile = get_user_for_response(profile_id, request)
+    awards = profile.get_profile_awards()
     return json_resp_from_thing(awards)
 
 
@@ -741,8 +741,11 @@ def get_profile_tweets(url_slug):
     profile = get_user_for_response(url_slug, request, include_products=False)
 
     tweets = get_product_tweets_for_profile(profile.id)
+    resp = {
+        "tweets": tweets
+    }
 
-    return json_resp_from_thing(tweets)
+    return json_resp_from_thing(resp)
 
 
 
@@ -877,14 +880,7 @@ def product_from_tiid(url_slug, tiid):
     if not product:
         abort_json(404, "This product does not exist.")
 
-    markup = Markup(url_slug, embed=False)
-    product_dict = product.to_markup_dict(
-        markup=markup
-    )
-
-    product_dict["metrics"] = product.metrics
-    product_dict["countries"] = product.countries
-
+    product_dict = product.to_dict()
     return json_resp_from_thing(product_dict)
 
 

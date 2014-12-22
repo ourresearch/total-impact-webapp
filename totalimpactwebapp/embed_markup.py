@@ -119,7 +119,9 @@ def extract_pdf_link_from_html(url):
 
     try:
         r = requests.get(url, timeout=20)
-    except requests.exceptions.Timeout:
+    except (requests.exceptions.Timeout, requests.exceptions.ConnectionError):
+        logger.exception(u"error in extract_pdf_link_from_html getting url {url}".format(
+            url=url))
         return None
 
     # if this is a pdf, return this url directly

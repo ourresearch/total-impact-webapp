@@ -1,7 +1,7 @@
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
-  .factory("ProfileAboutService", function($q, $timeout, $location, Update, Users, ProfileAbout){
+  .factory("ProfileAboutService", function($q, $rootScope, $timeout, $location, Update, Users, ProfileAbout){
 
     var loading = true
     var data = {}
@@ -25,6 +25,12 @@ angular.module('services.profileAboutService', [
 
           _.each(data, function(v, k){delete data[k]})
           angular.extend(data, resp)  // this sets the url_slug too
+
+          // admin mode means profile is always live.
+          if ($rootScope.adminMode){
+            data.is_live = true
+          }
+
           loading = false
         },
 
@@ -66,10 +72,10 @@ angular.module('services.profileAboutService', [
     }
 
     function handleSlug(profileServices, newSlug){
-      console.log("refreshing the profile with new slug", newSlug)
 
       // handle new slugs; we need to load a whole new profile
       if (slugIsNew(newSlug)){
+        console.log("refreshing the profile with new slug", newSlug)
         _.each(profileServices, function(service){
           service.clear()
           if (!service.handleSlug){ // don't run the ProfileAboutService here, we need to return it.
@@ -81,6 +87,7 @@ angular.module('services.profileAboutService', [
 
       // this is the same profile; don't nothin' change.
       else {
+       console.log("not refreshing profile; slug is the same.")
        return $q.when(data)
       }
 

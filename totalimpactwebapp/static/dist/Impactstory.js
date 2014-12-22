@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-11-28
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-21
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -514,6 +514,8 @@ angular.module('app', [
   'security',
   'directives.crud',
   'directives.jQueryTools',
+  'directives.tweetThis',
+  'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',
   'infopages',
@@ -550,9 +552,10 @@ angular.module('app').constant('TEST', {
 
 angular.module('app').config(function ($routeProvider,
                                        $sceDelegateProvider,
+                                       paginationTemplateProvider,
                                        $locationProvider) {
   $locationProvider.html5Mode(true);
-
+  paginationTemplateProvider.setPath('directives/pagination.tpl.html')
   $sceDelegateProvider.resourceUrlWhitelist([
     // Allow same origin resource loads.
     'self',
@@ -643,8 +646,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileService = ProfileService
   $scope.profileAboutService = ProfileAboutService
 
-
-
+  $rootScope.adminMode = $location.search().admin == 42
 
 
   // init the genre configs service
@@ -667,6 +669,7 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   })
 
+  $scope.moment = moment
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
   $scope.loading = Loading;
@@ -691,6 +694,15 @@ angular.module('app').controller('AppCtrl', function($scope,
         return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
     }
     return num;
+  }
+
+  $scope.nFormatCommas = function(num){
+    if (num === null){
+      return ""
+    }
+
+    // from http://stackoverflow.com/a/2901298
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
 
@@ -747,9 +759,13 @@ angular.module('deadProfile', []).config(function ($routeProvider) {
 })
 
 
-.controller("DeadProfileCtrl", function($scope, security){
+.controller("DeadProfileCtrl", function($scope, $location, $rootScope, $routeParams, security){
     console.log("dead profile ctrl")
     $scope.showLogin = security.showLogin
+    if ($rootScope.adminMode){
+      $location.path($routeParams.url_slug)
+      $location.search("admin", null)
+    }
   })
 // nothing here for now.
 angular.module( 'giftSubscriptionPage', [
@@ -1208,7 +1224,8 @@ angular.module("productListPage", [
 
   $routeProvider.when("/:url_slug/products/:genre_name", {
     templateUrl:'product-list-page/genre-page.tpl.html',
-    controller:'GenrePageCtrl'
+    controller:'GenrePageCtrl',
+    reloadOnSearch: false
   })
 
 }])
@@ -1218,7 +1235,8 @@ angular.module("productListPage", [
 
   $routeProvider.when("/:url_slug/country/:country_name", {
     templateUrl:'product-list-page/country-page.tpl.html',
-    controller:'CountryPageCtrl'
+    controller:'CountryPageCtrl',
+    reloadOnSearch: false
   })
 
 }])
@@ -1249,9 +1267,17 @@ angular.module("productListPage", [
         return false
       }
     }
+
+
+
     ProductList.setFilterFn(filterFn)
 
     $scope.productsFilter = filterFn
+
+    // only show tweets if they are for sure from this country
+    $scope.tweetsFilterFn = function(tweet){
+      return tweet.country === myCountryCode
+    }
 
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -1273,9 +1299,13 @@ angular.module("productListPage", [
     ProductList,
     Page) {
 
+    console.log("loading the genre page controller.")
+
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
     ProductList.startRender($scope)
+
+
 
     SummaryCards.query(
       {
@@ -1306,8 +1336,11 @@ angular.module("productListPage", [
       }
     }
 
-    $scope.productsFilter = filterFn
     ProductList.setFilterFn(filterFn)
+    $scope.productsFilter = filterFn
+    $scope.tweetsFilterFn = function(tweet){
+      return true
+    }
 
 
     $scope.ProductList = ProductList
@@ -1493,6 +1526,8 @@ angular.module("productPage", [
       Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
+
+
       $scope.userSlug = slug
       $scope.loading = Loading
       $scope.aliases = myProduct.aliases
@@ -1506,6 +1541,30 @@ angular.module("productPage", [
       $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
+
+      // tweet stuff
+      $scope.tweetsList = {}
+      $scope.tweetsList.currentPage = 1
+      $scope.tweetsList.perPage = 25
+      $scope.tweetsList.sortBy = "-tweet_timestamp"
+      $scope.tweetsList.onPageChange = function(newPageNumber){
+        window.scrollTo(0,0)
+      }
+      $scope.tweetsList.numPages =  Math.ceil(product.tweets.length / $scope.tweetsList.perPage)
+
+      $scope.$watch('tweetsList.sortBy', function(newVal, oldVal){
+        console.log("tweetsList.sortBy watch triggered", newVal, oldVal)
+        if (newVal !== oldVal){
+          console.log("changing tweets page")
+          $scope.tweetsList.currentPage = 1
+          $scope.tweetsList.onPageChange(1)
+        }
+      })
+
+      // should've just done this in the first place instead of a bunch of
+      // individual assignments (above). Get rid of those some day, replace
+      // with this in the template.
+      $scope.product = myProduct
 
       if (myProduct.embed_markup) {
         $scope.iframeToEmbed = myProduct.embed_markup
@@ -1576,6 +1635,7 @@ angular.module("productPage", [
 
 
 
+
     $scope.reRenderProduct = function(){
       console.log("re-rendering product.")
       Product.get({
@@ -1585,6 +1645,11 @@ angular.module("productPage", [
       function(data){
         console.log("inserting this new product data into the ProfileProducts service:", data)
         ProfileService.overwriteProduct(data)
+
+        // this is way overkill, but currently the only way to get new markup
+        // for this product into the ProfileService is to reload EVERY product
+        // from scratch.
+        ProfileService.get(url_slug)
         renderProduct(data)
       },
       function(data){
@@ -2175,11 +2240,6 @@ angular.module("profile", [
     Timer.start("profileViewRender")
     Timer.start("profileViewRender.load")
     Page.setName('overview')
-
-
-    $timeout(function(){
-        twttr.widgets.load()
-    }, 1000)
 
     $scope.profileLoading =  ProfileService.isLoading
     $scope.url_slug = url_slug
@@ -3772,7 +3832,6 @@ angular.module("directives.jQueryTools", [])
         $("body").popover({
           html:true,
           trigger:'hover',
-          placement:'auto',
           selector: "[data-content]"
         })
       }
@@ -3886,6 +3945,375 @@ angular.module("directives.onRepeatFinished", [])
       }
     }
   });
+/**
+ * dirPagination - AngularJS module for paginating (almost) anything.
+ *
+ *
+ * Credits
+ * =======
+ *
+ * Daniel Tabuenca: https://groups.google.com/d/msg/angular/an9QpzqIYiM/r8v-3W1X5vcJ
+ * for the idea on how to dynamically invoke the ng-repeat directive.
+ *
+ * I borrowed a couple of lines and a few attribute names from the AngularUI Bootstrap project:
+ * https://github.com/angular-ui/bootstrap/blob/master/src/pagination/pagination.js
+ *
+ * Copyright 2014 Michael Bromley <michael@michaelbromley.co.uk>
+ */
+
+(function() {
+
+    /**
+     * Config
+     */
+    var moduleName = 'angularUtils.directives.dirPagination';
+
+    /**
+     * Module
+     */
+    var module;
+    try {
+        module = angular.module(moduleName);
+    } catch(err) {
+        // named module does not exist, so create one
+        module = angular.module(moduleName, []);
+    }
+
+    module.directive('dirPaginate', ['$compile', '$parse', '$timeout', 'paginationService', function($compile, $parse, $timeout, paginationService) {
+
+        return  {
+            terminal: true,
+            multiElement: true,
+            priority: 5000, // This setting is used in conjunction with the later call to $compile() to prevent infinite recursion of compilation
+            compile: function dirPaginationCompileFn(tElement, tAttrs){
+
+                // Add ng-repeat to the dom element
+                if (tElement[0].hasAttribute('dir-paginate-start') || tElement[0].hasAttribute('data-dir-paginate-start')) {
+                    // using multiElement mode (dir-paginate-start, dir-paginate-end)
+                    tAttrs.$set('ngRepeatStart', tAttrs.dirPaginate);
+                    tElement.eq(tElement.length - 1).attr('ng-repeat-end', true);
+                } else {
+                    tAttrs.$set('ngRepeat', tAttrs.dirPaginate);
+                }
+
+                var expression = tAttrs.dirPaginate;
+                // regex taken directly from https://github.com/angular/angular.js/blob/master/src/ng/directive/ngRepeat.js#L211
+                var match = expression.match(/^\s*([\s\S]+?)\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?\s*$/);
+
+                var filterPattern = /\|\s*itemsPerPage\s*:[^|]*/;
+                if (match[2].match(filterPattern) === null) {
+                    throw 'pagination directive: the \'itemsPerPage\' filter must be set.';
+                }
+                var itemsPerPageFilterRemoved = match[2].replace(filterPattern, '');
+                var collectionGetter = $parse(itemsPerPageFilterRemoved);
+
+                var paginationId = tAttrs.paginationId || '__default';
+                paginationService.registerInstance(paginationId);
+
+                return function dirPaginationLinkFn(scope, element, attrs){
+                    var compiled =  $compile(element, false, 5000); // we manually compile the element again, as we have now added ng-repeat. Priority less than 5000 prevents infinite recursion of compiling dirPaginate
+
+                    var currentPageGetter;
+                    if (attrs.currentPage) {
+                        currentPageGetter = $parse(attrs.currentPage);
+                    } else {
+                        // if the current-page attribute was not set, we'll make our own
+                        var defaultCurrentPage = paginationId + '__currentPage';
+                        scope[defaultCurrentPage] = 1;
+                        currentPageGetter = $parse(defaultCurrentPage);
+                    }
+                    paginationService.setCurrentPageParser(paginationId, currentPageGetter, scope);
+
+                    if (typeof attrs.totalItems !== 'undefined') {
+                        paginationService.setAsyncModeTrue(paginationId);
+                        scope.$watch(function() {
+                            return $parse(attrs.totalItems)(scope);
+                        }, function (result) {
+                            if (0 <= result) {
+                                paginationService.setCollectionLength(paginationId, result);
+                            }
+                        });
+                    } else {
+                        scope.$watchCollection(function() {
+                            return collectionGetter(scope);
+                        }, function(collection) {
+                            if (collection) {
+                                paginationService.setCollectionLength(paginationId, collection.length);
+                            }
+                        });
+                    }
+
+                    // Delegate to the link function returned by the new compilation of the ng-repeat
+                    compiled(scope);
+                };
+            }
+        }; 
+    }]);
+
+    module.directive('dirPaginationControls', ['paginationService', 'paginationTemplate', function(paginationService, paginationTemplate) {
+
+        var numberRegex = /^\d+$/;
+
+        /**
+         * Generate an array of page numbers (or the '...' string) which is used in an ng-repeat to generate the
+         * links used in pagination
+         *
+         * @param currentPage
+         * @param rowsPerPage
+         * @param paginationRange
+         * @param collectionLength
+         * @returns {Array}
+         */
+        function generatePagesArray(currentPage, collectionLength, rowsPerPage, paginationRange) {
+            var pages = [];
+            var totalPages = Math.ceil(collectionLength / rowsPerPage);
+            var halfWay = Math.ceil(paginationRange / 2);
+            var position;
+
+            if (currentPage <= halfWay) {
+                position = 'start';
+            } else if (totalPages - halfWay < currentPage) {
+                position = 'end';
+            } else {
+                position = 'middle';
+            }
+
+            var ellipsesNeeded = paginationRange < totalPages;
+            var i = 1;
+            while (i <= totalPages && i <= paginationRange) {
+                var pageNumber = calculatePageNumber(i, currentPage, paginationRange, totalPages);
+
+                var openingEllipsesNeeded = (i === 2 && (position === 'middle' || position === 'end'));
+                var closingEllipsesNeeded = (i === paginationRange - 1 && (position === 'middle' || position === 'start'));
+                if (ellipsesNeeded && (openingEllipsesNeeded || closingEllipsesNeeded)) {
+                    pages.push('...');
+                } else {
+                    pages.push(pageNumber);
+                }
+                i ++;
+            }
+            return pages;
+        }
+
+        /**
+         * Given the position in the sequence of pagination links [i], figure out what page number corresponds to that position.
+         *
+         * @param i
+         * @param currentPage
+         * @param paginationRange
+         * @param totalPages
+         * @returns {*}
+         */
+        function calculatePageNumber(i, currentPage, paginationRange, totalPages) {
+            var halfWay = Math.ceil(paginationRange/2);
+            if (i === paginationRange) {
+                return totalPages;
+            } else if (i === 1) {
+                return i;
+            } else if (paginationRange < totalPages) {
+                if (totalPages - halfWay < currentPage) {
+                    return totalPages - paginationRange + i;
+                } else if (halfWay < currentPage) {
+                    return currentPage - halfWay + i;
+                } else {
+                    return i;
+                }
+            } else {
+                return i;
+            }
+        }
+
+        return {
+            restrict: 'AE',
+            templateUrl: function(elem, attrs) {
+                return attrs.templateUrl || paginationTemplate.getPath();
+            },
+            scope: {
+                maxSize: '=?',
+                onPageChange: '&?'
+            },
+            link: function(scope, element, attrs) {
+
+                var paginationId;
+                paginationId = attrs.paginationId || '__default';
+                if (!scope.maxSize) { scope.maxSize = 9; }
+                scope.directionLinks = angular.isDefined(attrs.directionLinks) ? scope.$parent.$eval(attrs.directionLinks) : true;
+                scope.boundaryLinks = angular.isDefined(attrs.boundaryLinks) ? scope.$parent.$eval(attrs.boundaryLinks) : false;
+
+                if (!paginationService.isRegistered(paginationId)) {
+                    var idMessage = (paginationId !== '__default') ? ' (id: ' + paginationId + ') ' : ' ';
+                    throw 'pagination directive: the pagination controls' + idMessage + 'cannot be used without the corresponding pagination directive.';
+                }
+
+                var paginationRange = Math.max(scope.maxSize, 5);
+                scope.pages = [];
+                scope.pagination = {
+                    last: 1,
+                    current: 1
+                };
+
+                scope.$watch(function() {
+                    return (paginationService.getCollectionLength(paginationId) + 1) * paginationService.getItemsPerPage(paginationId);
+                }, function(length) {
+                    if (0 < length) {
+                        generatePagination();
+                    }
+                });
+                
+                scope.$watch(function() {
+                    return (paginationService.getItemsPerPage(paginationId));
+                }, function(current, previous) {
+                    if (current != previous) {
+                        goToPage(scope.pagination.current);
+                    }
+                });
+
+                scope.$watch(function() {
+                    return paginationService.getCurrentPage(paginationId);
+                }, function(currentPage, previousPage) {
+                    if (currentPage != previousPage) {
+                        goToPage(currentPage);
+                    }
+                });
+
+                scope.setCurrent = function(num) {
+                    if (isValidPageNumber(num)) {
+                        paginationService.setCurrentPage(paginationId, num);
+                    }
+                };
+
+                function goToPage(num) {
+                    if (isValidPageNumber(num)) {
+                        scope.pages = generatePagesArray(num, paginationService.getCollectionLength(paginationId), paginationService.getItemsPerPage(paginationId), paginationRange);
+                        scope.pagination.current = num;
+
+                        // if a callback has been set, then call it with the page number as an argument
+                        if (scope.onPageChange) {
+                            scope.onPageChange({ newPageNumber : num });
+                        }
+                    }
+                }
+
+                function generatePagination() {
+                    var page = parseInt(paginationService.getCurrentPage(paginationId)) || 1;
+
+                    scope.pages = generatePagesArray(page, paginationService.getCollectionLength(paginationId), paginationService.getItemsPerPage(paginationId), paginationRange);
+                    scope.pagination.current = page;
+                    scope.pagination.last = scope.pages[scope.pages.length - 1];
+                    if (scope.pagination.last < scope.pagination.current) {
+                        scope.setCurrent(scope.pagination.last);
+                    }
+                }
+
+                function isValidPageNumber(num) {
+                    return (numberRegex.test(num) && (0 < num && num <= scope.pagination.last));
+                }
+            }
+        };
+    }]);
+
+    module.filter('itemsPerPage', ['paginationService', function(paginationService) {
+
+        return function(collection, itemsPerPage, paginationId) {
+            if (typeof (paginationId) === 'undefined') {
+                paginationId = '__default';
+            }
+            if (!paginationService.isRegistered(paginationId)) {
+                throw 'pagination directive: the itemsPerPage id argument (id: ' + paginationId + ') does not match a registered pagination-id.';
+            }
+            var end;
+            var start;
+            if (collection instanceof Array) {
+                itemsPerPage = parseInt(itemsPerPage) || 9999999999;
+                if (paginationService.isAsyncMode(paginationId)) {
+                    start = 0;
+                } else {
+                    start = (paginationService.getCurrentPage(paginationId) - 1) * itemsPerPage;
+                }
+                end = start + itemsPerPage;
+                paginationService.setItemsPerPage(paginationId, itemsPerPage);
+
+                return collection.slice(start, end);
+            } else {
+                return collection;
+            }
+        };
+    }]);
+
+    module.service('paginationService', function() {
+
+        var instances = {};
+        var lastRegisteredInstance;
+
+        this.registerInstance = function(instanceId) {
+            if (typeof instances[instanceId] === 'undefined') {
+                instances[instanceId] = {
+                    asyncMode: false
+                };
+                lastRegisteredInstance = instanceId;
+            }
+        };
+
+        this.isRegistered = function(instanceId) {
+            return (typeof instances[instanceId] !== 'undefined');
+        };
+
+        this.getLastInstanceId = function() {
+            return lastRegisteredInstance;
+        };
+
+        this.setCurrentPageParser = function(instanceId, val, scope) {
+            instances[instanceId].currentPageParser = val;
+            instances[instanceId].context = scope;
+        };
+        this.setCurrentPage = function(instanceId, val) {
+            instances[instanceId].currentPageParser.assign(instances[instanceId].context, val);
+        };
+        this.getCurrentPage = function(instanceId) {
+            var parser = instances[instanceId].currentPageParser;
+            return parser ? parser(instances[instanceId].context) : 1;
+        };
+
+        this.setItemsPerPage = function(instanceId, val) {
+            instances[instanceId].itemsPerPage = val;
+        };
+        this.getItemsPerPage = function(instanceId) {
+            return instances[instanceId].itemsPerPage;
+        };
+
+        this.setCollectionLength = function(instanceId, val) {
+            instances[instanceId].collectionLength = val;
+        };
+        this.getCollectionLength = function(instanceId) {
+            return instances[instanceId].collectionLength;
+        };
+
+        this.setAsyncModeTrue = function(instanceId) {
+            instances[instanceId].asyncMode = true;
+        };
+
+        this.isAsyncMode = function(instanceId) {
+            return instances[instanceId].asyncMode;
+        };
+    });
+    
+    module.provider('paginationTemplate', function() {
+        
+        var templatePath = 'directives/pagination/dirPagination.tpl.html';
+        
+        this.setPath = function(path) {
+            templatePath = path;
+        };
+        
+        this.$get = function() {
+            return {
+                getPath: function() {
+                    return templatePath;
+                }
+            };
+        };
+    });
+})();
 angular.module('directives.pwMatch', [])
   // from http://blog.brunoscopelliti.com/angularjs-directive-to-check-that-passwords-match
 
@@ -3926,6 +4354,29 @@ angular.module("directives.spinner")
 
     }
     })
+angular.module("directives.tweetThis", [])
+  .directive("tweetThis", function($location){
+    return {
+      restrict: 'E',
+      replace: true,
+      template: '<a class="tweet-this" href="https://twitter.com/intent/tweet' +
+        '?original_referer={{ myUrl }}' +
+        '&text={{ textToTweet }}' +
+        '&url={{ myUrl }}' +
+        '&via=impactstory" ' +
+        'tooltip="Tweet it!"' +
+        'target="_blank"' +
+        'tooltip-placement="left">' +
+        '<i class="fa fa-twitter left"></i></a>',
+      link: function(scope, elem, attr, ctrl){
+        scope.myUrl = encodeURI($location.absUrl())
+        attr.$observe('text', function(newVal){
+          scope.textToTweet = newVal
+        })
+
+      }
+    }
+  })
 angular.module('directives.forms', ["services.loading"])
 
 
@@ -4890,7 +5341,6 @@ angular.module("services.genreConfigs", [])
           myConfig = getDefaultConfigFromUrlRepresentation(urlRepresentation)
         }
 
-        console.log("returning genre config:", myConfig)
         return myConfig
       },
 
@@ -5600,6 +6050,7 @@ angular.module("services.productList", [])
     $location,
     $timeout,
     $window,
+    $rootScope,
     SelectedProducts,
     GenreConfigs,
     PinboardService,
@@ -5611,14 +6062,32 @@ angular.module("services.productList", [])
     Page,
     ProfileService){
 
-  var genreChangeDropdown = {}
+  var ui = {}
   var filterFn
+
+
+  $rootScope.$watch(function(){
+    return ui.showTweets
+  }, function(newVal, oldVal){
+    if (newVal){
+      $location.search("show_tweets", "true")
+    }
+    else {
+      $location.search("show_tweets", null)
+    }
+  })
+
+
+
 
   var startRender = function($scope){
     if (!ProfileService.hasFullProducts()){
       Loading.startPage()
     }
-    Timer.start("productListRender")
+    ui.genreChangeDropdownIsOpen = false
+    ui.showTweets = !!$location.search().show_tweets
+
+    Timer.start("collectionRender")
     SelectedProducts.removeAll()
 
 
@@ -5634,7 +6103,10 @@ angular.module("services.productList", [])
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       finishRender()
     });
+
+
   }
+
 
   var finishRender = function(){
     Loading.finishPage()
@@ -5642,7 +6114,7 @@ angular.module("services.productList", [])
       var lastScrollPos = Page.getLastScrollPosition($location.path())
       $window.scrollTo(0, lastScrollPos)
     }, 0)
-    console.log("finished rendering genre products in " + Timer.elapsed("genreViewRender") + "ms"
+    console.log("finished rendering collection in " + Timer.elapsed("collectionRender") + "ms"
     )
   }
 
@@ -5650,7 +6122,9 @@ angular.module("services.productList", [])
   var changeProductsGenre = function(newGenre){
     ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
-    genreChangeDropdown.isOpen = false
+
+    // close the change-genre dialog
+    ui.genreChangeDropdownIsOpen = false
 
     // handle moving the last product in our current genre
     if (!len()){
@@ -5672,14 +6146,28 @@ angular.module("services.productList", [])
     }
   }
 
+  var productsInThisCollection = function(){
+    return _.filter(ProfileService.data.products, filterFn)
+
+  }
+
+
   var len = function(){
-    var filtered = _.filter(ProfileService.data.products, filterFn)
-    return filtered.length
+    return productsInThisCollection().length
   }
 
   var selectEverything = function(){
-    var filtered = _.filter(ProfileService.data.products, filterFn)
-    SelectedProducts.addFromObjects(filtered)
+    SelectedProducts.addFromObjects(productsInThisCollection())
+  }
+
+  var numTweets = function(){
+    var count = 0
+    _.each(productsInThisCollection(), function(product){
+      if (product.tweets) {
+        count += product.tweets.length
+      }
+    })
+    return count
   }
 
 
@@ -5688,12 +6176,14 @@ angular.module("services.productList", [])
     removeSelectedProducts: removeSelectedProducts,
     startRender: startRender,
     finishRender: finishRender,
-    genreChangeDropdown: genreChangeDropdown,
+    numTweets: numTweets,
+    ui: ui,
     setFilterFn: function(fn){
       filterFn = fn
     },
     len: len,
     selectEverything: selectEverything
+
   }
 
 
@@ -5789,7 +6279,7 @@ angular.module("services.productList", [])
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
-  .factory("ProfileAboutService", function($q, $timeout, $location, Update, Users, ProfileAbout){
+  .factory("ProfileAboutService", function($q, $rootScope, $timeout, $location, Update, Users, ProfileAbout){
 
     var loading = true
     var data = {}
@@ -5813,6 +6303,12 @@ angular.module('services.profileAboutService', [
 
           _.each(data, function(v, k){delete data[k]})
           angular.extend(data, resp)  // this sets the url_slug too
+
+          // admin mode means profile is always live.
+          if ($rootScope.adminMode){
+            data.is_live = true
+          }
+
           loading = false
         },
 
@@ -5854,10 +6350,10 @@ angular.module('services.profileAboutService', [
     }
 
     function handleSlug(profileServices, newSlug){
-      console.log("refreshing the profile with new slug", newSlug)
 
       // handle new slugs; we need to load a whole new profile
       if (slugIsNew(newSlug)){
+        console.log("refreshing the profile with new slug", newSlug)
         _.each(profileServices, function(service){
           service.clear()
           if (!service.handleSlug){ // don't run the ProfileAboutService here, we need to return it.
@@ -5869,6 +6365,7 @@ angular.module('services.profileAboutService', [
 
       // this is the same profile; don't nothin' change.
       else {
+       console.log("not refreshing profile; slug is the same.")
        return $q.when(data)
       }
 
@@ -5894,6 +6391,7 @@ angular.module('services.profileAwardService', [
 ])
 .factory("ProfileAwardService", function($q,
                                          $timeout,
+                                         Loading,
                                          Update,
                                          Users,
                                          ProfileAwards){
@@ -5905,16 +6403,22 @@ angular.module('services.profileAwardService', [
   function get(url_slug){
     console.log("calling ProfileAwardService.get() with ", url_slug)
 
+    Loading.start('profileAwards')
     loading = true
     return ProfileAwards.get(
       {id: url_slug},
       function(resp){
         console.log("ProfileAwards got a response", resp)
-        awards.oa = resp[0]
+        awards.oa = _.findWhere(resp, {name: "Open Access"})
+        console.log("awards.oa", awards.oa)
+        awards.globalReach = _.findWhere(resp, {name: "Global Reach"})
+        console.log("awards.globalReach", awards.globalReach)
         loading = false
+        Loading.finish("profileAwards")  
       },
 
       function(resp){
+        Loading.finish("profileAwards")
         console.log("ProfileAwards got a failure response", resp)
         if (resp.status == 404){
           // do something? i dunno
@@ -5947,6 +6451,7 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
+                                      SelfCancellingProfileTweetsResource,
                                       SelfCancellingProductsResource){
 
     var loading = true
@@ -5956,7 +6461,7 @@ angular.module('services.profileService', [
 
     function getProductStubs(url_slug){
       data.url_slug = url_slug
-      UsersProducts.get(
+      return UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
           console.log("ProfileService got stubs back", resp)
@@ -5965,7 +6470,7 @@ angular.module('services.profileService', [
         function(resp){
           console.log("stubs call failed", resp)
         }
-      )
+      ).$promise
 
     }
 
@@ -5974,12 +6479,45 @@ angular.module('services.profileService', [
       data.products.push(newProduct)
     }
 
+    function appendToProduct(tiid, key, val){
+      _.each(data.products, function(product){
+        if (product.tiid === tiid){
+          product[key] = val
+        }
+      })
+    }
+
+
+    function getTweets(url_slug){
+      console.log("getting tweets")
+      return SelfCancellingProfileTweetsResource.createResource().get(
+        {id: url_slug},
+        function(resp){
+          Loading.finish("tweets")
+        }
+      ).$promise
+    }
+
 
     function get(url_slug){
       data.url_slug = url_slug
+      Loading.start("tweets")
 
       if (!data.products){
         getProductStubs(url_slug)
+          .then(function(resp){
+            return getTweets(url_slug)
+          })
+          .then(function(tweetsResp){
+            console.log("in the profileservice.get(), got the tweets in promise!", tweetsResp)
+            _.each(data.products, function(product){
+              var myTweets = tweetsResp.tweets[product.tiid]
+              if (typeof myTweets === "undefined") {
+                myTweets = []
+              }
+              product.tweets = myTweets
+            })
+          })
       }
 
       loading = true
@@ -5988,8 +6526,16 @@ angular.module('services.profileService', [
         function(resp){
 //          _.each(data, function(v, k){delete data[k]})
 
-          data.products.length = 0
-          angular.extend(data.products, resp.list)
+          _.each(resp.list, function(newProduct){
+            var oldProduct = getProductFromTiid(newProduct.tiid)
+            if (!oldProduct){
+              data.products.push(newProduct)
+            }
+            else {
+              angular.extend(oldProduct, newProduct)
+            }
+          })
+
 
           // got the new stuff. but does the server say it's
           // actually still updating there? if so, show
@@ -5997,7 +6543,9 @@ angular.module('services.profileService', [
           Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
-              get(url_slug, true)
+              // this won't overwrite anything, just adds new products.
+              // i think we don't need it maybe? not sure so leaving it tho.
+              get(url_slug)
             },
             function(msg){
               // great, everything's all up-to-date.
@@ -6040,8 +6588,6 @@ angular.module('services.profileService', [
         {id: data.url_slug, tiids: tiids.join(",")},
         function(resp){
           console.log("finished deleting", tiids)
-          get(data.url_slug, true)
-
         }
       )
     }
@@ -6050,7 +6596,6 @@ angular.module('services.profileService', [
       if (!data.products){
         return false
       }
-
       if (data.products[0] && data.products[0].markup){
         return true
       }
@@ -6078,7 +6623,6 @@ angular.module('services.profileService', [
         {genre: newGenre},
         function(resp){
           console.log("ProfileService.changeProductsGenre() successful.", resp)
-          get(data.url_slug)
         },
         function(resp){
           console.log("ProfileService.changeProductsGenre() FAILED.", resp)
@@ -6170,6 +6714,40 @@ function( $resource, $q ) {
   var createResource = function() {
     cancel();
     return $resource( '/profile/:id/products',
+      {},
+      {
+        get: {
+          method : 'GET',
+          timeout : canceler.promise
+        }
+      });
+  };
+
+  return {
+    createResource: createResource,
+    cancelResource: cancel
+  };
+}])
+
+
+// http://stackoverflow.com/a/24958268
+// copied straight from above; refactor if we make a third one of these.
+.factory( 'SelfCancellingProfileTweetsResource', ['$resource','$q',
+function( $resource, $q ) {
+  var canceler = $q.defer();
+
+  var cancel = function() {
+    canceler.resolve();
+    canceler = $q.defer();
+  };
+
+  // Check if a username exists
+  // create a resource
+  // (we have to re-craete it every time because this is the only
+  // way to renew the promise)
+  var createResource = function() {
+    cancel();
+    return $resource( '/profile/:id/products/tweets',
       {},
       {
         get: {
@@ -6528,7 +7106,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -8062,7 +8640,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "         </span>\n" +
     "\n" +
     "         <span class=\"action\">\n" +
-    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"ProductList.genreChangeDropdown.isOpen\">\n" +
+    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"ProductList.ui.genreChangeDropdownIsOpen\">\n" +
     "               <button type=\"button\"\n" +
     "                       tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
     "                       class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
@@ -8090,21 +8668,57 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"sort-controls\">\n" +
-    "      <div class=\"btn-group sort-select-group\" dropdown>\n" +
-    "      <span class=\"sort-by-label\">\n" +
-    "         Sorting by\n" +
-    "      </span>\n" +
-    "         <a class=\"dropdown-toggle\">\n" +
-    "            {{ ProductListSort.get().name }}\n" +
-    "            <span class=\"caret\"></span>\n" +
-    "         </a>\n" +
+    "   <div class=\"display-controls\">\n" +
+    "      <div class=\"show-tweets tweets-loaded\" ng-show=\"!loading.is('tweets')\">\n" +
+    "         <div class=\"has-tweets\" ng-show=\"ProductList.numTweets()\">\n" +
+    "            <label for=\"show-tweets-checkbox\">\n" +
+    "               <i class=\"fa fa-twitter\"></i>\n" +
+    "               <span class=\"text\">\n" +
+    "                  Show tweets\n" +
+    "                  <span class=\"num-tweets\">\n" +
+    "                     ({{ ProductList.numTweets() }})\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "            </label>\n" +
+    "            <input type=\"checkbox\"\n" +
+    "                   id=\"show-tweets-checkbox\"\n" +
+    "                   ng-model=\"ProductList.ui.showTweets\" />\n" +
+    "         </div>\n" +
+    "         <div class=\"has-no-tweets\"\n" +
+    "              tooltip=\"We haven't found any tweets for these products.\"\n" +
+    "              tooltip-placement=\"left\"\n" +
+    "              ng-show=\"!ProductList.numTweets()\">\n" +
+    "            <label for=\"disabled-show-tweets-checkbox\">\n" +
+    "               <i class=\"fa fa-twitter\"></i>\n" +
+    "               <span class=\"text\">Show tweets</span>\n" +
+    "            </label>\n" +
+    "            <input type=\"checkbox\"\n" +
+    "                   id=\"disabled-show-tweets-checkbox\"\n" +
+    "                   disabled=\"disabled\" />\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "       <div class=\"show-tweets tweets-loading\" ng-show=\"loading.is('tweets')\">\n" +
+    "          <i class=\"fa fa-refresh icon-spin left\"></i>\n" +
+    "          loading tweets&hellip;\n" +
+    "       </div>\n" +
     "\n" +
-    "         <ul class=\"dropdown-menu\">\n" +
-    "            <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
-    "               <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
-    "            </li>\n" +
-    "         </ul>\n" +
+    "\n" +
+    "      <div class=\"sort-controls\">\n" +
+    "         <div class=\"btn-group sort-select-group\" dropdown>\n" +
+    "         <span class=\"sort-by-label\">\n" +
+    "            Sorting by\n" +
+    "         </span>\n" +
+    "            <a class=\"dropdown-toggle\">\n" +
+    "               {{ ProductListSort.get().name }}\n" +
+    "               <span class=\"caret\"></span>\n" +
+    "            </a>\n" +
+    "\n" +
+    "            <ul class=\"dropdown-menu\">\n" +
+    "               <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
+    "                  <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
@@ -8150,9 +8764,28 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "            </span>\n" +
     "\n" +
     "            <i tooltip=\"{{ product.genre }}\"\n" +
-    "               class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
+    "               class=\"genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}\"></i>\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && ProductList.ui.showTweets\">\n" +
+    "\n" +
+    "            <ul>\n" +
+    "               <li class=\"tweet\"\n" +
+    "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: tweetsFilterFn | limitTo: 5)\">\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > filteredTweets.length\">\n" +
+    "               <a class=\"how-many-more btn btn-sm btn-default\"\n" +
+    "                  tooltip-placement=\"right\"\n" +
+    "                  tooltip=\"Click to see all {{ product.tweets.length }} tweets mentioning this research product.\"\n" +
+    "                  href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/tweets\">\n" +
+    "                  <i class=\"fa fa-plus\"></i>\n" +
+    "                  <span class=\"text\">plus {{ product.tweets.length - filteredTweets.length }} more</span>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
     "      </li>\n" +
     "   </ul>\n" +
     "</div>");
@@ -8353,12 +8986,21 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                    ng-click=\"ProductPage.setTab('metrics')\">\n" +
     "                  <i class=\"icon-bar-chart left\"></i>\n" +
     "                  Metrics\n" +
-    "               </div>               \n" +
+    "                  <span class=\"count\">({{ filteredMetrics.length }})</span>\n" +
+    "               </div>\n" +
     "               <div class=\"tab tab-map\"\n" +
     "                    ng-class=\"{selected: ProductPage.tabIs('map')}\"\n" +
     "                    ng-click=\"ProductPage.setTab('map')\">\n" +
     "                  <i class=\"icon-globe left\"></i>\n" +
     "                  Map\n" +
+    "                  <span class=\"count\">({{ countries.length }})</span>\n" +
+    "               </div>\n" +
+    "               <div class=\"tab tab-tweets\"\n" +
+    "                    ng-class=\"{selected: ProductPage.tabIs('tweets')}\"\n" +
+    "                    ng-click=\"ProductPage.setTab('tweets')\">\n" +
+    "                  <i class=\"fa fa-twitter left\"></i>\n" +
+    "                  Tweets\n" +
+    "                  <span class=\"count\">({{ product.tweets.length }})</span>\n" +
     "               </div>\n" +
     "               \n" +
     "            </div>\n" +
@@ -8455,11 +9097,11 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "                        <li class=\"doi\" ng-show=\"aliases.display_doi\">\n" +
     "                           <span class=\"key\">DOI:</span>\n" +
-    "                           <a class=\"value\" href=\"http://dx.doi.org/{{ aliases.display_doi }}\">{{ aliases.display_doi }}<i class=\"icon-external-link right\"></i></a>\n" +
+    "                           <a class=\"value\" href=\"http://doi.org/{{ aliases.display_doi }}\">{{ aliases.display_doi }}<i class=\"icon-external-link right\"></i></a>\n" +
     "                        </li>\n" +
     "                        <li class=\"pmid\" ng-show=\"aliases.display_pmid\">\n" +
     "                           <span class=\"key\">PubMed ID:</span>\n" +
-    "                           <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/\">{{ aliases.display_doi }}<i class=\"icon-external-link\"></i></a>\n" +
+    "                           <a class=\"value\" href=\"http://www.ncbi.nlm.nih.gov/pubmed/{{ aliases.display_pmid }}\">{{ aliases.display_pmid }}<i class=\"icon-external-link right\"></i></a>\n" +
     "                        </li>\n" +
     "                     </ul>\n" +
     "\n" +
@@ -8472,11 +9114,13 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           <span class=\"host\"> {{ biblio.display_host }}</span>\n" +
     "                        </span>\n" +
     "                     </div>\n" +
-    "\n" +
     "                  </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
+    "                  <div class=\"product-as-json\">\n" +
+    "                     <a class=\"btn btn-default btn-xs\" href=\"profile/{{ userSlug }}/product/{{ tiid }}\">\n" +
+    "                        <i class=\"fa fa-gears\"></i>\n" +
+    "                        view as JSON\n" +
+    "                     </a>\n" +
+    "                  </div>\n" +
     "               </div><!-- end Summary Tab content -->\n" +
     "\n" +
     "\n" +
@@ -8564,7 +9208,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                  <div id=\"metrics\">\n" +
     "                     <ul class=\"metric-details-list\">\n" +
     "\n" +
-    "                        <li class=\"metric-detail\" ng-repeat=\"metric in metrics | orderBy:'-display_order' | filter: {hide_badge: false}\">\n" +
+    "                        <li class=\"metric-detail\" ng-repeat=\"metric in filteredMetrics = (metrics | orderBy:'-display_order' | filter: {hide_badge: false})\">\n" +
     "                           <span class=\"metric-text\">\n" +
     "                              <a class=\"value-and-name\"\n" +
     "                                 href=\"{{ metric.drilldown_url }}\"\n" +
@@ -8714,36 +9358,73 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                           </tr>\n" +
     "                        </tbody>\n" +
     "                     </table>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "                  </div>\n" +
-    "\n" +
-    "               </div>\n" +
-    "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "               </div><!-- end of the Maps Tab section -->\n" +
     "\n" +
     "\n" +
-    "            </div>\n" +
-    "         </div>\n" +
+    "               <div class=\"tab-content tab-tweets\" ng-show=\"ProductPage.tabIs('tweets')\">\n" +
+    "                  <div class=\"empty-tab\" ng-show=\"!product.tweets.length\">\n" +
+    "                     There aren't yet any tweets mentioning this product.\n" +
+    "                  </div>\n" +
+    "                  <div class=\"product-tweets\" ng-show=\"product.tweets.length\">\n" +
+    "                     <div class=\"tweets-list-controls\">\n" +
+    "                        <div class=\"tweets-list-info\" ng-show=\"tweetsList.numPages > 1\">\n" +
+    "                           <span class=\"page-current\">\n" +
+    "                              <span class=\"descr\">page</span>\n" +
+    "                              <span class=\"current-tweets-page-val val\">{{ tweetsList.currentPage }}</span>\n" +
+    "                           </span>\n" +
+    "                           <span class=\"num-tweets-pages-val\">of {{ tweetsList.numPages }}</span>\n" +
+    "                        </div>\n" +
+    "\n" +
+    "                        <div class=\"tweets-list-actions\">\n" +
+    "                           <span class=\"descr\">Sort tweets by</span>\n" +
+    "                           <span class=\"sort-options\">\n" +
+    "                              <label>\n" +
+    "                                 <input type=\"radio\"\n" +
+    "                                        name=\"sort-tweets-by\"\n" +
+    "                                        ng-model=\"tweetsList.sortBy\"\n" +
+    "                                        value=\"-tweet_timestamp\" />\n" +
+    "                                 date\n" +
+    "                              </label>\n" +
+    "                              <label>\n" +
+    "                                 <input type=\"radio\"\n" +
+    "                                        name=\"sort-tweets-by\"\n" +
+    "                                        ng-model=\"tweetsList.sortBy\"\n" +
+    "                                        value=\"-tweeter.followers\" />\n" +
+    "                                 followers count\n" +
+    "                              </label>\n" +
+    "\n" +
+    "                           </span>\n" +
+    "                        </div>\n" +
     "\n" +
     "\n" +
     "\n" +
+    "                     </div>\n" +
+    "\n" +
+    "                     <ul>\n" +
+    "                        <li class=\"tweet\"\n" +
+    "                            ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "                            current-page=\"tweetsList.currentPage\"\n" +
+    "                            dir-paginate=\"tweet in product.tweets | orderBy: tweetsList.sortBy | itemsPerPage: tweetsList.perPage\">\n" +
+    "                         </li>\n" +
+    "                     </ul>\n" +
+    "                  </div>\n" +
+    "                  <div class=\"pagination-controls-container\">\n" +
+    "                     <dir-pagination-controls\n" +
+    "                             on-page-change=\"tweetsList.onPageChange(newPageNumber)\">\n" +
+    "                     </dir-pagination-controls>\n" +
+    "                  </div>\n" +
     "\n" +
     "\n" +
     "\n" +
+    "               </div><!-- end of the Tweets Tab section -->\n" +
+    "            </div><!-- end of the tabs-content section -->\n" +
+    "         </div><!-- end of the product-tabs section (includes the tabs themselves and the content they show/hide -->\n" +
     "      </div><!-- end main-content -->\n" +
     "\n" +
     "\n" +
     "\n" +
-    "\n" +
-    "\n" +
-    "\n" +
     "      <div id=\"product-page-sidebar\">\n" +
-    "\n" +
     "      </div><!-- end sidebar -->\n" +
     "\n" +
     "   </div>\n" +
@@ -8753,34 +9434,86 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
 
 angular.module("profile-award/profile-award.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("profile-award/profile-award.tpl.html",
-    "<div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
-    "   <span class=\"profile-award\"\n" +
-    "        data-content=\"{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}\"\n" +
-    "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
-    "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
+    "<li class=\"profile-award-container level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
     "\n" +
-    "      <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
-    "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "      </span>\n" +
-    "      <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
+    "  <div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
     "\n" +
-    "   </span>\n" +
-    "</div>\n" +
+    "     <a class=\"profile-award\"\n" +
+    "        href=\"{{ url_slug }}/products/articles\"\n" +
+    "          data-placement=\"auto\"\n" +
+    "          data-content=\"{{ profileAboutService.data.given_name }} has made {{ ProfileAwardService.awards.oa.level_justification }}\"\n" +
+    "          data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level\"\n" +
+    "          ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
     "\n" +
-    "<div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
-    "   <span class=\"profile-award\"\n" +
-    "        data-content=\"You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>\"\n" +
-    "        data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level award\"\n" +
-    "        ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
+    "        <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
+    "           <i class=\"icon-unlock-alt\"></i>\n" +
+    "        </span>\n" +
+    "        <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
     "\n" +
-    "      <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
-    "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "      </span>\n" +
-    "      <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
+    "     </a>\n" +
+    "  </div>\n" +
     "\n" +
-    "   </span>\n" +
-    "   <a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-url=\"https://impactstory.org/{{ url_slug }}?utm_source=sb&utm_medium=twitter\" data-text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!\" data-via=\"impactstory\" data-count=\"none\"></a>\n" +
-    "</div>");
+    "\n" +
+    "  <div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.oa.award_badge\">\n" +
+    "     <tweet-this text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.oa.name }}!\"></tweet-this>\n" +
+    "     <a class=\"profile-award\"\n" +
+    "        href=\"{{ url_slug }}/products/articles\"\n" +
+    "          data-placement=\"auto\"\n" +
+    "          data-content=\"You've made {{ ProfileAwardService.awards.oa.level_justification }} Nice work! <div class='call-to-action'>{{ ProfileAwardService.awards.oa.call_to_action }}.</div>\"\n" +
+    "          data-original-title=\"{{ ProfileAwardService.awards.oa.level_name }} level\"\n" +
+    "          ng-show=\"ProfileAwardService.awards.oa.level>0\">\n" +
+    "\n" +
+    "        <span class=\"icon level-{{ ProfileAwardService.awards.oa.level }}\">\n" +
+    "           <i class=\"icon-unlock-alt\"></i>\n" +
+    "        </span>\n" +
+    "        <span class=\"text\">{{ ProfileAwardService.awards.oa.name }}</span>\n" +
+    "\n" +
+    "     </a>\n" +
+    "  </div>\n" +
+    "\n" +
+    "</li>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "<li class=\"profile-award-container level-{{ ProfileAwardService.awards.globalReach.level }}\">\n" +
+    "\n" +
+    "  <div class=\"award-container\" ng-show=\"!security.isLoggedIn(url_slug) && ProfileAwardService.awards.globalReach.award_badge\">\n" +
+    "     <a class=\"profile-award\"\n" +
+    "        href=\"{{ url_slug }}/map\"\n" +
+    "          data-placement=\"auto\"\n" +
+    "          data-content=\"{{ profileAboutService.data.given_name }} has made impact in at least {{ ProfileAwardService.awards.globalReach.extra.num_countries }} countries. <span class='click-to-learn-more'> Click to learn more.</span>\"\n" +
+    "          data-original-title=\"{{ ProfileAwardService.awards.globalReach.level_name }} level\"\n" +
+    "          ng-show=\"ProfileAwardService.awards.globalReach.level>0\">\n" +
+    "\n" +
+    "        <span class=\"icon level-{{ ProfileAwardService.awards.globalReach.level }}\">\n" +
+    "           <i class=\"fa fa-globe\"></i>\n" +
+    "        </span>\n" +
+    "        <span class=\"text\">{{ ProfileAwardService.awards.globalReach.name }}</span>\n" +
+    "\n" +
+    "     </a>\n" +
+    "  </div>\n" +
+    "\n" +
+    "\n" +
+    "  <div class=\"award-container\" ng-show=\"security.isLoggedIn(url_slug) && ProfileAwardService.awards.globalReach.award_badge\">\n" +
+    "     <tweet-this text=\"I got a new badge on my Impactstory profile: {{ ProfileAwardService.awards.oa.level_name }}-level {{ ProfileAwardService.awards.globalReach.name }}!\"></tweet-this>\n" +
+    "     <a class=\"profile-award\"\n" +
+    "        href=\"{{ url_slug }}/map\"\n" +
+    "          data-placement=\"auto\"\n" +
+    "          data-content=\"You've made impact in at least {{ ProfileAwardService.awards.globalReach.extra.num_countries }} countries.  Nice work! <span class='click-to-learn-more'> Click to learn more.</span><div class='call-to-action'>{{ ProfileAwardService.awards.globalReach.call_to_action }}</div>\"\n" +
+    "          data-original-title=\"{{ ProfileAwardService.awards.globalReach.level_name }} level\"\n" +
+    "          ng-show=\"ProfileAwardService.awards.globalReach.level>0\">\n" +
+    "\n" +
+    "        <span class=\"icon level-{{ ProfileAwardService.awards.globalReach.level }}\">\n" +
+    "           <i class=\"fa fa-globe\"></i>\n" +
+    "        </span>\n" +
+    "        <span class=\"text\">{{ ProfileAwardService.awards.globalReach.name }}</span>\n" +
+    "\n" +
+    "     </a>\n" +
+    "  </div>\n" +
+    "\n" +
+    "</li>\n" +
+    "");
 }]);
 
 angular.module("profile-linked-accounts/profile-linked-accounts.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -8994,7 +9727,6 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "   <div class=\"profile-header\">\n" +
     "\n" +
-    "\n" +
     "      <div class=\"profile-header-loaded\">\n" +
     "\n" +
     "         <div class=\"my-vitals\">\n" +
@@ -9012,11 +9744,15 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  <img src=\"/static/img/advisor-badge.png\">\n" +
     "               </div>\n" +
     "\n" +
+    "               <div class=\"profile-awards-loading\" ng-show=\"loading.is('profileAwards')\">\n" +
+    "                  <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
+    "                  <span class=\"loading-text\">\n" +
+    "                     Loading badges&hellip;\n" +
+    "                  </span>\n" +
+    "               </div>\n" +
     "\n" +
-    "               <ul class=\"profile-award-list\">\n" +
-    "                  <li class=\"profile-award-container level-{{ ProfileAwardService.awards.oa.level }}\"\n" +
-    "                      ng-include=\"'profile-award/profile-award.tpl.html'\">\n" +
-    "                  </li>\n" +
+    "               <ul class=\"profile-award-list\"\n" +
+    "                   ng-include=\"'profile-award/profile-award.tpl.html'\">\n" +
     "               </ul>\n" +
     "            </div>\n" +
     "\n" +
@@ -10333,6 +11069,92 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "");
 }]);
 
+angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tweet/tweet.tpl.html",
+    "<div class=\"tweet-container\">\n" +
+    "   <a class=\"tweeter\"\n" +
+    "        href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}\"\n" +
+    "        target=\"_blank\"\n" +
+    "        data-placement=\"left\"\n" +
+    "        data-toggle=\"popover\"\n" +
+    "        data-content=\"\n" +
+    "        <img src='{{ tweet.tweeter.display_image_url }}' />\n" +
+    "        <div class='names'>\n" +
+    "            <span class='name'>{{ tweet.tweeter.name }}</span>\n" +
+    "            <span class='screen-name'>@{{ tweet.tweeter.screen_name }}</span>\n" +
+    "        </div>\n" +
+    "        <div class='description'>{{ tweet.tweeter.description }}</div>\n" +
+    "        <div class='under-description'>\n" +
+    "            <span class='location len-{{ tweet.tweeter.location.length }}'>\n" +
+    "               <i class='fa fa-map-marker'></i>\n" +
+    "               {{ tweet.tweeter.location }}\n" +
+    "            </span>\n" +
+    "         </div>\n" +
+    "         <div class='bio-footer'>\n" +
+    "            <span class='followers footer-stat'>\n" +
+    "               <span class='descr'>Followers</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.followers) }}</span>\n" +
+    "            </span>\n" +
+    "            <span class='number-follows footer-stat'>\n" +
+    "               <span class='descr'>Follows</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.num_follows) }}</span>\n" +
+    "            </span>\n" +
+    "            <span class='number-statuses footer-stat'>\n" +
+    "               <span class='descr'>Tweets</span>\n" +
+    "               <span class='val'>{{ nFormatCommas(tweet.tweeter.num_statuses) }}</span>\n" +
+    "            </span>\n" +
+    "         </div>\n" +
+    "        \">\n" +
+    "      <img ng-src=\"{{ tweet.tweeter.display_image_url }}\" />\n" +
+    "      <div class=\"tweeter-data f16\">\n" +
+    "         <span class=\"tweeter-name\">\n" +
+    "            <span class=\"text\">{{ tweet.tweeter.name }}</span>\n" +
+    "            <span class=\"flag {{ tweet.country.toLowerCase() }}\"></span>\n" +
+    "         </span>\n" +
+    "\n" +
+    "         <span class=\"tweeter-followers\">\n" +
+    "            <span class=\"val\">{{ nFormat(tweet.tweeter.followers) }}</span>\n" +
+    "            <span class=\"descr\">followers</span>\n" +
+    "         </span>\n" +
+    "      </div>\n" +
+    "   </a>\n" +
+    "\n" +
+    "   <div class=\"tweet-content\" ng-bind-html=\"trustHtml(tweet.tweet_text_with_links)\">\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"after-tweet\">\n" +
+    "      <a class=\"tweet-date\"\n" +
+    "         href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}\"\n" +
+    "         tooltip-placement=\"left\"\n" +
+    "         tooltip=\"{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
+    "         {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +
+    "      </a>\n" +
+    "      <div class=\"tweet-controls\">\n" +
+    "         <a href=\"https://twitter.com/intent/tweet?in_reply_to={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-reply\"></i>\n" +
+    "         </a>\n" +
+    "         <a href=\"https://twitter.com/intent/retweet?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-retweet\"></i>\n" +
+    "         </a>\n" +
+    "         <a href=\"https://twitter.com/intent/favorite?tweet_id={{ tweet.tweet_id }}\">\n" +
+    "            <i class=\"fa fa-star-o\"></i>\n" +
+    "         </a>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("tweet/tweeter-popover.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("tweet/tweeter-popover.tpl.html",
+    "<h1>h1 is here!</h1>\n" +
+    "<ul>\n" +
+    "   <li>this</li>\n" +
+    "   <li>and this</li>\n" +
+    "   <li>and this some more</li>\n" +
+    "</ul>");
+}]);
+
 angular.module("under-construction.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("under-construction.tpl.html",
     "<div id=\"under-construction-curtain\">\n" +
@@ -10363,7 +11185,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "\n" +
     "   <div class=\"intro dedup\" ng-if=\"!status.getNumUpdating()\"><br>\n" +
     "      <i class=\"icon-refresh icon-spin\"></i>\n" +
-    "      Now removing duplicates...\n" +
+    "      Crunching the numbers&hellip;\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"update-progress animated fadeOutUp\" ng-if=\"status.getNumUpdating()\">\n" +
@@ -10403,7 +11225,29 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
     "");
 }]);
 
-angular.module('templates.common', ['forms/save-buttons.tpl.html']);
+angular.module('templates.common', ['directives/pagination.tpl.html', 'forms/save-buttons.tpl.html']);
+
+angular.module("directives/pagination.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("directives/pagination.tpl.html",
+    "<ul class=\"pagination\" ng-if=\"1 < pages.length\">\n" +
+    "    <li ng-if=\"boundaryLinks\" ng-class=\"{ disabled : pagination.current == 1 }\">\n" +
+    "        <a href=\"\" ng-click=\"setCurrent(1)\"><i class=\"fa fa-chevron-left\"></i></a>\n" +
+    "    </li>\n" +
+    "    <li ng-if=\"directionLinks\" ng-class=\"{ disabled : pagination.current == 1 }\">\n" +
+    "        <a href=\"\" ng-click=\"setCurrent(pagination.current - 1)\"><i class=\"fa fa-chevron-left\"></i></a>\n" +
+    "    </li>\n" +
+    "    <li ng-repeat=\"pageNumber in pages track by $index\" ng-class=\"{ active : pagination.current == pageNumber, disabled : pageNumber == '...' }\">\n" +
+    "        <a href=\"\" ng-click=\"setCurrent(pageNumber)\">{{ pageNumber }}</a>\n" +
+    "    </li>\n" +
+    "\n" +
+    "    <li ng-if=\"directionLinks\" ng-class=\"{ disabled : pagination.current == pagination.last }\">\n" +
+    "        <a href=\"\" ng-click=\"setCurrent(pagination.current + 1)\"><i class=\"fa fa-chevron-right\"></i></a>\n" +
+    "    </li>\n" +
+    "    <li ng-if=\"boundaryLinks\"  ng-class=\"{ disabled : pagination.current == pagination.last }\">\n" +
+    "        <a href=\"\" ng-click=\"setCurrent(pagination.last)\"><i class=\"fa fa-chevron-right\"></i></a>\n" +
+    "    </li>\n" +
+    "</ul>");
+}]);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("forms/save-buttons.tpl.html",

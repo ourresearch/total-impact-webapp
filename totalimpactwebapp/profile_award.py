@@ -1,27 +1,13 @@
 from __future__ import division
 import math
 import time
+from util import dict_from_dir
 
 from util import cached_property
 
-def make_awards_list(user):
-
-    awards_list = []
-
-    award = OAAward()
-    # eventually the first param here is user.about...
-    # but right now that doesn't exist.
-    award.calculate({}, user.display_products)
-
-    awards_list.append(award)
-    return awards_list
-
-
-
-
 
 class ProfileAward(object):
-    def __init__(self):
+    def __init__(self, profile):
         self.level = 0
         self.level_names = ["Gold", "Silver", "Bronze", "Basic", "None"]
         self.name = "generic award"
@@ -31,9 +17,10 @@ class ProfileAward(object):
         self.timestamp = int(time.time())
         self.bins = []
         self.extra = {}
+        self.profile = profile
 
 
-    def calculate(self, about, products):
+    def calculate(self):
         raise NotImplementedError  # override in children
 
     @cached_property
@@ -80,13 +67,19 @@ class ProfileAward(object):
 
 
 
+
     def to_dict(self):
-        ret = {}
-        for k in dir(self):
-            if k.startswith("_"):
-                pass
-            else:
-                ret[k] = getattr(self, k)
+        attributes_to_ignore = [
+            "profile"
+        ]
+        ret = dict_from_dir(self, attributes_to_ignore)
+
+        # ret = {}
+        # for k in dir(self):
+        #     if k.startswith("_"):
+        #         pass
+        #     else:
+        #         ret[k] = getattr(self, k)
 
         return ret
 
@@ -94,14 +87,49 @@ class ProfileAward(object):
 
 
 
+class GlobalReachAward(ProfileAward):
+
+    def __init__(self, profile):
+        ProfileAward.__init__(self, profile)
+        self.level_names = ["Gold", "Silver", "Bronze", "None"]        
+        self.name = "Global Reach"
+
+        self.bins =[
+            40,  # ~20% users
+            30,  # 30%
+            20,  # 50%
+        ]
+
+    @cached_property
+    def is_perfect(self):
+        return False  #nobody has all the countries
+
+    def calculate(self):
+        countries = self.profile.countries
+        num_countries = len(countries.countries)
+        self.extra["num_countries"] = num_countries
+        
+        # calculate level
+        self.level = self.bottom_level
+
+        for i, bin_edge_val in enumerate(self.bins):
+            this_level = i+1  # levels start with 1
+
+            # print "checking level ", this_level, " (", bin_edge_val, ") against oa proportion of ", oa_proportion
+            if num_countries >= bin_edge_val:
+                self.level = this_level
+                break
+
+        self.level_justification = ", ".join(countries.country_names)
+        self.call_to_action = ""
 
 
 
 
 class OAAward(ProfileAward):
 
-    def __init__(self):
-        ProfileAward.__init__(self)
+    def __init__(self, profile):
+        ProfileAward.__init__(self, profile)
         self.name = "Open Access"
         self.bins =[
             .80,  # ~10% users
@@ -114,7 +142,8 @@ class OAAward(ProfileAward):
     def is_perfect(self):
         return self.extra["oa_articles_proportion"] == 1
 
-    def calculate(self, about, products):
+    def calculate(self):
+        products = self.profile.display_products
 
         article_products = [p for p in products if p.genre == "article"]
         article_count = len(article_products)
@@ -184,6 +213,21 @@ class OAAward(ProfileAward):
 
         else:
             self.call_to_action = "Congrats, that's the highest level we've got--you're one of the OA elite!"
+
+
+
+def make_awards_list(profile):
+
+    awards_list = []
+    awards_list.append(OAAward(profile))
+    awards_list.append(GlobalReachAward(profile))
+
+    for award in awards_list:
+        award.calculate()
+
+    return awards_list
+
+
 
 
 

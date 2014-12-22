@@ -163,6 +163,8 @@ angular.module("productPage", [
       Page.setTitle(myProduct.biblio.display_title)
       Loading.clear()
       window.scrollTo(0,0)  // hack. not sure why this is needed.
+
+
       $scope.userSlug = slug
       $scope.loading = Loading
       $scope.aliases = myProduct.aliases
@@ -176,6 +178,30 @@ angular.module("productPage", [
       $scope.freeFulltextHost = parseHostname(myProduct.biblio.free_fulltext_url)
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
+
+      // tweet stuff
+      $scope.tweetsList = {}
+      $scope.tweetsList.currentPage = 1
+      $scope.tweetsList.perPage = 25
+      $scope.tweetsList.sortBy = "-tweet_timestamp"
+      $scope.tweetsList.onPageChange = function(newPageNumber){
+        window.scrollTo(0,0)
+      }
+      $scope.tweetsList.numPages =  Math.ceil(product.tweets.length / $scope.tweetsList.perPage)
+
+      $scope.$watch('tweetsList.sortBy', function(newVal, oldVal){
+        console.log("tweetsList.sortBy watch triggered", newVal, oldVal)
+        if (newVal !== oldVal){
+          console.log("changing tweets page")
+          $scope.tweetsList.currentPage = 1
+          $scope.tweetsList.onPageChange(1)
+        }
+      })
+
+      // should've just done this in the first place instead of a bunch of
+      // individual assignments (above). Get rid of those some day, replace
+      // with this in the template.
+      $scope.product = myProduct
 
       if (myProduct.embed_markup) {
         $scope.iframeToEmbed = myProduct.embed_markup
@@ -246,6 +272,7 @@ angular.module("productPage", [
 
 
 
+
     $scope.reRenderProduct = function(){
       console.log("re-rendering product.")
       Product.get({
@@ -255,6 +282,11 @@ angular.module("productPage", [
       function(data){
         console.log("inserting this new product data into the ProfileProducts service:", data)
         ProfileService.overwriteProduct(data)
+
+        // this is way overkill, but currently the only way to get new markup
+        // for this product into the ProfileService is to reload EVERY product
+        // from scratch.
+        ProfileService.get(url_slug)
         renderProduct(data)
       },
       function(data){

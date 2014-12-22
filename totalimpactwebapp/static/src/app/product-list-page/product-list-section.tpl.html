@@ -36,7 +36,7 @@
          </span>
 
          <span class="action">
-            <div class="btn-group genre-select-group" dropdown is-open="ProductList.genreChangeDropdown.isOpen">
+            <div class="btn-group genre-select-group" dropdown is-open="ProductList.ui.genreChangeDropdownIsOpen">
                <button type="button"
                        tooltip-html-unsafe="Recategorize selected&nbsp;items"
                        class="btn btn-default btn-xs dropdown-toggle">
@@ -64,21 +64,57 @@
 
    </div>
 
-   <div class="sort-controls">
-      <div class="btn-group sort-select-group" dropdown>
-      <span class="sort-by-label">
-         Sorting by
-      </span>
-         <a class="dropdown-toggle">
-            {{ ProductListSort.get().name }}
-            <span class="caret"></span>
-         </a>
+   <div class="display-controls">
+      <div class="show-tweets tweets-loaded" ng-show="!loading.is('tweets')">
+         <div class="has-tweets" ng-show="ProductList.numTweets()">
+            <label for="show-tweets-checkbox">
+               <i class="fa fa-twitter"></i>
+               <span class="text">
+                  Show tweets
+                  <span class="num-tweets">
+                     ({{ ProductList.numTweets() }})
+                  </span>
+               </span>
+            </label>
+            <input type="checkbox"
+                   id="show-tweets-checkbox"
+                   ng-model="ProductList.ui.showTweets" />
+         </div>
+         <div class="has-no-tweets"
+              tooltip="We haven't found any tweets for these products."
+              tooltip-placement="left"
+              ng-show="!ProductList.numTweets()">
+            <label for="disabled-show-tweets-checkbox">
+               <i class="fa fa-twitter"></i>
+               <span class="text">Show tweets</span>
+            </label>
+            <input type="checkbox"
+                   id="disabled-show-tweets-checkbox"
+                   disabled="disabled" />
+         </div>
+      </div>
+       <div class="show-tweets tweets-loading" ng-show="loading.is('tweets')">
+          <i class="fa fa-refresh icon-spin left"></i>
+          loading tweets&hellip;
+       </div>
 
-         <ul class="dropdown-menu">
-            <li class="sort-by-option" ng-repeat="sortConfig in ProductListSort.options()">
-               <a ng-click="ProductListSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
-            </li>
-         </ul>
+
+      <div class="sort-controls">
+         <div class="btn-group sort-select-group" dropdown>
+         <span class="sort-by-label">
+            Sorting by
+         </span>
+            <a class="dropdown-toggle">
+               {{ ProductListSort.get().name }}
+               <span class="caret"></span>
+            </a>
+
+            <ul class="dropdown-menu">
+               <li class="sort-by-option" ng-repeat="sortConfig in ProductListSort.options()">
+                  <a ng-click="ProductListSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
+               </li>
+            </ul>
+         </div>
       </div>
    </div>
 </div>
@@ -124,9 +160,28 @@
             </span>
 
             <i tooltip="{{ product.genre }}"
-               class="genre-icon {{ product.genre_icon }}"></i>
+               class="genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}"></i>
          </div>
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
+         <div class="product-tweets" ng-show="filteredTweets.length && ProductList.ui.showTweets">
+
+            <ul>
+               <li class="tweet"
+                   ng-include="'tweet/tweet.tpl.html'"
+                   ng-repeat="tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: tweetsFilterFn | limitTo: 5)">
+                </li>
+            </ul>
+            <div class="link-to-more-tweets" ng-show="product.tweets.length > filteredTweets.length">
+               <a class="how-many-more btn btn-sm btn-default"
+                  tooltip-placement="right"
+                  tooltip="Click to see all {{ product.tweets.length }} tweets mentioning this research product."
+                  href="/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/tweets">
+                  <i class="fa fa-plus"></i>
+                  <span class="text">plus {{ product.tweets.length - filteredTweets.length }} more</span>
+               </a>
+            </div>
+         </div>
+
       </li>
    </ul>
 </div>

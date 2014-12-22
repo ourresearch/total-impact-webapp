@@ -14,6 +14,7 @@ angular.module('services.profileService', [
                                       GenreConfigs,
                                       UsersProducts,
                                       ProductsBiblio,
+                                      SelfCancellingProfileTweetsResource,
                                       SelfCancellingProductsResource){
 
     var loading = true
@@ -23,7 +24,7 @@ angular.module('services.profileService', [
 
     function getProductStubs(url_slug){
       data.url_slug = url_slug
-      UsersProducts.get(
+      return UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
           console.log("ProfileService got stubs back", resp)
@@ -32,7 +33,7 @@ angular.module('services.profileService', [
         function(resp){
           console.log("stubs call failed", resp)
         }
-      )
+      ).$promise
 
     }
 
@@ -41,12 +42,45 @@ angular.module('services.profileService', [
       data.products.push(newProduct)
     }
 
+    function appendToProduct(tiid, key, val){
+      _.each(data.products, function(product){
+        if (product.tiid === tiid){
+          product[key] = val
+        }
+      })
+    }
+
+
+    function getTweets(url_slug){
+      console.log("getting tweets")
+      return SelfCancellingProfileTweetsResource.createResource().get(
+        {id: url_slug},
+        function(resp){
+          Loading.finish("tweets")
+        }
+      ).$promise
+    }
+
 
     function get(url_slug){
       data.url_slug = url_slug
+      Loading.start("tweets")
 
       if (!data.products){
         getProductStubs(url_slug)
+          .then(function(resp){
+            return getTweets(url_slug)
+          })
+          .then(function(tweetsResp){
+            console.log("in the profileservice.get(), got the tweets in promise!", tweetsResp)
+            _.each(data.products, function(product){
+              var myTweets = tweetsResp.tweets[product.tiid]
+              if (typeof myTweets === "undefined") {
+                myTweets = []
+              }
+              product.tweets = myTweets
+            })
+          })
       }
 
       loading = true
@@ -55,8 +89,16 @@ angular.module('services.profileService', [
         function(resp){
 //          _.each(data, function(v, k){delete data[k]})
 
-          data.products.length = 0
-          angular.extend(data.products, resp.list)
+          _.each(resp.list, function(newProduct){
+            var oldProduct = getProductFromTiid(newProduct.tiid)
+            if (!oldProduct){
+              data.products.push(newProduct)
+            }
+            else {
+              angular.extend(oldProduct, newProduct)
+            }
+          })
+
 
           // got the new stuff. but does the server say it's
           // actually still updating there? if so, show
@@ -64,7 +106,9 @@ angular.module('services.profileService', [
           Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
-              get(url_slug, true)
+              // this won't overwrite anything, just adds new products.
+              // i think we don't need it maybe? not sure so leaving it tho.
+              get(url_slug)
             },
             function(msg){
               // great, everything's all up-to-date.
@@ -107,8 +151,6 @@ angular.module('services.profileService', [
         {id: data.url_slug, tiids: tiids.join(",")},
         function(resp){
           console.log("finished deleting", tiids)
-          get(data.url_slug, true)
-
         }
       )
     }
@@ -117,7 +159,6 @@ angular.module('services.profileService', [
       if (!data.products){
         return false
       }
-
       if (data.products[0] && data.products[0].markup){
         return true
       }
@@ -145,7 +186,6 @@ angular.module('services.profileService', [
         {genre: newGenre},
         function(resp){
           console.log("ProfileService.changeProductsGenre() successful.", resp)
-          get(data.url_slug)
         },
         function(resp){
           console.log("ProfileService.changeProductsGenre() FAILED.", resp)
@@ -237,6 +277,40 @@ function( $resource, $q ) {
   var createResource = function() {
     cancel();
     return $resource( '/profile/:id/products',
+      {},
+      {
+        get: {
+          method : 'GET',
+          timeout : canceler.promise
+        }
+      });
+  };
+
+  return {
+    createResource: createResource,
+    cancelResource: cancel
+  };
+}])
+
+
+// http://stackoverflow.com/a/24958268
+// copied straight from above; refactor if we make a third one of these.
+.factory( 'SelfCancellingProfileTweetsResource', ['$resource','$q',
+function( $resource, $q ) {
+  var canceler = $q.defer();
+
+  var cancel = function() {
+    canceler.resolve();
+    canceler = $q.defer();
+  };
+
+  // Check if a username exists
+  // create a resource
+  // (we have to re-craete it every time because this is the only
+  // way to renew the promise)
+  var createResource = function() {
+    cancel();
+    return $resource( '/profile/:id/products/tweets',
       {},
       {
         get: {
