@@ -148,9 +148,9 @@ angular.module('resources.users',['ngResource'])
         refresh: {
           method: "POST"
         },
-        dedup: {
+        after_refresh_cleanup: {
           method: "POST",
-          params: {action: "deduplicate"}
+          params: {action: "after-refresh-cleanup"}
         }
       }
     )
