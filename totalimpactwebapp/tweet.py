@@ -4,7 +4,6 @@ from util import cached_property
 from util import dict_from_dir
 from util import as_int_or_float_if_possible
 from totalimpactwebapp import db
-from totalimpactwebapp.twitter_paging import TwitterPager
 from totalimpactwebapp.tweeter import Tweeter
 
 from birdy.twitter import AppClient, TwitterApiError, TwitterRateLimitError, TwitterClientError
@@ -28,187 +27,152 @@ def get_product_tweets_for_profile(profile_id):
             response[tweet.tiid].append(tweet)
     return response
 
-def save_specific_tweets(tweet_ids, max_pages=1, pager=None):
 
-    if not pager:
-        pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
-                        os.getenv("TWITTER_CONSUMER_SECRET"),
-                        os.getenv("TWITTER_ACCESS_TOKEN"), 
-                        default_max_pages=max_pages)
+def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, tweet_ids):
+    tweets = Tweet.query.filter(Tweet.tweet_id.in_(tweet_ids))
+    tweets_by_tweet_id = defaultdict(list)
+    for tweet in tweets:
+        tweets_by_tweet_id[tweet.tweet_id].append(tweet)
 
-    tweet_id_string = ",".join(tweet_ids)
-
-    def store_all_tweets(r):
-        data = r.data
-        if not data:
-            data = []
-
-        store_tweet_payload_from_twitter(profile_id=None, tiid=None, payload_dicts=data)
-
-        tweet_ids_with_response = [tweet["id_str"] for tweet in data]
-        tweet_ids_without_response = [tweet for tweet in tweet_ids if tweet not in tweet_ids_with_response]
-        for tweet_id in tweet_ids_without_response:
-            # logger.debug("deleted tweet {tweet_id}".format(
-            #     tweet_id=tweet_id))
-            tweet = Tweet.query.get(tweet_id)
-            tweet.is_deleted = True
-            db.session.add(tweet)
-        commit(db)
-        return True
-
-    try:
-        r = pager.paginated_search(
-            page_handler=store_all_tweets,
-            id=tweet_id_string,
-            trim_user=False,
-            query_type="statuses_lookup"
-            )
-    except TwitterApiError:
-        logger.warning("TwitterApiError error, skipping")
-    except TwitterClientError:
-        logger.warning("TwitterClientError error, skipping")
-
-
-def save_recent_tweets(profile_id, twitter_handle, max_pages=5, tweets_per_page=200):
-
-    pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
-                    os.getenv("TWITTER_CONSUMER_SECRET"),
-                    os.getenv("TWITTER_ACCESS_TOKEN"), 
-                    default_max_pages=max_pages)
-
-    most_recent_tweet_id = Tweet.most_recent_tweet_id(twitter_handle)
-
-    def store_all_tweets_with_profile_id(r):
-        return store_tweet_payload_from_twitter(profile_id, tiid=None, payload_dicts=r.data)
-
-    try:
-        r = pager.paginated_search(
-            page_handler=store_all_tweets_with_profile_id,
-            screen_name=twitter_handle, 
-            count=tweets_per_page, 
-            contributor_details=True, 
-            include_rts=True,
-            exclude_replies=False,
-            trim_user=False,
-            since_id=most_recent_tweet_id,
-            query_type="user_timeline"            
-            )
-    except TwitterApiError:
-        logger.warning("TwitterApiError error, skipping")
-    except TwitterClientError:
-        logger.warning("TwitterClientError error, skipping")
-
-
-
-def store_tweet_payload_from_twitter(profile_id, tiid, payload_dicts):
-    for payload_dict in payload_dicts:
+    for payload_dict in payload_dicts_from_twitter:
         tweet_id = payload_dict["id_str"]
-        # logger.debug("saving tweet {tweet_id}".format(
-        #     tweet_id=tweet_id))
-        tweet = Tweet.query.get(tweet_id)
-        if tweet:
+        logger.debug("saving unsaved parts for tweet_id {tweet_id}".format(
+            tweet_id=tweet_id))
+        for tweet in tweets_by_tweet_id[tweet_id]:
+            # print "tweet_id", tweet_id
             if not tweet.payload:
                 tweet.payload = payload_dict
-                db.session.add(tweet)
-        else:
-            tweet = Tweet(profile_id=profile_id, tiid=tiid, payload=payload_dict)
-            db.session.add(tweet)
-    commit(db)
-    num_saved_tweets = len(payload_dicts)
-    return num_saved_tweets
+                logger.info(u"updated tweet payload for {tweet_id}".format(
+                    tweet_id=tweet_id))
+            if "user" in payload_dict:
+                this_tweeter = tweet.tweeter
+                this_tweeter.set_attributes_from_twitter_data(payload_dict["user"])
+                logger.info(u"updated tweeter followers for {screen_name}".format(
+                    screen_name=this_tweeter.screen_name))
+            db.session.merge(tweet)
+            
+
+def flag_deleted_tweets(tweet_ids):
+    if not tweet_ids:
+        return None
+    for tweet in Tweet.query.filter(Tweet.tweet_id.in_(tweet_ids)).all():
+        # logger.debug("deleted tweet {tweet_id}".format(
+        #     tweet_id=tweet_id))
+        tweet.is_deleted = True
+        db.session.merge(tweet)
 
 
-def save_product_tweets(profile_id, tiid, twitter_posts_from_altmetric):
-    tweets = db.session.query(Tweet).filter(Tweet.tiid==tiid).all()
-    tweets_by_tweet_id_and_tiid = dict([((tweet.tweet_id, tweet.tiid), tweet) for tweet in tweets])
-    tweeters = {}
+def handle_all_tweets(data, tweet_ids):
+    # update with tweet text, tweeter
+    store_tweet_payload_and_tweeter_from_twitter(data, tweet_ids)
 
-    new_objects = []
-    for post in twitter_posts_from_altmetric:
-        tweet_id = post["tweet_id"]
-        screen_name = post["author"]["id_on_source"]
-
-        if (tweet_id, tiid) in tweets_by_tweet_id_and_tiid.keys():
-            tweet = tweets_by_tweet_id_and_tiid[(tweet_id, tiid)]
-        else:
-            tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
-
-        #overwrite even if there
-        tweet.set_attributes_from_post(post)
-        tweet.profile_id = profile_id
-        new_objects.append(tweet)
-
-        tweeter = None
-        if screen_name in tweeters.keys():
-            continue  # already saved this one
-        if not tweeter:
-            tweeter = Tweeter(screen_name=screen_name)
-        tweeters[screen_name] = tweeter
-
-        tweeter.set_attributes_from_post(post)
-        new_objects.append(tweeter)
-
-    for obj in new_objects:
-        db.session.merge(obj)
-    commit(db)
-
-    return new_objects
+    # flag the rest as deleted
+    tweet_ids_with_response = [tweet["id_str"] for tweet in data]
+    tweet_ids_without_response = [tweet for tweet in tweet_ids if tweet not in tweet_ids_with_response]
+    flag_deleted_tweets(tweet_ids_without_response)
+    return True
 
 
-def save_product_tweets_for_profile(profile):
-    tweets = db.session.query(Tweet).filter(Tweet.profile_id==profile.id).all()
-    tweets_by_tweet_id_and_tiid = dict([((tweet.tweet_id, tweet.tiid), tweet) for tweet in tweets])
-    tweeters = {}
 
-    new_objects = []
-    for product in profile.display_products:
-        tiid = product.tiid
-        metric = product.get_metric_by_name("altmetric_com", "posts")
-        # logger.info(u"{url_slug} has tweet".format(
-        #     url_slug=profile.url_slug))
-        if metric and "twitter" in metric.most_recent_snap.raw_value:
-            print ".",
-            twitter_posts_from_altmetric = metric.most_recent_snap.raw_value["twitter"]
+# from https://github.com/inueni/birdy/issues/7
+# to overrride JSONObject
+class AppDictClient(AppClient):
+    @staticmethod
+    def get_json_object_hook(data):
+        return data
 
-            for post in twitter_posts_from_altmetric:
-                tweet_id = post["tweet_id"]
-                screen_name = post["author"]["id_on_source"]
 
-                if (tweet_id, tiid) in tweets_by_tweet_id_and_tiid.keys():
-                    tweet = tweets_by_tweet_id_and_tiid[(tweet_id, tiid)]
-                else:
-                    tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
+def get_and_save_tweet_text_and_tweeter_followers(tweet_ids):
 
-                #overwrite even if there
-                tweet.set_attributes_from_post(post)
-                tweet.profile_id = profile.id
-                new_objects.append(tweet)
+    client = AppDictClient(
+        os.getenv("TWITTER_CONSUMER_KEY"),
+        os.getenv("TWITTER_CONSUMER_SECRET"),
+        access_token=os.getenv("TWITTER_ACCESS_TOKEN")
+    )
 
-                tweeter = None
-                if screen_name in tweeters.keys():
-                    continue  # already saved this one
+    logger.info(u"in get_and_save_tweet_text_and_tweeter_followers for {num} tweet_ids".format(
+        num=len(tweet_ids)))
+
+    # print "lenth of tweet_ids", len(tweet_ids)
+
+    # from http://stackoverflow.com/a/1624988/596939
+    group_size = 100
+    list_of_groups = [ tweet_ids[i:i+group_size] for i in range(0, len(tweet_ids), group_size) ]
+
+    # print "number of groups", len(list_of_groups)
+
+    for tweet_id_subset in list_of_groups:
+        tweet_id_string = ",".join(tweet_id_subset)
+
+        try:
+            response = client.api.statuses.lookup.post(id=tweet_id_string, trim_user=False)
+            handle_all_tweets(response.data, tweet_ids)
+        except TwitterApiError, e:
+            logger.exception("TwitterApiError error, skipping")
+        except TwitterClientError, e:
+            logger.exception("TwitterClientError error, skipping")
+        except TwitterRateLimitError, e:
+            logger.exception("TwitterRateLimitError error, skipping")
+            # not totally sure what else I should do here.  retry somehow, or catch on cleanup run?
+
+    # the function that calls this does a commit
+    
+    return
+
+
+
+
+
+def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
+
+    logger.info(u"in hydrate_twitter_text_and_followers for profile {profile_id}".format(
+        profile_id=profile_id))
+
+    tweets_to_hydrate_from_twitter = []
+
+    for tiid, post_list in altmetric_twitter_posts.iteritems():
+        for post in post_list:
+            #### store tweet and tweeter stuff from altmetric
+            tweet_id = post["tweet_id"]
+            screen_name = post["author"]["id_on_source"]
+
+            tweet = Tweet.query.get((tweet_id, tiid))
+            if tweet:
+                if not tweet.tweet_text and not tweet.is_deleted:
+                    tweets_to_hydrate_from_twitter.append(tweet)
+            else:
+                tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
+                tweets_to_hydrate_from_twitter.append(tweet)
+                tweet.set_attributes_from_altmetric_post(post)
+                tweet.profile_id = profile_id
+                db.session.merge(tweet)
+
+                tweeter = Tweeter.query.get(screen_name)
                 if not tweeter:
                     tweeter = Tweeter(screen_name=screen_name)
-                tweeters[screen_name] = tweeter
+                    tweeter.set_attributes_from_altmetric_post(post)
+                    db.session.merge(tweeter)
 
-                tweeter.set_attributes_from_post(post)
-                new_objects.append(tweeter)
+    if tweets_to_hydrate_from_twitter:
+        tweet_ids = [tweet.tweet_id for tweet in tweets_to_hydrate_from_twitter]
+        get_and_save_tweet_text_and_tweeter_followers(tweet_ids)
+        commit(db)
+    else:
+        logger.info(u"no tweets to hydrate for profile {profile_id}".format(
+            profile_id=profile_id))
 
-    for obj in new_objects:
-        db.session.merge(obj)
-    commit(db)
-    
-    return new_objects
+    return
 
 
+# info from twitter at: https://dev.twitter.com/rest/reference/get/statuses/lookup
 
 class Tweet(db.Model):
     tweet_id = db.Column(db.Text, primary_key=True)
+    tiid = db.Column(db.Text, primary_key=True)  # alter table tweet add tiid text
     profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'))
     screen_name = db.Column(db.Text, db.ForeignKey('tweeter.screen_name'))
     tweet_timestamp = db.Column(db.DateTime())
     payload = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
-    tiid = db.Column(db.Text)  # alter table tweet add tiid text
     is_deleted = db.Column(db.Boolean)  # alter table tweet add is_deleted bool
     tweet_url = db.Column(db.Text) # alter table tweet add tweet_url text
     country = db.Column(db.Text) # alter table tweet add country text
@@ -259,32 +223,30 @@ class Tweet(db.Model):
     def has_country(self):
         return self.country != None
 
-    def set_attributes_from_post(self, post):
+    def set_attributes_from_altmetric_post(self, post):
         self.tweet_id = post["tweet_id"]
         self.screen_name = post["author"]["id_on_source"]                
         self.tweet_timestamp = post["posted_on"]
         if "geo" in post["author"]:
             self.country = post["author"]["geo"].get("country", None)
-            self.latitude = post["author"]["geo"].get("lt", None)
-            self.longitude = post["author"]["geo"].get("ln", None)
         return self
 
     def __repr__(self):
-        return u'<Tweet {tweet_id} {profile_id} {screen_name} {timestamp} {text}>'.format(
+        return u'<Tweet {tweet_id} {profile_id} {screen_name} {timestamp}>'.format(
             tweet_id=self.tweet_id, 
             profile_id=self.profile_id, 
             screen_name=self.screen_name, 
-            timestamp=self.tweet_timestamp, 
-            text=self.text)
+            timestamp=self.tweet_timestamp)
 
     def to_dict(self):
         attributes_to_ignore = [
+            "payload"
         ]
         ret = dict_from_dir(self, attributes_to_ignore)
         return ret
 
 
-twitter_aexample_contents = """{
+twitter_example_contents = """{
         "contributors": null, 
         "coordinates": null, 
         "created_at": "Sun Dec 16 22:42:55 +0000 2012", 

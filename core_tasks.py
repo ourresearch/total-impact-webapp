@@ -34,6 +34,9 @@ from totalimpactwebapp.aliases import alias_tuples_from_dict
 from totalimpactwebapp.aliases import canonical_aliases
 from totalimpactwebapp.aliases import merge_alias_dicts
 
+from totalimpactwebapp.profile import get_profile_from_id
+from totalimpactwebapp.profile import are_all_products_done_refreshing_from_profile_id
+
 from util import commit 
 
 import rate_limit
@@ -339,11 +342,14 @@ def after_refresh_complete(tiid, task_ids):
         return None
 
     product.embed_markup = product.get_embed_markup() 
-    product.parse_and_save_tweets()
     product.set_last_refresh_finished(myredis)
     db.session.merge(product)
     commit(db)
 
+    profile_bare_products = get_profile_from_id(product.profile_id, "id", include_product_relationships=False)
+    if are_all_products_done_refreshing_from_profile_id(profile_bare_products):
+        profile = get_profile_from_id(product.profile_id, "id", include_product_relationships=True)
+        profile.parse_and_save_tweets()
 
 
 

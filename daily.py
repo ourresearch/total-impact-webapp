@@ -7,9 +7,10 @@ from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
 from totalimpactwebapp.drip_email import log_drip_email
+from totalimpactwebapp.tweeter import Tweeter
+from totalimpactwebapp.tweeter import get_and_save_tweeter_followers
 from util import commit
 from util import dict_from_dir
-from totalimpactwebapp.tweet import save_product_tweets_for_profile
 from totalimpactwebapp import db
 from db_backup_to_s3 import upload_to_s3
 import tasks
@@ -320,11 +321,17 @@ def add_product_deets_for_everyone(url_slug=None, skip_until_url_slug=None):
         db.session.commit()
 
 
-def deduplicate_everyone():
+def dedup_everyone(url_slug=None, min_url_slug=None):
     q = db.session.query(Profile)
+    if url_slug:
+        q = q.filter(Profile.url_slug==url_slug)
+    elif min_url_slug:
+        q = q.filter(Profile.url_slug>=min_url_slug)
+
     for profile in windowed_query(q, Profile.url_slug, 25):
-        logger.info(u"deduplicate_everyone: {url_slug}".format(url_slug=profile.url_slug))
-        response = tasks.deduplicate.delay(profile.id)
+        logger.info(u"dedup: {url_slug}".format(url_slug=profile.url_slug))
+        response = profile.remove_duplicates()
+
 
 
 def mint_stripe_customers_for_all_profiles():
@@ -751,31 +758,6 @@ def run_through_altmetric_tweets(url_slug=None, min_url_slug=None):
         print "total_objects_saved", total_objects_saved
 
 
-def get_tweet_text(min_tiid=None):
-    from totalimpactwebapp.tweet import Tweet
-    from totalimpactwebapp.tweet import save_specific_tweets
-    from totalimpactwebapp.tweet import TwitterPager
-
-    from sqlalchemy.sql import text
-    q = db.session.query(Tweet).filter(Tweet.payload==None, Tweet.is_deleted==None)
-
-    pager = TwitterPager(os.getenv("TWITTER_CONSUMER_KEY"), 
-                        os.getenv("TWITTER_CONSUMER_SECRET"),
-                        os.getenv("TWITTER_ACCESS_TOKEN"), 
-                        default_max_pages=1)
-
-    tweet_batch = []
-    for tweet in windowed_query(q, Tweet.tweet_id, 100):
-        tweet_batch.append(tweet)
-        if len(tweet_batch) >= 100:
-            tweet_ids = [tweet.tweet_id for tweet in tweet_batch]
-            save_specific_tweets(tweet_ids, pager=pager)
-            tweet_batch = []
-    # run it again with stragglers
-    if tweet_batch:
-        tweet_ids = [tweet.tweet_id for tweet in tweet_batch]
-        save_specific_tweets(tweet_ids, pager=pager)
-
 
 def run_through_twitter_pages(url_slug=None, min_url_slug=None):
     if url_slug:
@@ -998,6 +980,33 @@ def refresh_tiid(tiid):
     return tiids
 
 
+def update_twitter_followers(max_pages):
+
+    last_updated_days_ago = 1
+    min_last_updated_date = datetime.datetime.utcnow() - datetime.timedelta(days=last_updated_days_ago)
+    if not max_pages:
+        max_pages = 10
+
+    for i in range(max_pages):
+        q = Tweeter.query.filter(Tweeter.is_deleted==None) \
+            .filter(Tweeter.last_collected_date < min_last_updated_date) \
+            .order_by(Tweeter.last_collected_date.asc()) \
+            .limit(100)
+        tweeters = q.all()
+        if tweeters:
+            get_and_save_tweeter_followers(tweeters)
+
+
+def update_tweet_text_for_live_profiles(url_slug=None, min_url_slug=None):
+    q = profile_query(url_slug, min_url_slug)
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.info(u"in update_tweet_text_for_live_profiles for {url_slug}".format(
+            url_slug=profile.url_slug))
+
+        profile.parse_and_save_tweets()
+
+
 def update_profiles(limit=5, url_slug=None):
     if url_slug:
         q = db.session.query(Profile.id).filter(Profile.url_slug==url_slug)
@@ -1020,9 +1029,9 @@ def update_profiles(limit=5, url_slug=None):
         try:
             if profile.is_live:
                 number_products_before = len(profile.tiids)
-                number_added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
-                number_products_after = len(profile.tiids)
-                if number_products_before==number_products_after:
+                added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+                number_products_after = number_products_before + len(added_tiids)
+                if len(added_tiids)==0:
                     logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
                         number_products_before=number_products_before,
                         url_slug=profile.url_slug))
@@ -1053,7 +1062,7 @@ def main(function, args):
         else:    
             email_report_to_everyone_who_needs_one(args["max_emails"])
     elif function=="dedup":
-        deduplicate_everyone()
+        dedup_everyone(args["url_slug"], args["min_url_slug"])
     elif function=="productdeets":
         add_product_deets_for_everyone(args["url_slug"], args["skip_until_url_slug"])
     elif function=="refsets":
@@ -1080,8 +1089,6 @@ def main(function, args):
         ip_deets()
     elif function=="run_through_altmetric_tweets":
         run_through_altmetric_tweets(args["url_slug"], args["min_url_slug"])
-    elif function=="tweet_text":
-        get_tweet_text()
     elif function=="new_metrics_for_live_profiles":
         new_metrics_for_live_profiles(args["url_slug"], args["min_url_slug"])
     elif function=="borked_pinboards_for_life_profiles":
@@ -1092,6 +1099,12 @@ def main(function, args):
         update_profiles(args["limit"], args["url_slug"])
     elif function=="refresh_tiid":
         refresh_tiid(args["tiid"])
+    elif function=="update_twitter_followers":
+        update_twitter_followers(args["max_pages"])
+    elif function=="update_tweet_text_for_live_profiles":
+        update_tweet_text_for_live_profiles(args["url_slug"], args["min_url_slug"])
+    else:
+        print "no matching function found, returning."
 
 
 
@@ -1113,6 +1126,7 @@ if __name__ == "__main__":
     parser.add_argument('--start_days_ago', type=int)
     parser.add_argument('--end_days_ago', type=int)
     parser.add_argument('--limit', type=int, default=5)
+    parser.add_argument('--max_pages', type=int)
 
     args = vars(parser.parse_args())
     function = args["function"]

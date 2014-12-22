@@ -41,10 +41,8 @@ class TestAltmetric_Com(ProviderTestCase):
         good_page = f.read()
         metrics_dict = self.provider._extract_metrics_via_fetch(good_page)
         print metrics_dict.keys()
-        expected_keys = ['altmetric_com:news', 'altmetric_com:news_names', 'altmetric_com:impressions', 'altmetric_com:demographics', 'altmetric_com:tweeter_followers', 'altmetric_com:tweets', 'altmetric_com:unique_tweeters', 'altmetric_com:unique_news']
+        expected_keys = ['altmetric_com:impressions', 'altmetric_com:demographics', 'altmetric_com:tweeter_followers', 'altmetric_com:tweets', 'altmetric_com:unique_tweeters', 'altmetric_com:posts']
         assert_items_equal(expected_keys, metrics_dict.keys())
-        assert_equals(metrics_dict["altmetric_com:news"], 33)
-        assert_equals(metrics_dict["altmetric_com:unique_news"], 22)
         assert_equals(metrics_dict["altmetric_com:tweets"], 2235)
         assert_equals(metrics_dict["altmetric_com:tweeter_followers"][0:3], [['busterzdad', 16], ['ggsimpsonrna', 129], ['JohnNosta', 17738]])
         assert_equals(metrics_dict["altmetric_com:impressions"], 5966059)
