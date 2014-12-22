@@ -19,8 +19,15 @@
                   <img src="/static/img/advisor-badge.png">
                </div>
 
+               <div class="profile-awards-loading" ng-show="loading.is('profileAwards')">
+                  <i class="fa fa-refresh fa-spin left"></i>
+                  <span class="loading-text">
+                     Loading badges&hellip;
+                  </span>
+               </div>
 
-               <ul class="profile-award-list" ng-include="'profile-award/profile-award.tpl.html'">
+               <ul class="profile-award-list"
+                   ng-include="'profile-award/profile-award.tpl.html'">
                </ul>
             </div>
 

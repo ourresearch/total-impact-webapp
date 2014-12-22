@@ -1,4 +1,5 @@
 @import 'elements';
+@import 'variables';
 
 div.loading {
    div.working {
@@ -99,7 +100,7 @@ div.profile-header {
          cursor: pointer;
       }
       div.bio-container {
-         width: 700px;
+         width: 640px; // allows space for the profile badges to the right
          textarea {
             width: 500px;
             height: 200px;
@@ -148,19 +149,26 @@ div.profile-header {
          div.advisor {
             margin-bottom: 20px;
          }
+         div.profile-awards-loading {
+            text-align: center;
+            color: #999;
+            font-weight: 300;
+            font-size: 14px;
+         }
          ul.profile-award-list {
 
             li.profile-award-container {
 
-               &:hover {
-                  .tweet-this {display:inline-block;}
-               }
-
-
-               // stuff that shows up on hover
                .tweet-this {
-                  display:none;
                   margin-left: 20px;
+                  float: left;
+                  margin-top: 2px;
+                  i.fa-twitter {
+                     color: #ddd;
+                     &:hover {
+                        color: @twitterColor;
+                     }
+                  }
                }
 
                div.popover {
@@ -172,6 +180,11 @@ div.profile-header {
                      font-family: Lato;
                      font-weight: normal;
                   }
+                  .click-to-learn-more {
+                     font-style: italic;
+                     display:block;
+                     color: @btn-info-border;
+                  }
                   .call-to-action {
                      color: @btn-info-border;
                      font-style: italic;
@@ -179,18 +192,21 @@ div.profile-header {
                }
 
                // the profile award proper
-               span.profile-award {
+               .profile-award {
                   color: #fff;
                   font-size: 14px;
                   font-weight: normal;
-                  cursor: default;
                   margin-right: 5px;
+                  display: inline-block;
 
                   span.text {
                      .border-radius(3px, 3px, 0px, 0px);
                      padding: 4px 9px;
                      background: #555;
                      border: 1px solid #555;
+                     float: left;
+                     text-align: center;
+                     width: 110px;
                   }
 
                }
@@ -200,8 +216,12 @@ div.profile-header {
                // easier to override for levels this way.
                span.icon {
                   .border-radius(0px, 0px, 3px, 3px);
-                  padding: 4px 9px;
+                  padding: 4px 0;
                   border: 1px solid;
+                  float:left;
+                  width: 35px;
+                  text-align: center;
+
                }
 
 

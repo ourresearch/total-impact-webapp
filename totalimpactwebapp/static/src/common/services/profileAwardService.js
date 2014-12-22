@@ -3,6 +3,7 @@ angular.module('services.profileAwardService', [
 ])
 .factory("ProfileAwardService", function($q,
                                          $timeout,
+                                         Loading,
                                          Update,
                                          Users,
                                          ProfileAwards){
@@ -14,6 +15,7 @@ angular.module('services.profileAwardService', [
   function get(url_slug){
     console.log("calling ProfileAwardService.get() with ", url_slug)
 
+    Loading.start('profileAwards')
     loading = true
     return ProfileAwards.get(
       {id: url_slug},
@@ -24,9 +26,11 @@ angular.module('services.profileAwardService', [
         awards.globalReach = _.findWhere(resp, {name: "Global Reach"})
         console.log("awards.globalReach", awards.globalReach)
         loading = false
+        Loading.finish("profileAwards")
       },
 
       function(resp){
+        Loading.finish("profileAwards")
         console.log("ProfileAwards got a failure response", resp)
         if (resp.status == 404){
           // do something? i dunno

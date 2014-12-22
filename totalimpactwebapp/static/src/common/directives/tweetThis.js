@@ -3,11 +3,15 @@ angular.module("directives.tweetThis", [])
     return {
       restrict: 'E',
       replace: true,
-      template: '<a class="tweet-this btn btn-default btn-xs" href="https://twitter.com/intent/tweet' +
+      template: '<a class="tweet-this" href="https://twitter.com/intent/tweet' +
         '?original_referer={{ myUrl }}' +
         '&text={{ textToTweet }}' +
         '&url={{ myUrl }}' +
-        '&via=impactstory"><i class="fa fa-twitter left"></i>Tweet it</a>',
+        '&via=impactstory" ' +
+        'tooltip="Tweet it!"' +
+        'target="_blank"' +
+        'tooltip-placement="left">' +
+        '<i class="fa fa-twitter left"></i></a>',
       link: function(scope, elem, attr, ctrl){
         scope.myUrl = encodeURI($location.absUrl())
         attr.$observe('text', function(newVal){

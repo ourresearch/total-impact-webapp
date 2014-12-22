@@ -7709,7 +7709,7 @@ div.profile-header div.my-vitals .editable-click {
   cursor: pointer;
 }
 div.profile-header div.my-vitals div.bio-container {
-  width: 700px;
+  width: 640px;
 }
 div.profile-header div.my-vitals div.bio-container textarea {
   width: 500px;
@@ -7755,12 +7755,22 @@ div.profile-header div.my-vitals div.my-metrics {
 div.profile-header div.my-vitals div.my-metrics div.advisor {
   margin-bottom: 20px;
 }
-div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container:hover .tweet-this {
-  display: inline-block;
+div.profile-header div.my-vitals div.my-metrics div.profile-awards-loading {
+  text-align: center;
+  color: #999;
+  font-weight: 300;
+  font-size: 14px;
 }
 div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container .tweet-this {
-  display: none;
   margin-left: 20px;
+  float: left;
+  margin-top: 2px;
+}
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container .tweet-this i.fa-twitter {
+  color: #ddd;
+}
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container .tweet-this i.fa-twitter:hover {
+  color: #55acee;
 }
 div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container div.popover {
   font-size: 15px;
@@ -7772,18 +7782,23 @@ div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile
   font-family: Lato;
   font-weight: normal;
 }
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container div.popover .click-to-learn-more {
+  font-style: italic;
+  display: block;
+  color: #46b8da;
+}
 div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container div.popover .call-to-action {
   color: #46b8da;
   font-style: italic;
 }
-div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container .profile-award {
   color: #fff;
   font-size: 14px;
   font-weight: normal;
-  cursor: default;
   margin-right: 5px;
+  display: inline-block;
 }
-div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container span.profile-award span.text {
+div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container .profile-award span.text {
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -webkit-border-bottom-left-radius: 0px;
@@ -7802,6 +7817,9 @@ div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile
   padding: 4px 9px;
   background: #555;
   border: 1px solid #555;
+  float: left;
+  text-align: center;
+  width: 110px;
 }
 div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container span.icon {
   -webkit-border-top-right-radius: 0px;
@@ -7819,8 +7837,11 @@ div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  padding: 4px 9px;
+  padding: 4px 0;
   border: 1px solid;
+  float: left;
+  width: 35px;
+  text-align: center;
 }
 div.profile-header div.my-vitals div.my-metrics ul.profile-award-list li.profile-award-container.level-1 span.icon {
   background: gold;
@@ -10233,11 +10254,8 @@ div.product-list-page div.header div.header-content div.genre-summary div.genre-
   float: right;
   margin: 17px 15px 0 0;
   color: #999;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 300;
-}
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top div.cards-loading i {
-  font-size: 90%;
 }
 div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card {
   float: right;
@@ -10362,6 +10380,23 @@ div.product-list-page div.product-list-controls div.display-controls div.show-tw
   color: #55acee;
   font-size: 20px;
   vertical-align: middle;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets label span.num-tweets {
+  font-weight: 300;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets {
+  color: #ccc;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets label {
+  cursor: not-allowed;
+  font-weight: 300;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets i.fa-twitter {
+  color: #ddd;
+}
+div.product-list-page div.product-list-controls div.display-controls div.show-tweets.tweets-loading {
+  color: #999;
+  font-weight: 300;
 }
 div.product-list-page div.product-list-controls div.display-controls div.sort-controls {
   display: inline-block;
