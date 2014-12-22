@@ -524,8 +524,8 @@ def patch_user_about(profile_id):
 
 
 
-@app.route("/profile/<profile_id>/refresh_status", methods=["GET"])
-@app.route("/profile/<profile_id>/refresh_status.json", methods=["GET"])
+@app.route("/profile/<profile_id>/refresh-status", methods=["GET"])
+@app.route("/profile/<profile_id>/refresh-status.json", methods=["GET"])
 def refresh_status(profile_id):
     local_sleep(0.5) # client to webapp plus one trip to database
     id_type = request.args.get("id_type", "url_slug")  # url_slug is default    

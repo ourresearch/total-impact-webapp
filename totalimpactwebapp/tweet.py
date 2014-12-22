@@ -45,7 +45,12 @@ def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, twe
                 logger.info(u"updated tweet payload for {tweet_id} {tiid}".format(
                     tweet_id=tweet_id, tiid=tweet.tiid))
                 if "user" in payload_dict:
-                    tweet.tweeter.set_attributes_from_twitter_data(payload_dict["user"])
+                    try:
+                        tweet.tweeter.set_attributes_from_twitter_data(payload_dict["user"])
+                    except AttributeError:
+                        tweeter = Tweeter(screen_name=tweet.screen_name)
+                        tweeter.set_attributes_from_twitter_data(payload_dict["user"])
+                        tweet.tweeter = tweeter
                     logger.info(u"updated tweeter followers for {screen_name}".format(
                         screen_name=tweet.tweeter.screen_name))
             
@@ -145,13 +150,14 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
             else:
                 if not Tweet.query.get((tweet_id, tiid)):
                     tweet = Tweet(tweet_id=tweet_id, tiid=tiid)
-                    tweets_to_hydrate_from_twitter.append(tweet)
                     tweet.set_attributes_from_altmetric_post(post)
                     tweet.profile_id = profile_id
-                    if not tweet.tweeter:
-                        tweeter = Tweeter(screen_name=screen_name)
-                        tweeter.set_attributes_from_altmetric_post(post)
+                    tweets_to_hydrate_from_twitter.append(tweet)
                     db.session.add(tweet)
+                if not tweet.tweeter:
+                    tweeter = Tweeter(screen_name=screen_name)
+                    tweeter.set_attributes_from_altmetric_post(post)
+                    db.session.add(tweeter)
 
     logger.info(u"before tweets_to_hydrate_from_twitter for {profile_id}".format(
         profile_id=profile_id))

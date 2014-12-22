@@ -35,7 +35,9 @@ from totalimpactwebapp.aliases import canonical_aliases
 from totalimpactwebapp.aliases import merge_alias_dicts
 
 from totalimpactwebapp.profile import get_profile_from_id
-from totalimpactwebapp.profile import are_all_products_done_refreshing_from_profile_id
+
+from totalimpactwebapp.refresh_status import RefreshStatus
+from totalimpactwebapp.refresh_status import save_profile_refresh_status
 
 from util import commit 
 
@@ -329,6 +331,7 @@ def provider_run(aliases_dict, tiid, method_name, provider_name):
 
 
 
+
 @task(priority=0, base=ClearDbSessionTask)
 def after_refresh_complete(tiid, task_ids):
     # logger.info(u"here in after_refresh_complete with {tiid}".format(
@@ -347,10 +350,15 @@ def after_refresh_complete(tiid, task_ids):
     commit(db)
 
     profile_bare_products = get_profile_from_id(product.profile_id, "id", include_product_relationships=False)
-    if are_all_products_done_refreshing_from_profile_id(profile_bare_products):
+    if profile_bare_products.just_finished_profile_refresh:
+        save_profile_refresh_status(profile_bare_products, RefreshStatus.states["DEDUP_START"])
+
         db.session.expunge(profile_bare_products)
         profile = get_profile_from_id(product.profile_id, "id", include_product_relationships=True)
+        profile.remove_duplicates()
+        save_profile_refresh_status(profile, RefreshStatus.states["TWEETS_START"])
         profile.parse_and_save_tweets()
+        save_profile_refresh_status(profile, RefreshStatus.states["ALL_DONE"])
 
 
 
