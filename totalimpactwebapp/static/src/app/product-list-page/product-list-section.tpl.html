@@ -65,13 +65,39 @@
    </div>
 
    <div class="display-controls">
-      <div class="show-tweets">
-         <label for="show-tweets-checkbox">
-            <i class="fa fa-twitter"></i>
-            <span class="text">Show tweets</span>
-         </label>
-         <input type="checkbox" id="show-tweets-checkbox" ng-model="ProductList.ui.showTweets" />
+      <div class="show-tweets tweets-loaded" ng-show="!loading.is('tweets')">
+         <div class="has-tweets" ng-show="ProductList.numTweets()">
+            <label for="show-tweets-checkbox">
+               <i class="fa fa-twitter"></i>
+               <span class="text">
+                  Show tweets
+                  <span class="num-tweets">
+                     ({{ ProductList.numTweets() }})
+                  </span>
+               </span>
+            </label>
+            <input type="checkbox"
+                   id="show-tweets-checkbox"
+                   ng-model="ProductList.ui.showTweets" />
+         </div>
+         <div class="has-no-tweets"
+              tooltip="We haven't found any tweets for these products."
+              tooltip-placement="left"
+              ng-show="!ProductList.numTweets()">
+            <label for="disabled-show-tweets-checkbox">
+               <i class="fa fa-twitter"></i>
+               <span class="text">Show tweets</span>
+            </label>
+            <input type="checkbox"
+                   id="disabled-show-tweets-checkbox"
+                   disabled="disabled" />
+         </div>
       </div>
+       <div class="show-tweets tweets-loading" ng-show="loading.is('tweets')">
+          <i class="fa fa-refresh icon-spin left"></i>
+          loading tweets&hellip;
+       </div>
+
 
       <div class="sort-controls">
          <div class="btn-group sort-select-group" dropdown>

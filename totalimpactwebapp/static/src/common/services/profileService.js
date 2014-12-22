@@ -18,7 +18,6 @@ angular.module('services.profileService', [
                                       SelfCancellingProductsResource){
 
     var loading = true
-    var tweetsLoading = true
     var data = {
       products:[]
     }
@@ -53,11 +52,11 @@ angular.module('services.profileService', [
 
 
     function getTweets(url_slug){
-        tweetsLoading = true
+      console.log("getting tweets")
       return SelfCancellingProfileTweetsResource.createResource().get(
         {id: url_slug},
         function(resp){
-          tweetsLoading = false
+          Loading.finish("tweets")
         }
       ).$promise
     }
@@ -65,6 +64,7 @@ angular.module('services.profileService', [
 
     function get(url_slug){
       data.url_slug = url_slug
+      Loading.start("tweets")
 
       if (!data.products){
         getProductStubs(url_slug)
@@ -244,9 +244,6 @@ angular.module('services.profileService', [
       data: data,
       loading: loading,
       isLoading: isLoading,
-      tweetsAreLoading: function(){
-        return tweetsLoading
-      },
       get: get,
       productByTiid: productByTiid,
       removeProducts: removeProducts,

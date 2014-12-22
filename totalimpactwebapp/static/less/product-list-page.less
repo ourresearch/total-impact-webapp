@@ -75,11 +75,10 @@ div.product-list-page {
                   clear:both;
                }
                div.cards-loading {
-                  i {font-size: 90%;}
                   float:right;
                   margin: 17px 15px 0 0;
                   color: #999;
-                  font-size: 13px;
+                  font-size: 14px;
                   font-weight: 300;
                }
 
@@ -241,6 +240,26 @@ div.product-list-page {
                   font-size: 20px;
                   vertical-align: middle;
                }
+               span.num-tweets {
+                  font-weight: 300;
+               }
+            }
+
+            .has-tweets {
+
+            }
+            .has-no-tweets {
+               color: #ccc;
+               label {
+                  cursor: not-allowed;
+                  font-weight: 300;
+               }
+               i.fa-twitter { color: #ddd;}
+            }
+
+            &.tweets-loading {
+               color: #999;
+               font-weight: 300;
             }
          }
 

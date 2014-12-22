@@ -100,14 +100,28 @@ angular.module("services.productList", [])
     }
   }
 
+  var productsInThisCollection = function(){
+    return _.filter(ProfileService.data.products, filterFn)
+
+  }
+
+
   var len = function(){
-    var filtered = _.filter(ProfileService.data.products, filterFn)
-    return filtered.length
+    return productsInThisCollection().length
   }
 
   var selectEverything = function(){
-    var filtered = _.filter(ProfileService.data.products, filterFn)
-    SelectedProducts.addFromObjects(filtered)
+    SelectedProducts.addFromObjects(productsInThisCollection())
+  }
+
+  var numTweets = function(){
+    var count = 0
+    _.each(productsInThisCollection(), function(product){
+      if (product.tweets) {
+        count += product.tweets.length
+      }
+    })
+    return count
   }
 
 
@@ -116,6 +130,7 @@ angular.module("services.productList", [])
     removeSelectedProducts: removeSelectedProducts,
     startRender: startRender,
     finishRender: finishRender,
+    numTweets: numTweets,
     ui: ui,
     setFilterFn: function(fn){
       filterFn = fn
