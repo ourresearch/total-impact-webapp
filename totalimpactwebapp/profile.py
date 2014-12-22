@@ -451,7 +451,12 @@ class Profile(db.Model):
             if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
                 twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
         if twitter_details_dict:
+            logger.info(u"going into hydrate_twitter_text_and_followers for profile {url_slug}".format(
+                url_slug=self.url_slug))
             hydrate_twitter_text_and_followers(self.id, twitter_details_dict)
+        else:
+            logger.info(u"no need to hydrate_twitter_text_and_followers for profile {url_slug}".format(
+                url_slug=self.url_slug))
 
 
     def update_all_linked_accounts(self, add_even_if_removed=False):
