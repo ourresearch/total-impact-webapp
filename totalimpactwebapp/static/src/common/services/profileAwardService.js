@@ -26,7 +26,7 @@ angular.module('services.profileAwardService', [
         awards.globalReach = _.findWhere(resp, {name: "Global Reach"})
         console.log("awards.globalReach", awards.globalReach)
         loading = false
-        Loading.finish("profileAwards")  
+        Loading.finish("profileAwards")
       },
 
       function(resp){

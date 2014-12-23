@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-21
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-22
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6414,7 +6414,7 @@ angular.module('services.profileAwardService', [
         awards.globalReach = _.findWhere(resp, {name: "Global Reach"})
         console.log("awards.globalReach", awards.globalReach)
         loading = false
-        Loading.finish("profileAwards")  
+        Loading.finish("profileAwards")
       },
 
       function(resp){
@@ -6502,14 +6502,18 @@ angular.module('services.profileService', [
     function get(url_slug){
       data.url_slug = url_slug
       Loading.start("tweets")
+      console.log("in profileService.get()")
+
 
       if (!data.products){
         getProductStubs(url_slug)
+          console.log("in profileService.get(), calling getProductStubs")
           .then(function(resp){
+            console.log("in profileService.get(), calling getTweets()")
             return getTweets(url_slug)
           })
           .then(function(tweetsResp){
-            console.log("in the profileservice.get(), got the tweets in promise!", tweetsResp)
+            console.log("in profileService.get(), got tweets back", tweetsResp)
             _.each(data.products, function(product){
               var myTweets = tweetsResp.tweets[product.tiid]
               if (typeof myTweets === "undefined") {
@@ -6522,9 +6526,10 @@ angular.module('services.profileService', [
 
       loading = true
       return SelfCancellingProductsResource.createResource().get(
-        {id: url_slug, embedded:false}, // pretend is never embedded for now
+        {id: url_slug, embedded:false}, // pretend it's never embedded, for now
         function(resp){
 //          _.each(data, function(v, k){delete data[k]})
+            console.log("in profileService.get(), got ProductsResource() data back", resp)
 
           _.each(resp.list, function(newProduct){
             var oldProduct = getProductFromTiid(newProduct.tiid)
@@ -6543,11 +6548,14 @@ angular.module('services.profileService', [
           Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
               console.log("updater (resolved):", msg)
+              console.log("in profileService.get(), Update.showUpdateModal() resolved its promise: '" + msg + "'")
+
               // this won't overwrite anything, just adds new products.
               // i think we don't need it maybe? not sure so leaving it tho.
               get(url_slug)
             },
             function(msg){
+              console.log("in profileService.get(), Update.showUpdateModal() rejected its promise: '" + msg + "'")
               // great, everything's all up-to-date.
             }
           )
