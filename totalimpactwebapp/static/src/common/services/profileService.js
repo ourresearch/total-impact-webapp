@@ -69,8 +69,8 @@ angular.module('services.profileService', [
 
 
       if (!data.products){
+        console.log("in profileService.get(), calling getProductStubs")
         getProductStubs(url_slug)
-          console.log("in profileService.get(), calling getProductStubs")
           .then(function(resp){
             console.log("in profileService.get(), calling getTweets()")
             return getTweets(url_slug)
