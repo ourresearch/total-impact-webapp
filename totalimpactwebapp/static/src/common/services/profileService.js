@@ -113,8 +113,8 @@ angular.module('services.profileService', [
               console.log("updater (resolved):", msg)
               console.log("in profileService.get(), Update.showUpdateModal() resolved its promise: '" + msg + "'")
 
-              // this won't overwrite anything, just adds new products.
-              // i think we don't need it maybe? not sure so leaving it tho.
+              // our old products list probably has duplicates in it. ditch it.
+              data.products.length = 0
               get(url_slug)
             },
             function(msg){
