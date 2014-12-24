@@ -65,14 +65,11 @@ angular.module('services.profileService', [
     function get(url_slug){
       data.url_slug = url_slug
       Loading.start("tweets")
-      console.log("in profileService.get()...current data.products:", data.products)
 
 
       if (!data.products || !data.products.length){
-        console.log("in profileService.get(), calling getProductStubs")
         getProductStubs(url_slug)
           .then(function(resp){
-            console.log("in profileService.get(), calling getTweets()")
             return getTweets(url_slug)
           })
           .then(function(tweetsResp){
@@ -91,7 +88,6 @@ angular.module('services.profileService', [
       return SelfCancellingProductsResource.createResource().get(
         {id: url_slug, embedded:false}, // pretend it's never embedded, for now
         function(resp){
-//          _.each(data, function(v, k){delete data[k]})
             console.log("in profileService.get(), got ProductsResource() data back", resp)
 
           _.each(resp.list, function(newProduct){
@@ -110,7 +106,6 @@ angular.module('services.profileService', [
           // updating modal
           Update.showUpdateModal(url_slug, resp.is_refreshing).then(
             function(msg){
-              console.log("updater (resolved):", msg)
               console.log("in profileService.get(), Update.showUpdateModal() resolved its promise: '" + msg + "'")
 
               // our old products list probably has duplicates in it. ditch it.
