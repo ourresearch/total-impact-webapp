@@ -3338,7 +3338,7 @@ angular.module( 'update.update', [
     var modalInstance
     var pollingInterval = 10  // 10ms...as soon as we get server resp, ask again.
     var deferred
-    var isDeduping
+    var isCrunching
 
     var clear = function(){
       status = {}
@@ -3354,16 +3354,16 @@ angular.module( 'update.update', [
           status = resp
           if (resp.percent_complete == 100){
             console.log("tick() satisfied success criteria, calling dedup")
-            status.isDeduping = true
-            UsersProducts.dedup({id: url_slug}, {}).$promise.then(
+            status.isCrunching = true
+            UsersProducts.after_refresh_cleanup({id: url_slug}, {}).$promise.then(
               function(resp){
-                console.log("dedup successful!", resp)
+                console.log("after-refresh-cleanup successful!", resp)
               },
               function(resp){
-                console.log("dedup failed :(", resp)
+                console.log("after-refresh-cleanup failed :(", resp)
               }
             ).finally(function(resp){
-                console.log("cleaning up after dedup"),
+                console.log("cleaning up after after-refresh-cleanup"),
                 modalInstance.close()
                 deferred.resolve("Update finished!")
                 clear()
@@ -3423,8 +3423,8 @@ angular.module( 'update.update', [
       getNumUpdating: function() {
         return status.num_refreshing
       },
-      isDeduping: function(){
-        return status.isDeduping
+      isCrunching: function(){
+        return status.isCrunching
       }
     }
   })
@@ -4737,9 +4737,9 @@ angular.module('resources.users',['ngResource'])
         refresh: {
           method: "POST"
         },
-        dedup: {
+        after_refresh_cleanup: {
           method: "POST",
-          params: {action: "deduplicate"}
+          params: {action: "after-refresh-cleanup"}
         }
       }
     )

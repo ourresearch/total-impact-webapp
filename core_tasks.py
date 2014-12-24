@@ -347,10 +347,6 @@ def after_refresh_complete(tiid, task_ids):
     commit(db)
 
     profile_bare_products = get_profile_from_id(product.profile_id, "id", include_product_relationships=False)
-    if are_all_products_done_refreshing_from_profile_id(profile_bare_products):
-        db.session.expunge(profile_bare_products)
-        profile = get_profile_from_id(product.profile_id, "id", include_product_relationships=True)
-        profile.parse_and_save_tweets()
 
 
 

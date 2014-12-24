@@ -707,8 +707,13 @@ def profile_products_modify(id):
 
     profile = get_user_for_response(id, request)
 
-    if request.method == "POST" and action == "deduplicate":
+    if request.method == "POST" and action == "after-refresh-cleanup":
+        logger.info(u"deduplicating for {url_slug}".format(
+            url_slug=profile.url_slug))
         deleted_tiids = profile.remove_duplicates()
+        logger.info(u"parse_and_save_tweets for {url_slug}".format(
+            url_slug=profile.url_slug))
+        profile.parse_and_save_tweets()
         resp = {"deleted_tiids": deleted_tiids}
         # local_sleep(30)
 
