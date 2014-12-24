@@ -68,7 +68,7 @@ angular.module('services.profileService', [
       console.log("in profileService.get()...current data.products:", data.products)
 
 
-      if (!data.products && data.products.length){
+      if (!data.products || !data.products.length){
         console.log("in profileService.get(), calling getProductStubs")
         getProductStubs(url_slug)
           .then(function(resp){
