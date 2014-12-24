@@ -6502,10 +6502,10 @@ angular.module('services.profileService', [
     function get(url_slug){
       data.url_slug = url_slug
       Loading.start("tweets")
-      console.log("in profileService.get()")
+      console.log("in profileService.get()...current data.products:", data.products)
 
 
-      if (!data.products.length){
+      if (!data.products && data.products.length){
         console.log("in profileService.get(), calling getProductStubs")
         getProductStubs(url_slug)
           .then(function(resp){
