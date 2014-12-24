@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-23
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-24
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6505,7 +6505,7 @@ angular.module('services.profileService', [
       console.log("in profileService.get()")
 
 
-      if (!data.products){ 
+      if (!data.products.length){
         console.log("in profileService.get(), calling getProductStubs")
         getProductStubs(url_slug)
           .then(function(resp){
