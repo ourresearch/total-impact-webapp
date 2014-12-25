@@ -10202,6 +10202,9 @@ div.product-list-page div.header div.header-content.country-header-content h2 .i
 div.product-list-page div.header div.header-content.country-header-content h2 .intro-text span.count {
   font-weight: 900;
 }
+div.product-list-page div.header div.header-content.country-header-content h2 span.flag {
+  vertical-align: middle;
+}
 div.product-list-page div.header div.header-content.country-header-content h2 .based-on {
   font-size: 16px;
   font-weight: 300;

@@ -38,13 +38,14 @@ angular.module("productListPage", [
     CountryNames,
     Page) {
 
+    var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
     Page.setName("map")
     ProductList.startRender($scope)
 
     $scope.ProductList = ProductList
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
+    $scope.countryCode = myCountryCode
 
-    var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
     var filterFn = function(product){
       if (product.countries_str && product.countries_str.indexOf(myCountryCode) > -1){
         return true

@@ -3,7 +3,7 @@
    <div class="header">
       <div class="header-content country-header-content">
 
-         <h2>
+         <h2 class="f16">
             <span class="intro-text">
                <span class="count">
                   {{ ProductList.len() }} products
@@ -12,6 +12,7 @@
             </span>
             <span class="text">
                {{ countryName }}
+               <span class="flag {{ countryCode.toLowerCase() }}"></span>
             </span>
             <span class="based-on">
                based on tweets, Mendeley readers, and Impactstory views

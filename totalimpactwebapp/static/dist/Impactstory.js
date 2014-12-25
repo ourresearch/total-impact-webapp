@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-24
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-25
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -1252,13 +1252,14 @@ angular.module("productListPage", [
     CountryNames,
     Page) {
 
+    var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
     Page.setName("map")
     ProductList.startRender($scope)
 
     $scope.ProductList = ProductList
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
+    $scope.countryCode = myCountryCode
 
-    var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
     var filterFn = function(product){
       if (product.countries_str && product.countries_str.indexOf(myCountryCode) > -1){
         return true
@@ -8525,7 +8526,7 @@ angular.module("product-list-page/country-page.tpl.html", []).run(["$templateCac
     "   <div class=\"header\">\n" +
     "      <div class=\"header-content country-header-content\">\n" +
     "\n" +
-    "         <h2>\n" +
+    "         <h2 class=\"f16\">\n" +
     "            <span class=\"intro-text\">\n" +
     "               <span class=\"count\">\n" +
     "                  {{ ProductList.len() }} products\n" +
@@ -8534,6 +8535,7 @@ angular.module("product-list-page/country-page.tpl.html", []).run(["$templateCac
     "            </span>\n" +
     "            <span class=\"text\">\n" +
     "               {{ countryName }}\n" +
+    "               <span class=\"flag {{ countryCode.toLowerCase() }}\"></span>\n" +
     "            </span>\n" +
     "            <span class=\"based-on\">\n" +
     "               based on tweets, Mendeley readers, and Impactstory views\n" +
