@@ -17,6 +17,10 @@ angular.module('services.profileAwardService', [
 
     Loading.start('profileAwards')
     loading = true
+
+    // remove the old awards
+    for (var myAward in awards) delete awards[myAward]
+
     return ProfileAwards.get(
       {id: url_slug},
       function(resp){
