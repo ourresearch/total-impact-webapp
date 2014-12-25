@@ -123,7 +123,7 @@
    <ul class="products-list" ng-if="profileService.hasFullProducts()">
       <li class="product genre-{{ product.genre }}"
           ng-class="{first: $first}"
-          ng-repeat="product in profileService.data.products | filter: productsFilter | orderBy: ProductListSort.get().keys"
+          ng-repeat="product in profileService.data.products | filter: ProductList.filters.products | orderBy: ProductListSort.get().keys"
           id="{{ product.tiid }}"
           on-repeat-finished>
 
@@ -168,7 +168,7 @@
             <ul>
                <li class="tweet"
                    ng-include="'tweet/tweet.tpl.html'"
-                   ng-repeat="tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: tweetsFilterFn | limitTo: 5)">
+                   ng-repeat="tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: ProductList.filters.tweets | limitTo: 5)">
                 </li>
             </ul>
             <div class="link-to-more-tweets" ng-show="product.tweets.length > filteredTweets.length">

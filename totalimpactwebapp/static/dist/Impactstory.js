@@ -1268,16 +1268,14 @@ angular.module("productListPage", [
       }
     }
 
-
-
-    ProductList.setFilterFn(filterFn)
+    // only show tweets if they are for sure from this country
+    ProductList.filters.tweets = function(tweet){
+      return tweet.country === myCountryCode
+    }
+    ProductList.filters.products = filterFn
 
     $scope.productsFilter = filterFn
 
-    // only show tweets if they are for sure from this country
-    $scope.tweetsFilterFn = function(tweet){
-      return tweet.country === myCountryCode
-    }
 
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -1336,11 +1334,9 @@ angular.module("productListPage", [
       }
     }
 
-    ProductList.setFilterFn(filterFn)
+    ProductList.filters.products = filterFn
+    ProductList.filters.tweets = function(){return true}
     $scope.productsFilter = filterFn
-    $scope.tweetsFilterFn = function(tweet){
-      return true
-    }
 
 
     $scope.ProductList = ProductList
@@ -6065,6 +6061,19 @@ angular.module("services.productList", [])
   var ui = {}
   var filterFn
 
+  var filters = {
+    products: function(product){
+      return true
+    },
+
+    // this is meant to be overriden by the country collection ctrl,
+    // or anyone else who only wants to count/display particular
+    // tweets from each product.
+    tweets: function (tweet) {
+      return true
+    }
+  }
+
 
   $rootScope.$watch(function(){
     return ui.showTweets
@@ -6076,7 +6085,6 @@ angular.module("services.productList", [])
       $location.search("show_tweets", null)
     }
   })
-
 
 
 
@@ -6147,10 +6155,9 @@ angular.module("services.productList", [])
   }
 
   var productsInThisCollection = function(){
-    return _.filter(ProfileService.data.products, filterFn)
+    return _.filter(ProfileService.data.products, filters.products)
 
   }
-
 
   var len = function(){
     return productsInThisCollection().length
@@ -6164,11 +6171,17 @@ angular.module("services.productList", [])
     var count = 0
     _.each(productsInThisCollection(), function(product){
       if (product.tweets) {
-        count += product.tweets.length
+        var filteredTweets = _.filter(
+          product.tweets,
+          filters.tweets
+        )
+
+        count += filteredTweets.length
       }
     })
     return count
   }
+
 
 
   return {
@@ -6181,8 +6194,12 @@ angular.module("services.productList", [])
     setFilterFn: function(fn){
       filterFn = fn
     },
+    setTweetsFilterFn: function(fn){
+      filters.tweets = fn
+    },
     len: len,
-    selectEverything: selectEverything
+    selectEverything: selectEverything,
+    filters: filters
 
   }
 
@@ -8734,7 +8751,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "   <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
     "      <li class=\"product genre-{{ product.genre }}\"\n" +
     "          ng-class=\"{first: $first}\"\n" +
-    "          ng-repeat=\"product in profileService.data.products | filter: productsFilter | orderBy: ProductListSort.get().keys\"\n" +
+    "          ng-repeat=\"product in profileService.data.products | filter: ProductList.filters.products | orderBy: ProductListSort.get().keys\"\n" +
     "          id=\"{{ product.tiid }}\"\n" +
     "          on-repeat-finished>\n" +
     "\n" +
@@ -8779,7 +8796,7 @@ angular.module("product-list-page/product-list-section.tpl.html", []).run(["$tem
     "            <ul>\n" +
     "               <li class=\"tweet\"\n" +
     "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
-    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: tweetsFilterFn | limitTo: 5)\">\n" +
+    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: ProductList.filters.tweets | limitTo: 5)\">\n" +
     "                </li>\n" +
     "            </ul>\n" +
     "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > filteredTweets.length\">\n" +

@@ -19,6 +19,19 @@ angular.module("services.productList", [])
   var ui = {}
   var filterFn
 
+  var filters = {
+    products: function(product){
+      return true
+    },
+
+    // this is meant to be overriden by the country collection ctrl,
+    // or anyone else who only wants to count/display particular
+    // tweets from each product.
+    tweets: function (tweet) {
+      return true
+    }
+  }
+
 
   $rootScope.$watch(function(){
     return ui.showTweets
@@ -30,7 +43,6 @@ angular.module("services.productList", [])
       $location.search("show_tweets", null)
     }
   })
-
 
 
 
@@ -101,10 +113,9 @@ angular.module("services.productList", [])
   }
 
   var productsInThisCollection = function(){
-    return _.filter(ProfileService.data.products, filterFn)
+    return _.filter(ProfileService.data.products, filters.products)
 
   }
-
 
   var len = function(){
     return productsInThisCollection().length
@@ -118,11 +129,17 @@ angular.module("services.productList", [])
     var count = 0
     _.each(productsInThisCollection(), function(product){
       if (product.tweets) {
-        count += product.tweets.length
+        var filteredTweets = _.filter(
+          product.tweets,
+          filters.tweets
+        )
+
+        count += filteredTweets.length
       }
     })
     return count
   }
+
 
 
   return {
@@ -135,8 +152,12 @@ angular.module("services.productList", [])
     setFilterFn: function(fn){
       filterFn = fn
     },
+    setTweetsFilterFn: function(fn){
+      filters.tweets = fn
+    },
     len: len,
-    selectEverything: selectEverything
+    selectEverything: selectEverything,
+    filters: filters
 
   }
 
