@@ -27,12 +27,13 @@ angular.module('app', [
   'signup',
   'passwordReset',
   'profileMap',
+  'fansPage',
   'giftSubscriptionPage',
   'productPage',
   'productListPage',
   'services.genreConfigs',
   'accountPage',
-  'services.profileService',
+  'services.profileProducts',
   'services.profileAboutService',
   'profileSidebar',
   'ui.sortable',
@@ -44,6 +45,7 @@ angular.module('app', [
   'services.keyMetrics',
   'services.cardService',
   'services.map',
+  'services.fansService',
   'settings',
   'xeditable',
   'ngProgress'
@@ -141,14 +143,14 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
-                                                     ProfileService,
+                                                     ProfileProducts,
                                                      ProfileAboutService,
                                                      ProductPage,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
   $rootScope.security = security
-  $scope.profileService = ProfileService
+  $scope.profileService = ProfileProducts
   $scope.profileAboutService = ProfileAboutService
 
   $rootScope.adminMode = $location.search().admin == 42

@@ -22,7 +22,7 @@ angular.module('passwordReset', [
                                               Loading,
                                               Page,
                                               UsersPassword,
-                                              ProfileService,
+                                              ProfileProducts,
                                               ProfileAboutService,
                                               UserMessage,
                                               security){

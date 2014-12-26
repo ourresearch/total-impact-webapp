@@ -26,7 +26,7 @@ angular.module('profileLinkedAccounts', [
                                                     Page,
                                                     $routeParams,
                                                     AllTheAccounts,
-                                                    ProfileService,
+                                                    ProfileProducts,
                                                     ProfileAboutService,
                                                     currentUser){
 

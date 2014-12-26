@@ -9,7 +9,7 @@ angular.module("services.page")
                             KeyMetrics,
                             KeyProducts,
                             Loading,
-                            ProfileService){
+                            ProfileProducts){
     var title = '';
     var notificationsLoc = "header"
     var lastScrollPosition = {}
@@ -36,7 +36,7 @@ angular.module("services.page")
 
     var profileServices = [
       ProfileAboutService,
-      ProfileService,
+      ProfileProducts,
       KeyProducts,
       KeyMetrics
     ]
@@ -69,7 +69,7 @@ angular.module("services.page")
         console.log("we've got a dead profile.")
         Loading.finishPage()
 
-        ProfileService.clear()
+        ProfileProducts.clear()
         KeyProducts.clear()
         KeyMetrics.clear()
 

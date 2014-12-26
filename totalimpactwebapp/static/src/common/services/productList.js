@@ -14,7 +14,7 @@ angular.module("services.productList", [])
     Loading,
     Timer,
     Page,
-    ProfileService){
+    ProfileProducts){
 
   var ui = {}
   var filterFn
@@ -47,7 +47,7 @@ angular.module("services.productList", [])
 
 
   var startRender = function($scope){
-    if (!ProfileService.hasFullProducts()){
+    if (!ProfileProducts.hasFullProducts()){
       Loading.startPage()
     }
     ui.genreChangeDropdownIsOpen = false
@@ -86,7 +86,7 @@ angular.module("services.productList", [])
 
 
   var changeProductsGenre = function(newGenre){
-    ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+    ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
 
     // close the change-genre dialog
@@ -95,7 +95,7 @@ angular.module("services.productList", [])
     // handle moving the last product in our current genre
     if (!len()){
       var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
-      var currentProfileSlug = ProfileService.getUrlSlug()
+      var currentProfileSlug = ProfileProducts.getUrlSlug()
       $location.path(currentProfileSlug + "/products/" + newGenreUrlRepresentation)
     }
   }
@@ -103,17 +103,17 @@ angular.module("services.productList", [])
 
   var removeSelectedProducts = function(){
     console.log("removing products: ", SelectedProducts.get())
-    ProfileService.removeProducts(SelectedProducts.get())
+    ProfileProducts.removeProducts(SelectedProducts.get())
     SelectedProducts.removeAll()
 
     // handle removing the last product in this particular product list
     if (len() === 0){
-      $location.path(ProfileService.getUrlSlug())
+      $location.path(ProfileProducts.getUrlSlug())
     }
   }
 
   var productsInThisCollection = function(){
-    return _.filter(ProfileService.data.products, filters.products)
+    return _.filter(ProfileProducts.data.products, filters.products)
 
   }
 

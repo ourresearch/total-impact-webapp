@@ -1,16 +1,15 @@
 angular.module('profileSidebar', [
     'security',
-    'resources.users',
-    'services.profileService'
+    'resources.users'
 ])
   .controller("profileSidebarCtrl", function($scope,
                                              GenreConfigs,
-                                             ProfileService,
+                                             ProfileProducts,
                                              Page,
                                              security){
 
   })
 
-  .controller("infopageSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
+  .controller("infopageSidebarCtrl", function($scope, $rootScope, ProfileProducts, Page, security){
 
   })

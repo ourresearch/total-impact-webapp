@@ -109,7 +109,7 @@ angular.module("profile", [
     UserMessage,
     Update,
     Loading,
-    ProfileService,
+    ProfileProducts,
     ProfileAboutService,
     ProfileAwardService,
     PinboardService,
@@ -151,7 +151,7 @@ angular.module("profile", [
     Timer.start("profileViewRender.load")
     Page.setName('overview')
 
-    $scope.profileLoading =  ProfileService.isLoading
+    $scope.profileLoading =  ProfileProducts.isLoading
     $scope.url_slug = url_slug
 
     $scope.hideSignupBannerNow = function(){

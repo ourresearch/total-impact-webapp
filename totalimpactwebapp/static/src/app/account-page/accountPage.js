@@ -20,13 +20,13 @@ angular.module('accountPage', [
 
   }])
 
-  .controller("AccountPageCtrl", function($scope, $routeParams, userOwnsThisProfile, ProfileService, ProfileAboutService, Page){
+  .controller("AccountPageCtrl", function($scope, $routeParams, userOwnsThisProfile, ProfileProducts, ProfileAboutService, Page){
     Page.setName($routeParams.account_index_name)
 
     $scope.templatePath = "account-page/"+ $routeParams.account_index_name  +"-account-page.tpl.html"
     $scope.accountName =  $routeParams.account_index_name
     $scope.account = function(){
-      return ProfileService.account_products
+      return ProfileProducts.account_products
     }
 
 

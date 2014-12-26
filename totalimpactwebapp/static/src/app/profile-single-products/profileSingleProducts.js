@@ -21,7 +21,7 @@ angular.module('profileSingleProducts', [
   }])
   .controller("addSingleProductsCtrl", function($scope,
                                                 Page,
-                                                ProfileService,
+                                                ProfileProducts,
                                                 ProfileAboutService,
                                                 $routeParams){
     $scope.url_slug = $routeParams.url_slug
@@ -33,7 +33,7 @@ angular.module('profileSingleProducts', [
                                                        $routeParams,
                                                        Loading,
                                                        UsersProducts,
-                                                       ProfileService,
+                                                       ProfileProducts,
                                                        ProfileAboutService,
                                                        TiMixpanel,
                                                        security){
@@ -58,7 +58,7 @@ angular.module('profileSingleProducts', [
           // refresh the profile obj
 
           ProfileAboutService.get($routeParams.url_slug)
-          ProfileService.get($routeParams.url_slug)
+          ProfileProducts.get($routeParams.url_slug)
 
           TiMixpanel.track(
             "Added single products",

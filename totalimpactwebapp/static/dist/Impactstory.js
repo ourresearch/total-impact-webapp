@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-25
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-26
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -25,13 +25,13 @@ angular.module('accountPage', [
 
   }])
 
-  .controller("AccountPageCtrl", function($scope, $routeParams, userOwnsThisProfile, ProfileService, ProfileAboutService, Page){
+  .controller("AccountPageCtrl", function($scope, $routeParams, userOwnsThisProfile, ProfileProducts, ProfileAboutService, Page){
     Page.setName($routeParams.account_index_name)
 
     $scope.templatePath = "account-page/"+ $routeParams.account_index_name  +"-account-page.tpl.html"
     $scope.accountName =  $routeParams.account_index_name
     $scope.account = function(){
-      return ProfileService.account_products
+      return ProfileProducts.account_products
     }
 
 
@@ -170,7 +170,7 @@ angular.module('accounts.account', [
     Products,
     GoogleScholar,
     UserProfile,
-    ProfileService,
+    ProfileProducts,
     ProfileAboutService,
     Account,
     security,
@@ -255,7 +255,7 @@ angular.module('accounts.account', [
 
          // make sure everyone can see the new linked account
         ProfileAboutService.get($routeParams.url_slug)
-        ProfileService.get($routeParams.url_slug)
+        ProfileProducts.get($routeParams.url_slug)
         security.refreshCurrentUser().then(
           function(resp){
             console.log("update the client's current user with our new linked account", resp)
@@ -522,12 +522,13 @@ angular.module('app', [
   'signup',
   'passwordReset',
   'profileMap',
+  'fansPage',
   'giftSubscriptionPage',
   'productPage',
   'productListPage',
   'services.genreConfigs',
   'accountPage',
-  'services.profileService',
+  'services.profileProducts',
   'services.profileAboutService',
   'profileSidebar',
   'ui.sortable',
@@ -539,6 +540,7 @@ angular.module('app', [
   'services.keyMetrics',
   'services.cardService',
   'services.map',
+  'services.fansService',
   'settings',
   'xeditable',
   'ngProgress'
@@ -636,14 +638,14 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      security,
                                                      $rootScope,
                                                      TiMixpanel,
-                                                     ProfileService,
+                                                     ProfileProducts,
                                                      ProfileAboutService,
                                                      ProductPage,
                                                      RouteChangeErrorHandler) {
 
   $scope.userMessage = UserMessage
   $rootScope.security = security
-  $scope.profileService = ProfileService
+  $scope.profileService = ProfileProducts
   $scope.profileAboutService = ProfileAboutService
 
   $rootScope.adminMode = $location.search().admin == 42
@@ -767,6 +769,28 @@ angular.module('deadProfile', []).config(function ($routeProvider) {
       $location.search("admin", null)
     }
   })
+angular.module('fansPage', [
+  ])
+
+.config(function($routeProvider) {
+  $routeProvider
+
+  .when('/:url_slug/fans', {
+    templateUrl: 'fans/fans-page.tpl.html',
+    controller: 'FansPageCtrl'
+  })
+})
+
+.controller("FansPageCtrl", function(
+    $scope,
+    FansService,
+    Page){
+
+    console.log("fans page controller ran.")
+    $scope.FansService = FansService
+
+
+  })
 // nothing here for now.
 angular.module( 'giftSubscriptionPage', [
     'security',
@@ -877,7 +901,7 @@ angular.module("googleScholar", [
 .factory("GoogleScholar", function($modal,
                                    $q,
                                    UsersProducts,
-                                   ProfileService,
+                                   ProfileProducts,
                                    ProfileAboutService,
                                    Loading,
                                    TiMixpanel,
@@ -936,7 +960,7 @@ angular.module("googleScholar", [
         function(resp){
           console.log("successfully uploaded bibtex!", resp)
           Loading.finish("bibtex")
-          ProfileService.get(url_slug)
+          ProfileProducts.get(url_slug)
           ProfileAboutService.get(url_slug)
 
 
@@ -1177,7 +1201,7 @@ angular.module('passwordReset', [
                                               Loading,
                                               Page,
                                               UsersPassword,
-                                              ProfileService,
+                                              ProfileProducts,
                                               ProfileAboutService,
                                               UserMessage,
                                               security){
@@ -1459,7 +1483,7 @@ angular.module("productPage", [
     product,
     Product,
     ProfileAboutService,
-    ProfileService,
+    ProfileProducts,
     GenreConfigs,
     MapService,
     Page) {
@@ -1641,12 +1665,12 @@ angular.module("productPage", [
       },
       function(data){
         console.log("inserting this new product data into the ProfileProducts service:", data)
-        ProfileService.overwriteProduct(data)
+        ProfileProducts.overwriteProduct(data)
 
         // this is way overkill, but currently the only way to get new markup
-        // for this product into the ProfileService is to reload EVERY product
+        // for this product into the ProfileProducts is to reload EVERY product
         // from scratch.
-        ProfileService.get(url_slug)
+        ProfileProducts.get(url_slug)
         renderProduct(data)
       },
       function(data){
@@ -1723,7 +1747,7 @@ angular.module("productPage", [
         function(resp){
           $scope.reRenderProduct()
 //          ProfileAboutService.get($routeParams.url_slug)
-//          ProfileService.get($routeParams.url_slug)
+//          ProfileProducts.get($routeParams.url_slug)
         }
       )
     }
@@ -1894,7 +1918,7 @@ angular.module('profileLinkedAccounts', [
                                                     Page,
                                                     $routeParams,
                                                     AllTheAccounts,
-                                                    ProfileService,
+                                                    ProfileProducts,
                                                     ProfileAboutService,
                                                     currentUser){
 
@@ -1929,7 +1953,7 @@ angular.module( 'profileMap', [
                                        $rootScope,
                                        $routeParams,
                                        CountryNames,
-                                       ProfileService,
+                                       ProfileProducts,
                                        ProfileCountries,
                                        MapService,
                                        Loading,
@@ -2024,7 +2048,7 @@ angular.module('profileSingleProducts', [
   }])
   .controller("addSingleProductsCtrl", function($scope,
                                                 Page,
-                                                ProfileService,
+                                                ProfileProducts,
                                                 ProfileAboutService,
                                                 $routeParams){
     $scope.url_slug = $routeParams.url_slug
@@ -2036,7 +2060,7 @@ angular.module('profileSingleProducts', [
                                                        $routeParams,
                                                        Loading,
                                                        UsersProducts,
-                                                       ProfileService,
+                                                       ProfileProducts,
                                                        ProfileAboutService,
                                                        TiMixpanel,
                                                        security){
@@ -2061,7 +2085,7 @@ angular.module('profileSingleProducts', [
           // refresh the profile obj
 
           ProfileAboutService.get($routeParams.url_slug)
-          ProfileService.get($routeParams.url_slug)
+          ProfileProducts.get($routeParams.url_slug)
 
           TiMixpanel.track(
             "Added single products",
@@ -2196,7 +2220,7 @@ angular.module("profile", [
     UserMessage,
     Update,
     Loading,
-    ProfileService,
+    ProfileProducts,
     ProfileAboutService,
     ProfileAwardService,
     PinboardService,
@@ -2238,7 +2262,7 @@ angular.module("profile", [
     Timer.start("profileViewRender.load")
     Page.setName('overview')
 
-    $scope.profileLoading =  ProfileService.isLoading
+    $scope.profileLoading =  ProfileProducts.isLoading
     $scope.url_slug = url_slug
 
     $scope.hideSignupBannerNow = function(){
@@ -2934,7 +2958,7 @@ angular.module('settings', [
                                         currentUser,
                                         SettingsPageDescriptions,
                                         ProfileAboutService,
-                                        ProfileService,
+                                        ProfileProducts,
                                         $routeParams,
                                         Page,
                                         Loading) {
@@ -3089,7 +3113,7 @@ angular.module('settings', [
                                                     Loading,
                                                     TiMixpanel,
                                                     ProfileAboutService,
-                                                    ProfileService,
+                                                    ProfileProducts,
                                                     PinboardService,
                                                     UsersSubscription) {
 
@@ -3154,7 +3178,7 @@ angular.module('settings', [
           security.refreshCurrentUser() // refresh the currentUser from server
           ProfileAboutService.get($scope.user.url_slug).then(
             function(){
-              ProfileService.get($scope.user.url_slug)
+              ProfileProducts.get($scope.user.url_slug)
               PinboardService.get($scope.user.url_slug, true)
 
               window.scrollTo(0,0)
@@ -3229,18 +3253,17 @@ angular.module('settings', [
 
 angular.module('profileSidebar', [
     'security',
-    'resources.users',
-    'services.profileService'
+    'resources.users'
 ])
   .controller("profileSidebarCtrl", function($scope,
                                              GenreConfigs,
-                                             ProfileService,
+                                             ProfileProducts,
                                              Page,
                                              security){
 
   })
 
-  .controller("infopageSidebarCtrl", function($scope, $rootScope, ProfileService, Page, security){
+  .controller("infopageSidebarCtrl", function($scope, $rootScope, ProfileProducts, Page, security){
 
   })
 angular.module( 'signup', [
@@ -5264,6 +5287,43 @@ angular.module('services.exceptionHandler').config(['$provide', function($provid
   }]);
 }]);
 
+angular.module("services.fansService", [])
+.factory("FansService", function(){
+
+    var data = {}
+    data.tweetersDict = {}
+
+
+
+    data.foo = "bar!"
+
+
+
+
+
+    return {
+      data: data,
+      setTweets: function(tweets){
+        console.log("trying to set tweets", tweets)
+        var flatTweetsList = []
+        _.each(tweets, function(tweetsForThisProduct, tiid){
+
+          console.log("tweets for this product", tiid, tweetsForThisProduct)
+
+          _.each(tweetsForThisProduct, function(tweet){
+            tweet.tiid = tiid
+            flatTweetsList.push(tweet)
+          })
+        })
+
+        data.tweets = flatTweetsList
+
+      }
+
+    }
+
+  })
+
 globalGenreConfigs = globalGenreConfigs || []
 
 angular.module("services.genreConfigs", [])
@@ -5555,7 +5615,7 @@ angular.module("services.page")
                             KeyMetrics,
                             KeyProducts,
                             Loading,
-                            ProfileService){
+                            ProfileProducts){
     var title = '';
     var notificationsLoc = "header"
     var lastScrollPosition = {}
@@ -5582,7 +5642,7 @@ angular.module("services.page")
 
     var profileServices = [
       ProfileAboutService,
-      ProfileService,
+      ProfileProducts,
       KeyProducts,
       KeyMetrics
     ]
@@ -5615,7 +5675,7 @@ angular.module("services.page")
         console.log("we've got a dead profile.")
         Loading.finishPage()
 
-        ProfileService.clear()
+        ProfileProducts.clear()
         KeyProducts.clear()
         KeyMetrics.clear()
 
@@ -6057,7 +6117,7 @@ angular.module("services.productList", [])
     Loading,
     Timer,
     Page,
-    ProfileService){
+    ProfileProducts){
 
   var ui = {}
   var filterFn
@@ -6090,7 +6150,7 @@ angular.module("services.productList", [])
 
 
   var startRender = function($scope){
-    if (!ProfileService.hasFullProducts()){
+    if (!ProfileProducts.hasFullProducts()){
       Loading.startPage()
     }
     ui.genreChangeDropdownIsOpen = false
@@ -6129,7 +6189,7 @@ angular.module("services.productList", [])
 
 
   var changeProductsGenre = function(newGenre){
-    ProfileService.changeProductsGenre(SelectedProducts.get(), newGenre)
+    ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
 
     // close the change-genre dialog
@@ -6138,7 +6198,7 @@ angular.module("services.productList", [])
     // handle moving the last product in our current genre
     if (!len()){
       var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
-      var currentProfileSlug = ProfileService.getUrlSlug()
+      var currentProfileSlug = ProfileProducts.getUrlSlug()
       $location.path(currentProfileSlug + "/products/" + newGenreUrlRepresentation)
     }
   }
@@ -6146,17 +6206,17 @@ angular.module("services.productList", [])
 
   var removeSelectedProducts = function(){
     console.log("removing products: ", SelectedProducts.get())
-    ProfileService.removeProducts(SelectedProducts.get())
+    ProfileProducts.removeProducts(SelectedProducts.get())
     SelectedProducts.removeAll()
 
     // handle removing the last product in this particular product list
     if (len() === 0){
-      $location.path(ProfileService.getUrlSlug())
+      $location.path(ProfileProducts.getUrlSlug())
     }
   }
 
   var productsInThisCollection = function(){
-    return _.filter(ProfileService.data.products, filters.products)
+    return _.filter(ProfileProducts.data.products, filters.products)
 
   }
 
@@ -6457,10 +6517,10 @@ angular.module('services.profileAwardService', [
   }
 
 })
-angular.module('services.profileService', [
+angular.module('services.profileProducts', [
   'resources.users'
 ])
-  .factory("ProfileService", function($q,
+  .factory("ProfileProducts", function($q,
                                       $timeout,
                                       $location,
                                       Update,
@@ -6472,13 +6532,15 @@ angular.module('services.profileService', [
                                       ProfileAboutService,
                                       GenreConfigs,
                                       UsersProducts,
+                                      FansService,
                                       ProductsBiblio,
                                       SelfCancellingProfileTweetsResource,
                                       SelfCancellingProductsResource){
 
     var loading = true
     var data = {
-      products:[]
+      products:[],
+      tweets: []
     }
 
     function getProductStubs(url_slug){
@@ -6486,7 +6548,7 @@ angular.module('services.profileService', [
       return UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
-          console.log("ProfileService got stubs back", resp)
+          console.log("ProfileProducts got stubs back", resp)
           data.products = resp.list
         },
         function(resp){
@@ -6516,6 +6578,10 @@ angular.module('services.profileService', [
         {id: url_slug},
         function(resp){
           Loading.finish("tweets")
+
+          // the Fans service needs the latest set of tweets.
+          data.tweets = resp.tweets
+          FansService.setTweets(resp.tweets)
         }
       ).$promise
     }
@@ -6579,7 +6645,7 @@ angular.module('services.profileService', [
         },
 
         function(resp){
-          console.log("ProfileService got a failure response", resp)
+          console.log("ProfileProducts got a failure response", resp)
           if (resp.status == 404){
             data.is404 = true
           }
@@ -6647,10 +6713,10 @@ angular.module('services.profileService', [
         {commaSeparatedTiids: tiids.join(",")},
         {genre: newGenre},
         function(resp){
-          console.log("ProfileService.changeProductsGenre() successful.", resp)
+          console.log("ProfileProducts.changeProductsGenre() successful.", resp)
         },
         function(resp){
-          console.log("ProfileService.changeProductsGenre() FAILED.", resp)
+          console.log("ProfileProducts.changeProductsGenre() FAILED.", resp)
         }
       )
 
@@ -7131,7 +7197,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-list-page/country-page.tpl.html', 'product-list-page/genre-page.tpl.html', 'product-list-page/product-list-section.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -7327,6 +7393,23 @@ angular.module("dead-profile/dead-profile.tpl.html", []).run(["$templateCache", 
     "   </div>\n" +
     "</div>\n" +
     "");
+}]);
+
+angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("fans/fans-page.tpl.html",
+    "<h2>I'm the fans page!</h2>\n" +
+    "\n" +
+    "<pre>{{ FansService.data | json }}</pre>\n" +
+    "\n" +
+    "\n" +
+    "<ul>\n" +
+    "   <li ng-repeat=\"tweet in FansService.data.tweets\">\n" +
+    "\n" +
+    "      <h4>{{ tweet.tweeter.name }}</h4>\n" +
+    "\n" +
+    "   </li>\n" +
+    "\n" +
+    "</ul>");
 }]);
 
 angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($templateCache) {

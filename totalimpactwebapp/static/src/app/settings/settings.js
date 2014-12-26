@@ -32,7 +32,7 @@ angular.module('settings', [
                                         currentUser,
                                         SettingsPageDescriptions,
                                         ProfileAboutService,
-                                        ProfileService,
+                                        ProfileProducts,
                                         $routeParams,
                                         Page,
                                         Loading) {
@@ -187,7 +187,7 @@ angular.module('settings', [
                                                     Loading,
                                                     TiMixpanel,
                                                     ProfileAboutService,
-                                                    ProfileService,
+                                                    ProfileProducts,
                                                     PinboardService,
                                                     UsersSubscription) {
 
@@ -252,7 +252,7 @@ angular.module('settings', [
           security.refreshCurrentUser() // refresh the currentUser from server
           ProfileAboutService.get($scope.user.url_slug).then(
             function(){
-              ProfileService.get($scope.user.url_slug)
+              ProfileProducts.get($scope.user.url_slug)
               PinboardService.get($scope.user.url_slug, true)
 
               window.scrollTo(0,0)

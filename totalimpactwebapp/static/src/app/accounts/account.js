@@ -132,7 +132,7 @@ angular.module('accounts.account', [
     Products,
     GoogleScholar,
     UserProfile,
-    ProfileService,
+    ProfileProducts,
     ProfileAboutService,
     Account,
     security,
@@ -217,7 +217,7 @@ angular.module('accounts.account', [
 
          // make sure everyone can see the new linked account
         ProfileAboutService.get($routeParams.url_slug)
-        ProfileService.get($routeParams.url_slug)
+        ProfileProducts.get($routeParams.url_slug)
         security.refreshCurrentUser().then(
           function(resp){
             console.log("update the client's current user with our new linked account", resp)

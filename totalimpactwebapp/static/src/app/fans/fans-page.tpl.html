@@ -1,0 +1,13 @@
+<h2>I'm the fans page!</h2>
+
+<pre>{{ FansService.data | json }}</pre>
+
+
+<ul>
+   <li ng-repeat="tweet in FansService.data.tweets">
+
+      <h4>{{ tweet.tweeter.name }}</h4>
+
+   </li>
+
+</ul>

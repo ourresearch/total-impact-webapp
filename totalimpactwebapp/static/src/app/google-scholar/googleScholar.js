@@ -6,7 +6,7 @@ angular.module("googleScholar", [
 .factory("GoogleScholar", function($modal,
                                    $q,
                                    UsersProducts,
-                                   ProfileService,
+                                   ProfileProducts,
                                    ProfileAboutService,
                                    Loading,
                                    TiMixpanel,
@@ -65,7 +65,7 @@ angular.module("googleScholar", [
         function(resp){
           console.log("successfully uploaded bibtex!", resp)
           Loading.finish("bibtex")
-          ProfileService.get(url_slug)
+          ProfileProducts.get(url_slug)
           ProfileAboutService.get(url_slug)
 
 

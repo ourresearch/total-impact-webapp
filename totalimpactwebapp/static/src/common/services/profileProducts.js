@@ -1,7 +1,7 @@
-angular.module('services.profileService', [
+angular.module('services.profileProducts', [
   'resources.users'
 ])
-  .factory("ProfileService", function($q,
+  .factory("ProfileProducts", function($q,
                                       $timeout,
                                       $location,
                                       Update,
@@ -13,13 +13,15 @@ angular.module('services.profileService', [
                                       ProfileAboutService,
                                       GenreConfigs,
                                       UsersProducts,
+                                      FansService,
                                       ProductsBiblio,
                                       SelfCancellingProfileTweetsResource,
                                       SelfCancellingProductsResource){
 
     var loading = true
     var data = {
-      products:[]
+      products:[],
+      tweets: []
     }
 
     function getProductStubs(url_slug){
@@ -27,7 +29,7 @@ angular.module('services.profileService', [
       return UsersProducts.get(
         {id: url_slug, stubs: true},
         function(resp){
-          console.log("ProfileService got stubs back", resp)
+          console.log("ProfileProducts got stubs back", resp)
           data.products = resp.list
         },
         function(resp){
@@ -57,6 +59,10 @@ angular.module('services.profileService', [
         {id: url_slug},
         function(resp){
           Loading.finish("tweets")
+
+          // the Fans service needs the latest set of tweets.
+          data.tweets = resp.tweets
+          FansService.setTweets(resp.tweets)
         }
       ).$promise
     }
@@ -120,7 +126,7 @@ angular.module('services.profileService', [
         },
 
         function(resp){
-          console.log("ProfileService got a failure response", resp)
+          console.log("ProfileProducts got a failure response", resp)
           if (resp.status == 404){
             data.is404 = true
           }
@@ -188,10 +194,10 @@ angular.module('services.profileService', [
         {commaSeparatedTiids: tiids.join(",")},
         {genre: newGenre},
         function(resp){
-          console.log("ProfileService.changeProductsGenre() successful.", resp)
+          console.log("ProfileProducts.changeProductsGenre() successful.", resp)
         },
         function(resp){
-          console.log("ProfileService.changeProductsGenre() FAILED.", resp)
+          console.log("ProfileProducts.changeProductsGenre() FAILED.", resp)
         }
       )
 

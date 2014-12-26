@@ -18,7 +18,7 @@ angular.module( 'profileMap', [
                                        $rootScope,
                                        $routeParams,
                                        CountryNames,
-                                       ProfileService,
+                                       ProfileProducts,
                                        ProfileCountries,
                                        MapService,
                                        Loading,
