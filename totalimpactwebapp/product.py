@@ -48,6 +48,8 @@ from totalimpact.providers import provider as provider_module
 from totalimpact.importer import import_products
 from totalimpact import tiredis
 
+from totalimpactwebapp.countries import iso_code_from_name
+
 
 percentile_snap_creations = 0
 
@@ -449,7 +451,9 @@ class Product(db.Model):
 
         try:
             country_data = self.get_metric_raw_value("mendeley", "countries")
-            countries_set.update([country for country in country_data])
+            countries_set.update([iso_code_from_name(country_name)
+                                  for country_name
+                                  in country_data])
         except (KeyError, TypeError):
             pass
 

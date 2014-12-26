@@ -10203,7 +10203,7 @@ div.product-list-page div.header div.header-content.country-header-content h2 .i
   font-weight: 900;
 }
 div.product-list-page div.header div.header-content.country-header-content h2 span.flag {
-  vertical-align: middle;
+  vertical-align: -2px;
 }
 div.product-list-page div.header div.header-content.country-header-content h2 .based-on {
   font-size: 16px;
