@@ -9417,9 +9417,8 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                                        name=\"sort-tweets-by\"\n" +
     "                                        ng-model=\"tweetsList.sortBy\"\n" +
     "                                        value=\"-tweeter.followers\" />\n" +
-    "                                 followers count\n" +
+    "                                 followers\n" +
     "                              </label>\n" +
-    "\n" +
     "                           </span>\n" +
     "                        </div>\n" +
     "\n" +
