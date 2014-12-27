@@ -1,5 +1,12 @@
 <div class="tweet-container">
+
+   <a class="tweet-bullet-point"
+      ng-if="!tweet.tweeter && tweeter && tweeter.about"
+      href="https://twitter.com/{{ tweeter.about.screen_name }}/status/{{ tweet.tweet_id }}">
+      <i class="fa fa-twitter"></i>
+      </a>
    <a class="tweeter"
+        ng-if="tweet.tweeter"
         href="https://twitter.com/{{ tweet.tweeter.screen_name }}"
         target="_blank"
         data-placement="left"

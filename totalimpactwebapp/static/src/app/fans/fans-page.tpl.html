@@ -8,7 +8,7 @@
                {{ FansService.data.tweeters.length }}
             </span>
             <span class="text">
-               fans
+               Twitter fans
             </span>
             <span class="based-on">
                based on people who've tweeted your work
@@ -46,40 +46,54 @@
 
 
    <ul class="fans-list">
-      <li ng-repeat="tweeter in FansService.data.tweeters | limitTo: 100"
+      <li current-page="FansService.ui.currentPage"
+          dir-paginate="tweeter in FansService.data.tweeters | orderBy: FansService.ui.sortBy | itemsPerPage: FansService.ui.perPage"
           class="fan">
          <div class="fan-about">
-            <div class="pic-and-names">
-               <img src="{{ tweeter.about.display_image_url }}" />
-               <div class="names">
+            <img src="{{ tweeter.about.display_image_url }}" />
+
+            <div class="main-content">
+               <a class="names"
+                  target="_blank"
+                  href="http://twitter.com/{{ tweeter.about.screen_name }}">
                   <div class="name">{{ tweeter.about.name }}</div>
                   <div class="screen-name">@{{ tweeter.about.screen_name }}</div>
                   <div class="location" ng-show="tweeter.about.location">
                      <i class="fa fa-map-marker"></i>
                      <span class="text">{{ tweeter.about.location }}</span>
                   </div>
-               </div>
+               </a>
+               <div class="description">{{ tweeter.about.description }}</div>
+
+
             </div>
 
-            <div class="description">{{ tweeter.about.description }}</div>
 
             <div class="stats">
-               <span class='followers stat'>
-                  <span class='descr'>Followers</span>
+               <a class='followers stat'
+                  target="_blank"
+                  href="http://twitter.com/{{ tweeter.about.screen_name }}/followers">
                   <span class='val'>{{ nFormatCommas(tweeter.about.followers) }}</span>
-               </span>
-               <span class='number-follows stat'>
-                  <span class='descr'>Follows</span>
-                  <span class='val'>{{ nFormatCommas(tweeter.about.num_follows) }}</span>
-               </span>
-               <span class='number-statuses stat'>
-                  <span class='descr'>Tweets</span>
-                  <span class='val'>{{ nFormatCommas(tweeter.about.num_statuses) }}</span>
-               </span>
+                  <span class='descr'>Followers</span>
+               </a>
             </div>
-         </div>
+         </div><!-- end .fan-about -->
+
+         <ul class="fan-tweets">
+            <li class="tweet"
+                   ng-include="'tweet/tweet.tpl.html'"
+                   ng-repeat="tweet in tweeter.tweets | orderBy: '-tweet_timestamp'">
+                </li>
+         </ul>
+
       </li><!-- end .fan -->
    </ul>
+
+   <div class="pagination-controls-container">
+      <dir-pagination-controls
+              on-page-change="FansService.onPageChange(newPageNumber)">
+      </dir-pagination-controls>
+   </div>
 
 </div>
 

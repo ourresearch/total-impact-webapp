@@ -15,22 +15,43 @@ div.collection-page {
          padding-top: 20px;
          margin-left: 5px;
          li.fan {
+            @fanImgHeight: 70px;
+            @rightColWidth: 160px;
             clear:both;
-            margin-bottom: 50px;
+            margin-bottom: 70px;
             .clearfix();
             div.fan-about {
-               div.pic-and-names {
-                  float: left;
-                  width: 270px;
-                  img {
-                     height: 70px;
-                     .rounded(3px);
-                     float:left;
-                  }
-                  div.names {
-                     margin-left: 90px;
+               .clearfix();
+               border-bottom: 1px solid #ddd;
+               padding-bottom: 10px;
+               position: relative;
+               img {
+                  height: @fanImgHeight;
+                  .rounded(3px);
+                  float:left;
+                  margin-top: 3px;
+               }
+
+               div.main-content {
+                  float:left;
+                  @namesSectionWidth: 180px;
+
+                  a.names {
+                     position: absolute;
+                     top: 0;
+                     bottom: 0;
+                     left: @fanImgHeight;
+                     width: @namesSectionWidth - 15px; // for the left margin
+                     margin-left: 15px;
+                     &:hover {
+                        div.name {
+                           text-decoration: underline;
+                        }
+                     }
                      div.name {
-                        font-weight: normal;
+                        font-size: 18px;
+                        font-weight: bold;
+                        color: @linkColor;
                      }
                      div.screen-name {
                         font-weight: 300;
@@ -39,59 +60,74 @@ div.collection-page {
                         font-size: 12px;
                      }
                      div.location {
-                        line-height: 1;
-                        margin-top: 10px;
-                        font-size: 14px;
+                        position: absolute;
                         color: #999;
+                        bottom:10px;
+                        left:0;
+                        font-size: 14px;
+                        line-height: 1;
                      }
                   }
+
+                  div.description {
+                     float: left;
+                     margin-left: @namesSectionWidth + 10px;
+                     font-size: 17px;
+                     width: 380px;
+                     min-height: 10px;
+                  }
+
+
+
                }
 
-               div.description {
-                  width: 450px;
-                  font-size: 14px;
-                  float:left;
-                  min-height: 10px;
-               }
 
                div.stats {
-                  float:left;
-                  span.stat {
+                  float:right;
+                  a.followers {
+                     width: @rightColWidth;
                      float: left;
-                     text-align: center;
-                     margin-left: 10px;
-                     border-left: 1px solid #ddd;
-                     padding-left: 10px;
+                     color: #333;
+                     &:hover {
+                        color: @linkColor;
+                     }
                      .descr {
-                        display:block;
+                        font-weight: 300;
+                        font-size: 12px;
+                        line-height: 1;
+                        vertical-align: 5px;
+                        margin-left: 3px;
                      }
                      .val {
-                     }
-                     &.number-follows, &.number-statuses {
-                        width: 50px;
-                        display: none;
-                        .descr {
-                           font-size: 11px;
-                        }
-                        .val {
-                           font-size: 14px;
-                        }
-
-                     }
-                     &.followers {
-                        width: 100px;
-                        .descr {
-                           font-size: 12px;
-                        }
-                        .val {
-                           font-size: 28px;
-                           font-weight: 300;
-                        }
+                        display:block;
+                        line-height: 1;
+                        font-size: 40px;
+                        font-weight: 300;
                      }
                   }
                }
-
-
+            }
+            ul.fan-tweets {
+               @tweetBulletPointWidth: 25px;
+               margin: 10px 0 30px @tweetBulletPointWidth;
+               li.tweet {
+                  a.tweet-bullet-point {
+                     float:left;
+                     width: @tweetBulletPointWidth;
+                     margin-left: -@tweetBulletPointWidth;
+                     color: #999;
+                     &:hover {
+                        color: @twitterColor;
+                     }
+                  }
+                  div.tweet-content {
+                     width: 600px;
+                  }
+                  div.after-tweet {
+                     float: right;
+                     width: @rightColWidth;
+                  }
+               }
             }
          }
       }

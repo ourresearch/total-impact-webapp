@@ -5,10 +5,19 @@ angular.module("services.fansService", [])
     data.tweetersDict = {}
     data.tweeters = []
 
+    var ui = {}
+    ui.perPage = 5
+    ui.currentPage = 1
+    ui.sortBy = "-about.followers"
+
 
 
     return {
       data: data,
+      ui: ui,
+      onPageChange: function(newPageNumber){
+        ui.currentPage = newPageNumber
+      },
       setTweets: function(tweets){
         console.log("trying to set tweets", tweets)
         var flatTweetsList = []

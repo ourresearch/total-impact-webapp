@@ -5295,10 +5295,19 @@ angular.module("services.fansService", [])
     data.tweetersDict = {}
     data.tweeters = []
 
+    var ui = {}
+    ui.perPage = 5
+    ui.currentPage = 1
+    ui.sortBy = "-about.followers"
+
 
 
     return {
       data: data,
+      ui: ui,
+      onPageChange: function(newPageNumber){
+        ui.currentPage = newPageNumber
+      },
       setTweets: function(tweets){
         console.log("trying to set tweets", tweets)
         var flatTweetsList = []
@@ -7715,7 +7724,7 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "               {{ FansService.data.tweeters.length }}\n" +
     "            </span>\n" +
     "            <span class=\"text\">\n" +
-    "               fans\n" +
+    "               Twitter fans\n" +
     "            </span>\n" +
     "            <span class=\"based-on\">\n" +
     "               based on people who've tweeted your work\n" +
@@ -7753,40 +7762,54 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "\n" +
     "\n" +
     "   <ul class=\"fans-list\">\n" +
-    "      <li ng-repeat=\"tweeter in FansService.data.tweeters | limitTo: 100\"\n" +
+    "      <li current-page=\"FansService.ui.currentPage\"\n" +
+    "          dir-paginate=\"tweeter in FansService.data.tweeters | orderBy: FansService.ui.sortBy | itemsPerPage: FansService.ui.perPage\"\n" +
     "          class=\"fan\">\n" +
     "         <div class=\"fan-about\">\n" +
-    "            <div class=\"pic-and-names\">\n" +
-    "               <img src=\"{{ tweeter.about.display_image_url }}\" />\n" +
-    "               <div class=\"names\">\n" +
+    "            <img src=\"{{ tweeter.about.display_image_url }}\" />\n" +
+    "\n" +
+    "            <div class=\"main-content\">\n" +
+    "               <a class=\"names\"\n" +
+    "                  target=\"_blank\"\n" +
+    "                  href=\"http://twitter.com/{{ tweeter.about.screen_name }}\">\n" +
     "                  <div class=\"name\">{{ tweeter.about.name }}</div>\n" +
     "                  <div class=\"screen-name\">@{{ tweeter.about.screen_name }}</div>\n" +
     "                  <div class=\"location\" ng-show=\"tweeter.about.location\">\n" +
     "                     <i class=\"fa fa-map-marker\"></i>\n" +
     "                     <span class=\"text\">{{ tweeter.about.location }}</span>\n" +
     "                  </div>\n" +
-    "               </div>\n" +
+    "               </a>\n" +
+    "               <div class=\"description\">{{ tweeter.about.description }}</div>\n" +
+    "\n" +
+    "\n" +
     "            </div>\n" +
     "\n" +
-    "            <div class=\"description\">{{ tweeter.about.description }}</div>\n" +
     "\n" +
     "            <div class=\"stats\">\n" +
-    "               <span class='followers stat'>\n" +
-    "                  <span class='descr'>Followers</span>\n" +
+    "               <a class='followers stat'\n" +
+    "                  target=\"_blank\"\n" +
+    "                  href=\"http://twitter.com/{{ tweeter.about.screen_name }}/followers\">\n" +
     "                  <span class='val'>{{ nFormatCommas(tweeter.about.followers) }}</span>\n" +
-    "               </span>\n" +
-    "               <span class='number-follows stat'>\n" +
-    "                  <span class='descr'>Follows</span>\n" +
-    "                  <span class='val'>{{ nFormatCommas(tweeter.about.num_follows) }}</span>\n" +
-    "               </span>\n" +
-    "               <span class='number-statuses stat'>\n" +
-    "                  <span class='descr'>Tweets</span>\n" +
-    "                  <span class='val'>{{ nFormatCommas(tweeter.about.num_statuses) }}</span>\n" +
-    "               </span>\n" +
+    "                  <span class='descr'>Followers</span>\n" +
+    "               </a>\n" +
     "            </div>\n" +
-    "         </div>\n" +
+    "         </div><!-- end .fan-about -->\n" +
+    "\n" +
+    "         <ul class=\"fan-tweets\">\n" +
+    "            <li class=\"tweet\"\n" +
+    "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "                   ng-repeat=\"tweet in tweeter.tweets | orderBy: '-tweet_timestamp'\">\n" +
+    "                </li>\n" +
+    "         </ul>\n" +
+    "\n" +
     "      </li><!-- end .fan -->\n" +
     "   </ul>\n" +
+    "\n" +
+    "   <div class=\"pagination-controls-container\">\n" +
+    "      <dir-pagination-controls\n" +
+    "              on-page-change=\"FansService.onPageChange(newPageNumber)\">\n" +
+    "      </dir-pagination-controls>\n" +
+    "   </div>\n" +
     "\n" +
     "</div>\n" +
     "\n" +
@@ -11272,7 +11295,14 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
 angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("tweet/tweet.tpl.html",
     "<div class=\"tweet-container\">\n" +
+    "\n" +
+    "   <a class=\"tweet-bullet-point\"\n" +
+    "      ng-if=\"!tweet.tweeter && tweeter && tweeter.about\"\n" +
+    "      href=\"https://twitter.com/{{ tweeter.about.screen_name }}/status/{{ tweet.tweet_id }}\">\n" +
+    "      <i class=\"fa fa-twitter\"></i>\n" +
+    "      </a>\n" +
     "   <a class=\"tweeter\"\n" +
+    "        ng-if=\"tweet.tweeter\"\n" +
     "        href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}\"\n" +
     "        target=\"_blank\"\n" +
     "        data-placement=\"left\"\n" +

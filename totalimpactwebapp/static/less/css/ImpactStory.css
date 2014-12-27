@@ -10171,7 +10171,7 @@ div.collection-page.fans-page ul.fans-list {
   margin-left: 5px;
 }
 div.collection-page.fans-page ul.fans-list li.fan {
-  margin-bottom: 50px;
+  margin-bottom: 70px;
   clear: both;
 }
 div.collection-page.fans-page ul.fans-list li.fan:before,
@@ -10190,11 +10190,29 @@ div.collection-page.fans-page ul.fans-list li.fan:after {
 div.collection-page.fans-page ul.fans-list li.fan:after {
   clear: both;
 }
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names {
-  float: left;
-  width: 270px;
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about {
+  clear: both;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  position: relative;
 }
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names img {
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about:before,
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about:after {
+  content: " ";
+  display: table;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about:after {
+  clear: both;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about:before,
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about:after {
+  content: " ";
+  display: table;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about:after {
+  clear: both;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about img {
   height: 70px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -10203,66 +10221,90 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-name
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   float: left;
+  margin-top: 3px;
 }
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names div.names {
-  margin-left: 90px;
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content {
+  float: left;
 }
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names div.names div.name {
-  font-weight: normal;
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 70px;
+  width: 165px;
+  margin-left: 15px;
 }
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names div.names div.screen-name {
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names:hover div.name {
+  text-decoration: underline;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names div.name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff4000;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names div.screen-name {
   font-weight: 300;
   color: #999;
   line-height: 1;
   font-size: 12px;
 }
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names div.names div.location {
-  line-height: 1;
-  margin-top: 10px;
-  font-size: 14px;
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names div.location {
+  position: absolute;
   color: #999;
-}
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.description {
-  width: 450px;
+  bottom: 10px;
+  left: 0;
   font-size: 14px;
+  line-height: 1;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content div.description {
   float: left;
+  margin-left: 190px;
+  font-size: 17px;
+  width: 380px;
   min-height: 10px;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats {
+  float: right;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats a.followers {
+  width: 160px;
   float: left;
+  color: #333;
 }
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat {
-  float: left;
-  text-align: center;
-  margin-left: 10px;
-  border-left: 1px solid #ddd;
-  padding-left: 10px;
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats a.followers:hover {
+  color: #ff4000;
 }
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat .descr {
-  display: block;
-}
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-follows,
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-statuses {
-  width: 50px;
-  display: none;
-}
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-follows .descr,
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-statuses .descr {
-  font-size: 11px;
-}
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-follows .val,
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-statuses .val {
-  font-size: 14px;
-}
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.followers {
-  width: 100px;
-}
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.followers .descr {
-  font-size: 12px;
-}
-div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.followers .val {
-  font-size: 28px;
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats a.followers .descr {
   font-weight: 300;
+  font-size: 12px;
+  line-height: 1;
+  vertical-align: 5px;
+  margin-left: 3px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats a.followers .val {
+  display: block;
+  line-height: 1;
+  font-size: 40px;
+  font-weight: 300;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets {
+  margin: 10px 0 30px 25px;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet a.tweet-bullet-point {
+  float: left;
+  width: 25px;
+  margin-left: -25px;
+  color: #999;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet a.tweet-bullet-point:hover {
+  color: #55acee;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet div.tweet-content {
+  width: 600px;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet div.after-tweet {
+  float: right;
+  width: 160px;
 }
 div.collection-page div.header {
   margin: 0 0 0 -50px;
