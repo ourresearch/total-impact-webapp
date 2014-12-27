@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-26
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-27
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -641,6 +641,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      ProfileProducts,
                                                      ProfileAboutService,
+                                                     OurSortService,
                                                      ProductPage,
                                                      RouteChangeErrorHandler) {
 
@@ -675,6 +676,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.moment = moment
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
+  $scope.OurSortService = OurSortService;
   $scope.loading = Loading;
   $scope.isAuthenticated =  security.isAuthenticated
   $scope.tiMixpanel = TiMixpanel
@@ -931,14 +933,29 @@ angular.module('fansPage', [
 .controller("FansPageCtrl", function(
     $scope,
     FansService,
+    OurSortService,
     Page){
     Page.setName("fans")
 
     console.log("fans page controller ran.")
     $scope.FansService = FansService
 
+    OurSortService.setChoices([
+      {
+        key: ["-about.followers", 'about.name'],
+        name: "followers",
+        urlName: "default"
+      },
+      {
+        key: "about.name",
+        name: "name",
+        urlName: "name"
+      }
+    ])
+
 
   })
+
 // nothing here for now.
 angular.module( 'giftSubscriptionPage', [
     'security',
@@ -3969,17 +3986,66 @@ angular.module("directives.onRepeatFinished", [])
   });
 angular.module("directives.ourSort", [])
 
-  .directive("ourSort", function(){
+  .directive("ourSort", function(
+    $rootScope,
+    $location,
+    OurSortService){
+
     return {
      restrict: 'E',
      templateUrl: 'directives/our-sort.tpl.html',
      link: function(scope, elem, attr, ctrl){
-       console.log("looks like the ourSort thing done ran!")
 
+       scope.setSortKey = function(newSortKeyIndex){
+         console.log("setting sort key index", newSortKeyIndex)
+         OurSortService.setCurrent(newSortKeyIndex)
+       }
      }
-
     }
-    });
+  })
+
+
+.factory("OurSortService", function($location){
+    var current = {
+      name: null,
+      key: null,
+      urlName: null
+    }
+
+    var choices = []
+
+    var setFromUrl = function(){
+      var myUrlName = $location.search().sort_by || "default"
+      var newChoice = _.findWhere(choices, {urlName: myUrlName})
+      angular.extend(current, newChoice)
+    }
+
+
+  return {
+    current: current,
+    choices: choices,
+    setCurrent: function(index){
+      var newChoice = choices[index]
+      angular.extend(current, newChoice)
+      if (newChoice.urlName == "default"){
+        $location.search("sort_by", null)
+      }
+      else {
+        $location.search("sort_by", newChoice.urlName)
+      }
+    },
+    setChoices: function(newChoices){
+      choices.length = 0
+      _.each(newChoices, function(newChoice){
+        choices.push(newChoice)
+      })
+
+      // finish up by setting the choice from the current URL
+      setFromUrl()
+    }
+
+  }
+});
 /**
  * dirPagination - AngularJS module for paginating (almost) anything.
  *
@@ -7761,7 +7827,7 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "\n" +
     "   <ul class=\"fans-list\">\n" +
     "      <li current-page=\"FansService.ui.currentPage\"\n" +
-    "          dir-paginate=\"tweeter in FansService.data.tweeters | orderBy: FansService.ui.sortBy | itemsPerPage: FansService.ui.perPage\"\n" +
+    "          dir-paginate=\"tweeter in FansService.data.tweeters | orderBy: OurSortService.current.key | itemsPerPage: FansService.ui.perPage\"\n" +
     "          class=\"fan\">\n" +
     "         <div class=\"fan-about\">\n" +
     "            <img src=\"{{ tweeter.about.display_image_url }}\" />\n" +
@@ -11463,17 +11529,18 @@ angular.module("directives/our-sort.tpl.html", []).run(["$templateCache", functi
     "               Sorting by\n" +
     "            </span>\n" +
     "      <a class=\"dropdown-toggle\">\n" +
-    "         {{ ProductListSort.get().name }}\n" +
+    "         {{ OurSortService.current.name }}\n" +
     "         <span class=\"caret\"></span>\n" +
     "      </a>\n" +
     "\n" +
     "      <ul class=\"dropdown-menu\">\n" +
-    "         <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
-    "            <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "         <li class=\"sort-by-option\" ng-repeat=\"sortChoice in OurSortService.choices\">\n" +
+    "            <a dropdown-toggle ng-click=\"setSortKey($index)\"> {{ sortChoice.name }}</a>\n" +
     "         </li>\n" +
     "      </ul>\n" +
     "   </div>\n" +
-    "</div>");
+    "</div>\n" +
+    "");
 }]);
 
 angular.module("directives/pagination.tpl.html", []).run(["$templateCache", function($templateCache) {

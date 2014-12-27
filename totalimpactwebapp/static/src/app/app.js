@@ -146,6 +146,7 @@ angular.module('app').controller('AppCtrl', function($scope,
                                                      TiMixpanel,
                                                      ProfileProducts,
                                                      ProfileAboutService,
+                                                     OurSortService,
                                                      ProductPage,
                                                      RouteChangeErrorHandler) {
 
@@ -180,6 +181,7 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.moment = moment
   $scope.page = Page;
   $scope.breadcrumbs = Breadcrumbs;
+  $scope.OurSortService = OurSortService;
   $scope.loading = Loading;
   $scope.isAuthenticated =  security.isAuthenticated
   $scope.tiMixpanel = TiMixpanel

@@ -31,7 +31,7 @@
 
    <ul class="fans-list">
       <li current-page="FansService.ui.currentPage"
-          dir-paginate="tweeter in FansService.data.tweeters | orderBy: FansService.ui.sortBy | itemsPerPage: FansService.ui.perPage"
+          dir-paginate="tweeter in FansService.data.tweeters | orderBy: OurSortService.current.key | itemsPerPage: FansService.ui.perPage"
           class="fan">
          <div class="fan-about">
             <img src="{{ tweeter.about.display_image_url }}" />

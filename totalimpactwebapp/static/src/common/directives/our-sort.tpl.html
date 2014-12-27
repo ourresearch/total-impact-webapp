@@ -4,13 +4,13 @@
                Sorting by
             </span>
       <a class="dropdown-toggle">
-         {{ ProductListSort.get().name }}
+         {{ OurSortService.current.name }}
          <span class="caret"></span>
       </a>
 
       <ul class="dropdown-menu">
-         <li class="sort-by-option" ng-repeat="sortConfig in ProductListSort.options()">
-            <a ng-click="ProductListSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
+         <li class="sort-by-option" ng-repeat="sortChoice in OurSortService.choices">
+            <a dropdown-toggle ng-click="setSortKey($index)"> {{ sortChoice.name }}</a>
          </li>
       </ul>
    </div>
