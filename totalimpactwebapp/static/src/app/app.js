@@ -20,6 +20,7 @@ angular.module('app', [
   'directives.crud',
   'directives.jQueryTools',
   'directives.tweetThis',
+  'directives.ourSort',
   'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',

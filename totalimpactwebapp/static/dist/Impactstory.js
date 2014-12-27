@@ -515,6 +515,7 @@ angular.module('app', [
   'directives.crud',
   'directives.jQueryTools',
   'directives.tweetThis',
+  'directives.ourSort',
   'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',
@@ -3966,6 +3967,19 @@ angular.module("directives.onRepeatFinished", [])
       }
     }
   });
+angular.module("directives.ourSort", [])
+
+  .directive("ourSort", function(){
+    return {
+     restrict: 'E',
+     templateUrl: 'directives/our-sort.tpl.html',
+     link: function(scope, elem, attr, ctrl){
+       console.log("looks like the ourSort thing done ran!")
+
+     }
+
+    }
+    });
 /**
  * dirPagination - AngularJS module for paginating (almost) anything.
  *
@@ -7737,23 +7751,7 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "   <!-- this is copy/pasted from product-list-section.tpl.html -->\n" +
     "   <div class=\"collection-controls\">\n" +
     "      <div class=\"display-controls\">\n" +
-    "         <div class=\"sort-controls\">\n" +
-    "            <div class=\"btn-group sort-select-group\" dropdown>\n" +
-    "            <span class=\"sort-by-label\">\n" +
-    "               Sorting by\n" +
-    "            </span>\n" +
-    "               <a class=\"dropdown-toggle\">\n" +
-    "                  {{ ProductListSort.get().name }}\n" +
-    "                  <span class=\"caret\"></span>\n" +
-    "               </a>\n" +
-    "\n" +
-    "               <ul class=\"dropdown-menu\">\n" +
-    "                  <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
-    "                     <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
-    "                  </li>\n" +
-    "               </ul>\n" +
-    "            </div>\n" +
-    "         </div>\n" +
+    "         <our-sort></our-sort>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
@@ -11455,7 +11453,28 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
     "");
 }]);
 
-angular.module('templates.common', ['directives/pagination.tpl.html', 'forms/save-buttons.tpl.html']);
+angular.module('templates.common', ['directives/our-sort.tpl.html', 'directives/pagination.tpl.html', 'forms/save-buttons.tpl.html']);
+
+angular.module("directives/our-sort.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("directives/our-sort.tpl.html",
+    "<div class=\"sort-controls\">\n" +
+    "   <div class=\"btn-group sort-select-group\" dropdown>\n" +
+    "            <span class=\"sort-by-label\">\n" +
+    "               Sorting by\n" +
+    "            </span>\n" +
+    "      <a class=\"dropdown-toggle\">\n" +
+    "         {{ ProductListSort.get().name }}\n" +
+    "         <span class=\"caret\"></span>\n" +
+    "      </a>\n" +
+    "\n" +
+    "      <ul class=\"dropdown-menu\">\n" +
+    "         <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
+    "            <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "         </li>\n" +
+    "      </ul>\n" +
+    "   </div>\n" +
+    "</div>");
+}]);
 
 angular.module("directives/pagination.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("directives/pagination.tpl.html",

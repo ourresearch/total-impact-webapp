@@ -1,0 +1,17 @@
+<div class="sort-controls">
+   <div class="btn-group sort-select-group" dropdown>
+            <span class="sort-by-label">
+               Sorting by
+            </span>
+      <a class="dropdown-toggle">
+         {{ ProductListSort.get().name }}
+         <span class="caret"></span>
+      </a>
+
+      <ul class="dropdown-menu">
+         <li class="sort-by-option" ng-repeat="sortConfig in ProductListSort.options()">
+            <a ng-click="ProductListSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
+         </li>
+      </ul>
+   </div>
+</div>
