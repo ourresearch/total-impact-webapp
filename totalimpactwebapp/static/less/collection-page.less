@@ -1,12 +1,14 @@
 @import 'variables';
 
 
-div.product-list-page {
+div.collection-page {
    &.genre-page {
       li.product .genre-icon {
          display:none;  // we already know what genre it's in, we're on that page.
       }
    }
+
+
 
 
    /*****************************************************
@@ -23,6 +25,16 @@ div.product-list-page {
          border-bottom: 1px solid #eee;
          position:relative;
          .clearfix();
+         .based-on {
+            font-size: 16px;
+            font-weight: 300;
+            text-align:right;
+            position:absolute;
+            bottom:10px;
+            right:0;
+            text-transform: none;
+
+         }
          &.country-header-content {
             h2 {
                text-transform:inherit;
@@ -36,15 +48,6 @@ div.product-list-page {
                }
                span.flag {
                   vertical-align: -2px;
-               }
-               .based-on {
-                  font-size: 16px;
-                  font-weight: 300;
-                  text-align:right;
-                  position:absolute;
-                  bottom:10px;
-                  right:0;
-
                }
             }
          }

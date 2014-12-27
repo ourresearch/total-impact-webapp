@@ -14,6 +14,7 @@ angular.module('fansPage', [
     $scope,
     FansService,
     Page){
+    Page.setName("fans")
 
     console.log("fans page controller ran.")
     $scope.FansService = FansService

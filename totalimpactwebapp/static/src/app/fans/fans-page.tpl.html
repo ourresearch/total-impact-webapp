@@ -1,13 +1,33 @@
-<h2>I'm the fans page!</h2>
+<div class="collection-page fans-page">
 
-<pre>{{ FansService.data | json }}</pre>
+   <div class="header">
+      <div class="header-content fans-header-content">
+
+         <h2>
+            <span class="count">
+               {{ FansService.data.tweeters.length }}
+            </span>
+            <span class="text">
+               fans
+            </span>
+            <span class="based-on">
+               based on people who've tweeted your work
+            </span>
+         </h2>
+      </div>
+   </div>
 
 
-<ul>
-   <li ng-repeat="tweet in FansService.data.tweets">
+   <ul>
+      <li ng-repeat="tweeterObj in FansService.data.tweeters | limitTo: 10">
 
-      <h4>{{ tweet.tweeter.name }}</h4>
+         <h4>{{ tweeterObj.about.name }}: {{ tweeterObj.tweets.length }} tweets.</h4>
 
-   </li>
+      </li>
 
-</ul>
+   </ul>
+
+</div>
+
+
+

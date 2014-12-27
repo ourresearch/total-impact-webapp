@@ -9,7 +9,7 @@ angular.module("productListPage", [
 .config(['$routeProvider', function ($routeProvider, security) {
 
   $routeProvider.when("/:url_slug/products/:genre_name", {
-    templateUrl:'product-list-page/genre-page.tpl.html',
+    templateUrl:'collection-page/genre-page.tpl.html',
     controller:'GenrePageCtrl',
     reloadOnSearch: false
   })
@@ -20,7 +20,7 @@ angular.module("productListPage", [
 .config(['$routeProvider', function ($routeProvider, security) {
 
   $routeProvider.when("/:url_slug/country/:country_name", {
-    templateUrl:'product-list-page/country-page.tpl.html',
+    templateUrl:'collection-page/country-page.tpl.html',
     controller:'CountryPageCtrl',
     reloadOnSearch: false
   })

@@ -12,16 +12,23 @@
 
       <div class="nav animated fadeIn" ng-if="profileService.data.products.length">
          <a href="/{{ profileAboutService.data.url_slug }}" ng-class="{active: page.isNamed('overview')}">
-            <i class="icon-user left"></i>
+            <i class="fa fa-user left"></i>
             <span class="text">
                Overview
             </span>
             <div class="arrow"></div>
          </a>
          <a href="/{{ profileAboutService.data.url_slug }}/map" ng-class="{active: page.isNamed('map')}">
-            <i class="icon-globe left"></i>
+            <i class="fa fa-globe left"></i>
             <span class="text">
                Map
+            </span>
+            <div class="arrow"></div>
+         </a>
+         <a href="/{{ profileAboutService.data.url_slug }}/fans" ng-class="{active: page.isNamed('fans')}">
+            <i class="fa fa-heart-o left"></i>
+            <span class="text">
+               Fans
             </span>
             <div class="arrow"></div>
          </a>

@@ -10143,7 +10143,7 @@ div.password-reset form.password-reset div.submit {
   font-size: 80%;
   cursor: help;
 }
-div.product-list-page {
+div.collection-page {
   /*****************************************************
 
    genre header content (info about the products)
@@ -10163,57 +10163,58 @@ div.product-list-page {
    *****************************************************/
 
 }
-div.product-list-page.genre-page li.product .genre-icon {
+div.collection-page.genre-page li.product .genre-icon {
   display: none;
 }
-div.product-list-page div.header {
+div.collection-page div.header {
   margin: 0 0 0 -50px;
 }
-div.product-list-page div.header div.header-content {
+div.collection-page div.header div.header-content {
   padding: 20px 10px 10px 50px;
   border-bottom: 1px solid #eee;
   position: relative;
   clear: both;
 }
-div.product-list-page div.header div.header-content:before,
-div.product-list-page div.header div.header-content:after {
+div.collection-page div.header div.header-content:before,
+div.collection-page div.header div.header-content:after {
   content: " ";
   display: table;
 }
-div.product-list-page div.header div.header-content:after {
+div.collection-page div.header div.header-content:after {
   clear: both;
 }
-div.product-list-page div.header div.header-content:before,
-div.product-list-page div.header div.header-content:after {
+div.collection-page div.header div.header-content:before,
+div.collection-page div.header div.header-content:after {
   content: " ";
   display: table;
 }
-div.product-list-page div.header div.header-content:after {
+div.collection-page div.header div.header-content:after {
   clear: both;
 }
-div.product-list-page div.header div.header-content.country-header-content h2 {
-  text-transform: inherit;
-}
-div.product-list-page div.header div.header-content.country-header-content h2 .intro-text {
-  font-size: 16px;
-  display: block;
-  font-weight: 300;
-}
-div.product-list-page div.header div.header-content.country-header-content h2 .intro-text span.count {
-  font-weight: 900;
-}
-div.product-list-page div.header div.header-content.country-header-content h2 span.flag {
-  vertical-align: -2px;
-}
-div.product-list-page div.header div.header-content.country-header-content h2 .based-on {
+div.collection-page div.header div.header-content .based-on {
   font-size: 16px;
   font-weight: 300;
   text-align: right;
   position: absolute;
   bottom: 10px;
   right: 0;
+  text-transform: none;
 }
-div.product-list-page div.header div.header-content .more-button {
+div.collection-page div.header div.header-content.country-header-content h2 {
+  text-transform: inherit;
+}
+div.collection-page div.header div.header-content.country-header-content h2 .intro-text {
+  font-size: 16px;
+  display: block;
+  font-weight: 300;
+}
+div.collection-page div.header div.header-content.country-header-content h2 .intro-text span.count {
+  font-weight: 900;
+}
+div.collection-page div.header div.header-content.country-header-content h2 span.flag {
+  vertical-align: -2px;
+}
+div.collection-page div.header div.header-content .more-button {
   display: none;
   font-size: 14px;
   background: #fff;
@@ -10223,7 +10224,7 @@ div.product-list-page div.header div.header-content .more-button {
   left: 50%;
   color: #777;
 }
-div.product-list-page div.header div.header-content h2 {
+div.collection-page div.header div.header-content h2 {
   font-size: 28px;
   line-height: 1.3;
   margin: 0 20px 0 5px;
@@ -10231,139 +10232,139 @@ div.product-list-page div.header div.header-content h2 {
   color: #333;
   float: left;
 }
-div.product-list-page div.header div.header-content h2 span.count {
+div.collection-page div.header div.header-content h2 span.count {
   font-weight: normal;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top {
   margin-bottom: 20px;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .clearfix,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .container,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .container-fluid,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .row,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .form-horizontal .form-group,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .btn-toolbar,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .btn-group-vertical > .btn-group,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .nav,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar-header,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar-collapse,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .pager,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .panel-body,
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top .modal-footer {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .clearfix,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .container,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .container-fluid,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .row,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .form-horizontal .form-group,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .btn-toolbar,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .btn-group-vertical > .btn-group,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .nav,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar-header,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .navbar-collapse,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .pager,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .panel-body,
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .modal-footer {
   clear: both;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top div.cards-loading {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top div.cards-loading {
   float: right;
   margin: 17px 15px 0 0;
   color: #999;
   font-size: 14px;
   font-weight: 300;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card {
   float: right;
   margin: 0 20px 0 40px;
   line-height: 1;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls {
   margin-right: 3px;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a {
   font-size: 16px;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.unfeature-this {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.unfeature-this {
   color: #ff4000;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this {
   color: #999;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this:hover {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this:hover {
   color: #000;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner {
   font-size: 14px;
   text-align: left;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li {
   font-size: 14px;
   list-style-type: disc;
   margin-left: 25px;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .twitter-handle {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .twitter-handle {
   font-weight: bold;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .followers {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card div.tooltip div.tooltip-inner li .followers {
   font-size: 10px;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data {
   cursor: default;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data img.icon {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data img.icon {
   height: 18px;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value {
   margin: 0 5px 0 0;
   font-size: 22px;
   font-weight: bold;
   display: inline-block;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value img {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value img {
   height: 20px;
   vertical-align: 0;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key {
   display: inline-block;
   margin-top: 4px;
   font-size: 16px;
 }
-div.product-list-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key span.provider {
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key span.provider {
   display: block;
 }
-div.product-list-page div.product-list-controls {
+div.collection-page div.product-list-controls {
   margin: 0 0 30px -50px;
   padding: 10px 10px 10px 50px;
   position: relative;
 }
-div.product-list-page div.product-list-controls div.edit-controls {
+div.collection-page div.product-list-controls div.edit-controls {
   margin-left: 5px;
 }
-div.product-list-page div.product-list-controls div.edit-controls button {
+div.collection-page div.product-list-controls div.edit-controls button {
   padding: 5px 10px;
   opacity: .5;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.global-selection-control {
+div.collection-page div.product-list-controls div.edit-controls span.global-selection-control {
   width: 25px;
   display: inline-block;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.global-selection-control i {
+div.collection-page div.product-list-controls div.edit-controls span.global-selection-control i {
   font-size: 18px;
   color: #777;
   vertical-align: -2px;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.actions.has-selected-products-true button {
+div.collection-page div.product-list-controls div.edit-controls span.actions.has-selected-products-true button {
   opacity: 1;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.actions span.action {
+div.collection-page div.product-list-controls div.edit-controls span.actions span.action {
   margin-left: 1px;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li {
+div.collection-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li {
   font-size: 16px;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li.instr {
+div.collection-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li.instr {
   padding: 10px 0 0 20px;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a {
+div.collection-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a {
   color: #333;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a i {
+div.collection-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a i {
   color: #555;
 }
-div.product-list-page div.product-list-controls div.edit-controls span.num-selected {
+div.collection-page div.product-list-controls div.edit-controls span.num-selected {
   font-size: 14px;
   margin-left: 10px;
   color: #555;
 }
-div.product-list-page div.product-list-controls div.display-controls {
+div.collection-page div.product-list-controls div.display-controls {
   top: 0;
   right: 0;
   position: absolute;
@@ -10371,43 +10372,43 @@ div.product-list-page div.product-list-controls div.display-controls {
   color: #555;
   font-size: 14px;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets {
+div.collection-page div.product-list-controls div.display-controls div.show-tweets {
   display: inline-block;
   margin-right: 25px;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets label {
+div.collection-page div.product-list-controls div.display-controls div.show-tweets label {
   cursor: pointer;
   font-weight: normal;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets label i.fa-twitter {
+div.collection-page div.product-list-controls div.display-controls div.show-tweets label i.fa-twitter {
   color: #55acee;
   font-size: 20px;
   vertical-align: middle;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets label span.num-tweets {
+div.collection-page div.product-list-controls div.display-controls div.show-tweets label span.num-tweets {
   font-weight: 300;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets {
+div.collection-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets {
   color: #ccc;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets label {
+div.collection-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets label {
   cursor: not-allowed;
   font-weight: 300;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets i.fa-twitter {
+div.collection-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets i.fa-twitter {
   color: #ddd;
 }
-div.product-list-page div.product-list-controls div.display-controls div.show-tweets.tweets-loading {
+div.collection-page div.product-list-controls div.display-controls div.show-tweets.tweets-loading {
   color: #999;
   font-weight: 300;
 }
-div.product-list-page div.product-list-controls div.display-controls div.sort-controls {
+div.collection-page div.product-list-controls div.display-controls div.sort-controls {
   display: inline-block;
 }
-div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group {
+div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group {
   vertical-align: top;
 }
-div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
+div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
   border: none;
   box-shadow: none;
   -webkit-box-shadow: none;
@@ -10415,41 +10416,41 @@ div.product-list-page div.product-list-controls div.display-controls div.sort-co
   text-decoration: underline;
   color: #333;
 }
-div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
+div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
   color: #555;
   padding: 2px 5px 2px 0;
   font-weight: bold;
 }
-div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
+div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
   text-decoration: underline;
 }
-div.product-list-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
+div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
   font-size: 14px;
 }
-div.product-list-page div.products {
+div.collection-page div.products {
   margin-top: 0;
 }
-div.product-list-page div.products ul.products-list {
+div.collection-page div.products ul.products-list {
   clear: both;
   margin-bottom: 70px;
 }
-div.product-list-page div.products ul.products-list:before,
-div.product-list-page div.products ul.products-list:after {
+div.collection-page div.products ul.products-list:before,
+div.collection-page div.products ul.products-list:after {
   content: " ";
   display: table;
 }
-div.product-list-page div.products ul.products-list:after {
+div.collection-page div.products ul.products-list:after {
   clear: both;
 }
-div.product-list-page div.products ul.products-list:before,
-div.product-list-page div.products ul.products-list:after {
+div.collection-page div.products ul.products-list:before,
+div.collection-page div.products ul.products-list:after {
   content: " ";
   display: table;
 }
-div.product-list-page div.products ul.products-list:after {
+div.collection-page div.products ul.products-list:after {
   clear: both;
 }
-div.product-list-page div.products ul.products-list li.product {
+div.collection-page div.products ul.products-list li.product {
   position: relative;
 }
 li.tweet {

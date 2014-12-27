@@ -3,12 +3,7 @@ angular.module("services.fansService", [])
 
     var data = {}
     data.tweetersDict = {}
-
-
-
-    data.foo = "bar!"
-
-
+    data.tweeters = []
 
 
 
@@ -27,7 +22,23 @@ angular.module("services.fansService", [])
           })
         })
 
-        data.tweets = flatTweetsList
+        _.each(flatTweetsList, function(tweet){
+          var myTweeter = tweet.tweeter
+          var myScreenName = myTweeter.screen_name
+          var myTweet = angular.copy(tweet)
+          delete myTweet.tweeter
+
+          if (data.tweetersDict[myScreenName]){
+            data.tweetersDict[myScreenName].tweets.push(myTweet)
+          }
+          else {
+            data.tweetersDict[myScreenName] = {
+              about: myTweeter,
+              tweets: [myTweet]
+            }
+          }
+        })
+        data.tweeters = _.values(data.tweetersDict)
 
       }
 
