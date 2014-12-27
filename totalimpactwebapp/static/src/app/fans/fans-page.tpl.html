@@ -18,13 +18,67 @@
    </div>
 
 
-   <ul>
-      <li ng-repeat="tweeterObj in FansService.data.tweeters | limitTo: 10">
+   <!-- this is copy/pasted from product-list-section.tpl.html -->
+   <div class="collection-controls">
+      <div class="display-controls">
+         <div class="sort-controls">
+            <div class="btn-group sort-select-group" dropdown>
+            <span class="sort-by-label">
+               Sorting by
+            </span>
+               <a class="dropdown-toggle">
+                  {{ ProductListSort.get().name }}
+                  <span class="caret"></span>
+               </a>
 
-         <h4>{{ tweeterObj.about.name }}: {{ tweeterObj.tweets.length }} tweets.</h4>
+               <ul class="dropdown-menu">
+                  <li class="sort-by-option" ng-repeat="sortConfig in ProductListSort.options()">
+                     <a ng-click="ProductListSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </div>
 
-      </li>
 
+
+   </div>
+
+
+   <ul class="fans-list">
+      <li ng-repeat="tweeter in FansService.data.tweeters | limitTo: 100"
+          class="fan">
+         <div class="fan-about">
+            <div class="pic-and-names">
+               <img src="{{ tweeter.about.display_image_url }}" />
+               <div class="names">
+                  <div class="name">{{ tweeter.about.name }}</div>
+                  <div class="screen-name">@{{ tweeter.about.screen_name }}</div>
+                  <div class="location" ng-show="tweeter.about.location">
+                     <i class="fa fa-map-marker"></i>
+                     <span class="text">{{ tweeter.about.location }}</span>
+                  </div>
+               </div>
+            </div>
+
+            <div class="description">{{ tweeter.about.description }}</div>
+
+            <div class="stats">
+               <span class='followers stat'>
+                  <span class='descr'>Followers</span>
+                  <span class='val'>{{ nFormatCommas(tweeter.about.followers) }}</span>
+               </span>
+               <span class='number-follows stat'>
+                  <span class='descr'>Follows</span>
+                  <span class='val'>{{ nFormatCommas(tweeter.about.num_follows) }}</span>
+               </span>
+               <span class='number-statuses stat'>
+                  <span class='descr'>Tweets</span>
+                  <span class='val'>{{ nFormatCommas(tweeter.about.num_statuses) }}</span>
+               </span>
+            </div>
+         </div>
+      </li><!-- end .fan -->
    </ul>
 
 </div>

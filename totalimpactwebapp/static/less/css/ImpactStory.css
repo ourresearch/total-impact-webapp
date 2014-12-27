@@ -10166,6 +10166,104 @@ div.collection-page {
 div.collection-page.genre-page li.product .genre-icon {
   display: none;
 }
+div.collection-page.fans-page ul.fans-list {
+  padding-top: 20px;
+  margin-left: 5px;
+}
+div.collection-page.fans-page ul.fans-list li.fan {
+  margin-bottom: 50px;
+  clear: both;
+}
+div.collection-page.fans-page ul.fans-list li.fan:before,
+div.collection-page.fans-page ul.fans-list li.fan:after {
+  content: " ";
+  display: table;
+}
+div.collection-page.fans-page ul.fans-list li.fan:after {
+  clear: both;
+}
+div.collection-page.fans-page ul.fans-list li.fan:before,
+div.collection-page.fans-page ul.fans-list li.fan:after {
+  content: " ";
+  display: table;
+}
+div.collection-page.fans-page ul.fans-list li.fan:after {
+  clear: both;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names {
+  float: left;
+  width: 270px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names img {
+  height: 70px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  float: left;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names div.names {
+  margin-left: 90px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names div.names div.name {
+  font-weight: normal;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names div.names div.screen-name {
+  font-weight: 300;
+  color: #999;
+  line-height: 1;
+  font-size: 12px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.pic-and-names div.names div.location {
+  line-height: 1;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #999;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.description {
+  width: 450px;
+  font-size: 14px;
+  float: left;
+  min-height: 10px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats {
+  float: left;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat {
+  float: left;
+  text-align: center;
+  margin-left: 10px;
+  border-left: 1px solid #ddd;
+  padding-left: 10px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat .descr {
+  display: block;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-follows,
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-statuses {
+  width: 50px;
+  display: none;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-follows .descr,
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-statuses .descr {
+  font-size: 11px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-follows .val,
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.number-statuses .val {
+  font-size: 14px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.followers {
+  width: 100px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.followers .descr {
+  font-size: 12px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats span.stat.followers .val {
+  font-size: 28px;
+  font-weight: 300;
+}
 div.collection-page div.header {
   margin: 0 0 0 -50px;
 }
@@ -10227,7 +10325,7 @@ div.collection-page div.header div.header-content .more-button {
 div.collection-page div.header div.header-content h2 {
   font-size: 28px;
   line-height: 1.3;
-  margin: 0 20px 0 5px;
+  margin: 0 20px 0 0;
   text-transform: capitalize;
   color: #333;
   float: left;
@@ -10320,51 +10418,51 @@ div.collection-page div.header div.header-content div.genre-summary div.genre-su
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.key span.provider {
   display: block;
 }
-div.collection-page div.product-list-controls {
-  margin: 0 0 30px -50px;
+div.collection-page div.collection-controls {
+  margin: 0 0 40px -50px;
   padding: 10px 10px 10px 50px;
   position: relative;
 }
-div.collection-page div.product-list-controls div.edit-controls {
+div.collection-page div.collection-controls div.edit-controls {
   margin-left: 5px;
 }
-div.collection-page div.product-list-controls div.edit-controls button {
+div.collection-page div.collection-controls div.edit-controls button {
   padding: 5px 10px;
   opacity: .5;
 }
-div.collection-page div.product-list-controls div.edit-controls span.global-selection-control {
+div.collection-page div.collection-controls div.edit-controls span.global-selection-control {
   width: 25px;
   display: inline-block;
 }
-div.collection-page div.product-list-controls div.edit-controls span.global-selection-control i {
+div.collection-page div.collection-controls div.edit-controls span.global-selection-control i {
   font-size: 18px;
   color: #777;
   vertical-align: -2px;
 }
-div.collection-page div.product-list-controls div.edit-controls span.actions.has-selected-products-true button {
+div.collection-page div.collection-controls div.edit-controls span.actions.has-selected-products-true button {
   opacity: 1;
 }
-div.collection-page div.product-list-controls div.edit-controls span.actions span.action {
+div.collection-page div.collection-controls div.edit-controls span.actions span.action {
   margin-left: 1px;
 }
-div.collection-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li {
+div.collection-page div.collection-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li {
   font-size: 16px;
 }
-div.collection-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li.instr {
+div.collection-page div.collection-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li.instr {
   padding: 10px 0 0 20px;
 }
-div.collection-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a {
+div.collection-page div.collection-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a {
   color: #333;
 }
-div.collection-page div.product-list-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a i {
+div.collection-page div.collection-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a i {
   color: #555;
 }
-div.collection-page div.product-list-controls div.edit-controls span.num-selected {
+div.collection-page div.collection-controls div.edit-controls span.num-selected {
   font-size: 14px;
   margin-left: 10px;
   color: #555;
 }
-div.collection-page div.product-list-controls div.display-controls {
+div.collection-page div.collection-controls div.display-controls {
   top: 0;
   right: 0;
   position: absolute;
@@ -10372,43 +10470,43 @@ div.collection-page div.product-list-controls div.display-controls {
   color: #555;
   font-size: 14px;
 }
-div.collection-page div.product-list-controls div.display-controls div.show-tweets {
+div.collection-page div.collection-controls div.display-controls div.show-tweets {
   display: inline-block;
   margin-right: 25px;
 }
-div.collection-page div.product-list-controls div.display-controls div.show-tweets label {
+div.collection-page div.collection-controls div.display-controls div.show-tweets label {
   cursor: pointer;
   font-weight: normal;
 }
-div.collection-page div.product-list-controls div.display-controls div.show-tweets label i.fa-twitter {
+div.collection-page div.collection-controls div.display-controls div.show-tweets label i.fa-twitter {
   color: #55acee;
   font-size: 20px;
   vertical-align: middle;
 }
-div.collection-page div.product-list-controls div.display-controls div.show-tweets label span.num-tweets {
+div.collection-page div.collection-controls div.display-controls div.show-tweets label span.num-tweets {
   font-weight: 300;
 }
-div.collection-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets {
+div.collection-page div.collection-controls div.display-controls div.show-tweets .has-no-tweets {
   color: #ccc;
 }
-div.collection-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets label {
+div.collection-page div.collection-controls div.display-controls div.show-tweets .has-no-tweets label {
   cursor: not-allowed;
   font-weight: 300;
 }
-div.collection-page div.product-list-controls div.display-controls div.show-tweets .has-no-tweets i.fa-twitter {
+div.collection-page div.collection-controls div.display-controls div.show-tweets .has-no-tweets i.fa-twitter {
   color: #ddd;
 }
-div.collection-page div.product-list-controls div.display-controls div.show-tweets.tweets-loading {
+div.collection-page div.collection-controls div.display-controls div.show-tweets.tweets-loading {
   color: #999;
   font-weight: 300;
 }
-div.collection-page div.product-list-controls div.display-controls div.sort-controls {
+div.collection-page div.collection-controls div.display-controls div.sort-controls {
   display: inline-block;
 }
-div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group {
+div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group {
   vertical-align: top;
 }
-div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
+div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
   border: none;
   box-shadow: none;
   -webkit-box-shadow: none;
@@ -10416,15 +10514,15 @@ div.collection-page div.product-list-controls div.display-controls div.sort-cont
   text-decoration: underline;
   color: #333;
 }
-div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
+div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
   color: #555;
   padding: 2px 5px 2px 0;
   font-weight: bold;
 }
-div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
+div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
   text-decoration: underline;
 }
-div.collection-page div.product-list-controls div.display-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
+div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
   font-size: 14px;
 }
 div.collection-page div.products {
@@ -10433,6 +10531,7 @@ div.collection-page div.products {
 div.collection-page div.products ul.products-list {
   clear: both;
   margin-bottom: 70px;
+  margin-left: -5px;
 }
 div.collection-page div.products ul.products-list:before,
 div.collection-page div.products ul.products-list:after {

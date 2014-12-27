@@ -5304,8 +5304,6 @@ angular.module("services.fansService", [])
         var flatTweetsList = []
         _.each(tweets, function(tweetsForThisProduct, tiid){
 
-          console.log("tweets for this product", tiid, tweetsForThisProduct)
-
           _.each(tweetsForThisProduct, function(tweet){
             tweet.tiid = tiid
             flatTweetsList.push(tweet)
@@ -7496,7 +7494,7 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
 
 angular.module("collection-page/product-list-section.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("collection-page/product-list-section.tpl.html",
-    "<div class=\"product-list-controls\">\n" +
+    "<div class=\"collection-controls\">\n" +
     "   <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
     "\n" +
     "      <!-- no products are selected. allow user to select all -->\n" +
@@ -7727,13 +7725,67 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "   </div>\n" +
     "\n" +
     "\n" +
-    "   <ul>\n" +
-    "      <li ng-repeat=\"tweeterObj in FansService.data.tweeters | limitTo: 10\">\n" +
+    "   <!-- this is copy/pasted from product-list-section.tpl.html -->\n" +
+    "   <div class=\"collection-controls\">\n" +
+    "      <div class=\"display-controls\">\n" +
+    "         <div class=\"sort-controls\">\n" +
+    "            <div class=\"btn-group sort-select-group\" dropdown>\n" +
+    "            <span class=\"sort-by-label\">\n" +
+    "               Sorting by\n" +
+    "            </span>\n" +
+    "               <a class=\"dropdown-toggle\">\n" +
+    "                  {{ ProductListSort.get().name }}\n" +
+    "                  <span class=\"caret\"></span>\n" +
+    "               </a>\n" +
     "\n" +
-    "         <h4>{{ tweeterObj.about.name }}: {{ tweeterObj.tweets.length }} tweets.</h4>\n" +
+    "               <ul class=\"dropdown-menu\">\n" +
+    "                  <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
+    "                     <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
     "\n" +
-    "      </li>\n" +
     "\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "\n" +
+    "   <ul class=\"fans-list\">\n" +
+    "      <li ng-repeat=\"tweeter in FansService.data.tweeters | limitTo: 100\"\n" +
+    "          class=\"fan\">\n" +
+    "         <div class=\"fan-about\">\n" +
+    "            <div class=\"pic-and-names\">\n" +
+    "               <img src=\"{{ tweeter.about.display_image_url }}\" />\n" +
+    "               <div class=\"names\">\n" +
+    "                  <div class=\"name\">{{ tweeter.about.name }}</div>\n" +
+    "                  <div class=\"screen-name\">@{{ tweeter.about.screen_name }}</div>\n" +
+    "                  <div class=\"location\" ng-show=\"tweeter.about.location\">\n" +
+    "                     <i class=\"fa fa-map-marker\"></i>\n" +
+    "                     <span class=\"text\">{{ tweeter.about.location }}</span>\n" +
+    "                  </div>\n" +
+    "               </div>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"description\">{{ tweeter.about.description }}</div>\n" +
+    "\n" +
+    "            <div class=\"stats\">\n" +
+    "               <span class='followers stat'>\n" +
+    "                  <span class='descr'>Followers</span>\n" +
+    "                  <span class='val'>{{ nFormatCommas(tweeter.about.followers) }}</span>\n" +
+    "               </span>\n" +
+    "               <span class='number-follows stat'>\n" +
+    "                  <span class='descr'>Follows</span>\n" +
+    "                  <span class='val'>{{ nFormatCommas(tweeter.about.num_follows) }}</span>\n" +
+    "               </span>\n" +
+    "               <span class='number-statuses stat'>\n" +
+    "                  <span class='descr'>Tweets</span>\n" +
+    "                  <span class='val'>{{ nFormatCommas(tweeter.about.num_statuses) }}</span>\n" +
+    "               </span>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "      </li><!-- end .fan -->\n" +
     "   </ul>\n" +
     "\n" +
     "</div>\n" +

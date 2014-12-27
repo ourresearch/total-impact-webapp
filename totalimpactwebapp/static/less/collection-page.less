@@ -10,6 +10,95 @@ div.collection-page {
 
 
 
+   &.fans-page {
+      ul.fans-list {
+         padding-top: 20px;
+         margin-left: 5px;
+         li.fan {
+            clear:both;
+            margin-bottom: 50px;
+            .clearfix();
+            div.fan-about {
+               div.pic-and-names {
+                  float: left;
+                  width: 270px;
+                  img {
+                     height: 70px;
+                     .rounded(3px);
+                     float:left;
+                  }
+                  div.names {
+                     margin-left: 90px;
+                     div.name {
+                        font-weight: normal;
+                     }
+                     div.screen-name {
+                        font-weight: 300;
+                        color: #999;
+                        line-height: 1;
+                        font-size: 12px;
+                     }
+                     div.location {
+                        line-height: 1;
+                        margin-top: 10px;
+                        font-size: 14px;
+                        color: #999;
+                     }
+                  }
+               }
+
+               div.description {
+                  width: 450px;
+                  font-size: 14px;
+                  float:left;
+                  min-height: 10px;
+               }
+
+               div.stats {
+                  float:left;
+                  span.stat {
+                     float: left;
+                     text-align: center;
+                     margin-left: 10px;
+                     border-left: 1px solid #ddd;
+                     padding-left: 10px;
+                     .descr {
+                        display:block;
+                     }
+                     .val {
+                     }
+                     &.number-follows, &.number-statuses {
+                        width: 50px;
+                        display: none;
+                        .descr {
+                           font-size: 11px;
+                        }
+                        .val {
+                           font-size: 14px;
+                        }
+
+                     }
+                     &.followers {
+                        width: 100px;
+                        .descr {
+                           font-size: 12px;
+                        }
+                        .val {
+                           font-size: 28px;
+                           font-weight: 300;
+                        }
+                     }
+                  }
+               }
+
+
+            }
+         }
+      }
+   }
+
+
+
 
    /*****************************************************
 
@@ -68,7 +157,7 @@ div.collection-page {
             }
             font-size: 28px;
             line-height: 1.3;
-            margin: 0 20px 0 5px;
+            margin: 0 20px 0 0;
             text-transform: capitalize;
             color: #333;
             float:left;
@@ -169,8 +258,8 @@ div.collection-page {
 
    *****************************************************/
 
-   div.product-list-controls {
-      margin: 0 0 30px -@contentPaddingLeft;
+   div.collection-controls {
+      margin: 0 0 40px -@contentPaddingLeft;
       padding: 10px 10px 10px @contentPaddingLeft;
       position: relative;
       div.edit-controls {
@@ -325,6 +414,9 @@ div.collection-page {
       ul.products-list {
          .clearfix();
          margin-bottom: 70px;
+
+         // hack to line this up with the page title h2; not sure why needed.
+         margin-left: -5px;
          li.product {
             position:relative;
 

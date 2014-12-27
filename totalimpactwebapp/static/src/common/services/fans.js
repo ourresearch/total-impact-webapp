@@ -14,8 +14,6 @@ angular.module("services.fansService", [])
         var flatTweetsList = []
         _.each(tweets, function(tweetsForThisProduct, tiid){
 
-          console.log("tweets for this product", tiid, tweetsForThisProduct)
-
           _.each(tweetsForThisProduct, function(tweet){
             tweet.tiid = tiid
             flatTweetsList.push(tweet)
