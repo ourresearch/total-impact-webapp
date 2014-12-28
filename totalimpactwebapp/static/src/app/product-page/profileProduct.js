@@ -204,6 +204,8 @@ angular.module("productPage", [
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
 
+
+
       // tweet stuff
       $scope.tweetsList = {}
       $scope.tweetsList.currentPage = 1
@@ -221,6 +223,9 @@ angular.module("productPage", [
           $scope.tweetsList.onPageChange(1)
         }
       })
+
+
+
 
       // should've just done this in the first place instead of a bunch of
       // individual assignments (above). Get rid of those some day, replace

@@ -24,14 +24,24 @@
          <our-sort></our-sort>
       </div>
 
+      <div class="page-info">
+         <span class="current-page">
+            <span class="descr">Page</span>
+            <span class="val">{{ pages.current }}</span>
+         </span>
+         <span class="total-pages" ng-show="pages.numPages">
+            of <span class="val">{{ pages.numPages }}</span>
+         </span>
+      </div>
+
 
 
    </div>
 
 
    <ul class="fans-list">
-      <li current-page="FansService.ui.currentPage"
-          dir-paginate="tweeter in FansService.data.tweeters | orderBy: OurSortService.current.key | itemsPerPage: FansService.ui.perPage"
+      <li current-page="pages.current"
+          dir-paginate="tweeter in FansService.data.tweeters | orderBy: OurSortService.current.key | itemsPerPage: pages.perPage"
           class="fan">
          <div class="fan-about">
             <img src="{{ tweeter.about.display_image_url }}" />
@@ -75,7 +85,7 @@
 
    <div class="pagination-controls-container">
       <dir-pagination-controls
-              on-page-change="FansService.onPageChange(newPageNumber)">
+              on-page-change="pages.onPageChange(newPageNumber)">
       </dir-pagination-controls>
    </div>
 

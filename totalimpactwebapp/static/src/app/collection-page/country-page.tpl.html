@@ -6,7 +6,10 @@
          <h2 class="f16">
             <span class="intro-text">
                <span class="count">
-                  {{ collection.len() }} products
+                  <span class="val" ng-show="Collection.len()">
+                     {{ Collection.len() }}
+                  </span>
+                  products
                </span>
                 with impacts in
             </span>

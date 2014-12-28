@@ -10196,7 +10196,7 @@ div.collection-page.genre-page li.product .genre-icon {
   display: none;
 }
 div.collection-page.fans-page ul.fans-list {
-  padding-top: 20px;
+  padding-top: 75px;
   margin-left: 5px;
 }
 div.collection-page.fans-page ul.fans-list li.fan {
@@ -10493,6 +10493,16 @@ div.collection-page div.collection-controls {
   margin: 0 0 40px -50px;
   padding: 10px 10px 10px 50px;
   position: relative;
+}
+div.collection-page div.collection-controls div.page-info {
+  margin-top: -5px;
+}
+div.collection-page div.collection-controls div.page-info span.current-page {
+  font-size: 20px;
+}
+div.collection-page div.collection-controls div.page-info span.total-pages {
+  font-size: 14px;
+  font-weight: 300;
 }
 div.collection-page div.collection-controls div.edit-controls {
   margin-left: 5px;

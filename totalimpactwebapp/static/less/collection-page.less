@@ -12,7 +12,7 @@ div.collection-page {
 
    &.fans-page {
       ul.fans-list {
-         padding-top: 20px;
+         padding-top: 75px;
          margin-left: 5px;
          li.fan {
             @fanImgHeight: 70px;
@@ -298,6 +298,18 @@ div.collection-page {
       margin: 0 0 40px -@contentPaddingLeft;
       padding: 10px 10px 10px @contentPaddingLeft;
       position: relative;
+
+      div.page-info { // currently only used for the Fans page
+         margin-top: -5px;
+         span.current-page {
+            font-size: 20px;
+         }
+         span.total-pages {
+            font-size: 14px;
+            font-weight: 300;
+         }
+      }
+
       div.edit-controls {
          margin-left: 5px;
          button {

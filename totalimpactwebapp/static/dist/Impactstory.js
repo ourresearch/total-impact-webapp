@@ -960,6 +960,22 @@ angular.module('fansPage', [
     ])
 
 
+    var pages = {
+      current: 1,
+      perPage: 3
+    }
+    $scope.pages = pages
+    pages.onPageChange = function(newPageNumber){
+      console.log("page change!", newPageNumber)
+      pages.current = newPageNumber
+      window.scrollTo(0,0)
+    }
+
+    $scope.$watch("FansService.data.tweeters", function(newVal, oldVal){
+      pages.numPages = Math.ceil(newVal.length / pages.perPage)
+    })
+
+
   })
 
 angular.module( 'giftSubscriptionPage', [
@@ -1612,6 +1628,8 @@ angular.module("productPage", [
       $scope.hasEmbeddedFile = false
       $scope.userWantsFullAbstract = true
 
+
+
       // tweet stuff
       $scope.tweetsList = {}
       $scope.tweetsList.currentPage = 1
@@ -1629,6 +1647,9 @@ angular.module("productPage", [
           $scope.tweetsList.onPageChange(1)
         }
       })
+
+
+
 
       // should've just done this in the first place instead of a bunch of
       // individual assignments (above). Get rid of those some day, replace
@@ -5591,19 +5612,9 @@ angular.module("services.fansService", [])
     data.tweetersDict = {}
     data.tweeters = []
 
-    var ui = {}
-    ui.perPage = 5
-    ui.currentPage = 1
-    ui.sortBy = "-about.followers"
-
-
 
     return {
       data: data,
-      ui: ui,
-      onPageChange: function(newPageNumber){
-        ui.currentPage = newPageNumber
-      },
       setTweets: function(tweets){
         console.log("trying to set tweets", tweets)
         var flatTweetsList = []
@@ -7669,7 +7680,10 @@ angular.module("collection-page/country-page.tpl.html", []).run(["$templateCache
     "         <h2 class=\"f16\">\n" +
     "            <span class=\"intro-text\">\n" +
     "               <span class=\"count\">\n" +
-    "                  {{ collection.len() }} products\n" +
+    "                  <span class=\"val\" ng-show=\"Collection.len()\">\n" +
+    "                     {{ Collection.len() }}\n" +
+    "                  </span>\n" +
+    "                  products\n" +
     "               </span>\n" +
     "                with impacts in\n" +
     "            </span>\n" +
@@ -7698,8 +7712,8 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
     "      <div class=\"header-content\">\n" +
     "\n" +
     "         <h2>\n" +
-    "            <span class=\"count\">\n" +
-    "               {{ collection.len() }}\n" +
+    "            <span class=\"count\" ng-show=\"Collection.len()\">\n" +
+    "               {{ Collection.len() }}\n" +
     "            </span>\n" +
     "            <span class=\"text\">\n" +
     "               {{ myGenreConfig.plural_name }}\n" +
@@ -7814,14 +7828,24 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "         <our-sort></our-sort>\n" +
     "      </div>\n" +
     "\n" +
+    "      <div class=\"page-info\">\n" +
+    "         <span class=\"current-page\">\n" +
+    "            <span class=\"descr\">Page</span>\n" +
+    "            <span class=\"val\">{{ pages.current }}</span>\n" +
+    "         </span>\n" +
+    "         <span class=\"total-pages\" ng-show=\"pages.numPages\">\n" +
+    "            of <span class=\"val\">{{ pages.numPages }}</span>\n" +
+    "         </span>\n" +
+    "      </div>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "   </div>\n" +
     "\n" +
     "\n" +
     "   <ul class=\"fans-list\">\n" +
-    "      <li current-page=\"FansService.ui.currentPage\"\n" +
-    "          dir-paginate=\"tweeter in FansService.data.tweeters | orderBy: OurSortService.current.key | itemsPerPage: FansService.ui.perPage\"\n" +
+    "      <li current-page=\"pages.current\"\n" +
+    "          dir-paginate=\"tweeter in FansService.data.tweeters | orderBy: OurSortService.current.key | itemsPerPage: pages.perPage\"\n" +
     "          class=\"fan\">\n" +
     "         <div class=\"fan-about\">\n" +
     "            <img src=\"{{ tweeter.about.display_image_url }}\" />\n" +
@@ -7865,7 +7889,7 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "\n" +
     "   <div class=\"pagination-controls-container\">\n" +
     "      <dir-pagination-controls\n" +
-    "              on-page-change=\"FansService.onPageChange(newPageNumber)\">\n" +
+    "              on-page-change=\"pages.onPageChange(newPageNumber)\">\n" +
     "      </dir-pagination-controls>\n" +
     "   </div>\n" +
     "\n" +

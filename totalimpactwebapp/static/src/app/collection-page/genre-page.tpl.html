@@ -4,8 +4,8 @@
       <div class="header-content">
 
          <h2>
-            <span class="count">
-               {{ collection.len() }}
+            <span class="count" ng-show="Collection.len()">
+               {{ Collection.len() }}
             </span>
             <span class="text">
                {{ myGenreConfig.plural_name }}

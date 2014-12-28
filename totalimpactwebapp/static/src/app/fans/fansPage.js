@@ -39,4 +39,20 @@ angular.module('fansPage', [
     ])
 
 
+    var pages = {
+      current: 1,
+      perPage: 3
+    }
+    $scope.pages = pages
+    pages.onPageChange = function(newPageNumber){
+      console.log("page change!", newPageNumber)
+      pages.current = newPageNumber
+      window.scrollTo(0,0)
+    }
+
+    $scope.$watch("FansService.data.tweeters", function(newVal, oldVal){
+      pages.numPages = Math.ceil(newVal.length / pages.perPage)
+    })
+
+
   })
