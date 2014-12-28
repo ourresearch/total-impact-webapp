@@ -6958,6 +6958,35 @@ ul.pagination li a:hover {
 ul.pagination li.active a {
   background: #999 !important;
 }
+/* controls for the our-sort directive.
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+div.our-sort-controls {
+  display: inline-block;
+}
+div.our-sort-controls .btn-group.sort-select-group {
+  vertical-align: top;
+}
+div.our-sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
+  border: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  text-decoration: underline;
+  color: #333;
+}
+div.our-sort-controls .btn-group.sort-select-group a.dropdown-toggle {
+  color: #555;
+  padding: 2px 5px 2px 0;
+  font-weight: bold;
+}
+div.our-sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
+  text-decoration: underline;
+}
+div.our-sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
+  font-size: 14px;
+}
 /* profile map
 *****************************************************************************
 *****************************************************************************
@@ -10541,31 +10570,6 @@ div.collection-page div.collection-controls div.display-controls div.show-tweets
 div.collection-page div.collection-controls div.display-controls div.show-tweets.tweets-loading {
   color: #999;
   font-weight: 300;
-}
-div.collection-page div.collection-controls div.display-controls div.sort-controls {
-  display: inline-block;
-}
-div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group {
-  vertical-align: top;
-}
-div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group.open a.dropdown-toggle {
-  border: none;
-  box-shadow: none;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  text-decoration: underline;
-  color: #333;
-}
-div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle {
-  color: #555;
-  padding: 2px 5px 2px 0;
-  font-weight: bold;
-}
-div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
-  text-decoration: underline;
-}
-div.collection-page div.collection-controls div.display-controls div.sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
-  font-size: 14px;
 }
 div.collection-page div.products {
   margin-top: 0;

@@ -1427,6 +1427,7 @@ angular.module("productPage", [
     $routeProvider.when("/:url_slug/product/:tiid/:tabName?", {
       templateUrl:'product-page/product-page.tpl.html',
       controller:'ProductPageCtrl',
+      reloadOnSearch: false,
       resolve: {
         product: function(Product, $route){
           return Product.get({
@@ -1500,7 +1501,6 @@ angular.module("productPage", [
     UsersProduct,
     UserProfile,
     ProductPage,
-    Product,
     Loading,
     TiMixpanel,
     ProductBiblio,
@@ -1564,7 +1564,13 @@ angular.module("productPage", [
         urlName: "default"
       },
       {
-        key: "country",
+        // sorting country in reverse order (z to a) is weird, but otherwise
+        // big tweets sets start with a whole page of "no country" making
+        // it hard to tell if anything even happened.
+
+        // also, this is sorting by ISO code not actual country name, so
+        // order will be unexpected in many cases.
+        key: "-country",
         name: "country",
         urlName: "country"
       }
@@ -1611,14 +1617,13 @@ angular.module("productPage", [
       $scope.tweetsList = {}
       $scope.tweetsList.currentPage = 1
       $scope.tweetsList.perPage = 25
-      $scope.tweetsList.sortBy = "-tweet_timestamp"
       $scope.tweetsList.onPageChange = function(newPageNumber){
         window.scrollTo(0,0)
       }
       $scope.tweetsList.numPages =  Math.ceil(product.tweets.length / $scope.tweetsList.perPage)
 
-      $scope.$watch('tweetsList.sortBy', function(newVal, oldVal){
-        console.log("tweetsList.sortBy watch triggered", newVal, oldVal)
+      $scope.$watch('OurSortService.current.name', function(newVal, oldVal){
+        console.log("OurSortService.current.name watch triggered", newVal, oldVal)
         if (newVal !== oldVal){
           console.log("changing tweets page")
           $scope.tweetsList.currentPage = 1
@@ -11501,7 +11506,7 @@ angular.module('templates.common', ['directives/our-sort.tpl.html', 'directives/
 
 angular.module("directives/our-sort.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("directives/our-sort.tpl.html",
-    "<div class=\"sort-controls\">\n" +
+    "<div class=\"our-sort-controls\">\n" +
     "\n" +
     "    <div class=\"dropdown btn-group sort-select-group\" dropdown on-toggle=\"toggled(open)\">\n" +
     "       <span class=\"sort-by-label\">\n" +
