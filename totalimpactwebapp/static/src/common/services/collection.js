@@ -1,6 +1,6 @@
 angular.module("services.collection", [])
 
-.factory("collection", function(
+.factory("Collection", function(
     $location,
     $timeout,
     $window,
@@ -8,11 +8,11 @@ angular.module("services.collection", [])
     SelectedProducts,
     GenreConfigs,
     PinboardService,
-    collectionSort,
     KeyMetrics,
     KeyProducts,
     Loading,
     Timer,
+    OurSortService,
     Page,
     ProfileProducts){
 
@@ -50,7 +50,6 @@ angular.module("services.collection", [])
     if (!ProfileProducts.hasFullProducts()){
       Loading.startPage()
     }
-    ui.genreChangeDropdownIsOpen = false
     ui.showTweets = !!$location.search().show_tweets
 
     Timer.start("collectionRender")
@@ -61,10 +60,33 @@ angular.module("services.collection", [])
     $scope.KeyProducts = KeyProducts
 
 
+    OurSortService.setChoices([
+      {
+        key: ["-awardedness_score", '-metric_raw_sum', 'title'],
+        name: "default",
+        urlName: "default"
+      } ,
+      {
+        key: ["title", "-awardedness_score", '-metric_raw_sum'],
+        name: "title",
+        urlName: "title"
+      },
+      {
+        key: ["-year", "-awardedness_score", '-metric_raw_sum', 'title'],
+        name: "year",
+        urlName: "year"
+      },
+      {
+        key: ["authors", "-awardedness_score", '-metric_raw_sum', 'title'],
+        name: "first author",
+        urlName: "first_author"
+      }
+    ])
+
+
     // i think this stuff is not supposed to be here. not sure how else to re-use, though.
     $scope.pinboardService = PinboardService
     $scope.SelectedProducts = SelectedProducts
-    $scope.collectionSort = collectionSort
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       finishRender()
@@ -89,8 +111,6 @@ angular.module("services.collection", [])
     ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
 
-    // close the change-genre dialog
-    ui.genreChangeDropdownIsOpen = false
 
     // handle moving the last product in our current genre
     if (!len()){
@@ -165,6 +185,9 @@ angular.module("services.collection", [])
 })
 
 
+
+
+
 .factory("SelectedProducts", function(){
   var tiids = []
 
@@ -196,57 +219,5 @@ angular.module("services.collection", [])
   }
 })
 
-.factory("collectionSort", function($location){
-
-  var configs = [
-    {
-      keys: ["-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "default",
-      urlName: "default"
-    } ,
-    {
-      keys: ["title", "-awardedness_score", '-metric_raw_sum'],
-      name: "title",
-      urlName: "title"
-    },
-    {
-      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "year",
-      urlName: "year"
-    },
-    {
-      keys: ["authors", "-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "first author",
-      urlName: "first_author"
-    }
-  ]
-
-  function getCurrentConfig(){
-    var ret
-    ret = _.findWhere(configs, {urlName: $location.search().sort_by})
-    if (!ret){
-      ret = _.findWhere(configs, {urlName: "default"})
-    }
-    return ret
-  }
 
 
-  return {
-    get: getCurrentConfig,
-    set: function(name){
-      var myConfig = _.findWhere(configs, {name: name})
-      if (myConfig.name == "default"){
-        $location.search("sort_by", null)
-      }
-      else {
-        $location.search("sort_by", myConfig.urlName)
-      }
-    },
-    options: function(){
-      var currentName = getCurrentConfig().name
-      return _.filter(configs, function(config){
-        return config.name !== currentName
-      })
-    }
-  }
-})

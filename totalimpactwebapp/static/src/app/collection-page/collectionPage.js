@@ -34,15 +34,15 @@ angular.module("collectionPage", [
     $routeParams,
     GenreConfigs,
     ProfileAboutService,
-    collection,
+    Collection,
     CountryNames,
     Page) {
 
     var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
     Page.setName("map")
-    collection.startRender($scope)
+    Collection.startRender($scope)
 
-    $scope.collection = collection
+    $scope.Collection = Collection
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
     $scope.countryCode = myCountryCode
 
@@ -56,10 +56,10 @@ angular.module("collectionPage", [
     }
 
     // only show tweets if they are for sure from this country
-    collection.filters.tweets = function(tweet){
+    Collection.filters.tweets = function(tweet){
       return tweet.country === myCountryCode
     }
-    collection.filters.products = filterFn
+    Collection.filters.products = filterFn
 
     $scope.productsFilter = filterFn
 
@@ -81,14 +81,14 @@ angular.module("collectionPage", [
     GenreConfigs,
     ProfileAboutService,
     SummaryCards,
-    collection,
+    Collection,
     Page) {
 
     console.log("loading the genre page controller.")
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
-    collection.startRender($scope)
+    Collection.startRender($scope)
 
 
 
@@ -121,12 +121,12 @@ angular.module("collectionPage", [
       }
     }
 
-    collection.filters.products = filterFn
-    collection.filters.tweets = function(){return true}
+    Collection.filters.products = filterFn
+    Collection.filters.tweets = function(){return true}
     $scope.productsFilter = filterFn
 
 
-    $scope.collection = collection
+    $scope.Collection = Collection
     $scope.myGenreConfig = myGenreConfig
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){

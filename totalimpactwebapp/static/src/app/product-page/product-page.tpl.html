@@ -546,23 +546,11 @@
                         </div>
 
                         <div class="tweets-list-actions">
-                           <span class="descr">Sort tweets by</span>
-                           <span class="sort-options">
-                              <label>
-                                 <input type="radio"
-                                        name="sort-tweets-by"
-                                        ng-model="tweetsList.sortBy"
-                                        value="-tweet_timestamp" />
-                                 date
-                              </label>
-                              <label>
-                                 <input type="radio"
-                                        name="sort-tweets-by"
-                                        ng-model="tweetsList.sortBy"
-                                        value="-tweeter.followers" />
-                                 followers
-                              </label>
-                           </span>
+                           <our-sort></our-sort>
+
+
+
+
                         </div>
 
 
@@ -573,7 +561,7 @@
                         <li class="tweet"
                             ng-include="'tweet/tweet.tpl.html'"
                             current-page="tweetsList.currentPage"
-                            dir-paginate="tweet in product.tweets | orderBy: tweetsList.sortBy | itemsPerPage: tweetsList.perPage">
+                            dir-paginate="tweet in product.tweets | orderBy: OurSortService.current.key | itemsPerPage: tweetsList.perPage">
                          </li>
                      </ul>
                   </div>

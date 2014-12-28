@@ -47,6 +47,7 @@ angular.module('app', [
   'services.cardService',
   'services.map',
   'services.fansService',
+  'services.ourSortService',
   'settings',
   'xeditable',
   'ngProgress'

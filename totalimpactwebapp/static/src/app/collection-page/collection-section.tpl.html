@@ -7,19 +7,19 @@
          <i class="icon-check-empty"
             tooltip="Select all"
             ng-show="SelectedProducts.count() == 0"
-            ng-click="collection.selectEverything()"></i>
+            ng-click="Collection.selectEverything()"></i>
 
 
       <!-- between zero and all products are selected. allow user to select all -->
       <i class="icon-check-minus"
          tooltip="Select all"
-         ng-show="SelectedProducts.containsAny() && SelectedProducts.count() < collection.len()"
-         ng-click="collection.selectEverything()"></i>
+         ng-show="SelectedProducts.containsAny() && SelectedProducts.count() < Collection.len()"
+         ng-click="Collection.selectEverything()"></i>
 
       <!-- everything is selected. allow user to unselect all -->
       <i class="icon-check"
          tooltip="Unselect all"
-         ng-show="SelectedProducts.count() == collection.len()"
+         ng-show="SelectedProducts.count() == Collection.len()"
          ng-click="SelectedProducts.removeAll()"></i>
        </span>
 
@@ -27,7 +27,7 @@
 
          <span class="action">
             <button type="button"
-                    ng-click="collection.removeSelectedProducts()"
+                    ng-click="Collection.removeSelectedProducts()"
                     tooltip="Delete selected items."
                     class="btn btn-default btn-xs">
                <i class="icon-trash"></i>
@@ -36,7 +36,7 @@
          </span>
 
          <span class="action">
-            <div class="btn-group genre-select-group" dropdown is-open="collection.ui.genreChangeDropdownIsOpen">
+            <div class="btn-group genre-select-group" dropdown is-open="Collection.ui.genreChangeDropdownIsOpen">
                <button type="button"
                        tooltip-html-unsafe="Recategorize selected&nbsp;items"
                        class="btn btn-default btn-xs dropdown-toggle">
@@ -47,7 +47,7 @@
                   <li class="instr">Move to:</li>
                   <li class="divider"></li>
                   <li ng-repeat="genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']">
-                     <a ng-click="collection.changeProductsGenre(genreConfigForList.name)">
+                     <a ng-click="Collection.changeProductsGenre(genreConfigForList.name)">
                         <i class="{{ genreConfigForList.icon }} left"></i>
                         {{ genreConfigForList.plural_name }}
                      </a>
@@ -66,24 +66,24 @@
 
    <div class="display-controls">
       <div class="show-tweets tweets-loaded" ng-show="!loading.is('tweets')">
-         <div class="has-tweets" ng-show="collection.numTweets()">
+         <div class="has-tweets" ng-show="Collection.numTweets()">
             <label for="show-tweets-checkbox">
                <i class="fa fa-twitter"></i>
                <span class="text">
                   Show tweets
                   <span class="num-tweets">
-                     ({{ collection.numTweets() }})
+                     ({{ Collection.numTweets() }})
                   </span>
                </span>
             </label>
             <input type="checkbox"
                    id="show-tweets-checkbox"
-                   ng-model="collection.ui.showTweets" />
+                   ng-model="Collection.ui.showTweets" />
          </div>
          <div class="has-no-tweets"
               tooltip="We haven't found any tweets for these products."
               tooltip-placement="left"
-              ng-show="!collection.numTweets()">
+              ng-show="!Collection.numTweets()">
             <label for="disabled-show-tweets-checkbox">
                <i class="fa fa-twitter"></i>
                <span class="text">Show tweets</span>
@@ -99,23 +99,8 @@
        </div>
 
 
-      <div class="sort-controls">
-         <div class="btn-group sort-select-group" dropdown>
-         <span class="sort-by-label">
-            Sorting by
-         </span>
-            <a class="dropdown-toggle">
-               {{ collectionSort.get().name }}
-               <span class="caret"></span>
-            </a>
+      <our-sort></our-sort>
 
-            <ul class="dropdown-menu">
-               <li class="sort-by-option" ng-repeat="sortConfig in collectionSort.options()">
-                  <a ng-click="collectionSort.set(sortConfig.name)"> {{ sortConfig.name }}</a>
-               </li>
-            </ul>
-         </div>
-      </div>
    </div>
 </div>
 
@@ -123,7 +108,7 @@
    <ul class="products-list" ng-if="profileService.hasFullProducts()">
       <li class="product genre-{{ product.genre }}"
           ng-class="{first: $first}"
-          ng-repeat="product in profileService.data.products | filter: collection.filters.products | orderBy: collectionSort.get().keys"
+          ng-repeat="product in profileService.data.products | filter: Collection.filters.products | orderBy: OurSortService.current.key"
           id="{{ product.tiid }}"
           on-repeat-finished>
 
@@ -163,12 +148,12 @@
                class="genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}"></i>
          </div>
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
-         <div class="product-tweets" ng-show="filteredTweets.length && collection.ui.showTweets">
+         <div class="product-tweets" ng-show="filteredTweets.length && Collection.ui.showTweets">
 
             <ul>
                <li class="tweet"
                    ng-include="'tweet/tweet.tpl.html'"
-                   ng-repeat="tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: collection.filters.tweets | limitTo: 5)">
+                   ng-repeat="tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: Collection.filters.tweets | limitTo: 5)">
                 </li>
             </ul>
             <div class="link-to-more-tweets" ng-show="product.tweets.length > filteredTweets.length">

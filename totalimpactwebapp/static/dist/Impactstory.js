@@ -542,6 +542,7 @@ angular.module('app', [
   'services.cardService',
   'services.map',
   'services.fansService',
+  'services.ourSortService',
   'settings',
   'xeditable',
   'ngProgress'
@@ -787,15 +788,15 @@ angular.module("collectionPage", [
     $routeParams,
     GenreConfigs,
     ProfileAboutService,
-    collection,
+    Collection,
     CountryNames,
     Page) {
 
     var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
     Page.setName("map")
-    collection.startRender($scope)
+    Collection.startRender($scope)
 
-    $scope.collection = collection
+    $scope.Collection = Collection
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
     $scope.countryCode = myCountryCode
 
@@ -809,10 +810,10 @@ angular.module("collectionPage", [
     }
 
     // only show tweets if they are for sure from this country
-    collection.filters.tweets = function(tweet){
+    Collection.filters.tweets = function(tweet){
       return tweet.country === myCountryCode
     }
-    collection.filters.products = filterFn
+    Collection.filters.products = filterFn
 
     $scope.productsFilter = filterFn
 
@@ -834,14 +835,14 @@ angular.module("collectionPage", [
     GenreConfigs,
     ProfileAboutService,
     SummaryCards,
-    collection,
+    Collection,
     Page) {
 
     console.log("loading the genre page controller.")
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
-    collection.startRender($scope)
+    Collection.startRender($scope)
 
 
 
@@ -874,12 +875,12 @@ angular.module("collectionPage", [
       }
     }
 
-    collection.filters.products = filterFn
-    collection.filters.tweets = function(){return true}
+    Collection.filters.products = filterFn
+    Collection.filters.tweets = function(){return true}
     $scope.productsFilter = filterFn
 
 
-    $scope.collection = collection
+    $scope.Collection = Collection
     $scope.myGenreConfig = myGenreConfig
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -1509,6 +1510,7 @@ angular.module("productPage", [
     ProfileAboutService,
     ProfileProducts,
     GenreConfigs,
+    OurSortService,
     MapService,
     Page) {
 
@@ -1549,6 +1551,24 @@ angular.module("productPage", [
     $scope.$on("currentTab.name", function(newVal, oldVal){
       console.log("tab changed", newVal, oldVal)
     })
+
+    OurSortService.setChoices([
+      {
+        key: "-tweeter.followers",
+        name: "followers",
+        urlName: "followers"
+      },
+      {
+        key: "-tweet_timestamp",
+        name: "date",
+        urlName: "default"
+      },
+      {
+        key: "country",
+        name: "country",
+        urlName: "country"
+      }
+    ])
 
 
 
@@ -3991,66 +4011,29 @@ angular.module("directives.onRepeatFinished", [])
   });
 angular.module("directives.ourSort", [])
 
+
+
+
   .directive("ourSort", function(
     $rootScope,
     $location,
     OurSortService){
+
 
     return {
      restrict: 'E',
      templateUrl: 'directives/our-sort.tpl.html',
      link: function(scope, elem, attr, ctrl){
 
+
        scope.setSortKey = function(newSortKeyIndex){
-         console.log("setting sort key index", newSortKeyIndex)
+         console.log("setting sort key by index", newSortKeyIndex)
+
          OurSortService.setCurrent(newSortKeyIndex)
        }
      }
     }
-  })
-
-
-.factory("OurSortService", function($location){
-    var current = {
-      name: null,
-      key: null,
-      urlName: null
-    }
-
-    var choices = []
-
-    var setFromUrl = function(){
-      var myUrlName = $location.search().sort_by || "default"
-      var newChoice = _.findWhere(choices, {urlName: myUrlName})
-      angular.extend(current, newChoice)
-    }
-
-
-  return {
-    current: current,
-    choices: choices,
-    setCurrent: function(index){
-      var newChoice = choices[index]
-      angular.extend(current, newChoice)
-      if (newChoice.urlName == "default"){
-        $location.search("sort_by", null)
-      }
-      else {
-        $location.search("sort_by", newChoice.urlName)
-      }
-    },
-    setChoices: function(newChoices){
-      choices.length = 0
-      _.each(newChoices, function(newChoice){
-        choices.push(newChoice)
-      })
-
-      // finish up by setting the choice from the current URL
-      setFromUrl()
-    }
-
-  }
-});
+  });
 /**
  * dirPagination - AngularJS module for paginating (almost) anything.
  *
@@ -5127,7 +5110,7 @@ angular.module('services.charge', [])
   })
 angular.module("services.collection", [])
 
-.factory("collection", function(
+.factory("Collection", function(
     $location,
     $timeout,
     $window,
@@ -5135,11 +5118,11 @@ angular.module("services.collection", [])
     SelectedProducts,
     GenreConfigs,
     PinboardService,
-    collectionSort,
     KeyMetrics,
     KeyProducts,
     Loading,
     Timer,
+    OurSortService,
     Page,
     ProfileProducts){
 
@@ -5177,7 +5160,6 @@ angular.module("services.collection", [])
     if (!ProfileProducts.hasFullProducts()){
       Loading.startPage()
     }
-    ui.genreChangeDropdownIsOpen = false
     ui.showTweets = !!$location.search().show_tweets
 
     Timer.start("collectionRender")
@@ -5188,10 +5170,33 @@ angular.module("services.collection", [])
     $scope.KeyProducts = KeyProducts
 
 
+    OurSortService.setChoices([
+      {
+        key: ["-awardedness_score", '-metric_raw_sum', 'title'],
+        name: "default",
+        urlName: "default"
+      } ,
+      {
+        key: ["title", "-awardedness_score", '-metric_raw_sum'],
+        name: "title",
+        urlName: "title"
+      },
+      {
+        key: ["-year", "-awardedness_score", '-metric_raw_sum', 'title'],
+        name: "year",
+        urlName: "year"
+      },
+      {
+        key: ["authors", "-awardedness_score", '-metric_raw_sum', 'title'],
+        name: "first author",
+        urlName: "first_author"
+      }
+    ])
+
+
     // i think this stuff is not supposed to be here. not sure how else to re-use, though.
     $scope.pinboardService = PinboardService
     $scope.SelectedProducts = SelectedProducts
-    $scope.collectionSort = collectionSort
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       finishRender()
@@ -5216,8 +5221,6 @@ angular.module("services.collection", [])
     ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
     SelectedProducts.removeAll()
 
-    // close the change-genre dialog
-    ui.genreChangeDropdownIsOpen = false
 
     // handle moving the last product in our current genre
     if (!len()){
@@ -5292,6 +5295,9 @@ angular.module("services.collection", [])
 })
 
 
+
+
+
 .factory("SelectedProducts", function(){
   var tiids = []
 
@@ -5323,60 +5329,8 @@ angular.module("services.collection", [])
   }
 })
 
-.factory("collectionSort", function($location){
-
-  var configs = [
-    {
-      keys: ["-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "default",
-      urlName: "default"
-    } ,
-    {
-      keys: ["title", "-awardedness_score", '-metric_raw_sum'],
-      name: "title",
-      urlName: "title"
-    },
-    {
-      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "year",
-      urlName: "year"
-    },
-    {
-      keys: ["authors", "-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "first author",
-      urlName: "first_author"
-    }
-  ]
-
-  function getCurrentConfig(){
-    var ret
-    ret = _.findWhere(configs, {urlName: $location.search().sort_by})
-    if (!ret){
-      ret = _.findWhere(configs, {urlName: "default"})
-    }
-    return ret
-  }
 
 
-  return {
-    get: getCurrentConfig,
-    set: function(name){
-      var myConfig = _.findWhere(configs, {name: name})
-      if (myConfig.name == "default"){
-        $location.search("sort_by", null)
-      }
-      else {
-        $location.search("sort_by", myConfig.urlName)
-      }
-    },
-    options: function(){
-      var currentName = getCurrentConfig().name
-      return _.filter(configs, function(config){
-        return config.name !== currentName
-      })
-    }
-  }
-})
 
 globalCountryNames = globalCountryNames || []
 
@@ -5965,6 +5919,48 @@ angular.module("services.map", [
     }
   }
 })
+angular.module("services.ourSortService", [])
+
+.factory("OurSortService", function($location){
+    var current = {
+      name: null,
+      key: null,
+      urlName: null
+    }
+    var choices = []
+
+    var setFromUrl = function(){
+      var myUrlName = $location.search().sort_by || "default"
+      var newChoice = _.findWhere(choices, {urlName: myUrlName})
+      angular.extend(current, newChoice)
+    }
+
+
+  return {
+    current: current,
+    choices: choices,
+    setCurrent: function(index){
+      var newChoice = choices[index]
+      angular.extend(current, newChoice)
+      if (newChoice.urlName == "default"){
+        $location.search("sort_by", null)
+      }
+      else {
+        $location.search("sort_by", newChoice.urlName)
+      }
+    },
+    setChoices: function(newChoices){
+      choices.length = 0
+      _.each(newChoices, function(newChoice){
+        choices.push(newChoice)
+      })
+
+      // finish up by setting the choice from the current URL
+      setFromUrl()
+    }
+
+  }
+});
 angular.module("services.page", [
   'signup'
 ])
@@ -7494,19 +7490,19 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "         <i class=\"icon-check-empty\"\n" +
     "            tooltip=\"Select all\"\n" +
     "            ng-show=\"SelectedProducts.count() == 0\"\n" +
-    "            ng-click=\"collection.selectEverything()\"></i>\n" +
+    "            ng-click=\"Collection.selectEverything()\"></i>\n" +
     "\n" +
     "\n" +
     "      <!-- between zero and all products are selected. allow user to select all -->\n" +
     "      <i class=\"icon-check-minus\"\n" +
     "         tooltip=\"Select all\"\n" +
-    "         ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < collection.len()\"\n" +
-    "         ng-click=\"collection.selectEverything()\"></i>\n" +
+    "         ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < Collection.len()\"\n" +
+    "         ng-click=\"Collection.selectEverything()\"></i>\n" +
     "\n" +
     "      <!-- everything is selected. allow user to unselect all -->\n" +
     "      <i class=\"icon-check\"\n" +
     "         tooltip=\"Unselect all\"\n" +
-    "         ng-show=\"SelectedProducts.count() == collection.len()\"\n" +
+    "         ng-show=\"SelectedProducts.count() == Collection.len()\"\n" +
     "         ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
     "       </span>\n" +
     "\n" +
@@ -7514,7 +7510,7 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "\n" +
     "         <span class=\"action\">\n" +
     "            <button type=\"button\"\n" +
-    "                    ng-click=\"collection.removeSelectedProducts()\"\n" +
+    "                    ng-click=\"Collection.removeSelectedProducts()\"\n" +
     "                    tooltip=\"Delete selected items.\"\n" +
     "                    class=\"btn btn-default btn-xs\">\n" +
     "               <i class=\"icon-trash\"></i>\n" +
@@ -7523,7 +7519,7 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "         </span>\n" +
     "\n" +
     "         <span class=\"action\">\n" +
-    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"collection.ui.genreChangeDropdownIsOpen\">\n" +
+    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"Collection.ui.genreChangeDropdownIsOpen\">\n" +
     "               <button type=\"button\"\n" +
     "                       tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
     "                       class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
@@ -7534,7 +7530,7 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "                  <li class=\"instr\">Move to:</li>\n" +
     "                  <li class=\"divider\"></li>\n" +
     "                  <li ng-repeat=\"genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']\">\n" +
-    "                     <a ng-click=\"collection.changeProductsGenre(genreConfigForList.name)\">\n" +
+    "                     <a ng-click=\"Collection.changeProductsGenre(genreConfigForList.name)\">\n" +
     "                        <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
     "                        {{ genreConfigForList.plural_name }}\n" +
     "                     </a>\n" +
@@ -7553,24 +7549,24 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "\n" +
     "   <div class=\"display-controls\">\n" +
     "      <div class=\"show-tweets tweets-loaded\" ng-show=\"!loading.is('tweets')\">\n" +
-    "         <div class=\"has-tweets\" ng-show=\"collection.numTweets()\">\n" +
+    "         <div class=\"has-tweets\" ng-show=\"Collection.numTweets()\">\n" +
     "            <label for=\"show-tweets-checkbox\">\n" +
     "               <i class=\"fa fa-twitter\"></i>\n" +
     "               <span class=\"text\">\n" +
     "                  Show tweets\n" +
     "                  <span class=\"num-tweets\">\n" +
-    "                     ({{ collection.numTweets() }})\n" +
+    "                     ({{ Collection.numTweets() }})\n" +
     "                  </span>\n" +
     "               </span>\n" +
     "            </label>\n" +
     "            <input type=\"checkbox\"\n" +
     "                   id=\"show-tweets-checkbox\"\n" +
-    "                   ng-model=\"collection.ui.showTweets\" />\n" +
+    "                   ng-model=\"Collection.ui.showTweets\" />\n" +
     "         </div>\n" +
     "         <div class=\"has-no-tweets\"\n" +
     "              tooltip=\"We haven't found any tweets for these products.\"\n" +
     "              tooltip-placement=\"left\"\n" +
-    "              ng-show=\"!collection.numTweets()\">\n" +
+    "              ng-show=\"!Collection.numTweets()\">\n" +
     "            <label for=\"disabled-show-tweets-checkbox\">\n" +
     "               <i class=\"fa fa-twitter\"></i>\n" +
     "               <span class=\"text\">Show tweets</span>\n" +
@@ -7586,23 +7582,8 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "       </div>\n" +
     "\n" +
     "\n" +
-    "      <div class=\"sort-controls\">\n" +
-    "         <div class=\"btn-group sort-select-group\" dropdown>\n" +
-    "         <span class=\"sort-by-label\">\n" +
-    "            Sorting by\n" +
-    "         </span>\n" +
-    "            <a class=\"dropdown-toggle\">\n" +
-    "               {{ collectionSort.get().name }}\n" +
-    "               <span class=\"caret\"></span>\n" +
-    "            </a>\n" +
+    "      <our-sort></our-sort>\n" +
     "\n" +
-    "            <ul class=\"dropdown-menu\">\n" +
-    "               <li class=\"sort-by-option\" ng-repeat=\"sortConfig in collectionSort.options()\">\n" +
-    "                  <a ng-click=\"collectionSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
     "   </div>\n" +
     "</div>\n" +
     "\n" +
@@ -7610,7 +7591,7 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "   <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
     "      <li class=\"product genre-{{ product.genre }}\"\n" +
     "          ng-class=\"{first: $first}\"\n" +
-    "          ng-repeat=\"product in profileService.data.products | filter: collection.filters.products | orderBy: collectionSort.get().keys\"\n" +
+    "          ng-repeat=\"product in profileService.data.products | filter: Collection.filters.products | orderBy: OurSortService.current.key\"\n" +
     "          id=\"{{ product.tiid }}\"\n" +
     "          on-repeat-finished>\n" +
     "\n" +
@@ -7650,12 +7631,12 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "               class=\"genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}\"></i>\n" +
     "         </div>\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
-    "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && collection.ui.showTweets\">\n" +
+    "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && Collection.ui.showTweets\">\n" +
     "\n" +
     "            <ul>\n" +
     "               <li class=\"tweet\"\n" +
     "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
-    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: collection.filters.tweets | limitTo: 5)\">\n" +
+    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: Collection.filters.tweets | limitTo: 5)\">\n" +
     "                </li>\n" +
     "            </ul>\n" +
     "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > filteredTweets.length\">\n" +
@@ -9667,23 +9648,11 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        </div>\n" +
     "\n" +
     "                        <div class=\"tweets-list-actions\">\n" +
-    "                           <span class=\"descr\">Sort tweets by</span>\n" +
-    "                           <span class=\"sort-options\">\n" +
-    "                              <label>\n" +
-    "                                 <input type=\"radio\"\n" +
-    "                                        name=\"sort-tweets-by\"\n" +
-    "                                        ng-model=\"tweetsList.sortBy\"\n" +
-    "                                        value=\"-tweet_timestamp\" />\n" +
-    "                                 date\n" +
-    "                              </label>\n" +
-    "                              <label>\n" +
-    "                                 <input type=\"radio\"\n" +
-    "                                        name=\"sort-tweets-by\"\n" +
-    "                                        ng-model=\"tweetsList.sortBy\"\n" +
-    "                                        value=\"-tweeter.followers\" />\n" +
-    "                                 followers\n" +
-    "                              </label>\n" +
-    "                           </span>\n" +
+    "                           <our-sort></our-sort>\n" +
+    "\n" +
+    "\n" +
+    "\n" +
+    "\n" +
     "                        </div>\n" +
     "\n" +
     "\n" +
@@ -9694,7 +9663,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        <li class=\"tweet\"\n" +
     "                            ng-include=\"'tweet/tweet.tpl.html'\"\n" +
     "                            current-page=\"tweetsList.currentPage\"\n" +
-    "                            dir-paginate=\"tweet in product.tweets | orderBy: tweetsList.sortBy | itemsPerPage: tweetsList.perPage\">\n" +
+    "                            dir-paginate=\"tweet in product.tweets | orderBy: OurSortService.current.key | itemsPerPage: tweetsList.perPage\">\n" +
     "                         </li>\n" +
     "                     </ul>\n" +
     "                  </div>\n" +
@@ -11533,21 +11502,24 @@ angular.module('templates.common', ['directives/our-sort.tpl.html', 'directives/
 angular.module("directives/our-sort.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("directives/our-sort.tpl.html",
     "<div class=\"sort-controls\">\n" +
-    "   <div class=\"btn-group sort-select-group\" dropdown>\n" +
-    "            <span class=\"sort-by-label\">\n" +
-    "               Sorting by\n" +
-    "            </span>\n" +
-    "      <a class=\"dropdown-toggle\">\n" +
+    "\n" +
+    "    <div class=\"dropdown btn-group sort-select-group\" dropdown on-toggle=\"toggled(open)\">\n" +
+    "       <span class=\"sort-by-label\">\n" +
+    "         Sorting by\n" +
+    "      </span>\n" +
+    "\n" +
+    "      <a href class=\"dropdown-toggle\" dropdown-toggle>\n" +
     "         {{ OurSortService.current.name }}\n" +
     "         <span class=\"caret\"></span>\n" +
     "      </a>\n" +
     "\n" +
     "      <ul class=\"dropdown-menu\">\n" +
     "         <li class=\"sort-by-option\" ng-repeat=\"sortChoice in OurSortService.choices\">\n" +
-    "            <a dropdown-toggle ng-click=\"setSortKey($index)\"> {{ sortChoice.name }}</a>\n" +
+    "            <a href ng-click=\"setSortKey($index)\"> {{ sortChoice.name }}</a>\n" +
     "         </li>\n" +
     "      </ul>\n" +
-    "   </div>\n" +
+    "    </div>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);

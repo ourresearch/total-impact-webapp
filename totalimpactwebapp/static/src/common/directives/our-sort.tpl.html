@@ -1,17 +1,20 @@
 <div class="sort-controls">
-   <div class="btn-group sort-select-group" dropdown>
-            <span class="sort-by-label">
-               Sorting by
-            </span>
-      <a class="dropdown-toggle">
+
+    <div class="dropdown btn-group sort-select-group" dropdown on-toggle="toggled(open)">
+       <span class="sort-by-label">
+         Sorting by
+      </span>
+
+      <a href class="dropdown-toggle" dropdown-toggle>
          {{ OurSortService.current.name }}
          <span class="caret"></span>
       </a>
 
       <ul class="dropdown-menu">
          <li class="sort-by-option" ng-repeat="sortChoice in OurSortService.choices">
-            <a dropdown-toggle ng-click="setSortKey($index)"> {{ sortChoice.name }}</a>
+            <a href ng-click="setSortKey($index)"> {{ sortChoice.name }}</a>
          </li>
       </ul>
-   </div>
+    </div>
+
 </div>

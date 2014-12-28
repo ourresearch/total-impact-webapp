@@ -101,6 +101,7 @@ angular.module("productPage", [
     ProfileAboutService,
     ProfileProducts,
     GenreConfigs,
+    OurSortService,
     MapService,
     Page) {
 
@@ -141,6 +142,24 @@ angular.module("productPage", [
     $scope.$on("currentTab.name", function(newVal, oldVal){
       console.log("tab changed", newVal, oldVal)
     })
+
+    OurSortService.setChoices([
+      {
+        key: "-tweeter.followers",
+        name: "followers",
+        urlName: "followers"
+      },
+      {
+        key: "-tweet_timestamp",
+        name: "date",
+        urlName: "default"
+      },
+      {
+        key: "country",
+        name: "country",
+        urlName: "country"
+      }
+    ])
 
 
 
