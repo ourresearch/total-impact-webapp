@@ -30,6 +30,11 @@ angular.module('fansPage', [
         key: "about.name",
         name: "name",
         urlName: "name"
+      },
+      {
+        key: "-about.numTweets",
+        name: "citing tweets",
+        urlName: "citing_tweets"
       }
     ])
 

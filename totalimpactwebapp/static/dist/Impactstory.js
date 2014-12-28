@@ -950,6 +950,11 @@ angular.module('fansPage', [
         key: "about.name",
         name: "name",
         urlName: "name"
+      },
+      {
+        key: "-about.numTweets",
+        name: "citing tweets",
+        urlName: "citing_tweets"
       }
     ])
 
@@ -5416,6 +5421,10 @@ angular.module("services.fansService", [])
           }
         })
         data.tweeters = _.values(data.tweetersDict)
+
+        _.each(data.tweeters, function(tweeter){
+          tweeter.about.numTweets = tweeter.tweets.length
+        })
 
       }
 

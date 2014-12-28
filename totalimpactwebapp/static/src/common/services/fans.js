@@ -47,6 +47,10 @@ angular.module("services.fansService", [])
         })
         data.tweeters = _.values(data.tweetersDict)
 
+        _.each(data.tweeters, function(tweeter){
+          tweeter.about.numTweets = tweeter.tweets.length
+        })
+
       }
 
     }
