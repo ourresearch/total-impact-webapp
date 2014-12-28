@@ -526,7 +526,7 @@ angular.module('app', [
   'fansPage',
   'giftSubscriptionPage',
   'productPage',
-  'productListPage',
+  'collectionPage',
   'services.genreConfigs',
   'accountPage',
   'services.profileProducts',
@@ -751,12 +751,12 @@ angular.module('app').controller('HeaderCtrl', ['$scope', '$location', '$route',
   };
 }]);
 
-angular.module("productListPage", [
+angular.module("collectionPage", [
   'resources.users',
   'services.page',
   'ui.bootstrap',
   'security',
-  'services.productList'
+  'services.collection'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -787,15 +787,15 @@ angular.module("productListPage", [
     $routeParams,
     GenreConfigs,
     ProfileAboutService,
-    ProductList,
+    collection,
     CountryNames,
     Page) {
 
     var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
     Page.setName("map")
-    ProductList.startRender($scope)
+    collection.startRender($scope)
 
-    $scope.ProductList = ProductList
+    $scope.collection = collection
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
     $scope.countryCode = myCountryCode
 
@@ -809,10 +809,10 @@ angular.module("productListPage", [
     }
 
     // only show tweets if they are for sure from this country
-    ProductList.filters.tweets = function(tweet){
+    collection.filters.tweets = function(tweet){
       return tweet.country === myCountryCode
     }
-    ProductList.filters.products = filterFn
+    collection.filters.products = filterFn
 
     $scope.productsFilter = filterFn
 
@@ -834,14 +834,14 @@ angular.module("productListPage", [
     GenreConfigs,
     ProfileAboutService,
     SummaryCards,
-    ProductList,
+    collection,
     Page) {
 
     console.log("loading the genre page controller.")
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
-    ProductList.startRender($scope)
+    collection.startRender($scope)
 
 
 
@@ -874,12 +874,12 @@ angular.module("productListPage", [
       }
     }
 
-    ProductList.filters.products = filterFn
-    ProductList.filters.tweets = function(){return true}
+    collection.filters.products = filterFn
+    collection.filters.tweets = function(){return true}
     $scope.productsFilter = filterFn
 
 
-    $scope.ProductList = ProductList
+    $scope.collection = collection
     $scope.myGenreConfig = myGenreConfig
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){
@@ -5125,6 +5125,259 @@ angular.module('services.charge', [])
 
 
   })
+angular.module("services.collection", [])
+
+.factory("collection", function(
+    $location,
+    $timeout,
+    $window,
+    $rootScope,
+    SelectedProducts,
+    GenreConfigs,
+    PinboardService,
+    collectionSort,
+    KeyMetrics,
+    KeyProducts,
+    Loading,
+    Timer,
+    Page,
+    ProfileProducts){
+
+  var ui = {}
+  var filterFn
+
+  var filters = {
+    products: function(product){
+      return true
+    },
+
+    // this is meant to be overriden by the country collection ctrl,
+    // or anyone else who only wants to count/display particular
+    // tweets from each product.
+    tweets: function (tweet) {
+      return true
+    }
+  }
+
+
+  $rootScope.$watch(function(){
+    return ui.showTweets
+  }, function(newVal, oldVal){
+    if (newVal){
+      $location.search("show_tweets", "true")
+    }
+    else {
+      $location.search("show_tweets", null)
+    }
+  })
+
+
+
+  var startRender = function($scope){
+    if (!ProfileProducts.hasFullProducts()){
+      Loading.startPage()
+    }
+    ui.genreChangeDropdownIsOpen = false
+    ui.showTweets = !!$location.search().show_tweets
+
+    Timer.start("collectionRender")
+    SelectedProducts.removeAll()
+
+
+    $scope.KeyMetrics = KeyMetrics
+    $scope.KeyProducts = KeyProducts
+
+
+    // i think this stuff is not supposed to be here. not sure how else to re-use, though.
+    $scope.pinboardService = PinboardService
+    $scope.SelectedProducts = SelectedProducts
+    $scope.collectionSort = collectionSort
+    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
+      finishRender()
+    });
+
+
+  }
+
+
+  var finishRender = function(){
+    Loading.finishPage()
+    $timeout(function(){
+      var lastScrollPos = Page.getLastScrollPosition($location.path())
+      $window.scrollTo(0, lastScrollPos)
+    }, 0)
+    console.log("finished rendering collection in " + Timer.elapsed("collectionRender") + "ms"
+    )
+  }
+
+
+  var changeProductsGenre = function(newGenre){
+    ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
+    SelectedProducts.removeAll()
+
+    // close the change-genre dialog
+    ui.genreChangeDropdownIsOpen = false
+
+    // handle moving the last product in our current genre
+    if (!len()){
+      var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
+      var currentProfileSlug = ProfileProducts.getUrlSlug()
+      $location.path(currentProfileSlug + "/products/" + newGenreUrlRepresentation)
+    }
+  }
+
+
+  var removeSelectedProducts = function(){
+    console.log("removing products: ", SelectedProducts.get())
+    ProfileProducts.removeProducts(SelectedProducts.get())
+    SelectedProducts.removeAll()
+
+    // handle removing the last product in this particular product list
+    if (len() === 0){
+      $location.path(ProfileProducts.getUrlSlug())
+    }
+  }
+
+  var productsInThisCollection = function(){
+    return _.filter(ProfileProducts.data.products, filters.products)
+
+  }
+
+  var len = function(){
+    return productsInThisCollection().length
+  }
+
+  var selectEverything = function(){
+    SelectedProducts.addFromObjects(productsInThisCollection())
+  }
+
+  var numTweets = function(){
+    var count = 0
+    _.each(productsInThisCollection(), function(product){
+      if (product.tweets) {
+        var filteredTweets = _.filter(
+          product.tweets,
+          filters.tweets
+        )
+
+        count += filteredTweets.length
+      }
+    })
+    return count
+  }
+
+
+
+  return {
+    changeProductsGenre: changeProductsGenre,
+    removeSelectedProducts: removeSelectedProducts,
+    startRender: startRender,
+    finishRender: finishRender,
+    numTweets: numTweets,
+    ui: ui,
+    setFilterFn: function(fn){
+      filterFn = fn
+    },
+    setTweetsFilterFn: function(fn){
+      filters.tweets = fn
+    },
+    len: len,
+    selectEverything: selectEverything,
+    filters: filters
+
+  }
+
+
+})
+
+
+.factory("SelectedProducts", function(){
+  var tiids = []
+
+  return {
+    add: function(tiid){
+      return tiids.push(tiid)
+    },
+    addFromObjects: function(objects){
+      return tiids = _.pluck(objects, "tiid")
+    },
+    remove: function(tiid){
+      tiids = _.without(tiids, tiid)
+    },
+    removeAll: function(){
+      return tiids.length = 0
+    },
+    contains: function(tiid){
+      return _.contains(tiids, tiid)
+    },
+    containsAny: function(){
+      return tiids.length > 0
+    },
+    get: function(){
+      return tiids
+    },
+    count: function(){
+      return tiids.length
+    }
+  }
+})
+
+.factory("collectionSort", function($location){
+
+  var configs = [
+    {
+      keys: ["-awardedness_score", '-metric_raw_sum', 'title'],
+      name: "default",
+      urlName: "default"
+    } ,
+    {
+      keys: ["title", "-awardedness_score", '-metric_raw_sum'],
+      name: "title",
+      urlName: "title"
+    },
+    {
+      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'title'],
+      name: "year",
+      urlName: "year"
+    },
+    {
+      keys: ["authors", "-awardedness_score", '-metric_raw_sum', 'title'],
+      name: "first author",
+      urlName: "first_author"
+    }
+  ]
+
+  function getCurrentConfig(){
+    var ret
+    ret = _.findWhere(configs, {urlName: $location.search().sort_by})
+    if (!ret){
+      ret = _.findWhere(configs, {urlName: "default"})
+    }
+    return ret
+  }
+
+
+  return {
+    get: getCurrentConfig,
+    set: function(name){
+      var myConfig = _.findWhere(configs, {name: name})
+      if (myConfig.name == "default"){
+        $location.search("sort_by", null)
+      }
+      else {
+        $location.search("sort_by", myConfig.urlName)
+      }
+    },
+    options: function(){
+      var currentName = getCurrentConfig().name
+      return _.filter(configs, function(config){
+        return config.name !== currentName
+      })
+    }
+  }
+})
+
 globalCountryNames = globalCountryNames || []
 
 angular.module("services.countryNames", [])
@@ -6209,259 +6462,6 @@ angular.module('services.pinboardService', [
 
   })
 
-angular.module("services.productList", [])
-
-.factory("ProductList", function(
-    $location,
-    $timeout,
-    $window,
-    $rootScope,
-    SelectedProducts,
-    GenreConfigs,
-    PinboardService,
-    ProductListSort,
-    KeyMetrics,
-    KeyProducts,
-    Loading,
-    Timer,
-    Page,
-    ProfileProducts){
-
-  var ui = {}
-  var filterFn
-
-  var filters = {
-    products: function(product){
-      return true
-    },
-
-    // this is meant to be overriden by the country collection ctrl,
-    // or anyone else who only wants to count/display particular
-    // tweets from each product.
-    tweets: function (tweet) {
-      return true
-    }
-  }
-
-
-  $rootScope.$watch(function(){
-    return ui.showTweets
-  }, function(newVal, oldVal){
-    if (newVal){
-      $location.search("show_tweets", "true")
-    }
-    else {
-      $location.search("show_tweets", null)
-    }
-  })
-
-
-
-  var startRender = function($scope){
-    if (!ProfileProducts.hasFullProducts()){
-      Loading.startPage()
-    }
-    ui.genreChangeDropdownIsOpen = false
-    ui.showTweets = !!$location.search().show_tweets
-
-    Timer.start("collectionRender")
-    SelectedProducts.removeAll()
-
-
-    $scope.KeyMetrics = KeyMetrics
-    $scope.KeyProducts = KeyProducts
-
-
-    // i think this stuff is not supposed to be here. not sure how else to re-use, though.
-    $scope.pinboardService = PinboardService
-    $scope.SelectedProducts = SelectedProducts
-    $scope.ProductListSort = ProductListSort
-    $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-      // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
-      finishRender()
-    });
-
-
-  }
-
-
-  var finishRender = function(){
-    Loading.finishPage()
-    $timeout(function(){
-      var lastScrollPos = Page.getLastScrollPosition($location.path())
-      $window.scrollTo(0, lastScrollPos)
-    }, 0)
-    console.log("finished rendering collection in " + Timer.elapsed("collectionRender") + "ms"
-    )
-  }
-
-
-  var changeProductsGenre = function(newGenre){
-    ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
-    SelectedProducts.removeAll()
-
-    // close the change-genre dialog
-    ui.genreChangeDropdownIsOpen = false
-
-    // handle moving the last product in our current genre
-    if (!len()){
-      var newGenreUrlRepresentation = GenreConfigs.get(newGenre, "url_representation")
-      var currentProfileSlug = ProfileProducts.getUrlSlug()
-      $location.path(currentProfileSlug + "/products/" + newGenreUrlRepresentation)
-    }
-  }
-
-
-  var removeSelectedProducts = function(){
-    console.log("removing products: ", SelectedProducts.get())
-    ProfileProducts.removeProducts(SelectedProducts.get())
-    SelectedProducts.removeAll()
-
-    // handle removing the last product in this particular product list
-    if (len() === 0){
-      $location.path(ProfileProducts.getUrlSlug())
-    }
-  }
-
-  var productsInThisCollection = function(){
-    return _.filter(ProfileProducts.data.products, filters.products)
-
-  }
-
-  var len = function(){
-    return productsInThisCollection().length
-  }
-
-  var selectEverything = function(){
-    SelectedProducts.addFromObjects(productsInThisCollection())
-  }
-
-  var numTweets = function(){
-    var count = 0
-    _.each(productsInThisCollection(), function(product){
-      if (product.tweets) {
-        var filteredTweets = _.filter(
-          product.tweets,
-          filters.tweets
-        )
-
-        count += filteredTweets.length
-      }
-    })
-    return count
-  }
-
-
-
-  return {
-    changeProductsGenre: changeProductsGenre,
-    removeSelectedProducts: removeSelectedProducts,
-    startRender: startRender,
-    finishRender: finishRender,
-    numTweets: numTweets,
-    ui: ui,
-    setFilterFn: function(fn){
-      filterFn = fn
-    },
-    setTweetsFilterFn: function(fn){
-      filters.tweets = fn
-    },
-    len: len,
-    selectEverything: selectEverything,
-    filters: filters
-
-  }
-
-
-})
-
-
-.factory("SelectedProducts", function(){
-  var tiids = []
-
-  return {
-    add: function(tiid){
-      return tiids.push(tiid)
-    },
-    addFromObjects: function(objects){
-      return tiids = _.pluck(objects, "tiid")
-    },
-    remove: function(tiid){
-      tiids = _.without(tiids, tiid)
-    },
-    removeAll: function(){
-      return tiids.length = 0
-    },
-    contains: function(tiid){
-      return _.contains(tiids, tiid)
-    },
-    containsAny: function(){
-      return tiids.length > 0
-    },
-    get: function(){
-      return tiids
-    },
-    count: function(){
-      return tiids.length
-    }
-  }
-})
-
-.factory("ProductListSort", function($location){
-
-  var configs = [
-    {
-      keys: ["-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "default",
-      urlName: "default"
-    } ,
-    {
-      keys: ["title", "-awardedness_score", '-metric_raw_sum'],
-      name: "title",
-      urlName: "title"
-    },
-    {
-      keys: ["-year", "-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "year",
-      urlName: "year"
-    },
-    {
-      keys: ["authors", "-awardedness_score", '-metric_raw_sum', 'title'],
-      name: "first author",
-      urlName: "first_author"
-    }
-  ]
-
-  function getCurrentConfig(){
-    var ret
-    ret = _.findWhere(configs, {urlName: $location.search().sort_by})
-    if (!ret){
-      ret = _.findWhere(configs, {urlName: "default"})
-    }
-    return ret
-  }
-
-
-  return {
-    get: getCurrentConfig,
-    set: function(name){
-      var myConfig = _.findWhere(configs, {name: name})
-      if (myConfig.name == "default"){
-        $location.search("sort_by", null)
-      }
-      else {
-        $location.search("sort_by", myConfig.urlName)
-      }
-    },
-    options: function(){
-      var currentName = getCurrentConfig().name
-      return _.filter(configs, function(config){
-        return config.name !== currentName
-      })
-    }
-  }
-})
-
 angular.module('services.profileAboutService', [
   'resources.users'
 ])
@@ -7305,7 +7305,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'collection-page/product-list-section.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'genre-page/genre-page.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -7483,6 +7483,197 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "");
 }]);
 
+angular.module("collection-page/collection-section.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("collection-page/collection-section.tpl.html",
+    "<div class=\"collection-controls\">\n" +
+    "   <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
+    "\n" +
+    "      <!-- no products are selected. allow user to select all -->\n" +
+    "\n" +
+    "      <span class=\"global-selection-control\">\n" +
+    "         <i class=\"icon-check-empty\"\n" +
+    "            tooltip=\"Select all\"\n" +
+    "            ng-show=\"SelectedProducts.count() == 0\"\n" +
+    "            ng-click=\"collection.selectEverything()\"></i>\n" +
+    "\n" +
+    "\n" +
+    "      <!-- between zero and all products are selected. allow user to select all -->\n" +
+    "      <i class=\"icon-check-minus\"\n" +
+    "         tooltip=\"Select all\"\n" +
+    "         ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < collection.len()\"\n" +
+    "         ng-click=\"collection.selectEverything()\"></i>\n" +
+    "\n" +
+    "      <!-- everything is selected. allow user to unselect all -->\n" +
+    "      <i class=\"icon-check\"\n" +
+    "         tooltip=\"Unselect all\"\n" +
+    "         ng-show=\"SelectedProducts.count() == collection.len()\"\n" +
+    "         ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
+    "       </span>\n" +
+    "\n" +
+    "      <span class=\"actions has-selected-products-{{ !!SelectedProducts.count() }}\">\n" +
+    "\n" +
+    "         <span class=\"action\">\n" +
+    "            <button type=\"button\"\n" +
+    "                    ng-click=\"collection.removeSelectedProducts()\"\n" +
+    "                    tooltip=\"Delete selected items.\"\n" +
+    "                    class=\"btn btn-default btn-xs\">\n" +
+    "               <i class=\"icon-trash\"></i>\n" +
+    "            </button>\n" +
+    "\n" +
+    "         </span>\n" +
+    "\n" +
+    "         <span class=\"action\">\n" +
+    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"collection.ui.genreChangeDropdownIsOpen\">\n" +
+    "               <button type=\"button\"\n" +
+    "                       tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
+    "                       class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
+    "                  <i class=\"icon-folder-close-alt\"></i>\n" +
+    "                  <span class=\"caret\"></span>\n" +
+    "               </button>\n" +
+    "               <ul class=\"dropdown-menu\">\n" +
+    "                  <li class=\"instr\">Move to:</li>\n" +
+    "                  <li class=\"divider\"></li>\n" +
+    "                  <li ng-repeat=\"genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']\">\n" +
+    "                     <a ng-click=\"collection.changeProductsGenre(genreConfigForList.name)\">\n" +
+    "                        <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
+    "                        {{ genreConfigForList.plural_name }}\n" +
+    "                     </a>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "            </div>\n" +
+    "         </span>\n" +
+    "      </span>\n" +
+    "\n" +
+    "      <span class=\"num-selected\" ng-show=\"SelectedProducts.count() > 0\">\n" +
+    "         <span class=\"val\">{{ SelectedProducts.count() }}</span>\n" +
+    "         <span class=\"text\">selected</span>\n" +
+    "      </span>\n" +
+    "\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"display-controls\">\n" +
+    "      <div class=\"show-tweets tweets-loaded\" ng-show=\"!loading.is('tweets')\">\n" +
+    "         <div class=\"has-tweets\" ng-show=\"collection.numTweets()\">\n" +
+    "            <label for=\"show-tweets-checkbox\">\n" +
+    "               <i class=\"fa fa-twitter\"></i>\n" +
+    "               <span class=\"text\">\n" +
+    "                  Show tweets\n" +
+    "                  <span class=\"num-tweets\">\n" +
+    "                     ({{ collection.numTweets() }})\n" +
+    "                  </span>\n" +
+    "               </span>\n" +
+    "            </label>\n" +
+    "            <input type=\"checkbox\"\n" +
+    "                   id=\"show-tweets-checkbox\"\n" +
+    "                   ng-model=\"collection.ui.showTweets\" />\n" +
+    "         </div>\n" +
+    "         <div class=\"has-no-tweets\"\n" +
+    "              tooltip=\"We haven't found any tweets for these products.\"\n" +
+    "              tooltip-placement=\"left\"\n" +
+    "              ng-show=\"!collection.numTweets()\">\n" +
+    "            <label for=\"disabled-show-tweets-checkbox\">\n" +
+    "               <i class=\"fa fa-twitter\"></i>\n" +
+    "               <span class=\"text\">Show tweets</span>\n" +
+    "            </label>\n" +
+    "            <input type=\"checkbox\"\n" +
+    "                   id=\"disabled-show-tweets-checkbox\"\n" +
+    "                   disabled=\"disabled\" />\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "       <div class=\"show-tweets tweets-loading\" ng-show=\"loading.is('tweets')\">\n" +
+    "          <i class=\"fa fa-refresh icon-spin left\"></i>\n" +
+    "          loading tweets&hellip;\n" +
+    "       </div>\n" +
+    "\n" +
+    "\n" +
+    "      <div class=\"sort-controls\">\n" +
+    "         <div class=\"btn-group sort-select-group\" dropdown>\n" +
+    "         <span class=\"sort-by-label\">\n" +
+    "            Sorting by\n" +
+    "         </span>\n" +
+    "            <a class=\"dropdown-toggle\">\n" +
+    "               {{ collectionSort.get().name }}\n" +
+    "               <span class=\"caret\"></span>\n" +
+    "            </a>\n" +
+    "\n" +
+    "            <ul class=\"dropdown-menu\">\n" +
+    "               <li class=\"sort-by-option\" ng-repeat=\"sortConfig in collectionSort.options()\">\n" +
+    "                  <a ng-click=\"collectionSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"products\">\n" +
+    "   <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
+    "      <li class=\"product genre-{{ product.genre }}\"\n" +
+    "          ng-class=\"{first: $first}\"\n" +
+    "          ng-repeat=\"product in profileService.data.products | filter: collection.filters.products | orderBy: collectionSort.get().keys\"\n" +
+    "          id=\"{{ product.tiid }}\"\n" +
+    "          on-repeat-finished>\n" +
+    "\n" +
+    "\n" +
+    "         <div class=\"product-margin\" >\n" +
+    "\n" +
+    "            <!-- users must be logged in -->\n" +
+    "            <span class=\"product-controls\" ng-show=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
+    "               <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
+    "\n" +
+    "                  <i class=\"icon-check-empty\"\n" +
+    "                     ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +
+    "                     ng-click=\"SelectedProducts.add(product.tiid)\"></i>\n" +
+    "\n" +
+    "                  <i class=\"icon-check\"\n" +
+    "                     ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
+    "                     ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
+    "\n" +
+    "               </span>\n" +
+    "               <span class=\"feature-product-controls\">\n" +
+    "                  <a class=\"feature-product\"\n" +
+    "                     ng-click=\"KeyProducts.pin(product)\"\n" +
+    "                     ng-if=\"!KeyProducts.isPinned(product)\"\n" +
+    "                     tooltip=\"Feature this product on your profile front page\">\n" +
+    "                     <i class=\"icon-star-empty\"></i>\n" +
+    "                  </a>\n" +
+    "                  <a class=\"unfeature-product\"\n" +
+    "                     ng-click=\"KeyProducts.unpin(product)\"\n" +
+    "                     ng-if=\"KeyProducts.isPinned(product)\"\n" +
+    "                     tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
+    "                     <i class=\"icon-star\"></i>\n" +
+    "                  </a>\n" +
+    "               </span>\n" +
+    "            </span>\n" +
+    "\n" +
+    "            <i tooltip=\"{{ product.genre }}\"\n" +
+    "               class=\"genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}\"></i>\n" +
+    "         </div>\n" +
+    "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && collection.ui.showTweets\">\n" +
+    "\n" +
+    "            <ul>\n" +
+    "               <li class=\"tweet\"\n" +
+    "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: collection.filters.tweets | limitTo: 5)\">\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > filteredTweets.length\">\n" +
+    "               <a class=\"how-many-more btn btn-sm btn-default\"\n" +
+    "                  tooltip-placement=\"right\"\n" +
+    "                  tooltip=\"Click to see all {{ product.tweets.length }} tweets mentioning this research product.\"\n" +
+    "                  href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/tweets\">\n" +
+    "                  <i class=\"fa fa-plus\"></i>\n" +
+    "                  <span class=\"text\">plus {{ product.tweets.length - filteredTweets.length }} more</span>\n" +
+    "               </a>\n" +
+    "            </div>\n" +
+    "         </div>\n" +
+    "\n" +
+    "      </li>\n" +
+    "   </ul>\n" +
+    "</div>");
+}]);
+
 angular.module("collection-page/country-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("collection-page/country-page.tpl.html",
     "<div class=\"collection-page country-page\">\n" +
@@ -7493,7 +7684,7 @@ angular.module("collection-page/country-page.tpl.html", []).run(["$templateCache
     "         <h2 class=\"f16\">\n" +
     "            <span class=\"intro-text\">\n" +
     "               <span class=\"count\">\n" +
-    "                  {{ ProductList.len() }} products\n" +
+    "                  {{ collection.len() }} products\n" +
     "               </span>\n" +
     "                with impacts in\n" +
     "            </span>\n" +
@@ -7508,7 +7699,7 @@ angular.module("collection-page/country-page.tpl.html", []).run(["$templateCache
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"product-list-container\" ng-include=\"'collection-page/product-list-section.tpl.html'\"></div>\n" +
+    "   <div class=\"collection-container\" ng-include=\"'collection-page/collection-section.tpl.html'\"></div>\n" +
     "\n" +
     "</div>\n" +
     "");
@@ -7523,7 +7714,7 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
     "\n" +
     "         <h2>\n" +
     "            <span class=\"count\">\n" +
-    "               {{ ProductList.len() }}\n" +
+    "               {{ collection.len() }}\n" +
     "            </span>\n" +
     "            <span class=\"text\">\n" +
     "               {{ myGenreConfig.plural_name }}\n" +
@@ -7584,201 +7775,10 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
     "      </div>\n" +
     "   </div>\n" +
     "\n" +
-    "   <div class=\"product-list-container\" ng-include=\"'collection-page/product-list-section.tpl.html'\"></div>\n" +
+    "   <div class=\"collection-container\" ng-include=\"'collection-page/collection-section.tpl.html'\"></div>\n" +
     "\n" +
     "</div>\n" +
     "");
-}]);
-
-angular.module("collection-page/product-list-section.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("collection-page/product-list-section.tpl.html",
-    "<div class=\"collection-controls\">\n" +
-    "   <div class=\"edit-controls\" ng-if=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
-    "\n" +
-    "      <!-- no products are selected. allow user to select all -->\n" +
-    "\n" +
-    "      <span class=\"global-selection-control\">\n" +
-    "         <i class=\"icon-check-empty\"\n" +
-    "            tooltip=\"Select all\"\n" +
-    "            ng-show=\"SelectedProducts.count() == 0\"\n" +
-    "            ng-click=\"ProductList.selectEverything()\"></i>\n" +
-    "\n" +
-    "\n" +
-    "      <!-- between zero and all products are selected. allow user to select all -->\n" +
-    "      <i class=\"icon-check-minus\"\n" +
-    "         tooltip=\"Select all\"\n" +
-    "         ng-show=\"SelectedProducts.containsAny() && SelectedProducts.count() < ProductList.len()\"\n" +
-    "         ng-click=\"ProductList.selectEverything()\"></i>\n" +
-    "\n" +
-    "      <!-- everything is selected. allow user to unselect all -->\n" +
-    "      <i class=\"icon-check\"\n" +
-    "         tooltip=\"Unselect all\"\n" +
-    "         ng-show=\"SelectedProducts.count() == ProductList.len()\"\n" +
-    "         ng-click=\"SelectedProducts.removeAll()\"></i>\n" +
-    "       </span>\n" +
-    "\n" +
-    "      <span class=\"actions has-selected-products-{{ !!SelectedProducts.count() }}\">\n" +
-    "\n" +
-    "         <span class=\"action\">\n" +
-    "            <button type=\"button\"\n" +
-    "                    ng-click=\"ProductList.removeSelectedProducts()\"\n" +
-    "                    tooltip=\"Delete selected items.\"\n" +
-    "                    class=\"btn btn-default btn-xs\">\n" +
-    "               <i class=\"icon-trash\"></i>\n" +
-    "            </button>\n" +
-    "\n" +
-    "         </span>\n" +
-    "\n" +
-    "         <span class=\"action\">\n" +
-    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"ProductList.ui.genreChangeDropdownIsOpen\">\n" +
-    "               <button type=\"button\"\n" +
-    "                       tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
-    "                       class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
-    "                  <i class=\"icon-folder-close-alt\"></i>\n" +
-    "                  <span class=\"caret\"></span>\n" +
-    "               </button>\n" +
-    "               <ul class=\"dropdown-menu\">\n" +
-    "                  <li class=\"instr\">Move to:</li>\n" +
-    "                  <li class=\"divider\"></li>\n" +
-    "                  <li ng-repeat=\"genreConfigForList in GenreConfigs.getForMove() | orderBy: ['name']\">\n" +
-    "                     <a ng-click=\"ProductList.changeProductsGenre(genreConfigForList.name)\">\n" +
-    "                        <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
-    "                        {{ genreConfigForList.plural_name }}\n" +
-    "                     </a>\n" +
-    "                  </li>\n" +
-    "               </ul>\n" +
-    "            </div>\n" +
-    "         </span>\n" +
-    "      </span>\n" +
-    "\n" +
-    "      <span class=\"num-selected\" ng-show=\"SelectedProducts.count() > 0\">\n" +
-    "         <span class=\"val\">{{ SelectedProducts.count() }}</span>\n" +
-    "         <span class=\"text\">selected</span>\n" +
-    "      </span>\n" +
-    "\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"display-controls\">\n" +
-    "      <div class=\"show-tweets tweets-loaded\" ng-show=\"!loading.is('tweets')\">\n" +
-    "         <div class=\"has-tweets\" ng-show=\"ProductList.numTweets()\">\n" +
-    "            <label for=\"show-tweets-checkbox\">\n" +
-    "               <i class=\"fa fa-twitter\"></i>\n" +
-    "               <span class=\"text\">\n" +
-    "                  Show tweets\n" +
-    "                  <span class=\"num-tweets\">\n" +
-    "                     ({{ ProductList.numTweets() }})\n" +
-    "                  </span>\n" +
-    "               </span>\n" +
-    "            </label>\n" +
-    "            <input type=\"checkbox\"\n" +
-    "                   id=\"show-tweets-checkbox\"\n" +
-    "                   ng-model=\"ProductList.ui.showTweets\" />\n" +
-    "         </div>\n" +
-    "         <div class=\"has-no-tweets\"\n" +
-    "              tooltip=\"We haven't found any tweets for these products.\"\n" +
-    "              tooltip-placement=\"left\"\n" +
-    "              ng-show=\"!ProductList.numTweets()\">\n" +
-    "            <label for=\"disabled-show-tweets-checkbox\">\n" +
-    "               <i class=\"fa fa-twitter\"></i>\n" +
-    "               <span class=\"text\">Show tweets</span>\n" +
-    "            </label>\n" +
-    "            <input type=\"checkbox\"\n" +
-    "                   id=\"disabled-show-tweets-checkbox\"\n" +
-    "                   disabled=\"disabled\" />\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "       <div class=\"show-tweets tweets-loading\" ng-show=\"loading.is('tweets')\">\n" +
-    "          <i class=\"fa fa-refresh icon-spin left\"></i>\n" +
-    "          loading tweets&hellip;\n" +
-    "       </div>\n" +
-    "\n" +
-    "\n" +
-    "      <div class=\"sort-controls\">\n" +
-    "         <div class=\"btn-group sort-select-group\" dropdown>\n" +
-    "         <span class=\"sort-by-label\">\n" +
-    "            Sorting by\n" +
-    "         </span>\n" +
-    "            <a class=\"dropdown-toggle\">\n" +
-    "               {{ ProductListSort.get().name }}\n" +
-    "               <span class=\"caret\"></span>\n" +
-    "            </a>\n" +
-    "\n" +
-    "            <ul class=\"dropdown-menu\">\n" +
-    "               <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
-    "                  <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
-    "               </li>\n" +
-    "            </ul>\n" +
-    "         </div>\n" +
-    "      </div>\n" +
-    "   </div>\n" +
-    "</div>\n" +
-    "\n" +
-    "<div class=\"products\">\n" +
-    "   <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
-    "      <li class=\"product genre-{{ product.genre }}\"\n" +
-    "          ng-class=\"{first: $first}\"\n" +
-    "          ng-repeat=\"product in profileService.data.products | filter: ProductList.filters.products | orderBy: ProductListSort.get().keys\"\n" +
-    "          id=\"{{ product.tiid }}\"\n" +
-    "          on-repeat-finished>\n" +
-    "\n" +
-    "\n" +
-    "         <div class=\"product-margin\" >\n" +
-    "\n" +
-    "            <!-- users must be logged in -->\n" +
-    "            <span class=\"product-controls\" ng-show=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
-    "               <span class=\"select-product-controls\"> <!--needed to style tooltip -->\n" +
-    "\n" +
-    "                  <i class=\"icon-check-empty\"\n" +
-    "                     ng-show=\"!SelectedProducts.contains(product.tiid)\"\n" +
-    "                     ng-click=\"SelectedProducts.add(product.tiid)\"></i>\n" +
-    "\n" +
-    "                  <i class=\"icon-check\"\n" +
-    "                     ng-show=\"SelectedProducts.contains(product.tiid)\"\n" +
-    "                     ng-click=\"SelectedProducts.remove(product.tiid)\"></i>\n" +
-    "\n" +
-    "               </span>\n" +
-    "               <span class=\"feature-product-controls\">\n" +
-    "                  <a class=\"feature-product\"\n" +
-    "                     ng-click=\"KeyProducts.pin(product)\"\n" +
-    "                     ng-if=\"!KeyProducts.isPinned(product)\"\n" +
-    "                     tooltip=\"Feature this product on your profile front page\">\n" +
-    "                     <i class=\"icon-star-empty\"></i>\n" +
-    "                  </a>\n" +
-    "                  <a class=\"unfeature-product\"\n" +
-    "                     ng-click=\"KeyProducts.unpin(product)\"\n" +
-    "                     ng-if=\"KeyProducts.isPinned(product)\"\n" +
-    "                     tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
-    "                     <i class=\"icon-star\"></i>\n" +
-    "                  </a>\n" +
-    "               </span>\n" +
-    "            </span>\n" +
-    "\n" +
-    "            <i tooltip=\"{{ product.genre }}\"\n" +
-    "               class=\"genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}\"></i>\n" +
-    "         </div>\n" +
-    "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
-    "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && ProductList.ui.showTweets\">\n" +
-    "\n" +
-    "            <ul>\n" +
-    "               <li class=\"tweet\"\n" +
-    "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
-    "                   ng-repeat=\"tweet in filteredTweets = (product.tweets | orderBy: '-tweet_timestamp' | filter: ProductList.filters.tweets | limitTo: 5)\">\n" +
-    "                </li>\n" +
-    "            </ul>\n" +
-    "            <div class=\"link-to-more-tweets\" ng-show=\"product.tweets.length > filteredTweets.length\">\n" +
-    "               <a class=\"how-many-more btn btn-sm btn-default\"\n" +
-    "                  tooltip-placement=\"right\"\n" +
-    "                  tooltip=\"Click to see all {{ product.tweets.length }} tweets mentioning this research product.\"\n" +
-    "                  href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/tweets\">\n" +
-    "                  <i class=\"fa fa-plus\"></i>\n" +
-    "                  <span class=\"text\">plus {{ product.tweets.length - filteredTweets.length }} more</span>\n" +
-    "               </a>\n" +
-    "            </div>\n" +
-    "         </div>\n" +
-    "\n" +
-    "      </li>\n" +
-    "   </ul>\n" +
-    "</div>");
 }]);
 
 angular.module("dead-profile/dead-profile.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -8116,13 +8116,13 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "                  Sorting by\n" +
     "               </span>\n" +
     "                  <a class=\"dropdown-toggle\">\n" +
-    "                     {{ ProductListSort.get().name }}\n" +
+    "                     {{ collectionSort.get().name }}\n" +
     "                     <span class=\"caret\"></span>\n" +
     "                  </a>\n" +
     "\n" +
     "                  <ul class=\"dropdown-menu\">\n" +
-    "                     <li class=\"sort-by-option\" ng-repeat=\"sortConfig in ProductListSort.options()\">\n" +
-    "                        <a ng-click=\"ProductListSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
+    "                     <li class=\"sort-by-option\" ng-repeat=\"sortConfig in collectionSort.options()\">\n" +
+    "                        <a ng-click=\"collectionSort.set(sortConfig.name)\"> {{ sortConfig.name }}</a>\n" +
     "                     </li>\n" +
     "                  </ul>\n" +
     "               </div>\n" +
@@ -8137,7 +8137,7 @@ angular.module("genre-page/genre-page.tpl.html", []).run(["$templateCache", func
     "         <ul class=\"products-list\" ng-if=\"profileService.hasFullProducts()\">\n" +
     "            <li class=\"product genre-{{ product.genre }}\"\n" +
     "                ng-class=\"{first: $first}\"\n" +
-    "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy: ProductListSort.get().keys\"\n" +
+    "                ng-repeat=\"product in profileService.productsByGenre(genre.name) | orderBy: collectionSort.get().keys\"\n" +
     "                id=\"{{ product.tiid }}\"\n" +
     "                on-repeat-finished>\n" +
     "\n" +

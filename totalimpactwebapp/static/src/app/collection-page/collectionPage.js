@@ -1,9 +1,9 @@
-angular.module("productListPage", [
+angular.module("collectionPage", [
   'resources.users',
   'services.page',
   'ui.bootstrap',
   'security',
-  'services.productList'
+  'services.collection'
 ])
 
 .config(['$routeProvider', function ($routeProvider, security) {
@@ -34,15 +34,15 @@ angular.module("productListPage", [
     $routeParams,
     GenreConfigs,
     ProfileAboutService,
-    ProductList,
+    collection,
     CountryNames,
     Page) {
 
     var myCountryCode = CountryNames.codeFromUrl($routeParams.country_name)
     Page.setName("map")
-    ProductList.startRender($scope)
+    collection.startRender($scope)
 
-    $scope.ProductList = ProductList
+    $scope.collection = collection
     $scope.countryName = CountryNames.humanFromUrl($routeParams.country_name)
     $scope.countryCode = myCountryCode
 
@@ -56,10 +56,10 @@ angular.module("productListPage", [
     }
 
     // only show tweets if they are for sure from this country
-    ProductList.filters.tweets = function(tweet){
+    collection.filters.tweets = function(tweet){
       return tweet.country === myCountryCode
     }
-    ProductList.filters.products = filterFn
+    collection.filters.products = filterFn
 
     $scope.productsFilter = filterFn
 
@@ -81,14 +81,14 @@ angular.module("productListPage", [
     GenreConfigs,
     ProfileAboutService,
     SummaryCards,
-    ProductList,
+    collection,
     Page) {
 
     console.log("loading the genre page controller.")
 
     var myGenreConfig = GenreConfigs.getConfigFromUrlRepresentation($routeParams.genre_name)
     Page.setName($routeParams.genre_name)
-    ProductList.startRender($scope)
+    collection.startRender($scope)
 
 
 
@@ -121,12 +121,12 @@ angular.module("productListPage", [
       }
     }
 
-    ProductList.filters.products = filterFn
-    ProductList.filters.tweets = function(){return true}
+    collection.filters.products = filterFn
+    collection.filters.tweets = function(){return true}
     $scope.productsFilter = filterFn
 
 
-    $scope.ProductList = ProductList
+    $scope.collection = collection
     $scope.myGenreConfig = myGenreConfig
 
     $scope.$watch('profileAboutService.data', function(newVal, oldVal){

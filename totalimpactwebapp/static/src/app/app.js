@@ -31,7 +31,7 @@ angular.module('app', [
   'fansPage',
   'giftSubscriptionPage',
   'productPage',
-  'productListPage',
+  'collectionPage',
   'services.genreConfigs',
   'accountPage',
   'services.profileProducts',

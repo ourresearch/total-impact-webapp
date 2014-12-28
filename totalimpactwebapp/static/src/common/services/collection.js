@@ -1,6 +1,6 @@
-angular.module("services.productList", [])
+angular.module("services.collection", [])
 
-.factory("ProductList", function(
+.factory("collection", function(
     $location,
     $timeout,
     $window,
@@ -8,7 +8,7 @@ angular.module("services.productList", [])
     SelectedProducts,
     GenreConfigs,
     PinboardService,
-    ProductListSort,
+    collectionSort,
     KeyMetrics,
     KeyProducts,
     Loading,
@@ -64,7 +64,7 @@ angular.module("services.productList", [])
     // i think this stuff is not supposed to be here. not sure how else to re-use, though.
     $scope.pinboardService = PinboardService
     $scope.SelectedProducts = SelectedProducts
-    $scope.ProductListSort = ProductListSort
+    $scope.collectionSort = collectionSort
     $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
       // fired by the 'on-repeat-finished" directive in the main products-rendering loop.
       finishRender()
@@ -196,7 +196,7 @@ angular.module("services.productList", [])
   }
 })
 
-.factory("ProductListSort", function($location){
+.factory("collectionSort", function($location){
 
   var configs = [
     {

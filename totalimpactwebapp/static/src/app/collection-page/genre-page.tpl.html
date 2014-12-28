@@ -5,7 +5,7 @@
 
          <h2>
             <span class="count">
-               {{ ProductList.len() }}
+               {{ collection.len() }}
             </span>
             <span class="text">
                {{ myGenreConfig.plural_name }}
@@ -66,6 +66,6 @@
       </div>
    </div>
 
-   <div class="product-list-container" ng-include="'collection-page/product-list-section.tpl.html'"></div>
+   <div class="collection-container" ng-include="'collection-page/collection-section.tpl.html'"></div>
 
 </div>
