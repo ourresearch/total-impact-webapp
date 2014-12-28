@@ -223,6 +223,19 @@ angular.module('services.profileProducts', [
 
     }
 
+    function getTitleFromTiid(tiid){
+      var myProduct = getProductFromTiid(tiid)
+      if (myProduct) {
+        return myProduct.title
+      }
+    }
+    function gen(tiid){
+      var myProduct = getProductFromTiid(tiid)
+      if (myProduct) {
+        return myProduct.title
+      }
+    }
+
     function isLoading(){
       return loading
     }
@@ -259,6 +272,8 @@ angular.module('services.profileProducts', [
       changeProductsGenre: changeProductsGenre,
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
+      getProductFromTiid: getProductFromTiid,
+      getTitleFromTiid: getTitleFromTiid,
       clear: clear,
       overwriteProduct: overwriteProduct,
       getUrlSlug: function(){

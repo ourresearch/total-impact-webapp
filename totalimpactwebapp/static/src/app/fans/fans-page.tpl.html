@@ -74,10 +74,21 @@
          </div><!-- end .fan-about -->
 
          <ul class="fan-tweets">
-            <li class="tweet"
-                   ng-include="'tweet/tweet.tpl.html'"
+            <li class="tweet-container"
                    ng-repeat="tweet in tweeter.tweets | orderBy: '-tweet_timestamp'">
-                </li>
+
+               <div class="product-cited-by-tweet">
+                  <a class="link-to-product" href="">
+                     <span class="genre-icon">
+                        {{ genreIconClassFromTiid(tweet.tiid) }}
+                     </span>
+                     <span class="product-title">
+                        {{ titleFromTiid(tweet.tiid) }}
+                     </span>
+                  </a>
+               </div>
+               <div class="tweet" ng-include="'tweet/tweet.tpl.html'"></div>
+             </li>
          </ul>
 
       </li><!-- end .fan -->

@@ -14,11 +14,14 @@ angular.module('fansPage', [
     $scope,
     FansService,
     OurSortService,
+    ProfileProducts,
+    GenreConfigs,
     Page){
     Page.setName("fans")
 
     console.log("fans page controller ran.")
     $scope.FansService = FansService
+
 
     OurSortService.setChoices([
       {
@@ -53,6 +56,18 @@ angular.module('fansPage', [
     $scope.$watch("FansService.data.tweeters", function(newVal, oldVal){
       pages.numPages = Math.ceil(newVal.length / pages.perPage)
     })
+
+
+    $scope.titleFromTiid = ProfileProducts.getTitleFromTiid
+
+    $scope.genreIconClassFromTiid = function(tiid){
+      console.log("getting icon from tiid", tiid)
+      var myProduct = ProfileProducts.getProductFromTiid(tiid)
+      console.log("got a product from tiid", myProduct)
+      if (myProduct){
+        return GenreConfigs.get(myProduct.genre, "icon")
+      }
+    }
 
 
   })

@@ -17,6 +17,8 @@ div.collection-page {
          li.fan {
             @fanImgHeight: 70px;
             @rightColWidth: 160px;
+
+            @rightColumWidth: 260px;
             clear:both;
             margin-bottom: 70px;
             .clearfix();
@@ -110,22 +112,28 @@ div.collection-page {
             ul.fan-tweets {
                @tweetBulletPointWidth: 25px;
                margin: 10px 0 30px @tweetBulletPointWidth;
-               li.tweet {
-                  a.tweet-bullet-point {
-                     float:left;
-                     width: @tweetBulletPointWidth;
-                     margin-left: -@tweetBulletPointWidth;
-                     color: #999;
-                     &:hover {
-                        color: @twitterColor;
+               li.tweet-container {
+                  div.product-cited-by-tweet {
+                     width: 200px;
+                  }
+
+                  div.tweet {
+                     a.tweet-bullet-point {
+                        float:left;
+                        width: @tweetBulletPointWidth;
+                        margin-left: -@tweetBulletPointWidth;
+                        color: #999;
+                        &:hover {
+                           color: @twitterColor;
+                        }
                      }
-                  }
-                  div.tweet-content {
-                     width: 600px;
-                  }
-                  div.after-tweet {
-                     float: right;
-                     width: @rightColWidth;
+                     div.tweet-content {
+                        width: 600px;
+                     }
+                     div.after-tweet {
+                        float: right;
+                        width: @rightColWidth;
+                     }
                   }
                }
             }

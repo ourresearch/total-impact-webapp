@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-27
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-28
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -935,11 +935,14 @@ angular.module('fansPage', [
     $scope,
     FansService,
     OurSortService,
+    ProfileProducts,
+    GenreConfigs,
     Page){
     Page.setName("fans")
 
     console.log("fans page controller ran.")
     $scope.FansService = FansService
+
 
     OurSortService.setChoices([
       {
@@ -974,6 +977,18 @@ angular.module('fansPage', [
     $scope.$watch("FansService.data.tweeters", function(newVal, oldVal){
       pages.numPages = Math.ceil(newVal.length / pages.perPage)
     })
+
+
+    $scope.titleFromTiid = ProfileProducts.getTitleFromTiid
+
+    $scope.genreIconClassFromTiid = function(tiid){
+      console.log("getting icon from tiid", tiid)
+      var myProduct = ProfileProducts.getProductFromTiid(tiid)
+      console.log("got a product from tiid", myProduct)
+      if (myProduct){
+        return GenreConfigs.get(myProduct.genre, "icon")
+      }
+    }
 
 
   })
@@ -6861,6 +6876,19 @@ angular.module('services.profileProducts', [
 
     }
 
+    function getTitleFromTiid(tiid){
+      var myProduct = getProductFromTiid(tiid)
+      if (myProduct) {
+        return myProduct.title
+      }
+    }
+    function gen(tiid){
+      var myProduct = getProductFromTiid(tiid)
+      if (myProduct) {
+        return myProduct.title
+      }
+    }
+
     function isLoading(){
       return loading
     }
@@ -6897,6 +6925,8 @@ angular.module('services.profileProducts', [
       changeProductsGenre: changeProductsGenre,
       getGenreCounts: getGenreCounts,
       hasFullProducts: hasFullProducts,
+      getProductFromTiid: getProductFromTiid,
+      getTitleFromTiid: getTitleFromTiid,
       clear: clear,
       overwriteProduct: overwriteProduct,
       getUrlSlug: function(){
@@ -7878,10 +7908,21 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "         </div><!-- end .fan-about -->\n" +
     "\n" +
     "         <ul class=\"fan-tweets\">\n" +
-    "            <li class=\"tweet\"\n" +
-    "                   ng-include=\"'tweet/tweet.tpl.html'\"\n" +
+    "            <li class=\"tweet-container\"\n" +
     "                   ng-repeat=\"tweet in tweeter.tweets | orderBy: '-tweet_timestamp'\">\n" +
-    "                </li>\n" +
+    "\n" +
+    "               <div class=\"product-cited-by-tweet\">\n" +
+    "                  <a class=\"link-to-product\" href=\"\">\n" +
+    "                     <span class=\"genre-icon\">\n" +
+    "                        {{ genreIconClassFromTiid(tweet.tiid) }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"product-title\">\n" +
+    "                        {{ titleFromTiid(tweet.tiid) }}\n" +
+    "                     </span>\n" +
+    "                  </a>\n" +
+    "               </div>\n" +
+    "               <div class=\"tweet\" ng-include=\"'tweet/tweet.tpl.html'\"></div>\n" +
+    "             </li>\n" +
     "         </ul>\n" +
     "\n" +
     "      </li><!-- end .fan -->\n" +
