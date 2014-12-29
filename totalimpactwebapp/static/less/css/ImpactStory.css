@@ -10250,7 +10250,7 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about img {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   float: left;
-  margin-top: 4px;
+  margin-top: 2px;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content {
   float: left;
@@ -10261,7 +10261,7 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content
   bottom: 0;
   left: 70px;
   width: 190px;
-  padding-left: 10px;
+  padding-left: 15px;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names:hover {
   color: #ff4000;
@@ -10292,13 +10292,13 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content
   position: absolute;
   color: #999;
   bottom: 13px;
-  left: 10px;
+  left: 15px;
   font-size: 14px;
   line-height: 1;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content div.description {
   float: left;
-  margin-left: 200px;
+  margin-left: 210px;
   font-size: 17px;
   width: 380px;
   min-height: 10px;
@@ -10333,7 +10333,7 @@ div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets {
 div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.product-cited-by-tweet {
   width: 260px;
   float: left;
-  margin-right: 10px;
+  margin-right: 20px;
 }
 div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.product-cited-by-tweet a {
   width: 100%;

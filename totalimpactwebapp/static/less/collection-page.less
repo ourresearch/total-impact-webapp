@@ -19,8 +19,10 @@ div.collection-page {
 
             @leftColWidth: 260px;
             @fanImgHeight: 70px;
-            @namesSectionWidth: 180px;
+            @namesSectionWidth: 175px;
             @spaceBetweenImgAndNames: @leftColWidth - (@fanImgHeight + @namesSectionWidth);
+
+            @centerColWidth: 300px;
 
             clear:both;
             margin-bottom: 70px;
@@ -34,7 +36,7 @@ div.collection-page {
                   height: @fanImgHeight;
                   .rounded(3px);
                   float:left;
-                  margin-top: 4px;
+                  margin-top: 2px;
                }
 
                div.main-content {
@@ -87,7 +89,7 @@ div.collection-page {
 
                   div.description {
                      float: left;
-                     margin-left: @namesSectionWidth + @spaceBetweenImgAndNames + 10px;
+                     margin-left: @namesSectionWidth + @spaceBetweenImgAndNames + 20px;
                      font-size: 17px;
                      width: 380px;
                      min-height: 10px;
@@ -130,7 +132,7 @@ div.collection-page {
                   div.product-cited-by-tweet {
                      width: @leftColWidth;
                      float:left;
-                     margin-right: @spaceBetweenImgAndNames;
+                     margin-right: @spaceBetweenImgAndNames + 5px; // no idea why the 5px is needed :(
                      a {
                         width: 100%;
                         position: relative;

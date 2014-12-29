@@ -21,15 +21,17 @@ angular.module("services.fansService", [])
 
         _.each(flatTweetsList, function(tweet){
           var myTweeter = tweet.tweeter
-          var myScreenName = myTweeter.screen_name
+
+          // key is *lowercased* screen name to deal with @BoraZ != @boraz etc.
+          var tweeterKey = myTweeter.screen_name.toLowerCase()
           var myTweet = angular.copy(tweet)
           delete myTweet.tweeter
 
-          if (data.tweetersDict[myScreenName]){
-            data.tweetersDict[myScreenName].tweets.push(myTweet)
+          if (data.tweetersDict[tweeterKey]){
+            data.tweetersDict[tweeterKey].tweets.push(myTweet)
           }
           else {
-            data.tweetersDict[myScreenName] = {
+            data.tweetersDict[tweeterKey] = {
               about: myTweeter,
               tweets: [myTweet]
             }

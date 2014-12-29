@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-28
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-29
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -5650,15 +5650,17 @@ angular.module("services.fansService", [])
 
         _.each(flatTweetsList, function(tweet){
           var myTweeter = tweet.tweeter
-          var myScreenName = myTweeter.screen_name
+
+          // key is *lowercased* screen name to deal with @BoraZ != @boraz etc.
+          var tweeterKey = myTweeter.screen_name.toLowerCase()
           var myTweet = angular.copy(tweet)
           delete myTweet.tweeter
 
-          if (data.tweetersDict[myScreenName]){
-            data.tweetersDict[myScreenName].tweets.push(myTweet)
+          if (data.tweetersDict[tweeterKey]){
+            data.tweetersDict[tweeterKey].tweets.push(myTweet)
           }
           else {
-            data.tweetersDict[myScreenName] = {
+            data.tweetersDict[tweeterKey] = {
               about: myTweeter,
               tweets: [myTweet]
             }
