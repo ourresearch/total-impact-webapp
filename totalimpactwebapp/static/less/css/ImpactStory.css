@@ -10260,8 +10260,17 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content
   top: 0;
   bottom: 0;
   left: 70px;
-  width: 165px;
-  margin-left: 15px;
+  width: 190px;
+  padding-left: 10px;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names:hover {
+  color: #ff4000;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names:hover div.screen-name {
+  color: #ff4000;
+}
+div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names:hover div.location {
+  color: #ff4000;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names:hover div.name {
   text-decoration: underline;
@@ -10281,13 +10290,13 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content
   position: absolute;
   color: #999;
   bottom: 13px;
-  left: 0;
+  left: 10px;
   font-size: 14px;
   line-height: 1;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content div.description {
   float: left;
-  margin-left: 190px;
+  margin-left: 200px;
   font-size: 17px;
   width: 380px;
   min-height: 10px;
@@ -10317,22 +10326,43 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.stats a.foll
   font-weight: 300;
 }
 div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets {
-  margin: 10px 0 30px 25px;
+  margin: 10px 0 30px 0;
 }
 div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.product-cited-by-tweet {
-  width: 200px;
-}
-div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.tweet a.tweet-bullet-point {
+  width: 260px;
   float: left;
-  width: 25px;
-  margin-left: -25px;
-  color: #999;
+  margin-right: 10px;
 }
-div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.tweet a.tweet-bullet-point:hover {
-  color: #55acee;
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.product-cited-by-tweet a {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  color: #333;
+  font-size: 14px;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.product-cited-by-tweet a:hover {
+  color: #ff4000;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.product-cited-by-tweet a span.genre-icon {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  padding-top: 5px;
+  width: 30px;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.product-cited-by-tweet a span.genre-icon i.genre-icon {
+  font-size: 18px;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.product-cited-by-tweet a span.product-title {
+  margin-left: 30px;
+  display: inline-block;
+  padding-right: 20px;
+}
+div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.tweet {
+  clear: none;
 }
 div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.tweet div.tweet-content {
-  width: 600px;
+  width: 380px;
 }
 div.collection-page.fans-page ul.fans-list li.fan ul.fan-tweets li.tweet-container div.tweet div.after-tweet {
   float: right;

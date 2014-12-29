@@ -933,6 +933,7 @@ angular.module('fansPage', [
 
 .controller("FansPageCtrl", function(
     $scope,
+    $routeParams,
     FansService,
     OurSortService,
     ProfileProducts,
@@ -965,7 +966,7 @@ angular.module('fansPage', [
 
     var pages = {
       current: 1,
-      perPage: 3
+      perPage: 25
     }
     $scope.pages = pages
     pages.onPageChange = function(newPageNumber){
@@ -980,6 +981,12 @@ angular.module('fansPage', [
 
 
     $scope.titleFromTiid = ProfileProducts.getTitleFromTiid
+    $scope.urlFromTiid = function(tiid){
+      var myProduct = ProfileProducts.getProductFromTiid(tiid)
+      if (myProduct){
+        return $routeParams.url_slug + "/product/" + tiid
+      }
+    }
 
     $scope.genreIconClassFromTiid = function(tiid){
       console.log("getting icon from tiid", tiid)
@@ -7912,9 +7919,9 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "                   ng-repeat=\"tweet in tweeter.tweets | orderBy: '-tweet_timestamp'\">\n" +
     "\n" +
     "               <div class=\"product-cited-by-tweet\">\n" +
-    "                  <a class=\"link-to-product\" href=\"\">\n" +
+    "                  <a class=\"link-to-product\" href=\"/{{ urlFromTiid(tweet.tiid) }}\">\n" +
     "                     <span class=\"genre-icon\">\n" +
-    "                        {{ genreIconClassFromTiid(tweet.tiid) }}\n" +
+    "                        <i class=\"genre-icon {{ genreIconClassFromTiid(tweet.tiid) }}\"></i>\n" +
     "                     </span>\n" +
     "                     <span class=\"product-title\">\n" +
     "                        {{ titleFromTiid(tweet.tiid) }}\n" +
@@ -11193,11 +11200,6 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
   $templateCache.put("tweet/tweet.tpl.html",
     "<div class=\"tweet-container\">\n" +
     "\n" +
-    "   <a class=\"tweet-bullet-point\"\n" +
-    "      ng-if=\"!tweet.tweeter && tweeter && tweeter.about\"\n" +
-    "      href=\"https://twitter.com/{{ tweeter.about.screen_name }}/status/{{ tweet.tweet_id }}\">\n" +
-    "      <i class=\"fa fa-twitter\"></i>\n" +
-    "      </a>\n" +
     "   <a class=\"tweeter\"\n" +
     "        ng-if=\"tweet.tweeter\"\n" +
     "        href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}\"\n" +

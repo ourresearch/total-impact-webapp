@@ -15,10 +15,13 @@ div.collection-page {
          padding-top: 75px;
          margin-left: 5px;
          li.fan {
-            @fanImgHeight: 70px;
             @rightColWidth: 160px;
 
-            @rightColumWidth: 260px;
+            @leftColWidth: 260px;
+            @fanImgHeight: 70px;
+            @namesSectionWidth: 180px;
+            @spaceBetweenImgAndNames: @leftColWidth - (@fanImgHeight + @namesSectionWidth);
+
             clear:both;
             margin-bottom: 70px;
             .clearfix();
@@ -36,18 +39,27 @@ div.collection-page {
 
                div.main-content {
                   float:left;
-                  @namesSectionWidth: 180px;
 
                   a.names {
                      position: absolute;
                      top: 0;
                      bottom: 0;
                      left: @fanImgHeight;
-                     width: @namesSectionWidth - 15px; // for the left margin
-                     margin-left: 15px;
+
+                     width: @leftColWidth - @fanImgHeight;
+                     padding-left: @spaceBetweenImgAndNames;
                      &:hover {
+                        color: @linkColor;
+                        div.screen-name {
+                           color: @linkColor;
+                        }
+                        div.location {
+                           color: @linkColor;
+                        }
                         div.name {
                            text-decoration: underline;
+                           a {
+                           }
                         }
                      }
                      div.name {
@@ -65,7 +77,7 @@ div.collection-page {
                         position: absolute;
                         color: #999;
                         bottom:13px;
-                        left:0;
+                        left: @spaceBetweenImgAndNames;
                         font-size: 14px;
                         line-height: 1;
                      }
@@ -73,7 +85,7 @@ div.collection-page {
 
                   div.description {
                      float: left;
-                     margin-left: @namesSectionWidth + 10px;
+                     margin-left: @namesSectionWidth + @spaceBetweenImgAndNames + 10px;
                      font-size: 17px;
                      width: 380px;
                      min-height: 10px;
@@ -109,26 +121,48 @@ div.collection-page {
                   }
                }
             }
+
             ul.fan-tweets {
-               @tweetBulletPointWidth: 25px;
-               margin: 10px 0 30px @tweetBulletPointWidth;
+               margin: 10px 0 30px 0;
                li.tweet-container {
                   div.product-cited-by-tweet {
-                     width: 200px;
+                     width: @leftColWidth;
+                     float:left;
+                     margin-right: @spaceBetweenImgAndNames;
+                     a {
+                        width: 100%;
+                        position: relative;
+                        display: inline-block;
+                        color: #333;
+                        font-size: 14px;
+                        &:hover {
+                           color: @linkColor;
+                        }
+                        span.genre-icon {
+                           position: absolute;
+                           top: 0;
+                           bottom: 0;
+                           padding-top: 5px;
+                           width: 30px;
+                           i.genre-icon {
+                              font-size: 18px;
+                           }
+                        }
+                        span.product-title {
+                           margin-left: 30px;
+                           display: inline-block;
+                           // give this gutter a bit more space than the one in the tweeter section above
+                           padding-right: 20px;
+                        }
+
+                     }
                   }
 
                   div.tweet {
-                     a.tweet-bullet-point {
-                        float:left;
-                        width: @tweetBulletPointWidth;
-                        margin-left: -@tweetBulletPointWidth;
-                        color: #999;
-                        &:hover {
-                           color: @twitterColor;
-                        }
-                     }
+                     clear:none;
+
                      div.tweet-content {
-                        width: 600px;
+                        width: 380px;
                      }
                      div.after-tweet {
                         float: right;

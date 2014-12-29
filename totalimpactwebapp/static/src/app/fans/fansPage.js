@@ -12,6 +12,7 @@ angular.module('fansPage', [
 
 .controller("FansPageCtrl", function(
     $scope,
+    $routeParams,
     FansService,
     OurSortService,
     ProfileProducts,
@@ -44,7 +45,7 @@ angular.module('fansPage', [
 
     var pages = {
       current: 1,
-      perPage: 3
+      perPage: 25
     }
     $scope.pages = pages
     pages.onPageChange = function(newPageNumber){
@@ -59,6 +60,12 @@ angular.module('fansPage', [
 
 
     $scope.titleFromTiid = ProfileProducts.getTitleFromTiid
+    $scope.urlFromTiid = function(tiid){
+      var myProduct = ProfileProducts.getProductFromTiid(tiid)
+      if (myProduct){
+        return $routeParams.url_slug + "/product/" + tiid
+      }
+    }
 
     $scope.genreIconClassFromTiid = function(tiid){
       console.log("getting icon from tiid", tiid)

@@ -78,9 +78,9 @@
                    ng-repeat="tweet in tweeter.tweets | orderBy: '-tweet_timestamp'">
 
                <div class="product-cited-by-tweet">
-                  <a class="link-to-product" href="">
+                  <a class="link-to-product" href="/{{ urlFromTiid(tweet.tiid) }}">
                      <span class="genre-icon">
-                        {{ genreIconClassFromTiid(tweet.tiid) }}
+                        <i class="genre-icon {{ genreIconClassFromTiid(tweet.tiid) }}"></i>
                      </span>
                      <span class="product-title">
                         {{ titleFromTiid(tweet.tiid) }}
