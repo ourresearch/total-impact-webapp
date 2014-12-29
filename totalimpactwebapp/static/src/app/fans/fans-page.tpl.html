@@ -11,7 +11,7 @@
                Twitter fans
             </span>
             <span class="based-on">
-               based on people who've tweeted your work
+               based on people who've tweeted {{ profileAboutService.data.given_name }}'s work
             </span>
          </h2>
       </div>
@@ -24,14 +24,20 @@
          <our-sort></our-sort>
       </div>
 
-      <div class="page-info">
-         <span class="current-page">
-            <span class="descr">Page</span>
-            <span class="val">{{ pages.current }}</span>
-         </span>
-         <span class="total-pages" ng-show="pages.numPages">
-            of <span class="val">{{ pages.numPages }}</span>
-         </span>
+      <div class="page-info loaded">
+         <div class="loaded" ng-show="pages.numPages">
+            <span class="current-page">
+               <span class="descr">Page</span>
+               <span class="val">{{ pages.current }}</span>
+            </span>
+            <span class="total-pages">
+               of <span class="val">{{ pages.numPages }}</span>
+            </span>
+         </div>
+         <div class="loading" ng-hide="pages.numPages">
+            <i class="fa fa-refresh fa-spin left"></i>
+            Loading twitter data&hellip;
+         </div>
       </div>
 
 

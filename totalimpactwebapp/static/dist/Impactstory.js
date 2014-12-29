@@ -7851,7 +7851,7 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "               Twitter fans\n" +
     "            </span>\n" +
     "            <span class=\"based-on\">\n" +
-    "               based on people who've tweeted your work\n" +
+    "               based on people who've tweeted {{ profileAboutService.data.given_name }}'s work\n" +
     "            </span>\n" +
     "         </h2>\n" +
     "      </div>\n" +
@@ -7864,14 +7864,20 @@ angular.module("fans/fans-page.tpl.html", []).run(["$templateCache", function($t
     "         <our-sort></our-sort>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"page-info\">\n" +
-    "         <span class=\"current-page\">\n" +
-    "            <span class=\"descr\">Page</span>\n" +
-    "            <span class=\"val\">{{ pages.current }}</span>\n" +
-    "         </span>\n" +
-    "         <span class=\"total-pages\" ng-show=\"pages.numPages\">\n" +
-    "            of <span class=\"val\">{{ pages.numPages }}</span>\n" +
-    "         </span>\n" +
+    "      <div class=\"page-info loaded\">\n" +
+    "         <div class=\"loaded\" ng-show=\"pages.numPages\">\n" +
+    "            <span class=\"current-page\">\n" +
+    "               <span class=\"descr\">Page</span>\n" +
+    "               <span class=\"val\">{{ pages.current }}</span>\n" +
+    "            </span>\n" +
+    "            <span class=\"total-pages\">\n" +
+    "               of <span class=\"val\">{{ pages.numPages }}</span>\n" +
+    "            </span>\n" +
+    "         </div>\n" +
+    "         <div class=\"loading\" ng-hide=\"pages.numPages\">\n" +
+    "            <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
+    "            Loading twitter data&hellip;\n" +
+    "         </div>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +

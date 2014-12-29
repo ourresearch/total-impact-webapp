@@ -10539,6 +10539,9 @@ div.collection-page div.collection-controls div.page-info span.total-pages {
   font-size: 14px;
   font-weight: 300;
 }
+div.collection-page div.collection-controls div.page-info div.loading {
+  color: #999;
+}
 div.collection-page div.collection-controls div.edit-controls {
   margin-left: 5px;
 }
