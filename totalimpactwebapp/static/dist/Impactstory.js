@@ -989,7 +989,7 @@ angular.module('fansPage', [
     }
 
     $scope.genreIconClassFromTiid = function(tiid){
-      var myProduct = ProfileProducts.getProductFromTiid(tiid)   
+      var myProduct = ProfileProducts.getProductFromTiid(tiid)
       if (myProduct){
         return GenreConfigs.get(myProduct.genre, "icon")
       }
@@ -5648,12 +5648,7 @@ angular.module("services.fansService", [])
 
         _.each(flatTweetsList, function(tweet){
           var myTweeter = tweet.tweeter
-
-          // key is *lowercased* screen name to deal with @BoraZ != @boraz etc.
-          var tweeterKey = myTweeter.screen_name.toLowerCase()
-
-          // really gnarly hacks here to fix people we know have changed twitter screen names.
-
+          var tweeterKey = myTweeter.twitter_id
 
           var myTweet = angular.copy(tweet)
           delete myTweet.tweeter
