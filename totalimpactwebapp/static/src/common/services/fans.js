@@ -24,6 +24,10 @@ angular.module("services.fansService", [])
 
           // key is *lowercased* screen name to deal with @BoraZ != @boraz etc.
           var tweeterKey = myTweeter.screen_name.toLowerCase()
+
+          // really gnarly hacks here to fix people we know have changed twitter screen names.
+
+
           var myTweet = angular.copy(tweet)
           delete myTweet.tweeter
 

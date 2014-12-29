@@ -68,9 +68,7 @@ angular.module('fansPage', [
     }
 
     $scope.genreIconClassFromTiid = function(tiid){
-      console.log("getting icon from tiid", tiid)
       var myProduct = ProfileProducts.getProductFromTiid(tiid)
-      console.log("got a product from tiid", myProduct)
       if (myProduct){
         return GenreConfigs.get(myProduct.genre, "icon")
       }
