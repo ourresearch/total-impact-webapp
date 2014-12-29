@@ -10250,7 +10250,7 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about img {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   float: left;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content {
   float: left;
@@ -10276,9 +10276,10 @@ div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content
   text-decoration: underline;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names div.name {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: bold;
   color: #ff4000;
+  line-height: 1;
 }
 div.collection-page.fans-page ul.fans-list li.fan div.fan-about div.main-content a.names div.screen-name {
   font-weight: 300;
