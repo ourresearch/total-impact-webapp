@@ -46,7 +46,7 @@ def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, twe
                     tweet_id=tweet_id, tiid=tweet.tiid))
                 if "user" in payload_dict:
                     if not tweet.tweeter:
-                        tweet.tweeter = Tweeter(screen_name=screen_name)
+                        tweet.tweeter = Tweeter(screen_name=tweet.screen_name)
                     tweet.tweeter.set_attributes_from_twitter_data(payload_dict["user"])
                     logger.info(u"updated tweeter followers for {screen_name}".format(
                         screen_name=tweet.tweeter.screen_name))
