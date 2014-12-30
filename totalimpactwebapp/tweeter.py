@@ -95,6 +95,9 @@ class Tweeter(db.Model):
 
     @cached_property
     def display_image_url(self):
+        if not self.image_url:
+            return ""
+
         ret = self.image_url.replace("http://", "https://")
         ret = ret.replace("_normal", "_reasonably_small")
         return ret
