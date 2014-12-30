@@ -7570,8 +7570,9 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "         </span>\n" +
     "\n" +
     "         <span class=\"action\">\n" +
-    "            <div class=\"btn-group genre-select-group\" dropdown is-open=\"Collection.ui.genreChangeDropdownIsOpen\">\n" +
+    "            <span class=\"btn-group genre-select-group\" dropdown>\n" +
     "               <button type=\"button\"\n" +
+    "                       dropdown-toggle\n" +
     "                       tooltip-html-unsafe=\"Recategorize selected&nbsp;items\"\n" +
     "                       class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
     "                  <i class=\"icon-folder-close-alt\"></i>\n" +
@@ -7587,7 +7588,7 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "                     </a>\n" +
     "                  </li>\n" +
     "               </ul>\n" +
-    "            </div>\n" +
+    "            </span>\n" +
     "         </span>\n" +
     "      </span>\n" +
     "\n" +
