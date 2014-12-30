@@ -7589,6 +7589,7 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "               </ul>\n" +
     "            </div>\n" +
     "         </span>\n" +
+    "\n" +
     "      </span>\n" +
     "\n" +
     "      <span class=\"num-selected\" ng-show=\"SelectedProducts.count() > 0\">\n" +
