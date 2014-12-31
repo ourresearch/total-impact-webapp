@@ -223,7 +223,7 @@ angular.module('services.profileProducts', [
         else {
           productToChange.custom_collection_str += ("|" + collectionName)
         }
-        return true
+        return productToChange.custom_collection_str
       }
 
     }
@@ -239,18 +239,20 @@ angular.module('services.profileProducts', [
       })
 
 
-
-
+      if (!_.some(additionResults)) {
+        console.log("ProfileProducts.addToCustomCollection: nothing changed.", additionResults)
+        return false
+      }
 
       return true
 
       // assume it worked...
-      UserMessage.setStr("Moved "+ tiids.length +" items to " + GenreConfigs.get(newGenre, "plural_name") + ".", "success" )
+//      UserMessage.setStr("Moved "+ tiids.length +" items to " + GenreConfigs.get(newGenre, "plural_name") + ".", "success" )
 
       // save the new genre info on the server here...
       ProductsBiblio.patch(
         {commaSeparatedTiids: tiids.join(",")},
-        {genre: newGenre},
+        {custom_collections_str: newGenre},
         function(resp){
           console.log("ProfileProducts.changeProductsGenre() successful.", resp)
         },

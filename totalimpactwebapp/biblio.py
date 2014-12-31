@@ -97,6 +97,14 @@ class Biblio(object):
 
 
     @cached_property
+    def custom_collections_str(self):
+        try:
+            return self.custom_collections_str
+        except AttributeError:
+            return ""
+
+
+    @cached_property
     def display_title(self):
         try:
             return self.title

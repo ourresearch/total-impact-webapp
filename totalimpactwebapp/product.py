@@ -263,7 +263,7 @@ class Product(db.Model):
 
     @cached_property
     def custom_collections_str(self):
-        return "foo|bar"
+        return self.biblio.custom_collections_str
 
     @cached_property
     def genre_icon(self):
