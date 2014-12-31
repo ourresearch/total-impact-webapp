@@ -260,6 +260,11 @@ class Product(db.Model):
 
         return genre
 
+
+    @cached_property
+    def custom_collections_str(self):
+        return "foo|bar"
+
     @cached_property
     def genre_icon(self):
         try:
@@ -694,6 +699,7 @@ class Product(db.Model):
             "genre",
             "genre_icon",
             "countries_str",
+            "custom_collections_str",
 
              # for sorting
             "year",

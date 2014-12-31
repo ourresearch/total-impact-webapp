@@ -673,6 +673,7 @@ def profile_products_get(url_slug):
                 "tiid",
                 "markup",
                 "countries_str",
+                "custom_collections_str",
 
                 # for sorting
                 "year",

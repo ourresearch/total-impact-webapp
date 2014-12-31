@@ -49,6 +49,22 @@
             </ul>
          </div>
 
+         <div class="nav-group custom-collections">
+            <ul>
+               <li ng-repeat="(customCollectionName, customCollectionCount) in profileService.getCustomCollectionCounts() | orderBy: 'customCollectionName'">
+                  <a ng-href="/{{ profileAboutService.data.url_slug }}/custom-collection/{{ customCollectionName }}"
+                     ng-class="{active: page.isNamed(customCollectionName)}">
+                     <span class="text">
+                        {{  customCollectionName }}
+                     </span>
+                     <span class="count value">
+                        ({{ customCollectionCount }})
+                     </span>
+                  </a>
+               </li>
+            </ul>
+         </div>
+
          <!--
          <div class="nav-group sidebar-accounts">
             <ul>

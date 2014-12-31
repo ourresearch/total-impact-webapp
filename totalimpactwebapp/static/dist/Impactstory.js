@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-29
+/*! Impactstory - v0.0.1-SNAPSHOT - 2014-12-30
  * http://impactstory.org
  * Copyright (c) 2014 Impactstory;
  * Licensed MIT
@@ -6904,8 +6904,30 @@ angular.module('services.profileProducts', [
         return product.genre
       })
       return counts
-
     }
+
+    function getCustomCollectionCounts(){
+      var ret = {}
+      _.each(data.products, function(product){
+
+        if (!product.custom_collections_str){ // we only have stub products.
+          return false
+        }
+
+        var productCustomCollectionNames = product.custom_collections_str.split("|")
+        _.each(productCustomCollectionNames, function(myCustomCollectionName){
+          if (ret[myCustomCollectionName]){
+            ret[myCustomCollectionName] += 1
+          }
+          else {
+            ret[myCustomCollectionName] = 1
+          }
+        })
+      })
+      return ret
+    }
+
+
 
     function productByTiid(tiid){
       return _.findWhere(data.products, {tiid: tiid})
@@ -6930,6 +6952,7 @@ angular.module('services.profileProducts', [
       removeProducts: removeProducts,
       changeProductsGenre: changeProductsGenre,
       getGenreCounts: getGenreCounts,
+      getCustomCollectionCounts: getCustomCollectionCounts,
       hasFullProducts: hasFullProducts,
       getProductFromTiid: getProductFromTiid,
       getTitleFromTiid: getTitleFromTiid,
@@ -11008,6 +11031,22 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "                     </span>\n" +
     "                     <span class=\"count value\">\n" +
     "                        ({{ genreCount }})\n" +
+    "                     </span>\n" +
+    "                  </a>\n" +
+    "               </li>\n" +
+    "            </ul>\n" +
+    "         </div>\n" +
+    "\n" +
+    "         <div class=\"nav-group custom-collections\">\n" +
+    "            <ul>\n" +
+    "               <li ng-repeat=\"(customCollectionName, customCollectionCount) in profileService.getCustomCollectionCounts() | orderBy: 'customCollectionName'\">\n" +
+    "                  <a ng-href=\"/{{ profileAboutService.data.url_slug }}/custom-collection/{{ customCollectionName }}\"\n" +
+    "                     ng-class=\"{active: page.isNamed(customCollectionName)}\">\n" +
+    "                     <span class=\"text\">\n" +
+    "                        {{  customCollectionName }}\n" +
+    "                     </span>\n" +
+    "                     <span class=\"count value\">\n" +
+    "                        ({{ customCollectionCount }})\n" +
     "                     </span>\n" +
     "                  </a>\n" +
     "               </li>\n" +

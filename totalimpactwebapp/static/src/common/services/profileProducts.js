@@ -245,8 +245,30 @@ angular.module('services.profileProducts', [
         return product.genre
       })
       return counts
-
     }
+
+    function getCustomCollectionCounts(){
+      var ret = {}
+      _.each(data.products, function(product){
+
+        if (!product.custom_collections_str){ // we only have stub products.
+          return false
+        }
+
+        var productCustomCollectionNames = product.custom_collections_str.split("|")
+        _.each(productCustomCollectionNames, function(myCustomCollectionName){
+          if (ret[myCustomCollectionName]){
+            ret[myCustomCollectionName] += 1
+          }
+          else {
+            ret[myCustomCollectionName] = 1
+          }
+        })
+      })
+      return ret
+    }
+
+
 
     function productByTiid(tiid){
       return _.findWhere(data.products, {tiid: tiid})
@@ -271,6 +293,7 @@ angular.module('services.profileProducts', [
       removeProducts: removeProducts,
       changeProductsGenre: changeProductsGenre,
       getGenreCounts: getGenreCounts,
+      getCustomCollectionCounts: getCustomCollectionCounts,
       hasFullProducts: hasFullProducts,
       getProductFromTiid: getProductFromTiid,
       getTitleFromTiid: getTitleFromTiid,
