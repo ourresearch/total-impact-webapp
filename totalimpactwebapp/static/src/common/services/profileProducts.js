@@ -200,8 +200,70 @@ angular.module('services.profileProducts', [
           console.log("ProfileProducts.changeProductsGenre() FAILED.", resp)
         }
       )
+    }
+
+    function addSingleProductToCustomCollection(tiid, collectionName){
+      var productToChange = getProductFromTiid(tiid)
+
+      // no collection info for this product yet
+      if (!productToChange || !_.has(productToChange, "custom_collection_str")){
+        return false
+      }
+
+      // it's already in this collection
+      else if (productToChange.custom_collection_str.indexOf(collectionName) > -1){
+        return false
+      }
+
+      // great, add it to the collection
+      else {
+        if (!productToChange.custom_collection_str.length){
+          productToChange.custom_collection_str = collectionName
+        }
+        else {
+          productToChange.custom_collection_str += ("|" + collectionName)
+        }
+        return true
+      }
 
     }
+
+
+    function addToCustomCollection(tiids, collectionName){
+      console.log("ProfileProducts: adding to custom collection", collectionName, tiids)
+
+      var additionResults = []
+      _.each(tiids, function(tiid){
+        var myResult = addSingleProductToCustomCollection()
+        additionResults.push(myResult)
+      })
+
+
+
+
+
+      return true
+
+      // assume it worked...
+      UserMessage.setStr("Moved "+ tiids.length +" items to " + GenreConfigs.get(newGenre, "plural_name") + ".", "success" )
+
+      // save the new genre info on the server here...
+      ProductsBiblio.patch(
+        {commaSeparatedTiids: tiids.join(",")},
+        {genre: newGenre},
+        function(resp){
+          console.log("ProfileProducts.changeProductsGenre() successful.", resp)
+        },
+        function(resp){
+          console.log("ProfileProducts.changeProductsGenre() FAILED.", resp)
+        }
+      )
+    }
+
+
+
+
+
 
     function getProductIndexFromTiid(tiid){
       for (var i=0; i<data.products.length; i++ ){
@@ -251,7 +313,7 @@ angular.module('services.profileProducts', [
       var ret = {}
       _.each(data.products, function(product){
 
-        if (!product.custom_collections_str){ // we only have stub products.
+        if (!_.has(product, "custom_collections_str")){ // we only have stub products.
           return false
         }
 
@@ -292,6 +354,7 @@ angular.module('services.profileProducts', [
       productByTiid: productByTiid,
       removeProducts: removeProducts,
       changeProductsGenre: changeProductsGenre,
+      addToCustomCollection: addToCustomCollection,
       getGenreCounts: getGenreCounts,
       getCustomCollectionCounts: getCustomCollectionCounts,
       hasFullProducts: hasFullProducts,

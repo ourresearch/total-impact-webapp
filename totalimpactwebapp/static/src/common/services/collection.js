@@ -122,8 +122,7 @@ angular.module("services.collection", [])
 
 
   var addToCustomCollection = function(collectionName){
-    console.log("adding some products to a custom collection!", collectionName)
-//    ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
+    ProfileProducts.addToCustomCollection(SelectedProducts.get(), collectionName)
     SelectedProducts.removeAll()
   }
 
