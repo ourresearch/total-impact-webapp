@@ -10564,16 +10564,16 @@ div.collection-page div.collection-controls div.edit-controls span.actions.has-s
 div.collection-page div.collection-controls div.edit-controls span.actions span.action {
   margin-left: 1px;
 }
-div.collection-page div.collection-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li {
+div.collection-page div.collection-controls div.edit-controls span.actions .genre-select-group ul.dropdown-menu li {
   font-size: 16px;
 }
-div.collection-page div.collection-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li.instr {
+div.collection-page div.collection-controls div.edit-controls span.actions .genre-select-group ul.dropdown-menu li.instr {
   padding: 10px 0 0 20px;
 }
-div.collection-page div.collection-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a {
+div.collection-page div.collection-controls div.edit-controls span.actions .genre-select-group ul.dropdown-menu li a {
   color: #333;
 }
-div.collection-page div.collection-controls div.edit-controls span.actions div.genre-select-group ul.dropdown-menu li a i {
+div.collection-page div.collection-controls div.edit-controls span.actions .genre-select-group ul.dropdown-menu li a i {
   color: #555;
 }
 div.collection-page div.collection-controls div.edit-controls span.num-selected {
