@@ -5276,6 +5276,13 @@ angular.module("services.collection", [])
   }
 
 
+  var addToCustomCollection = function(collectionName){
+    console.log("adding some products to a custom collection!", collectionName)
+//    ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
+    SelectedProducts.removeAll()
+  }
+
+
   var removeSelectedProducts = function(){
     console.log("removing products: ", SelectedProducts.get())
     ProfileProducts.removeProducts(SelectedProducts.get())
@@ -5319,6 +5326,7 @@ angular.module("services.collection", [])
 
   return {
     changeProductsGenre: changeProductsGenre,
+    addToCustomCollection: addToCustomCollection,
     removeSelectedProducts: removeSelectedProducts,
     startRender: startRender,
     finishRender: finishRender,
@@ -7608,6 +7616,27 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "                     <a ng-click=\"Collection.changeProductsGenre(genreConfigForList.name)\">\n" +
     "                        <i class=\"{{ genreConfigForList.icon }} left\"></i>\n" +
     "                        {{ genreConfigForList.plural_name }}\n" +
+    "                     </a>\n" +
+    "                  </li>\n" +
+    "               </ul>\n" +
+    "            </span>\n" +
+    "         </span>\n" +
+    "\n" +
+    "         <span class=\"action\">\n" +
+    "            <span class=\"btn-group genre-select-group\" dropdown>\n" +
+    "               <button type=\"button\"\n" +
+    "                       dropdown-toggle\n" +
+    "                       tooltip-html-unsafe=\"Add items to a custom collection\"\n" +
+    "                       class=\"btn btn-default btn-xs dropdown-toggle\">\n" +
+    "                  <i class=\"fa fa-tag\"></i>\n" +
+    "                  <span class=\"caret\"></span>\n" +
+    "               </button>\n" +
+    "               <ul class=\"dropdown-menu\">\n" +
+    "                  <li class=\"instr\">Add to:</li>\n" +
+    "                  <li class=\"divider\"></li>\n" +
+    "                  <li ng-repeat=\"(customCollectionName, customCollectionCount) in profileService.getCustomCollectionCounts() | orderBy: 'customCollectionName'\">\n" +
+    "                     <a ng-click=\"Collection.addToCustomCollection(customCollectionName)\">\n" +
+    "                        {{ customCollectionName }}\n" +
     "                     </a>\n" +
     "                  </li>\n" +
     "               </ul>\n" +

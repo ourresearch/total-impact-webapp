@@ -57,6 +57,27 @@
             </span>
          </span>
 
+         <span class="action">
+            <span class="btn-group genre-select-group" dropdown>
+               <button type="button"
+                       dropdown-toggle
+                       tooltip-html-unsafe="Add items to a custom collection"
+                       class="btn btn-default btn-xs dropdown-toggle">
+                  <i class="fa fa-tag"></i>
+                  <span class="caret"></span>
+               </button>
+               <ul class="dropdown-menu">
+                  <li class="instr">Add to:</li>
+                  <li class="divider"></li>
+                  <li ng-repeat="(customCollectionName, customCollectionCount) in profileService.getCustomCollectionCounts() | orderBy: 'customCollectionName'">
+                     <a ng-click="Collection.addToCustomCollection(customCollectionName)">
+                        {{ customCollectionName }}
+                     </a>
+                  </li>
+               </ul>
+            </span>
+         </span>
+
       </span>
 
       <span class="num-selected" ng-show="SelectedProducts.count() > 0">

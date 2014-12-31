@@ -121,6 +121,13 @@ angular.module("services.collection", [])
   }
 
 
+  var addToCustomCollection = function(collectionName){
+    console.log("adding some products to a custom collection!", collectionName)
+//    ProfileProducts.changeProductsGenre(SelectedProducts.get(), newGenre)
+    SelectedProducts.removeAll()
+  }
+
+
   var removeSelectedProducts = function(){
     console.log("removing products: ", SelectedProducts.get())
     ProfileProducts.removeProducts(SelectedProducts.get())
@@ -164,6 +171,7 @@ angular.module("services.collection", [])
 
   return {
     changeProductsGenre: changeProductsGenre,
+    addToCustomCollection: addToCustomCollection,
     removeSelectedProducts: removeSelectedProducts,
     startRender: startRender,
     finishRender: finishRender,
