@@ -237,7 +237,13 @@ class Metric(object):
     def diff_value(self):
         diff_value = self.diff_value_unadjusted
         if diff_value:
-            if self.diff_window_length_days > 8:
+            # should never happen, but might if updates get badly stuck :(
+            # don't claim any weekly diff, because we have no idea if new stuff is new
+            if self.diff_window_length_days > 30:  
+                diff_value = 0
+
+            # should also never happen, but might sometimes
+            elif self.diff_window_length_days > 8:
                 diff_value = int(math.ceil(diff_value / (self.diff_window_length_days / 7.0)))
         return diff_value
 
@@ -245,8 +251,6 @@ class Metric(object):
     def diff_value_unadjusted(self):
         try:
             diff_value = self.diff_window_end_value - self.diff_window_start_value
-            if self.diff_window_length_days > 8:
-                diff_value = int(math.ceil(diff_value / (self.diff_window_length_days / 7.0)))
             return diff_value
         except TypeError:
             return None
