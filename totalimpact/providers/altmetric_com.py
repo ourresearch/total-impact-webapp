@@ -46,21 +46,7 @@ class Altmetric_Com(Provider):
             "provider_url": "",
             "description": "Number of blog posts mentioning the product",
             "icon": "http://impactstory.org/static/img/blogs-icon.png",
-        },
-        # "news": {
-        #     "display_name": "News outlets",
-        #     "provider": "Altmetric.com",
-        #     "provider_url": "",
-        #     "description": "Number of mainstream media news mentions of the product",
-        #     "icon": "",
-        # },
-        "impressions": {
-            "display_name": "Twitter impressions",
-            "provider": "Altmetric.com",
-            "provider_url": "http://twitter.com",
-            "description": "Number of times a tweet about the product has appeared in someone's twitter stream",
-            "icon": "https://twitter.com/favicon.ico",
-        }                                                   
+        }
     }
     
 
@@ -153,10 +139,7 @@ class Altmetric_Com(Provider):
             except KeyError:
                 pass
         return tweeter_followers
-
-    def calculate_impressions(self, tweeter_followers):
-        impressions = sum([followers for (handle, followers) in tweeter_followers]) 
-        return impressions               
+             
 
     def get_tweet_ids(self, altmetric_posts):
         tweet_ids = [p["tweet_id"] for p in altmetric_posts]
@@ -178,8 +161,6 @@ class Altmetric_Com(Provider):
                 tweeter_followers = self.calculate_tweeter_followers(altmetric_posts)
                 if tweeter_followers:
                     metrics_dict['altmetric_com:tweeter_followers'] = tweeter_followers
-                    impressions = self.calculate_impressions(tweeter_followers)
-                    metrics_dict['altmetric_com:impressions'] = impressions
 
         except KeyError:
             pass  # no posts

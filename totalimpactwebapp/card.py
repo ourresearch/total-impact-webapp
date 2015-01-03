@@ -349,35 +349,14 @@ class GenreMetricSumCard(AbstractProductsAccumulationCard):
 
 
     @property
-    def tooltip(self):
-        if self.interaction == "impressions":
-            tweet_metrics = get_metrics_by_name(self.products, "altmetric_com", "tweets")
-            total_tweets = sum([m.diff_window_end_value for m in tweet_metrics 
-                                    if m.diff_window_end_value])
-
-            tweeter_followers = get_tweeter_followers(self.products)
-            tooltip = u"{current_value} Twitter impressions based on {total_tweets} tweets, from<ul>".format(
-                current_value=self.current_value,
-                total_tweets=total_tweets)
-            top_tweeter_followers = tweeter_followers.most_common(3)
-            for tweeter_follower in top_tweeter_followers:
-                twitter_handle, followers = tweeter_follower
-                tooltip += u"<li><span class='twitter-handle'>@{twitter_handle}</span> <div class='followers'>({followers}&nbsp;followers)</span></li>".format(
-                    twitter_handle=twitter_handle, followers=followers)
-            tooltip += u"</ul>"
-            number_of_other_tweeters = len(tweeter_followers) - len(top_tweeter_followers)
-            if number_of_other_tweeters:
-                tooltip += u"and {number_of_other_tweeters} others.".format(
-                    number_of_other_tweeters=number_of_other_tweeters)
-            return tooltip
-        else:            
-            try:
-                return u"{num} {provider} {interaction}".format(
-                    num=self.current_value, 
-                    provider=self.exemplar_metric.display_provider,
-                    interaction=self.display_things_we_are_counting)
-            except KeyError:
-                return "" 
+    def tooltip(self):       
+        try:
+            return u"{num} {provider} {interaction}".format(
+                num=self.current_value, 
+                provider=self.exemplar_metric.display_provider,
+                interaction=self.display_things_we_are_counting)
+        except KeyError:
+            return "" 
 
     @property
     def sort_by(self):

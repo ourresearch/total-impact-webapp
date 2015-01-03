@@ -856,18 +856,6 @@ providers = [
                 "engagement_type": "discussed",
                 "milestones": fives_then_orders_of_magnitude()
             },                       
-            "impressions": {
-                "description": "Number of times a tweet about the product has appeared in someone's twitter stream",
-                "display_name": "impressions",
-                "display_provider": "Twitter",
-                "icon": "https://twitter.com/favicon.ico",
-                "provider_name": "Altmetric.com",
-                "provider_url": "http://twitter.com",
-                "audience": "public",
-                "engagement_type": "discussed",
-                "milestones": fives_then_orders_of_magnitude(),
-                "metric_debut_date": "2014-09-17"
-            },
             "tweeter_followers": {
                 "hide_badge": True,            
                 "description": "People who have tweeted the product and their follower counts",
