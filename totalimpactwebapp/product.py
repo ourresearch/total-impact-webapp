@@ -243,7 +243,7 @@ class Product(db.Model):
         self.last_refresh_status = u"STARTED"
         self.last_refresh_failure_message = None
 
-    def set_last_refresh_finished(self, myredis):
+    def set_refresh_status(self, myredis):
         redis_refresh_status = refresh_status(self.tiid, myredis)
         if not redis_refresh_status["short"].startswith(u"SUCCESS"):
             self.last_refresh_failure_message = redis_refresh_status["long"]
@@ -965,13 +965,14 @@ def put_biblio_in_product(product, new_biblio_dict, provider_name="unknown"):
     #     tiid=product.tiid))        
 
     for (biblio_name, biblio_value) in new_biblio_dict.iteritems():
-        biblio_row_object = BiblioRow.query.get((product.tiid, provider_name, biblio_name))
-        if not biblio_row_object:
-            biblio_row_object = BiblioRow(
-                    biblio_name=biblio_name, 
-                    biblio_value=biblio_value, 
-                    provider=provider_name)
-            product.biblio_rows.append(biblio_row_object)
+        if biblio_value:
+            biblio_row_object = BiblioRow.query.get((product.tiid, provider_name, biblio_name))
+            if not biblio_row_object:
+                biblio_row_object = BiblioRow(
+                        biblio_name=biblio_name, 
+                        biblio_value=biblio_value, 
+                        provider=provider_name)
+                product.biblio_rows.append(biblio_row_object)
         biblio_row_object.biblio_value = biblio_value
 
     return product

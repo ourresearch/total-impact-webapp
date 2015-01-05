@@ -75,9 +75,14 @@ class ClearDbSessionTask(Task):
     abstract = True
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
-        logger.debug(u"Celery task after_return handler, removing session, args {args}, kwargs={kwargs}".format(
-            args=args, kwargs=kwargs))
+        logger.info(u"Celery task after_return handler, removing session, retval {retval}, args {args}, kwargs={kwargs}".format(
+            retval=retval, args=args, kwargs=kwargs))
         db.session.remove()
+
+
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        logger.info(u"Celery task on_failure handler, exc {exc}, args {args}, kwargs={kwargs}, einfo={einfo}".format(
+            exc=exc, args=args, kwargs=kwargs, einfo=einfo))
 
 
 @task_failure.connect
@@ -244,11 +249,9 @@ def after_refresh_complete(tiid, task_ids):
         return None
 
     product.embed_markup = product.get_embed_markup() 
-    product.set_last_refresh_finished(myredis)
+    product.set_refresh_status(myredis)
     db.session.merge(product)
     commit(db)
-
-    profile_bare_products = get_profile_from_id(product.profile_id, "id", include_product_relationships=False)
 
 
 
