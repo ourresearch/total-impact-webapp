@@ -87,8 +87,8 @@ class ClearDbSessionTask(Task):
             tiid = args[0]
             logger.info(u"on_failure handler, calling after_refresh_complete for tiid {tiid}".format(
                 tiid=tiid))
-            failure_message = u"exc={exc}, args={args}, kwargs={kwargs}, einfo={einfo}".format(
-                exc=exc, args=args, kwargs=kwargs, einfo=einfo)
+            failure_message = u"exc={exc}, args={args}, kwargs={kwargs}, time={time}, einfo={einfo}".format(
+                time=datetime.datetime.utcnow(), exc=exc, args=args, kwargs=kwargs, einfo=einfo)
             after_refresh_complete(tiid, failure_message=failure_message)
 
 
