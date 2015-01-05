@@ -106,6 +106,7 @@ class Mendeley(Provider):
         return doc
 
     def _get_doc_by_title(self, aliases_dict):
+        doc = None
         try:
             biblio = aliases_dict["biblio"][0]
             biblio_title = self.remove_punctuation(biblio["title"])
@@ -134,7 +135,8 @@ class Mendeley(Provider):
                         biblio_title, mendeley_title))
                     doc = None
         except (KeyError, MendeleyException):
-            doc = None
+            logger.exception(u"Mendeley exception in _get_doc_by_title")
+            pass
         return doc
 
 
