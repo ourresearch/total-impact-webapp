@@ -195,6 +195,14 @@ class Product(db.Model):
         return alias_dict
 
     @cached_property
+    def aliases_for_providers(self):
+        aliases_to_return = self.alias_tuples
+        if self.biblio:
+            biblio_dict = self.biblio.to_dict()
+            aliases_to_return += [("biblio", biblio_dict)]
+        return aliases_to_return
+
+    @cached_property
     def alias_tuples(self):
         return [row.alias_tuple for row in self.alias_rows]
 
@@ -468,7 +476,6 @@ class Product(db.Model):
         return ""
 
 
-
     @cached_property
     def countries(self):
         my_countries = countries.CountryList()
@@ -662,6 +669,8 @@ class Product(db.Model):
         return html
 
 
+
+
     def __repr__(self):
         return u'<Product {tiid} {best_url}>'.format(
             tiid=self.tiid, best_url=self.aliases.best_url)
@@ -808,24 +817,24 @@ def aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude):
     return new_aliases
 
 
-def start_product_update(dicts_to_add, priority):
+def start_product_update(tiids_to_update, priority):
     myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=tiredis.REDIS_MAIN_DATABASE_NUMBER)  # main app is on DB 0
 
     # do all of this first and quickly
-    for d in dicts_to_add:
-        myredis.clear_provider_task_ids(d["tiid"])
-        myredis.set_provider_task_ids(d["tiid"], ["STARTED"])  # set this right away
+    for tiid in tiids_to_update:
+        myredis.clear_provider_task_ids(tiid)
+        myredis.set_provider_task_ids(tiid, ["STARTED"])  # set this right away
     
-    for d in dicts_to_add:
+    for tiid in tiids_to_update:
         # this import here to avoid circular dependancies
         from core_tasks import put_on_celery_queue
-        task_id = put_on_celery_queue(d["tiid"], d["aliases_dict"], priority)
+        task_id = put_on_celery_queue(tiid, priority)
     
 
 def create_products_from_alias_tuples(profile_id, alias_tuples):
     tiid_alias_mapping = {}
     clean_aliases = [normalize_alias_tuple(ns, nid) for (ns, nid) in alias_tuples]  
-    dicts_to_update = []  
+    tiids_to_update = []  
     new_products = []
 
     for alias_tuple in clean_aliases:
@@ -835,13 +844,13 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
         new_product.set_last_refresh_start()
 
         new_products += [new_product]
-        dicts_to_update += [{"tiid":new_product.tiid, "aliases_dict": new_product.alias_dict}]
+        tiids_to_update += [new_product.tiid]
 
     db.session.add_all(new_products)
     commit(db)
 
     # has to be after commits to database
-    start_product_update(dicts_to_update, "high")
+    start_product_update(tiids_to_update, "high")
 
     return new_products
 
@@ -996,19 +1005,19 @@ def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"
         priority = "low"
 
     products = Product.query.filter(Product.tiid.in_(tiids)).all()
-    dicts_to_refresh = []  
+    tiids_to_update = []  
 
     for product in products:
         try:
             tiid = product.tiid
             product.set_last_refresh_start()
             db.session.merge(product)
-            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
+            tiids_to_update += [tiid]
         except AttributeError:
             logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
                 tiid=tiid))
 
     db.session.commit()
-    start_product_update(dicts_to_refresh, priority)
+    start_product_update(tiids_to_update, priority)
     return tiids
 
