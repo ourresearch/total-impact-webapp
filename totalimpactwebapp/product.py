@@ -243,10 +243,12 @@ class Product(db.Model):
         self.last_refresh_status = u"STARTED"
         self.last_refresh_failure_message = None
 
-    def set_refresh_status(self, myredis):
+    def set_refresh_status(self, myredis, failure_message=None):
         redis_refresh_status = refresh_status(self.tiid, myredis)
         if not redis_refresh_status["short"].startswith(u"SUCCESS"):
             self.last_refresh_failure_message = redis_refresh_status["long"]
+        if failure_message:
+            self.last_refresh_failure_message = failure_message
         self.last_refresh_status = redis_refresh_status["short"]
         self.last_refresh_finished = datetime.datetime.utcnow()
 

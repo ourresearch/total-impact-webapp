@@ -87,7 +87,9 @@ class ClearDbSessionTask(Task):
             tiid = args[0]
             logger.info(u"on_failure handler, calling after_refresh_complete for tiid {tiid}".format(
                 tiid=tiid))
-            after_refresh_complete(tiid)
+            failure_message = u"exc={exc}, args={args}, kwargs={kwargs}, einfo={einfo}".format(
+                exc=exc, args=args, kwargs=kwargs, einfo=einfo)
+            after_refresh_complete(tiid, failure_message=failure_message)
 
 
 
@@ -232,7 +234,7 @@ def provider_run(tiid, method_name, provider_name):
 
 
 @task(priority=0, base=ClearDbSessionTask)
-def after_refresh_complete(tiid):
+def after_refresh_complete(tiid, failure_message=None):
     # logger.info(u"here in after_refresh_complete with {tiid}".format(
     #     tiid=tiid))
 
@@ -244,7 +246,7 @@ def after_refresh_complete(tiid):
         return None
 
     product.embed_markup = product.get_embed_markup() 
-    product.set_refresh_status(myredis)  #need commit after this
+    product.set_refresh_status(myredis, failure_message)  #need commit after this
     db.session.merge(product)
     commit(db)
 
