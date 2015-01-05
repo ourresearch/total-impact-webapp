@@ -83,16 +83,11 @@ class ClearDbSessionTask(Task):
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         logger.info(u"Celery task on_failure handler, exc {exc}, args {args}, kwargs={kwargs}, einfo={einfo}".format(
             exc=exc, args=args, kwargs=kwargs, einfo=einfo))
-
-
-@task_failure.connect
-def task_failure_handler(sender=None, task_id=None, args=None, kwargs=None, exception=None, traceback=None, einfo=None, **kwds):
-    try:
-        logger.error(u"Celery task FAILED on task_id={task_id}, {exception}, {traceback}, {einfo}, {args}".format(
-            task_id=task_id, args=args, exception=exception, einfo=einfo))
-    except KeyError:
-        pass
-
+        if task_id.startswith("task-provider"):
+            tiid = args[0]
+            logger.info(u"on_failure handler, calling after_refresh_complete for tiid {tiid}.format(
+                tiid=tiid)
+            after_refresh_complete(tiid)
 
 
 
@@ -237,7 +232,7 @@ def provider_run(tiid, method_name, provider_name):
 
 
 @task(priority=0, base=ClearDbSessionTask)
-def after_refresh_complete(tiid, task_ids):
+def after_refresh_complete(tiid):
     # logger.info(u"here in after_refresh_complete with {tiid}".format(
     #     tiid=tiid))
 
@@ -249,7 +244,7 @@ def after_refresh_complete(tiid, task_ids):
         return None
 
     product.embed_markup = product.get_embed_markup() 
-    product.set_refresh_status(myredis)
+    product.set_refresh_status(myredis)  #need commit after this
     db.session.merge(product)
     commit(db)
 
@@ -277,8 +272,11 @@ def refresh_tiid(tiid, task_priority):
             else:
                 new_task = provider_run.si(tiid, method_name, provider_name).set(priority=0, queue="core_"+task_priority)
             uuid_bit = uuid().split("-")[0]
-            new_task_id = "task-{tiid}-{method_name}-{provider_name}-{uuid}".format(
+
+            # code above counts on this format of task id, starting with task-provider
+            new_task_id = "task-provider-{tiid}-{method_name}-{provider_name}-{uuid}".format(
                 tiid=tiid, method_name=method_name, provider_name=provider_name, uuid=uuid_bit)
+
             group_list.append(new_task.set(task_id=new_task_id))
             task_ids.append(new_task_id)
         if group_list:
@@ -290,9 +288,9 @@ def refresh_tiid(tiid, task_priority):
     # do this before we kick off the tasks to make sure they are there before tasks finish
     myredis.set_provider_task_ids(tiid, task_ids)
 
-    new_task = after_refresh_complete.si(tiid, task_ids).set(priority=0, queue="core_"+task_priority)
+    new_task = after_refresh_complete.si(tiid).set(priority=0, queue="core_"+task_priority)
     uuid_bit = uuid().split("-")[0]
-    new_task_id = "task-{tiid}-DONE-{uuid}".format(
+    new_task_id = "task-after-{tiid}-DONE-{uuid}".format(
         tiid=tiid, uuid=uuid_bit)
     chain_list.append(new_task.set(task_id=new_task_id))
 
