@@ -128,7 +128,9 @@ def dict_from_dir(obj, keys_to_ignore=None, keys_to_show="all"):
         elif k in ["query", "query_class", "metadata"]:
             pass
         else:
-            ret[k] = getattr(obj, k)
+            value = getattr(obj, k)
+            if not callable(value):
+                ret[k] = value
 
     return ret
 
