@@ -85,8 +85,8 @@ class ClearDbSessionTask(Task):
             exc=exc, args=args, kwargs=kwargs, einfo=einfo))
         if task_id.startswith("task-provider"):
             tiid = args[0]
-            logger.info(u"on_failure handler, calling after_refresh_complete for tiid {tiid}.format(
-                tiid=tiid)
+            logger.info(u"on_failure handler, calling after_refresh_complete for tiid {tiid}".format(
+                tiid=tiid))
             after_refresh_complete(tiid)
 
 
