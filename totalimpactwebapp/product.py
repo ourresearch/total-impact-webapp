@@ -973,7 +973,7 @@ def put_biblio_in_product(product, new_biblio_dict, provider_name="unknown"):
                         biblio_value=biblio_value, 
                         provider=provider_name)
                 product.biblio_rows.append(biblio_row_object)
-        biblio_row_object.biblio_value = biblio_value
+            biblio_row_object.biblio_value = biblio_value
 
     return product
 
