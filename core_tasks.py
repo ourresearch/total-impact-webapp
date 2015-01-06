@@ -124,9 +124,12 @@ def provider_method_wrapper(tiid, provider, method_name):
             exception_type=type(e).__name__, 
             exception_arguments=e.args))
 
-    logger.info(u"{:20}: /biblio_print, RETURNED {tiid} {method_name} {provider_name} : {method_response:.50} ...".format(
+    ellipses = ""
+    if method_response and len(method_response) >= 50:
+        ellipses = "..."
+    logger.info(u"{:20}: /biblio_print, RETURNED {tiid} {method_name} {provider_name} : {method_response:.50} {ellipses}".format(
         worker_name, tiid=tiid, method_name=method_name.upper(), 
-        provider_name=provider_name.upper(), method_response=method_response))
+        provider_name=provider_name.upper(), method_response=method_response, ellipses=ellipses))
 
     add_to_database_if_nonzero(product, method_response, method_name, provider_name)
 
