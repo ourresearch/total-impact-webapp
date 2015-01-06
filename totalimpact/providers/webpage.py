@@ -47,9 +47,7 @@ class Webpage(Provider):
 
         biblio = {}
         aliases_dict = provider.alias_dict_from_tuples(aliases)
-        if "biblio" in aliases_dict:
-            biblio = aliases_dict["biblio"][0]
-        elif "url" in aliases_dict:
+        if "url" in aliases_dict:
             url = aliases_dict["url"][0]
             url_fragments_to_exclude = [
                 "scopus.com/inward",
