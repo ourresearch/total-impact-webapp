@@ -955,8 +955,6 @@ def put_aliases_in_product(product, alias_tuples):
                     namespace=ns, 
                     nid=nid)
                 product.alias_rows.append(new_alias_row)   
-        elif ns and nid and ns=="biblio":
-            return put_biblio_in_product(product, nid)
 
     return product
 
