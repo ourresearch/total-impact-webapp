@@ -81,6 +81,7 @@ angular.module("collectionPage", [
     GenreConfigs,
     ProfileAboutService,
     SummaryCards,
+    Loading,
     Collection,
     Page) {
 
@@ -92,6 +93,7 @@ angular.module("collectionPage", [
 
 
 
+    Loading.start("genreCards")
     SummaryCards.query(
       {
         id: $routeParams.url_slug,
@@ -109,8 +111,9 @@ angular.module("collectionPage", [
       function(resp){
         console.log("problem with the cards call. #sadface.", resp)
       }
-
-    )
+    ).$promise.then(function(resp){
+        Loading.finish("genreCards")
+      })
 
     var filterFn = function(product){
       if (product.genre == myGenreConfig.name){
