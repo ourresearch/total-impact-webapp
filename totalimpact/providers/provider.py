@@ -604,7 +604,7 @@ class Provider(object):
             raise ProviderTimeout("Provider timed out during GET on " + url, e)
 
         except requests.exceptions.RequestException as e:
-            self.logger.info(u"{provider_name} RequestException on GET on {url}".format(
+            self.logger.exception(u"{provider_name} RequestException on GET on {url}".format(
                 provider_name=self.provider_name, url=url))
             # analytics.track("CORE", "Received RequestException from Provider", 
             #     {"provider": self.provider_name, "url": url})

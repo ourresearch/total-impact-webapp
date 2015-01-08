@@ -431,7 +431,7 @@ class Profile(db.Model):
 
     def refresh_products(self, source="webapp"):
         analytics_credentials = self.get_analytics_credentials()        
-        resp = refresh_products_from_tiids(self.tiids, analytics_credentials, source)
+        resp = refresh_products_from_tiids(self.id, self.tiids, analytics_credentials, source)
         save_profile_last_refreshed_timestamp(self.id)
         return resp
 

@@ -23,6 +23,8 @@ from totalimpact.tiredis import REDIS_MAIN_DATABASE_NUMBER
 from totalimpact import tiredis, default_settings
 from totalimpact.providers.provider import ProviderFactory, ProviderError, ProviderTimeout
 
+from totalimpactwebapp.profile import Profile
+
 from totalimpactwebapp.product import add_product_embed_markup
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.product import put_aliases_in_product
@@ -75,8 +77,8 @@ class ClearDbSessionTask(Task):
     abstract = True
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
-        logger.info(u"Celery task after_return handler, removing session, retval {retval}, args {args}, kwargs={kwargs}".format(
-            retval=retval, args=args, kwargs=kwargs))
+        # logger.info(u"Celery task after_return handler, removing session, retval {retval}, args {args}, kwargs={kwargs}".format(
+        #     retval=retval, args=args, kwargs=kwargs))
         db.session.remove()
 
 
@@ -256,12 +258,12 @@ def after_refresh_complete(tiid, failure_message=None):
 
 
 @task(base=ClearDbSessionTask)
-def refresh_tiid(tiid, task_priority):   
+def get_refresh_tiid_pipeline(tiid, task_priority):   
 
     product = Product.query.get(tiid)
 
     if not product:
-        logger.warning(u"Empty product in refresh_tiid for tiid {tiid}".format(
+        logger.warning(u"Empty product in get_refresh_tiid_pipeline for tiid {tiid}".format(
            tiid=tiid))
         return None
 
@@ -303,10 +305,10 @@ def refresh_tiid(tiid, task_priority):
 
     # see http://stackoverflow.com/questions/18872854/getting-task-id-inside-a-celery-task
     # workflow_tasks_task.task_id, 
-    logger.info(u"before apply_async for tiid {tiid}, refresh_tiids id {task_id}".format(
-        tiid=tiid, task_id=refresh_tiid.request.id))
+    # logger.info(u"before apply_async for tiid {tiid}, get_refresh_tiid_pipeline id {task_id}".format(
+    #     tiid=tiid, task_id=get_refresh_tiid_pipeline.request.id))
 
-    workflow_apply_async = workflow.apply_async(queue="core_"+task_priority)  
+    # workflow_apply_async = workflow.apply_async(queue="core_"+task_priority)  
 
     workflow_tasks = workflow.tasks
     workflow_trackable_task = workflow_tasks[-1]  # see http://blog.cesarcd.com/2014/04/tracking-status-of-celery-chain.html
@@ -315,14 +317,36 @@ def refresh_tiid(tiid, task_priority):
     # see http://stackoverflow.com/questions/18872854/getting-task-id-inside-a-celery-task
     # workflow_tasks_task.task_id, 
     # logger.info(u"task id for tiid {tiid}, refresh_tiids id {task_id}, workflow_trackable_id {workflow_trackable_id} task_ids={task_ids}".format(
-    #     tiid=tiid, task_id=refresh_tiid.request.id, workflow_trackable_id=workflow_trackable_id, task_ids=task_ids))
+    #     tiid=tiid, task_id=get_refresh_tiid_pipeline.request.id, workflow_trackable_id=workflow_trackable_id, task_ids=task_ids))
 
-    return workflow_trackable_task
+    return workflow
 
 
-def put_on_celery_queue(tiid, task_priority="high"):
+@task(base=ClearDbSessionTask)
+def done_all_refreshes(profile_id):   
+    print "\n\n-------> done all refreshes", profile_id, "\n\n\n---------------\n\n\n"
+
+    profile = Profile.query.get(profile_id)
+
+    logger.info(u"deduplicating for {url_slug}".format(
+        url_slug=profile.url_slug))
+    deleted_tiids = profile.remove_duplicates()
+
+    logger.info(u"parse_and_save_tweets for {url_slug}".format(
+        url_slug=profile.url_slug))
+    profile.parse_and_save_tweets()
+    return
+
+
+def put_on_celery_queue(profile_id, tiids, task_priority="high"):
     # logger.info(u"put_on_celery_queue {tiid}".format(
     #     tiid=tiid))
+
+    logger.info(u"put_on_celery_queue for {profile_id}".format(
+        profile_id=profile_id))
+
+    if not tiids:
+        return
 
     #see http://stackoverflow.com/questions/15239880/task-priority-in-celery-with-redis
     if task_priority == "high":
@@ -330,9 +354,20 @@ def put_on_celery_queue(tiid, task_priority="high"):
     else:
         priority_number = 9
 
-    refresh_tiid_task = refresh_tiid.apply_async(args=(tiid, task_priority), 
-                                                priority=priority_number, queue="core_"+task_priority)
+    refresh_all_tiids_tasks = []
 
-    return refresh_tiid_task
+    for tiid in tiids:
+        refresh_a_tiid_tasks = get_refresh_tiid_pipeline(tiid, task_priority)
+        refresh_all_tiids_tasks.append(refresh_a_tiid_tasks)
+
+    if refresh_all_tiids_tasks:
+        end_task = done_all_refreshes.si(profile_id).set(priority=priority_number, queue="core_"+task_priority)
+        chain_list = group(refresh_all_tiids_tasks) | end_task
+        chain_list_apply_async = chain_list.apply_async(queue="core_"+task_priority)
+
+    logger.info(u"after apply_async in put_on_celery_queue for {profile_id}".format(
+        profile_id=profile_id))
+
+    return chain_list_apply_async
 
 

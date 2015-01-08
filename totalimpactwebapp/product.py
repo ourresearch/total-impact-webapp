@@ -819,7 +819,7 @@ def aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude):
     return new_aliases
 
 
-def start_product_update(tiids_to_update, priority):
+def start_product_update(profile_id, tiids_to_update, priority):
     myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=tiredis.REDIS_MAIN_DATABASE_NUMBER)  # main app is on DB 0
 
     # do all of this first and quickly
@@ -827,11 +827,11 @@ def start_product_update(tiids_to_update, priority):
         myredis.clear_provider_task_ids(tiid)
         myredis.set_provider_task_ids(tiid, ["STARTED"])  # set this right away
     
-    for tiid in tiids_to_update:
-        # this import here to avoid circular dependancies
-        from core_tasks import put_on_celery_queue
-        task_id = put_on_celery_queue(tiid, priority)
-    
+    # this import here to avoid circular dependancies
+    from core_tasks import put_on_celery_queue
+    put_on_celery_queue(profile_id, tiids_to_update, priority)
+    return
+
 
 def create_products_from_alias_tuples(profile_id, alias_tuples):
     tiid_alias_mapping = {}
@@ -852,7 +852,7 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
     commit(db)
 
     # has to be after commits to database
-    start_product_update(tiids_to_update, "high")
+    start_product_update(profile_id, tiids_to_update, "high")
 
     return new_products
 
@@ -997,7 +997,7 @@ def put_snap_in_product(product, full_metric_name, metrics_method_response):
     return product
 
 
-def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"):
+def refresh_products_from_tiids(profile_id, tiids, analytics_credentials={}, source="webapp"):
     if not tiids:
         return None
 
@@ -1019,6 +1019,11 @@ def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"
                 tiid=tiid))
 
     db.session.commit()
-    start_product_update(tiids_to_update, priority)
+
+    # assume the profile is the same one as the first product
+    if not profile_id:
+        profile_id = products[0].profile_id
+
+    start_product_update(profile_id, tiids_to_update, priority)
     return tiids
 
