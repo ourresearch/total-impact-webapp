@@ -170,7 +170,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory('UsersUpdateStatus', function ($resource) {
     return $resource(
-      "/profile/:id/refresh_status",
+      "/profile/:id/refresh-status",
       {}, // default params
       {}  // method definitions
     )

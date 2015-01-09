@@ -11,6 +11,8 @@ from totalimpactwebapp.product import import_and_create_products
 from totalimpactwebapp.product import build_duplicates_list
 from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.genre import make_genres_list
+from totalimpactwebapp.refresh_status import save_profile_refresh_status
+from totalimpactwebapp.refresh_status import RefreshStatus
 from totalimpactwebapp.drip_email import DripEmail
 from util import cached_property
 from util import commit
@@ -72,46 +74,6 @@ class UrlSlugExistsError(Exception):
 
 
 
-class RefreshStatus(object):
-    def __init__(self, products):
-        self.products = products
-
-    @property
-    def is_done_refreshing(self):
-        return self.num_refreshing==0
-
-    @property
-    def num_refreshing(self):
-        return sum([product.is_refreshing for product in self.products])
-
-    @property
-    def num_complete(self):
-        return len(self.products) - self.num_refreshing
-
-    @property
-    def product_problem_statuses(self):
-        product_problem_statuses = [(product.tiid, product.last_refresh_status) for product in self.products if not product.finished_successful_refresh]
-        return product_problem_statuses
-
-    @property
-    def product_refresh_failure_messages(self):
-        failure_messages = [(product.tiid, product.last_refresh_failure_message) for product in self.products if product.last_refresh_failure_message]
-        return failure_messages
-
-    @property
-    def percent_complete(self):
-        try:
-            precise = float(self.num_complete) / len(self.products) * 100
-        except ZeroDivisionError:
-            precise = 100
-
-        return int(precise)
-
-    def to_dict(self):
-        return dict_from_dir(self, "products")
-
-
-
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     given_name = db.Column(db.Text)
@@ -149,6 +111,8 @@ class Profile(db.Model):
     bio = db.Column(db.Text)  # ALTER TABLE profile ADD bio text
     trial_extended_until = db.Column(db.DateTime())  # ALTER TABLE profile ADD trial_extended_until timestamp
     institution = db.Column(db.Text)  # ALTER TABLE profile ADD institution text
+
+    refresh_status = db.Column(db.Text)  # ALTER TABLE profile ADD refresh_status text
 
 
     products = db.relationship(
@@ -406,7 +370,15 @@ class Profile(db.Model):
         return creds
 
     def get_refresh_status(self):
-        return RefreshStatus(self.products_not_removed)
+        return RefreshStatus(self)
+
+    # don't make this a cached property so it can be up to date
+    def just_finished_profile_refresh(self):
+        refresh_status = self.get_refresh_status()
+        if refresh_status.refresh_state == RefreshStatus.states["REFRESH_START"] and \
+            refresh_status.is_done_refreshing:
+                return True
+        return False
 
     def add_products(self, product_id_dict):
         try:
@@ -431,18 +403,12 @@ class Profile(db.Model):
 
     def refresh_products(self, source="webapp"):
         analytics_credentials = self.get_analytics_credentials()        
+        save_profile_refresh_status(self, RefreshStatus.states["REFRESH_START"])
         resp = refresh_products_from_tiids(self.id, self.tiids, analytics_credentials, source)
+
         save_profile_last_refreshed_timestamp(self.id)
         return resp
 
-
-    def update_twitter(self):
-        return
-        # if self.twitter_id:
-        #     t = threading.Thread(target=save_recent_tweets, args=(self.id, self.twitter_id))
-        #     t.daemon = True
-        #     t.start()
-        # return None
 
     def parse_and_save_tweets(self):
         twitter_details_dict = {}
@@ -924,10 +890,6 @@ def delete_profile(profile):
     db.session.delete(profile)
     commit(db)
 
-def are_all_products_done_refreshing_from_profile_id(profile):
-    bare_products = profile.products_not_removed  # can be bare products
-    refresh_status = RefreshStatus(profile.products_not_removed)
-    return refresh_status.is_done_refreshing
 
 def _make_id(len=6):
     '''Make an id string.

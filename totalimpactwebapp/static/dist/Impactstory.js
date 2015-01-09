@@ -3462,7 +3462,7 @@ angular.module( 'update.update', [
     var tick = function(){
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
         function(resp){
-          console.log("tick() got /refresh_status response back from server", resp)
+          console.log("tick() got /refresh-status response back from server", resp)
           status = resp
           if (resp.percent_complete == 100){
             console.log("tick() satisfied success criteria, calling dedup")
@@ -3487,7 +3487,7 @@ angular.module( 'update.update', [
           }
         },
         function(resp){
-          console.log("failed to get /refresh_status; trying again.", resp)
+          console.log("failed to get /refresh-status; trying again.", resp)
           $timeout(tick, pollingInterval)
         }
       )
@@ -4897,7 +4897,7 @@ angular.module('resources.users',['ngResource'])
 
   .factory('UsersUpdateStatus', function ($resource) {
     return $resource(
-      "/profile/:id/refresh_status",
+      "/profile/:id/refresh-status",
       {}, // default params
       {}  // method definitions
     )
