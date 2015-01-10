@@ -155,7 +155,9 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
                     tweets_to_hydrate_from_twitter.append(tweet)
                     db.session.add(tweet)
                 if not tweet.tweeter:
-                    tweeter = Tweeter(screen_name=screen_name)
+                    tweeter = Tweeter.query.get(screen_name)
+                    if not tweeter:
+                        tweeter = Tweeter(screen_name=screen_name)
                     tweeter.set_attributes_from_altmetric_post(post)
                     db.session.add(tweeter)
 
