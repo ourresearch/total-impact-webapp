@@ -135,7 +135,7 @@ class Mendeley(Provider):
                         biblio_title, mendeley_title))
                     doc = None
         except (KeyError, MendeleyException):
-            logger.exception(u"Mendeley exception in _get_doc_by_title")
+            # logger.info(u"No biblio found in _get_doc_by_title")
             pass
         return doc
 
