@@ -83,6 +83,9 @@ class ClearDbSessionTask(Task):
         #     retval=retval, args=args, kwargs=kwargs))
         db.session.remove()
 
+        # this next line has to be here, see http://celery.readthedocs.org/en/latest/userguide/canvas.html
+        super(ClearDbSessionTask, self).after_return(status, retval, task_id, args, kwargs, einfo)
+
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         logger.info(u"Celery task on_failure handler, exc {exc}, args {args}, kwargs={kwargs}, einfo={einfo}".format(
@@ -240,6 +243,28 @@ def provider_run(tiid, method_name, provider_name):
 
 
 
+@task(base=ClearDbSessionTask)
+def done_all_refreshes(profile_id):   
+    print "\n\n-------> done all refreshes", profile_id, "\n\n\n---------------\n\n\n"
+
+    profile = Profile.query.get(profile_id)
+
+    save_profile_refresh_status(profile, RefreshStatus.states["DEDUP_START"])
+
+    logger.info(u"deduplicating for {url_slug}".format(
+        url_slug=profile.url_slug))
+    deleted_tiids = profile.remove_duplicates()
+
+    save_profile_refresh_status(profile, RefreshStatus.states["TWEETS_START"])
+
+    logger.info(u"parse_and_save_tweets for {url_slug}".format(
+        url_slug=profile.url_slug))
+    profile.parse_and_save_tweets()
+
+    save_profile_refresh_status(profile, RefreshStatus.states["ALL_DONE"])
+
+    return
+
 
 @task(priority=0, base=ClearDbSessionTask)
 def after_refresh_complete(tiid, failure_message=None):
@@ -325,27 +350,7 @@ def get_refresh_tiid_pipeline(tiid, task_priority):
     return workflow
 
 
-@task(base=ClearDbSessionTask)
-def done_all_refreshes(profile_id):   
-    print "\n\n-------> done all refreshes", profile_id, "\n\n\n---------------\n\n\n"
 
-    profile = Profile.query.get(profile_id)
-
-    save_profile_refresh_status(profile_bare_products, RefreshStatus.states["DEDUP_START"])
-
-    logger.info(u"deduplicating for {url_slug}".format(
-        url_slug=profile.url_slug))
-    deleted_tiids = profile.remove_duplicates()
-
-    save_profile_refresh_status(profile, RefreshStatus.states["TWEETS_START"])
-
-    logger.info(u"parse_and_save_tweets for {url_slug}".format(
-        url_slug=profile.url_slug))
-    profile.parse_and_save_tweets()
-
-    save_profile_refresh_status(profile, RefreshStatus.states["ALL_DONE"])
-
-    return
 
 
 def put_on_celery_queue(profile_id, tiids, task_priority="high"):
