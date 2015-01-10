@@ -259,6 +259,10 @@ class Product(db.Model):
         else:
             genre = self.aliases.get_genre()
 
+        # override unknowns with articles here
+        if genre == "unknown":
+            genre = "article"
+
         if "article" in genre:
             genre = "article"  #disregard whether journal article or conference article for now
         elif "conference" in genre:
