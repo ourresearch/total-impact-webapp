@@ -580,7 +580,7 @@ class Profile(db.Model):
         self.delete_products(tiids_to_remove)
 
         # important to keep this logging in so we can recover if necessary
-        logger.debug(u"removed duplicate tiids from {url_slug} {profile_id}: {tiids_to_remove}".format(
+        logger.info(u"removed duplicate tiids from {url_slug} {profile_id}: {tiids_to_remove}".format(
             url_slug=self.url_slug, profile_id=self.id, tiids_to_remove=tiids_to_remove))
 
         return tiids_to_remove
