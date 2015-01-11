@@ -281,6 +281,33 @@ def after_refresh_complete(tiid, failure_message=None):
     db.session.merge(product)
     commit(db)
 
+    sleep_seconds = random.random() * 10
+    logger.info(u"Sleeping {sleep_seconds}s in after_refresh_complete for {tiid} before checking done refreshes".format(
+       sleep_seconds=sleep_seconds, tiid=tiid))
+    time.sleep(sleep_seconds)
+
+    profile = Profile.query.get(product.profile_id)
+
+    refresh_status = profile.get_refresh_status()
+
+    if refresh_status.is_done_refreshing and refresh_status.refresh_state == "progress bar":
+        print "\n\n-------> done all refreshes", product.profile_id, "\n\n\n---------------\n\n\n"
+
+        logger.info(u"just_finished_profile_refresh for {tiid}, now deduping etc".format(
+           tiid=tiid))
+
+        save_profile_refresh_status(profile, RefreshStatus.states["CRUNCHING"])
+
+        logger.info(u"deduplicating for {url_slug}".format(
+            url_slug=profile.url_slug))
+        deleted_tiids = profile.remove_duplicates()
+
+        logger.info(u"parse_and_save_tweets for {url_slug}".format(
+            url_slug=profile.url_slug))
+        profile.parse_and_save_tweets()
+
+        save_profile_refresh_status(profile, RefreshStatus.states["ALL_DONE"])
+
 
 
 @task(base=ClearDbSessionTask)
@@ -371,13 +398,15 @@ def put_on_celery_queue(profile_id, tiids, task_priority="high"):
 
     for tiid in tiids:
         refresh_a_tiid_tasks = get_refresh_tiid_pipeline(tiid, task_priority)
-        refresh_all_tiids_tasks.append(refresh_a_tiid_tasks)
+        refresh_all_tiids_tasks.append(group(refresh_a_tiid_tasks))
 
     if refresh_all_tiids_tasks:
-        end_task = done_all_refreshes.si(profile_id).set(priority=priority_number, queue="core_"+task_priority)
-        chain_list = group(refresh_all_tiids_tasks) | end_task
-        logger.info(u"in put_on_celery_queue, chain_list={chain_list}".format(
-            chain_list=chain_list))
+        # end_task = done_all_refreshes.si(profile_id).set(priority=priority_number, queue="core_"+task_priority)
+        # chain_list = group(refresh_all_tiids_tasks) | end_task
+
+        chain_list = group(refresh_all_tiids_tasks)
+        # logger.info(u"in put_on_celery_queue, chain_list={chain_list}".format(
+        #     chain_list=chain_list))
         chain_list_apply_async = chain_list.apply_async(queue="core_"+task_priority)
 
 
