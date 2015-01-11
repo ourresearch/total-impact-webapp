@@ -845,7 +845,11 @@ def create_products_from_alias_tuples(profile_id, alias_tuples):
 
     for alias_tuple in clean_aliases:
         new_product = Product(profile_id=profile_id)
-        new_product = put_aliases_in_product(new_product, [alias_tuple])
+        (ns, nid) = alias_tuple
+        if ns=="biblio":
+            new_product = put_biblio_in_product(new_product, nid, provider_name="bibtex")
+        else:
+            new_product = put_aliases_in_product(new_product, [alias_tuple])
 
         new_product.set_last_refresh_start()
 
@@ -1002,6 +1006,14 @@ def put_snap_in_product(product, full_metric_name, metrics_method_response):
 
 
 def refresh_products_from_tiids(profile_id, tiids, analytics_credentials={}, source="webapp"):
+    # assume the profile is the same one as the first product
+    if not profile_id:
+        profile_id = products[0].profile_id
+    profile = Profile.query.get(profile_id)
+
+    save_profile_refresh_status(profile, RefreshStatus.states["REFRESH_START"])
+
+
     if not tiids:
         return None
 
@@ -1023,10 +1035,6 @@ def refresh_products_from_tiids(profile_id, tiids, analytics_credentials={}, sou
                 tiid=tiid))
 
     db.session.commit()
-
-    # assume the profile is the same one as the first product
-    if not profile_id:
-        profile_id = products[0].profile_id
 
     start_product_update(profile_id, tiids_to_update, priority)
     return tiids

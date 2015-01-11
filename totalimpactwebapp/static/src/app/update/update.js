@@ -28,27 +28,19 @@ angular.module( 'update.update', [
         function(resp){
           console.log("tick() got /refresh-status response back from server", resp)
           status = resp
-          if (resp.percent_complete == 100){
-            console.log("tick() satisfied success criteria, calling dedup")
-            status.isCrunching = true
-            UsersProducts.after_refresh_cleanup({id: url_slug}, {}).$promise.then(
-              function(resp){
-                console.log("after-refresh-cleanup successful!", resp)
-              },
-              function(resp){
-                console.log("after-refresh-cleanup failed :(", resp)
-              }
-            ).finally(function(resp){
-                console.log("cleaning up after after-refresh-cleanup"),
-                modalInstance.close()
-                deferred.resolve("Update finished!")
-                clear()
-            })
+          if (status.refresh_state == "all done") {
+            console.log("cleaning up because refresh_state is all done")
+            modalInstance.close()
+            deferred.resolve("Refresh finished!")
+            clear()
           }
-
-          else {
-            $timeout(tick, pollingInterval)
-          }
+          if (status.refresh_state == "refresh starting"){
+            if (status.percent_complete == 100){
+              console.log("tick() satisfied success criteria for products 100% done, now crunching")
+              status.isCrunching = true
+            }
+          }                       
+          $timeout(tick, pollingInterval)
         },
         function(resp){
           console.log("failed to get /refresh-status; trying again.", resp)

@@ -403,7 +403,6 @@ class Profile(db.Model):
 
     def refresh_products(self, source="webapp"):
         analytics_credentials = self.get_analytics_credentials()        
-        save_profile_refresh_status(self, RefreshStatus.states["REFRESH_START"])
         resp = refresh_products_from_tiids(self.id, self.tiids, analytics_credentials, source)
 
         save_profile_last_refreshed_timestamp(self.id)
@@ -550,7 +549,9 @@ class Profile(db.Model):
         return(ordered_fieldnames, rows)
 
 
-    def get_new_products(self, provider_name, account_name, analytics_credentials={}, add_even_if_removed=False):
+    def get_new_products(self, provider_name, product_seeds, analytics_credentials={}, add_even_if_removed=False):
+        save_profile_refresh_status(self, RefreshStatus.states["REFRESH_START"])
+
         if add_even_if_removed:
             tiids_to_exclude = self.tiids
         else:
@@ -560,7 +561,7 @@ class Profile(db.Model):
             new_products = import_and_create_products(
                 self.id, 
                 provider_name, 
-                account_name, 
+                product_seeds, 
                 analytics_credentials, 
                 tiids_to_exclude)
         except (ImportError, ProviderError):

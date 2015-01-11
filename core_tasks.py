@@ -378,7 +378,10 @@ def put_on_celery_queue(profile_id, tiids, task_priority="high"):
     if refresh_all_tiids_tasks:
         end_task = done_all_refreshes.si(profile_id).set(priority=priority_number, queue="core_"+task_priority)
         chain_list = group(refresh_all_tiids_tasks) | end_task
+        logger.info(u"in put_on_celery_queue, chain_list={chain_list}".format(
+            chain_list=chain_list))
         chain_list_apply_async = chain_list.apply_async(queue="core_"+task_priority)
+
 
     logger.info(u"after apply_async in put_on_celery_queue for {profile_id}".format(
         profile_id=profile_id))
