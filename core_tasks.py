@@ -361,7 +361,7 @@ def get_refresh_tiid_pipeline(tiid, task_priority):
     # logger.info(u"before apply_async for tiid {tiid}, get_refresh_tiid_pipeline id {task_id}".format(
     #     tiid=tiid, task_id=get_refresh_tiid_pipeline.request.id))
 
-    # workflow_apply_async = workflow.apply_async(queue="core_"+task_priority)  
+    workflow_apply_async = workflow.apply_async(queue="core_"+task_priority)  
 
     workflow_tasks = workflow.tasks
     workflow_trackable_task = workflow_tasks[-1]  # see http://blog.cesarcd.com/2014/04/tracking-status-of-celery-chain.html
@@ -398,21 +398,21 @@ def put_on_celery_queue(profile_id, tiids, task_priority="high"):
 
     for tiid in tiids:
         refresh_a_tiid_tasks = get_refresh_tiid_pipeline(tiid, task_priority)
-        refresh_all_tiids_tasks.append(group(refresh_a_tiid_tasks))
+        # refresh_all_tiids_tasks.append(group(refresh_a_tiid_tasks))
 
-    if refresh_all_tiids_tasks:
+    # if refresh_all_tiids_tasks:
         # end_task = done_all_refreshes.si(profile_id).set(priority=priority_number, queue="core_"+task_priority)
         # chain_list = group(refresh_all_tiids_tasks) | end_task
 
-        chain_list = group(refresh_all_tiids_tasks)
+        # chain_list = group(refresh_all_tiids_tasks)
         # logger.info(u"in put_on_celery_queue, chain_list={chain_list}".format(
         #     chain_list=chain_list))
-        chain_list_apply_async = chain_list.apply_async(queue="core_"+task_priority)
+        # chain_list_apply_async = chain_list.apply_async(queue="core_"+task_priority)
 
 
     logger.info(u"after apply_async in put_on_celery_queue for {profile_id}".format(
         profile_id=profile_id))
 
-    return chain_list_apply_async
+    return
 
 
