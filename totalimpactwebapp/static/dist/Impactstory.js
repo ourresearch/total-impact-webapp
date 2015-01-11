@@ -3454,9 +3454,9 @@ angular.module( 'update.update', [
     var modalInstance
     var pollingInterval = 10  // 10ms...as soon as we get server resp, ask again.
     var deferred
-    var isCrunching
+    var isCrunching = false
 
-    var clear = function(){
+    var clearServiceVariables = function(){
       status = {}
       url_slug = null
       deferred = null
@@ -3468,19 +3468,24 @@ angular.module( 'update.update', [
         function(resp){
           console.log("tick() got /refresh-status response back from server", resp)
           status = resp
-          if (status.refresh_state == "all done") {
-            console.log("cleaning up because refresh_state is all done")
-            modalInstance.close()
-            deferred.resolve("Refresh finished!")
-            clear()
+
+          if (resp.refresh_state == "progress bar") {
+              $timeout(tick, pollingInterval)
           }
-          if (status.refresh_state == "refresh starting"){
-            if (status.percent_complete == 100){
-              console.log("tick() satisfied success criteria for products 100% done, now crunching")
+          else if (resp.refresh_state == "crunching") {
+              // there could be a bunch of different refresh states, ignoring them for now
+              // just telling crunching for all post-100% refresh states
+              console.log("tick() is at 100% progress bar complete, now crunching numbers")
               status.isCrunching = true
-            }
-          }                       
-          $timeout(tick, pollingInterval)
+              $timeout(tick, pollingInterval)
+          }
+          else if (resp.refresh_state == "all done") {
+            console.log("tick() is at all done"),
+            modalInstance.close()
+            deferred.resolve("Update finished!")
+            clearServiceVariables()
+          } 
+
         },
         function(resp){
           console.log("failed to get /refresh-status; trying again.", resp)
@@ -11310,13 +11315,14 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "   <h3 id=\"finding-impact-data-header\">Finding impact data</h3>\n" +
     "</div>\n" +
     "<div class=\"modal-body update\">\n" +
-    "   <div class=\"intro\" ng-if=\"status.getNumUpdating()\">\n" +
-    "      <br>We're scouring the web to discover the impacts of all your research products...\n" +
-    "   </div>\n" +
     "\n" +
-    "   <div class=\"intro dedup\" ng-if=\"!status.getNumUpdating()\"><br>\n" +
+    "   <div class=\"intro dedup\" ng-if=\"status.isCrunching()\"><br>\n" +
     "      <i class=\"icon-refresh icon-spin\"></i>\n" +
     "      Crunching the numbers&hellip;\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"intro\" ng-if=\"status.getNumUpdating()\">\n" +
+    "      <br>We're scouring the web to discover the impacts of all your research products...\n" +
     "   </div>\n" +
     "\n" +
     "   <div class=\"update-progress animated fadeOutUp\" ng-if=\"status.getNumUpdating()\">\n" +

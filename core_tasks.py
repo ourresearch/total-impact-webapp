@@ -249,13 +249,11 @@ def done_all_refreshes(profile_id):
 
     profile = Profile.query.get(profile_id)
 
-    save_profile_refresh_status(profile, RefreshStatus.states["DEDUP_START"])
+    save_profile_refresh_status(profile, RefreshStatus.states["CRUNCHING"])
 
     logger.info(u"deduplicating for {url_slug}".format(
         url_slug=profile.url_slug))
     deleted_tiids = profile.remove_duplicates()
-
-    save_profile_refresh_status(profile, RefreshStatus.states["TWEETS_START"])
 
     logger.info(u"parse_and_save_tweets for {url_slug}".format(
         url_slug=profile.url_slug))

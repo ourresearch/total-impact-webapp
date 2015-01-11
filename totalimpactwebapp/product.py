@@ -32,6 +32,9 @@ from totalimpactwebapp.aliases import AliasRow
 from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.tweet import Tweet
 
+from totalimpactwebapp.refresh_status import RefreshStatus
+from totalimpactwebapp.refresh_status import save_profile_refresh_status
+
 from util import dict_from_dir
 from util import cached_property
 from util import commit
@@ -1009,9 +1012,11 @@ def refresh_products_from_tiids(profile_id, tiids, analytics_credentials={}, sou
     # assume the profile is the same one as the first product
     if not profile_id:
         profile_id = products[0].profile_id
+    
+    from totalimpactwebapp.profile import Profile
     profile = Profile.query.get(profile_id)
 
-    save_profile_refresh_status(profile, RefreshStatus.states["REFRESH_START"])
+    save_profile_refresh_status(profile, RefreshStatus.states["PROGRESS_BAR"])
 
 
     if not tiids:

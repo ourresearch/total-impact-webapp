@@ -375,7 +375,7 @@ class Profile(db.Model):
     # don't make this a cached property so it can be up to date
     def just_finished_profile_refresh(self):
         refresh_status = self.get_refresh_status()
-        if refresh_status.refresh_state == RefreshStatus.states["REFRESH_START"] and \
+        if refresh_status.refresh_state == RefreshStatus.states["PROGRESS_BAR"] and \
             refresh_status.is_done_refreshing:
                 return True
         return False
@@ -550,7 +550,7 @@ class Profile(db.Model):
 
 
     def get_new_products(self, provider_name, product_seeds, analytics_credentials={}, add_even_if_removed=False):
-        save_profile_refresh_status(self, RefreshStatus.states["REFRESH_START"])
+        save_profile_refresh_status(self, RefreshStatus.states["PROGRESS_BAR"])
 
         if add_even_if_removed:
             tiids_to_exclude = self.tiids

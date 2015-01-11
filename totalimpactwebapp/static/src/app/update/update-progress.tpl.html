@@ -2,13 +2,14 @@
    <h3 id="finding-impact-data-header">Finding impact data</h3>
 </div>
 <div class="modal-body update">
-   <div class="intro" ng-if="status.getNumUpdating()">
-      <br>We're scouring the web to discover the impacts of all your research products...
-   </div>
 
-   <div class="intro dedup" ng-if="!status.getNumUpdating()"><br>
+   <div class="intro dedup" ng-if="status.isCrunching()"><br>
       <i class="icon-refresh icon-spin"></i>
       Crunching the numbers&hellip;
+   </div>
+
+   <div class="intro" ng-if="status.getNumUpdating()">
+      <br>We're scouring the web to discover the impacts of all your research products...
    </div>
 
    <div class="update-progress animated fadeOutUp" ng-if="status.getNumUpdating()">

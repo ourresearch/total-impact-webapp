@@ -15,9 +15,8 @@ def save_profile_refresh_status(profile, status_string):
 
 class RefreshStatus(object):
     states = {
-        "REFRESH_START": "refresh start",
-        "DEDUP_START": "dedup start",
-        "TWEETS_START": "tweets start",
+        "PROGRESS_BAR": "progress bar",
+        "CRUNCHING": "crunching",
         "ALL_DONE": "all done"
     }
 
