@@ -52,8 +52,9 @@ class Webpage(Provider):
             url = aliases_dict["url"][0]
             url_fragments_to_exclude = [
                 "scopus.com/inward",
-                "ncbi.nlm.nih.gov/pubmed"
-                "doi.org/"
+                "ncbi.nlm.nih.gov/pubmed",
+                "doi.org/",
+                "mendeley.com/"
             ]
 
             if url and not any(fragment in url for fragment in url_fragments_to_exclude):
