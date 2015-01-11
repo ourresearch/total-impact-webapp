@@ -33,18 +33,6 @@ def get_metrics_by_engagement(products, engagement):
                     matching_metrics.append(metric)
     return matching_metrics
 
-def get_tweeter_followers(products):
-    tweeter_followers = Counter()
-    for product in products:
-        product_follower_metric = product.get_metric_by_name("altmetric_com", "tweeter_followers")
-        if product_follower_metric:
-            for follower in product_follower_metric.most_recent_snap.raw_value:
-                twitter_handle, followers = tuple(follower)
-                tweeter_followers[twitter_handle.lower()] = followers
-        # except (AttributeError, TypeError):
-        #     logger.error("error counting twitter_followers")
-    return tweeter_followers
-
 
 class Card(object):
 

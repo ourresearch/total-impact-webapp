@@ -13,6 +13,7 @@ from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.genre import make_genres_list
 from totalimpactwebapp.refresh_status import save_profile_refresh_status
 from totalimpactwebapp.refresh_status import RefreshStatus
+from totalimpactwebapp.snap import most_recent_posts_snap
 from totalimpactwebapp.drip_email import DripEmail
 from util import cached_property
 from util import commit
@@ -412,9 +413,9 @@ class Profile(db.Model):
     def parse_and_save_tweets(self):
         twitter_details_dict = {}
         for product in self.products_not_removed:
-            posts_metric = product.get_metric_by_name("altmetric_com", "posts")
-            if posts_metric and "twitter" in posts_metric.most_recent_snap.raw_value:
-                twitter_details_dict[product.tiid] = posts_metric.most_recent_snap.raw_value["twitter"]
+            posts_snap = most_recent_posts_snap(product.tiid)
+            if posts_snap and "twitter" in posts_snap.raw_value:
+                twitter_details_dict[product.tiid] = posts_snap.raw_value["twitter"]
         if twitter_details_dict:
             logger.info(u"going into hydrate_twitter_text_and_followers for profile {url_slug}".format(
                 url_slug=self.url_slug))

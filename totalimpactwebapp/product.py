@@ -62,6 +62,7 @@ deprecated_genres = ["twitter", "blog"]
 ignore_snaps_older_than = arrow.utcnow().replace(days=-27).datetime
 
 snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
+                    "Snap.interaction != 'posts', " \
                     "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
     ignore_snaps_older_than=ignore_snaps_older_than)
 

@@ -127,18 +127,6 @@ class Altmetric_Com(Provider):
         else:
             aliases_list = []
         return aliases_list
-              
-
-    def calculate_tweeter_followers(self, altmetric_posts):
-        tweeter_followers = []
-        for post in altmetric_posts:
-            twitter_handle = post["author"]["id_on_source"]
-            try:
-                followers = post["author"]["followers"]
-                tweeter_followers.append([twitter_handle, followers])
-            except KeyError:
-                pass
-        return tweeter_followers
              
 
     def get_tweet_ids(self, altmetric_posts):
@@ -157,11 +145,6 @@ class Altmetric_Com(Provider):
         try:
             if metrics_dict['altmetric_com:posts'] and "twitter" in metrics_dict['altmetric_com:posts']:
                 altmetric_posts = metrics_dict['altmetric_com:posts']["twitter"]
-
-                tweeter_followers = self.calculate_tweeter_followers(altmetric_posts)
-                if tweeter_followers:
-                    metrics_dict['altmetric_com:tweeter_followers'] = tweeter_followers
-
         except KeyError:
             pass  # no posts
 
