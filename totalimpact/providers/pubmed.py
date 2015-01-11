@@ -1,5 +1,5 @@
 from totalimpact.providers import provider
-from totalimpact.providers.provider import Provider, ProviderContentMalformedError
+from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderHttpError
 from unicode_helpers import remove_nonprinting_characters
 
 import json, urllib, os, itertools, datetime, re
