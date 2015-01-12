@@ -574,7 +574,7 @@ def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
         if number_refreshes:
             profile.refresh_products(source="scheduled")
             total_refreshes += number_refreshes
-            pause_length = min(number_refreshes * 2, 60)
+            pause_length = min(number_refreshes * 3, 120)
             print "pausing", pause_length, "seconds after refreshing", number_refreshes, "products"
             time.sleep(pause_length)
             print total_refreshes, "total refreshes across", number_profiles, "profiles"
