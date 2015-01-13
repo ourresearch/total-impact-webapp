@@ -199,7 +199,10 @@ class Product(db.Model):
     @cached_property
     def clean_biblio_dedup_dict(self):
         dedup_key_dict = {}
-        dedup_key_dict["title"] = remove_unneeded_characters(self.biblio.display_title).lower()
+        try:
+            dedup_key_dict["title"] = remove_unneeded_characters(self.biblio.display_title).lower()
+        except (AttributeError, TypeError):
+            dedup_key_dict["title"] = self.biblio.display_title
         dedup_key_dict["genre"] = self.genre
         dedup_key_dict["is_preprint"] = self.is_preprint
         return dedup_key_dict
@@ -218,7 +221,10 @@ class Product(db.Model):
         biblio1 = json.loads(nid)
         biblio2 = self.clean_biblio_dedup_dict
 
-        biblio1_title = remove_unneeded_characters(biblio1["title"]).lower()
+        try:
+            biblio1_title = remove_unneeded_characters(biblio1["title"]).lower()
+        except (AttributeError, TypeError):
+            biblio1_title = biblio1["title"]
 
         is_equivalent = False
         if biblio1_title==biblio2["title"]:

@@ -34,13 +34,13 @@ def remove_punctuation(input_string):
 
 
 # see http://www.fileformat.info/info/unicode/category/index.htm
-def remove_unneeded_characters(input, encoding='utf-8', char_classes_to_remove=["C", "M", "P", "S", "Z"]):
+def remove_unneeded_characters(input_string, encoding='utf-8', char_classes_to_remove=["C", "M", "P", "S", "Z"]):
     input_was_unicode = True
-    if isinstance(input, basestring):
-        if not isinstance(input, unicode):
+    if isinstance(input_string, basestring):
+        if not isinstance(input_string, unicode):
             input_was_unicode = False
 
-    unicode_input = to_unicode_or_bust(input)
+    unicode_input = to_unicode_or_bust(input_string)
 
     response = u''.join(c for c in unicode_input if unicodedata.category(c)[0] not in char_classes_to_remove)
 
