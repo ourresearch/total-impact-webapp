@@ -7,6 +7,8 @@ from time import sleep
 import datetime
 import stripe
 import emailer
+from unicode_helpers import to_unicode_or_bust
+import unicodedata
 
 from sqlalchemy.exc import IntegrityError, DataError, InvalidRequestError
 from sqlalchemy.orm.exc import FlushError
@@ -21,6 +23,33 @@ logger = logging.getLogger('ti.util')
 def slow(f):
     f.slow = True
     return f
+
+
+def remove_punctuation(input_string):
+    # from http://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
+    no_punc = input_string
+    if input_string:
+        no_punc = "".join(e for e in input_string if (e.isalnum() or e.isspace()))
+    return no_punc
+
+
+# see http://www.fileformat.info/info/unicode/category/index.htm
+def remove_unneeded_characters(input, encoding='utf-8', char_classes_to_remove=["C", "M", "P", "S", "Z"]):
+    input_was_unicode = True
+    if isinstance(input, basestring):
+        if not isinstance(input, unicode):
+            input_was_unicode = False
+
+    unicode_input = to_unicode_or_bust(input)
+
+    response = u''.join(c for c in unicode_input if unicodedata.category(c)[0] not in char_classes_to_remove)
+
+    if not input_was_unicode:
+        response = response.encode(encoding)
+        
+    return response
+
+
 
 # derived from the jsonp function in bibserver
 def jsonp(f):

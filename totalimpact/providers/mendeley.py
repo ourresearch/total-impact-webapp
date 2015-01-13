@@ -5,6 +5,7 @@ from totalimpact.providers.provider import Provider, ProviderContentMalformedErr
 from totalimpact import tiredis
 from retry import Retry
 from totalimpactwebapp.countries import iso_code_from_name
+from totalimpactwebapp.util import remove_punctuation
 
 import simplejson, urllib, os, string, itertools
 import requests
@@ -79,15 +80,6 @@ class Mendeley(Provider):
     def provides_metrics(self):
          return True
 
-
-    @classmethod
-    def remove_punctuation(cls, input):
-        # from http://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
-        no_punc = input
-        if input:
-            no_punc = "".join(e for e in input if (e.isalnum() or e.isspace()))
-        return no_punc
-
     def _connect(self):
         mendeley_client = mendeley_lib.Mendeley(
             client_id=os.getenv("MENDELEY_OAUTH2_CLIENT_ID"), 
@@ -109,7 +101,7 @@ class Mendeley(Provider):
         doc = None
         try:
             biblio = aliases_dict["biblio"][0]
-            biblio_title = self.remove_punctuation(biblio["title"])
+            biblio_title = remove_punctuation(biblio["title"])
             biblio_year = str(biblio["year"])
             if biblio_title and biblio_year:
                 try:
@@ -119,7 +111,7 @@ class Mendeley(Provider):
                             max_year=biblio_year,
                             view='stats').list(page_size=1).items[0]
                 except (UnicodeEncodeError, IndexError):
-                    biblio_title = self.remove_punctuation(biblio["title"].encode('ascii','ignore'))
+                    biblio_title = remove_punctuation(biblio["title"].encode('ascii','ignore'))
                     try:
                         doc = self.session.catalog.advanced_search(
                                 title=biblio_title, 
@@ -129,7 +121,7 @@ class Mendeley(Provider):
                     except (IndexError):
                         return None
 
-                mendeley_title = self.remove_punctuation(doc.title).lower()
+                mendeley_title = remove_punctuation(doc.title).lower()
                 if biblio_title != mendeley_title:
                     logger.debug(u"Mendeley: titles don't match so not using this match /biblio_print %s and %s" %(
                         biblio_title, mendeley_title))

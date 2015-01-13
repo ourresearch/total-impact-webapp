@@ -33,6 +33,8 @@ from collections import Counter
 from collections import defaultdict
 from stripe import InvalidRequestError
 
+from operator import attrgetter
+
 import threading
 import requests
 import stripe
@@ -702,20 +704,54 @@ def delete_products_from_profile(profile, tiids_to_delete):
     return True
 
 
+
+
+
 def tiids_to_remove_from_duplicates_list(duplicates_list):
-    tiids_to_remove = []    
+    all_products_to_remove = []    
     for duplicate_group in duplicates_list:
-        tiid_to_keep = None
-        for tiid_dict in duplicate_group:
-            if (tiid_to_keep==None) and (tiid_dict["has_user_provided_biblio"] or tiid_dict["has_free_fulltext_url"]):
-                tiid_to_keep = tiid_dict["tiid"]
-            else:
-                tiids_to_remove += [tiid_dict]
-        if not tiid_to_keep:
-            # don't delete last tiid added even if it had user supplied stuff, because multiple do
-            earliest_created_date = min([tiid_dict["created"] for tiid_dict in duplicate_group])
-            tiids_to_remove = [tiid_dict for tiid_dict in tiids_to_remove if tiid_dict["created"] != earliest_created_date]
-    return [tiid_dict["tiid"] for tiid_dict in tiids_to_remove]
+        products_to_remove_from_group = []    
+        if len(duplicate_group)==1:
+            product_to_keep = duplicate_group[0]
+            # only one thing in group, nothing to do, move on to next group
+            continue
+        else:
+            product_to_keep = None
+
+        if not product_to_keep:
+            # get the one that someone added stuff to
+            for product in duplicate_group:
+                if product.has_user_provided_biblio or product.has_free_fulltext_url or product.has_file:
+                    product_to_keep = product
+
+        # if that wasn't any of them, then with the most aliases
+        if not product_to_keep:
+            product_to_keep = max(duplicate_group, key=attrgetter('alias_row_count'))
+            if product_to_keep.alias_row_count < 1:
+                product_to_keep = None
+        # with the most biblio fields
+        if not product_to_keep:
+            product_to_keep = max(duplicate_group, key=attrgetter('biblio_key_count'))
+
+        # won't get into this if
+        # that has been around the longest
+        # if not product_to_keep:
+        #     product_to_keep = min(duplicate_group, key=attrgetter('created'))
+
+        products_to_remove_from_group += [product for product in duplicate_group if product.tiid != product_to_keep.tiid]
+        all_products_to_remove += products_to_remove_from_group
+
+        logger.info(u"\n\n***")
+        for product in products_to_remove_from_group:
+            # logger.info(u"in tiids_to_remove_from_duplicates_list, removing {product}: {aliases} {biblio}".format(
+            #     product=product, aliases=product.aliases.to_dict(), biblio=product.biblio.to_dict()))            
+            logger.info(u"in tiids_to_remove_from_duplicates_list, removing {product}: \n{title}".format(
+                product=product, title=product.title))            
+        # logger.info(u"in tiids_to_remove_from_duplicates_list, KEEPING {product} {aliases} {biblio}".format(
+        #         product=product_to_keep, aliases=product_to_keep.aliases.to_dict(), biblio=product_to_keep.biblio.to_dict()))
+        logger.info(u"in tiids_to_remove_from_duplicates_list, KEEPING {product} \n{title}".format(
+                product=product_to_keep, title=product_to_keep.title))
+    return [product.tiid for product in all_products_to_remove]
 
 
 def save_profile_last_refreshed_timestamp(profile_id, timestamp=None):

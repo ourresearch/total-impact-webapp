@@ -49,25 +49,14 @@ def normalize_alias_tuple(ns, nid):
 
 
 def clean_alias_tuple_for_comparing(ns, nid):
-    if ns == "biblio":
-        keys_to_compare = ["full_citation", "title", "authors", "journal", "year"]
-        if not isinstance(nid, dict):
-            nid = json.loads(nid)
-        if "year" in nid:
-            nid["year"] = str(nid["year"])
-        biblio_dict_for_deduplication = dict([(k, v) for (k, v) in nid.iteritems() if k.lower() in keys_to_compare])
-
-        biblios_as_string = json.dumps(biblio_dict_for_deduplication, sort_keys=True, indent=0, separators=(',', ':'))
-        return ("biblio", biblios_as_string.lower())
-    else:
-        (ns, nid) = normalize_alias_tuple(ns, nid)
-        try:
-            cleaned_alias = (ns.lower(), nid.lower())
-        except AttributeError:
-            logger.debug(u"problem cleaning {ns} {nid}".format(
-                ns=ns, nid=nid))
-            cleaned_alias = (ns, nid)
-        return cleaned_alias
+    (ns, nid) = normalize_alias_tuple(ns, nid)
+    try:
+        cleaned_alias = (ns.lower(), nid.lower())
+    except AttributeError:
+        logger.debug(u"problem cleaning {ns} {nid}".format(
+            ns=ns, nid=nid))
+        cleaned_alias = (ns, nid)
+    return cleaned_alias
 
 
 def alias_tuples_from_dict(aliases_dict):
@@ -146,6 +135,9 @@ class AliasRow(db.Model):
         return clean_alias_tuple_for_comparing(self.namespace, self.nid)
 
     def is_equivalent_alias(self, given_namespace, given_nid):
+        if not given_nid:
+            return False
+            
         given_clean_alias = clean_alias_tuple_for_comparing(given_namespace, given_nid)
         return given_clean_alias==self.my_alias_tuple_for_comparing
 

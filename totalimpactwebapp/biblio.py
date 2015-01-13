@@ -8,7 +8,6 @@ from util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp import json_sqlalchemy
 
-from totalimpactwebapp.aliases import clean_alias_tuple_for_comparing
 
 logger = logging.getLogger("ti.biblio")
 
@@ -139,18 +138,7 @@ class Biblio(object):
         return host
 
 
-    @cached_property
-    def dedup_key(self):
-        nid = self.to_dict()
-        biblio_for_comparing = clean_alias_tuple_for_comparing("biblio", nid)
-        return biblio_for_comparing
 
-
-    def is_equivalent_biblio(self, biblio_dict):
-        if not biblio_dict:
-            return False
-
-        return self.dedup_key == clean_alias_tuple_for_comparing("biblio", biblio_dict)
 
     def to_dict(self):
         attributes_to_ignore = [

@@ -39,6 +39,7 @@ from util import dict_from_dir
 from util import cached_property
 from util import commit
 from util import as_int_or_float_if_possible
+from util import remove_unneeded_characters
 from totalimpactwebapp.configs import get_genre_config
 
 from totalimpactwebapp import db
@@ -186,8 +187,46 @@ class Product(db.Model):
 
         return any([row.is_equivalent_alias(namespace, nid) for row in self.alias_rows])
 
-    def matches_biblio(self, biblio_dict):
-        return self.biblio.is_equivalent_biblio(biblio_dict)
+    @cached_property
+    def alias_row_count(self):
+        return len(self.alias_rows)
+
+    @cached_property
+    def biblio_key_count(self):
+        return len([key for key in self.biblio.to_dict().keys() if key])
+
+
+    @cached_property
+    def clean_biblio_dedup_dict(self):
+        dedup_key_dict = {}
+        dedup_key_dict["title"] = remove_unneeded_characters(self.biblio.display_title).lower()
+        dedup_key_dict["genre"] = self.genre
+        dedup_key_dict["is_preprint"] = self.is_preprint
+        return dedup_key_dict
+
+    @cached_property
+    def biblio_dedup_key(self):
+        dedup_key_dict = self.clean_biblio_dedup_dict
+        biblios_as_string = json.dumps(dedup_key_dict, sort_keys=True, indent=0, separators=(',', ':'))
+        return ("biblio", biblios_as_string)
+
+    def matches_biblio(self, biblio1_tuple):
+        (ns, nid) = biblio1_tuple
+        if ns != "biblio":
+            return False
+
+        biblio1 = json.loads(nid)
+        biblio2 = self.clean_biblio_dedup_dict
+
+        biblio1_title = remove_unneeded_characters(biblio1["title"]).lower()
+
+        is_equivalent = False
+        if biblio1_title==biblio2["title"]:
+            if biblio1["genre"]==biblio2["genre"]:
+                if biblio1["is_preprint"]==biblio2["is_preprint"]:
+                    is_equivalent = True
+        return is_equivalent
+
 
     @cached_property
     def alias_dict(self):
@@ -438,11 +477,35 @@ class Product(db.Model):
 
     @cached_property
     def has_user_provided_biblio(self):
-        return any([1 for row in self.biblio_rows if "user_provided"==row.provider])
+        # don't include changing the genre
+        for row in self.biblio_rows:
+            if row.biblio_name != "genre":
+                if row.provider == "user_provided":
+                    return True
+        return False
 
     @cached_property
     def has_free_fulltext_url(self):
-        return self.biblio.free_fulltext_host != None
+        return (hasattr(self.biblio, "free_fulltext_host") and self.biblio.free_fulltext_host)
+
+    @cached_property
+    def is_preprint(self):
+        doi_fragments = ["/npre.", "/peerj.preprints", ".figshare."]
+        url_fragments = ["figshare.com/"]
+
+        if self.aliases and self.aliases.display_arxiv:
+            return True
+
+        if self.aliases and self.aliases.display_doi:
+            if any(fragment in self.aliases.display_doi for fragment in doi_fragments):
+                return True
+
+        if self.aliases and self.aliases.resolved_url:
+            if any(fragment in self.aliases.resolved_url for fragment in url_fragments):
+                return True
+
+        return False
+
 
 
     def get_metric_raw_value(self, provider, interaction):
@@ -882,8 +945,8 @@ def has_equivalent_alias_tuple_in_list(alias_row, comparing_tuple_list):
     is_equivalent = (alias_row.my_alias_tuple_for_comparing in comparing_tuple_list)
     return is_equivalent
 
-def has_equivalent_biblio_in_list(biblio, comparing_tuple_list):
-    is_equivalent = (biblio.dedup_key in comparing_tuple_list)
+def has_equivalent_biblio_in_list(product, comparing_tuple_list):
+    is_equivalent = any([product.matches_biblio(biblio_key) for biblio_key in comparing_tuple_list])
     return is_equivalent
 
 def build_duplicates_list(products):
@@ -900,9 +963,9 @@ def build_duplicates_list(products):
                 distinct_item_id = duplication_list[alias_row.my_alias_tuple_for_comparing] 
                 is_distinct_item = False  
 
-        if has_equivalent_biblio_in_list(product.biblio, duplication_list):
+        if has_equivalent_biblio_in_list(product, duplication_list):
             # we already have one of the aliases
-            distinct_item_id = duplication_list[product.biblio.dedup_key] 
+            distinct_item_id = duplication_list[product.biblio_dedup_key] 
             is_distinct_item = False  
 
         if is_distinct_item:
@@ -910,19 +973,11 @@ def build_duplicates_list(products):
             for alias_row in product.alias_rows:
                 # we went through all the aliases and don't have any that match, so make a new entries
                 duplication_list[alias_row.my_alias_tuple_for_comparing] = distinct_item_id
-            duplication_list[product.biblio.dedup_key] = distinct_item_id
+            duplication_list[product.biblio_dedup_key] = distinct_item_id
 
         # whether distinct or not,
         # add this to the group, and add all its aliases too
-        if product.created:
-            created_date = product.created.isoformat()
-        else:
-            created_date = "1999-01-01T14:42:49.818393"   
-        distinct_groups[distinct_item_id] += [{ "tiid":product.tiid, 
-                                                "has_user_provided_biblio":product.has_user_provided_biblio, 
-                                                "has_free_fulltext_url":product.has_free_fulltext_url, 
-                                                "created":created_date
-                                                }]
+        distinct_groups[distinct_item_id] += [product]
 
     distinct_groups_values = [group for group in distinct_groups.values() if group]
     return distinct_groups_values
