@@ -6,6 +6,13 @@ import shortuuid
 import datetime
 
 
+def most_recent_posts_snap(tiid):
+    snap = Snap.query \
+        .filter(Snap.tiid==tiid, Snap.provider=='altmetric_com', Snap.interaction=='posts') \
+        .order_by(Snap.last_collected_date.desc()).first()
+    return snap
+
+
 class Snap(db.Model):
 
     last_collected_date = db.Column(db.DateTime())

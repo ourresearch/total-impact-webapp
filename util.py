@@ -86,7 +86,10 @@ def local_sleep(interval, fuzz_proportion=.2):
         interval += random.uniform(-max_fuzz_distance, max_fuzz_distance)
 
     if "localhost:5000" in request.url_root:
+        logger.debug(u"sleeping on local for {second} seconds".format(
+            second=interval))
         sleep(interval)
+
 
 def as_int_or_float_if_possible(input_value):
     value = input_value
@@ -128,7 +131,9 @@ def dict_from_dir(obj, keys_to_ignore=None, keys_to_show="all"):
         elif k in ["query", "query_class", "metadata"]:
             pass
         else:
-            ret[k] = getattr(obj, k)
+            value = getattr(obj, k)
+            if not callable(value):
+                ret[k] = value
 
     return ret
 

@@ -249,7 +249,9 @@ class Crossref(Provider):
 
         if not doi:
             if "biblio" in aliases_dict:
+
                 doi = self._lookup_doi_from_biblio(aliases_dict["biblio"][0], cache_enabled)
+
                 if doi:
                     new_aliases += [("doi", doi)]   
                 else:
@@ -262,9 +264,7 @@ class Crossref(Provider):
 
         new_aliases += self._lookup_urls_from_doi(doi, provider_url_template, cache_enabled)
         
-        # get uniques for things that are unhashable
-        new_aliases_unique = [k for k,v in itertools.groupby(sorted(new_aliases))]
-        return new_aliases_unique
+        return new_aliases
 
     def _lookup_doi_from_biblio(self, biblio, cache_enabled):
         if not biblio:

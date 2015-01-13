@@ -1,5 +1,5 @@
 from totalimpact.providers import provider
-from totalimpact.providers.provider import Provider, ProviderContentMalformedError
+from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderHttpError
 from unicode_helpers import remove_nonprinting_characters
 
 import json, urllib, os, itertools, datetime, re
@@ -296,10 +296,17 @@ class Pubmed(Provider):
                 new_aliases += [("url", self.aliases_pubmed_url_template %nid)] 
                 if not "doi" in [namespace for (namespace, temp_nid) in new_aliases]:
                     aliases_doi_from_pmid_url = self.aliases_doi_from_pmid_url_template %nid
-                    response = self.http_get(aliases_doi_from_pmid_url, cache_enabled=cache_enabled)
-                    if response.status_code==200:
-                        doi = json.loads(response.text)["doi"]
-                        new_aliases += [("doi", doi)]
+                    try:
+                        response = self.http_get(aliases_doi_from_pmid_url, cache_enabled=cache_enabled)
+                        if response.status_code==200:
+                            doi = json.loads(response.text)["doi"]
+                            new_aliases += [("doi", doi)]
+                    except ProviderHttpError as e:
+                        logger.warning(u"ProviderHttpError when calling {url}".format(
+                            url=aliases_doi_from_pmid_url))
+                        # just keep going for now.  eventually will need to replace the call w somehting that works.
+                        pass
+
 
         # get uniques for things that are unhashable
         new_aliases_unique = [k for k,v in itertools.groupby(sorted(new_aliases))]

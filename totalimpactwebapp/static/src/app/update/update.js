@@ -14,9 +14,9 @@ angular.module( 'update.update', [
     var modalInstance
     var pollingInterval = 10  // 10ms...as soon as we get server resp, ask again.
     var deferred
-    var isCrunching
+    var isCrunching = false
 
-    var clear = function(){
+    var clearServiceVariables = function(){
       status = {}
       url_slug = null
       deferred = null
@@ -26,32 +26,29 @@ angular.module( 'update.update', [
     var tick = function(){
       UsersUpdateStatus.get({id:url_slug}).$promise.then(
         function(resp){
-          console.log("tick() got /refresh_status response back from server", resp)
+          console.log("tick() got /refresh-status response back from server", resp)
           status = resp
-          if (resp.percent_complete == 100){
-            console.log("tick() satisfied success criteria, calling dedup")
-            status.isCrunching = true
-            UsersProducts.after_refresh_cleanup({id: url_slug}, {}).$promise.then(
-              function(resp){
-                console.log("after-refresh-cleanup successful!", resp)
-              },
-              function(resp){
-                console.log("after-refresh-cleanup failed :(", resp)
-              }
-            ).finally(function(resp){
-                console.log("cleaning up after after-refresh-cleanup"),
-                modalInstance.close()
-                deferred.resolve("Update finished!")
-                clear()
-            })
-          }
 
-          else {
-            $timeout(tick, pollingInterval)
+          if (resp.refresh_state == "progress bar") {
+              $timeout(tick, pollingInterval)
           }
+          else if (resp.refresh_state == "crunching") {
+              // there could be a bunch of different refresh states, ignoring them for now
+              // just telling crunching for all post-100% refresh states
+              console.log("tick() is at 100% progress bar complete, now crunching numbers")
+              status.isCrunching = true
+              $timeout(tick, pollingInterval)
+          }
+          else if (resp.refresh_state == "all done") {
+            console.log("tick() is at all done"),
+            modalInstance.close()
+            deferred.resolve("Update finished!")
+            clearServiceVariables()
+          } 
+
         },
         function(resp){
-          console.log("failed to get /refresh_status; trying again.", resp)
+          console.log("failed to get /refresh-status; trying again.", resp)
           $timeout(tick, pollingInterval)
         }
       )

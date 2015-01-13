@@ -574,7 +574,7 @@ def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
         if number_refreshes:
             profile.refresh_products(source="scheduled")
             total_refreshes += number_refreshes
-            pause_length = min(number_refreshes * 2, 60)
+            pause_length = min(number_refreshes * 3, 120)
             print "pausing", pause_length, "seconds after refreshing", number_refreshes, "products"
             time.sleep(pause_length)
             print total_refreshes, "total refreshes across", number_profiles, "profiles"
@@ -642,7 +642,7 @@ def collect_new_mendeley(url_slug=None, min_url_slug=None):
         for product in profile.display_products:
             if product.get_metric_by_name("mendeley", "readers"):
                 number_refreshes += 1
-                refresh_products_from_tiids([product.tiid], source="scheduled")
+                refresh_products_from_tiids(product.profile_id, [product.tiid], source="scheduled")
         if number_refreshes:
             total_refreshes += number_refreshes
             pause_length = min(number_refreshes * 2, 60)
@@ -680,7 +680,7 @@ def linked_accounts(account_type, url_slug=None, min_url_slug=None):
             else:
                 logger.info(u"{url_slug} already has an account_product for {account_type}, but no followers, so refreshing".format(
                     url_slug=profile.url_slug, account_type=account_type))
-                refresh_products_from_tiids([existing_account_product.tiid], source="scheduled")
+                refresh_products_from_tiids(existing_account_product.profile_id, [existing_account_product.tiid], source="scheduled")
         else:
             logger.info(u"{url_slug} had no account_product for {account_type}, so adding".format(
                 url_slug=profile.url_slug, account_type=account_type))
@@ -709,7 +709,7 @@ def refresh_twitter(min_tiid=None):
         try:
             if product.biblio.repository=="Twitter" and len(product.metrics)==0:
                 print "refreshing", product.tiid, number_refreshed
-                refresh_products_from_tiids([product.tiid], source="scheduled")
+                refresh_products_from_tiids(product.profile_id, [product.tiid], source="scheduled")
                 number_refreshed += 1
                 if number_refreshed >= 15:
                     #api limit
@@ -734,7 +734,7 @@ def refresh_tweeted_products(min_tiid=None):
         try:
             if product.get_metric_by_name("altmetric_com", "tweets"):
                 print number_refreshed, ". refreshing: ", product.tiid
-                refresh_products_from_tiids([product.tiid], source="scheduled")
+                refresh_products_from_tiids(product.profile_id, [product.tiid], source="scheduled")
                 number_refreshed += 1
                 time.sleep(0.5)
                 elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
@@ -974,7 +974,7 @@ def countries_for_all_profiles(url_slug=None, min_created_date=None):
 
 
 def refresh_tiid(tiid):
-    tiids = refresh_products_from_tiids([tiid])
+    tiids = refresh_products_from_tiids(None, [tiid])
     print tiids
     return tiids
 

@@ -32,6 +32,9 @@ from totalimpactwebapp.aliases import AliasRow
 from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.tweet import Tweet
 
+from totalimpactwebapp.refresh_status import RefreshStatus
+from totalimpactwebapp.refresh_status import save_profile_refresh_status
+
 from util import dict_from_dir
 from util import cached_property
 from util import commit
@@ -59,6 +62,7 @@ deprecated_genres = ["twitter", "blog"]
 ignore_snaps_older_than = arrow.utcnow().replace(days=-27).datetime
 
 snaps_join_string = "and_(Product.tiid==Snap.tiid, " \
+                    "Snap.interaction != 'posts', " \
                     "Snap.last_collected_date > '{ignore_snaps_older_than}')".format(
     ignore_snaps_older_than=ignore_snaps_older_than)
 
@@ -195,6 +199,14 @@ class Product(db.Model):
         return alias_dict
 
     @cached_property
+    def aliases_for_providers(self):
+        aliases_to_return = self.alias_tuples
+        if self.biblio:
+            biblio_dict = self.biblio.to_dict()
+            aliases_to_return += [("biblio", biblio_dict)]
+        return aliases_to_return
+
+    @cached_property
     def alias_tuples(self):
         return [row.alias_tuple for row in self.alias_rows]
 
@@ -235,10 +247,12 @@ class Product(db.Model):
         self.last_refresh_status = u"STARTED"
         self.last_refresh_failure_message = None
 
-    def set_last_refresh_finished(self, myredis):
+    def set_refresh_status(self, myredis, failure_message=None):
         redis_refresh_status = refresh_status(self.tiid, myredis)
         if not redis_refresh_status["short"].startswith(u"SUCCESS"):
             self.last_refresh_failure_message = redis_refresh_status["long"]
+        if failure_message:
+            self.last_refresh_failure_message = failure_message
         self.last_refresh_status = redis_refresh_status["short"]
         self.last_refresh_finished = datetime.datetime.utcnow()
 
@@ -248,6 +262,10 @@ class Product(db.Model):
             genre = self.biblio.calculated_genre
         else:
             genre = self.aliases.get_genre()
+
+        # override unknowns with articles here
+        if genre == "unknown":
+            genre = "article"
 
         if "article" in genre:
             genre = "article"  #disregard whether journal article or conference article for now
@@ -468,7 +486,6 @@ class Product(db.Model):
         return ""
 
 
-
     @cached_property
     def countries(self):
         my_countries = countries.CountryList()
@@ -662,6 +679,8 @@ class Product(db.Model):
         return html
 
 
+
+
     def __repr__(self):
         return u'<Product {tiid} {best_url}>'.format(
             tiid=self.tiid, best_url=self.aliases.best_url)
@@ -808,40 +827,44 @@ def aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude):
     return new_aliases
 
 
-def start_product_update(dicts_to_add, priority):
+def start_product_update(profile_id, tiids_to_update, priority):
     myredis = tiredis.from_url(os.getenv("REDIS_URL"), db=tiredis.REDIS_MAIN_DATABASE_NUMBER)  # main app is on DB 0
 
     # do all of this first and quickly
-    for d in dicts_to_add:
-        myredis.clear_provider_task_ids(d["tiid"])
-        myredis.set_provider_task_ids(d["tiid"], ["STARTED"])  # set this right away
+    for tiid in tiids_to_update:
+        myredis.clear_provider_task_ids(tiid)
+        myredis.set_provider_task_ids(tiid, ["STARTED"])  # set this right away
     
-    for d in dicts_to_add:
-        # this import here to avoid circular dependancies
-        from core_tasks import put_on_celery_queue
-        task_id = put_on_celery_queue(d["tiid"], d["aliases_dict"], priority)
-    
+    # this import here to avoid circular dependancies
+    from core_tasks import put_on_celery_queue
+    put_on_celery_queue(profile_id, tiids_to_update, priority)
+    return
+
 
 def create_products_from_alias_tuples(profile_id, alias_tuples):
     tiid_alias_mapping = {}
     clean_aliases = [normalize_alias_tuple(ns, nid) for (ns, nid) in alias_tuples]  
-    dicts_to_update = []  
+    tiids_to_update = []  
     new_products = []
 
     for alias_tuple in clean_aliases:
         new_product = Product(profile_id=profile_id)
-        new_product = put_aliases_in_product(new_product, [alias_tuple])
+        (ns, nid) = alias_tuple
+        if ns=="biblio":
+            new_product = put_biblio_in_product(new_product, nid, provider_name="bibtex")
+        else:
+            new_product = put_aliases_in_product(new_product, [alias_tuple])
 
         new_product.set_last_refresh_start()
 
         new_products += [new_product]
-        dicts_to_update += [{"tiid":new_product.tiid, "aliases_dict": new_product.alias_dict}]
+        tiids_to_update += [new_product.tiid]
 
     db.session.add_all(new_products)
     commit(db)
 
     # has to be after commits to database
-    start_product_update(dicts_to_update, "high")
+    start_product_update(profile_id, tiids_to_update, "high")
 
     return new_products
 
@@ -944,8 +967,6 @@ def put_aliases_in_product(product, alias_tuples):
                     namespace=ns, 
                     nid=nid)
                 product.alias_rows.append(new_alias_row)   
-        elif ns and nid and ns=="biblio":
-            return put_biblio_in_product(product, nid)
 
     return product
 
@@ -956,14 +977,15 @@ def put_biblio_in_product(product, new_biblio_dict, provider_name="unknown"):
     #     tiid=product.tiid))        
 
     for (biblio_name, biblio_value) in new_biblio_dict.iteritems():
-        biblio_row_object = BiblioRow.query.get((product.tiid, provider_name, biblio_name))
-        if not biblio_row_object:
-            biblio_row_object = BiblioRow(
-                    biblio_name=biblio_name, 
-                    biblio_value=biblio_value, 
-                    provider=provider_name)
-            product.biblio_rows.append(biblio_row_object)
-        biblio_row_object.biblio_value = biblio_value
+        if biblio_value:
+            biblio_row_object = BiblioRow.query.get((product.tiid, provider_name, biblio_name))
+            if not biblio_row_object:
+                biblio_row_object = BiblioRow(
+                        biblio_name=biblio_name, 
+                        biblio_value=biblio_value, 
+                        provider=provider_name)
+                product.biblio_rows.append(biblio_row_object)
+            biblio_row_object.biblio_value = biblio_value
 
     return product
 
@@ -987,7 +1009,17 @@ def put_snap_in_product(product, full_metric_name, metrics_method_response):
     return product
 
 
-def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"):
+def refresh_products_from_tiids(profile_id, tiids, analytics_credentials={}, source="webapp"):
+    # assume the profile is the same one as the first product
+    if not profile_id:
+        profile_id = products[0].profile_id
+    
+    from totalimpactwebapp.profile import Profile
+    profile = Profile.query.get(profile_id)
+
+    save_profile_refresh_status(profile, RefreshStatus.states["PROGRESS_BAR"])
+
+
     if not tiids:
         return None
 
@@ -996,19 +1028,20 @@ def refresh_products_from_tiids(tiids, analytics_credentials={}, source="webapp"
         priority = "low"
 
     products = Product.query.filter(Product.tiid.in_(tiids)).all()
-    dicts_to_refresh = []  
+    tiids_to_update = []  
 
     for product in products:
         try:
             tiid = product.tiid
             product.set_last_refresh_start()
             db.session.merge(product)
-            dicts_to_refresh += [{"tiid":tiid, "aliases_dict": product.alias_dict}]
+            tiids_to_update += [tiid]
         except AttributeError:
             logger.debug(u"couldn't find tiid {tiid} so not refreshing its metrics".format(
                 tiid=tiid))
 
     db.session.commit()
-    start_product_update(dicts_to_refresh, priority)
+
+    start_product_update(profile_id, tiids_to_update, priority)
     return tiids
 

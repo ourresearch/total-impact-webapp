@@ -1,4 +1,5 @@
 from sqlalchemy.schema import Sequence
+from sqlalchemy.orm import deferred
 from totalimpactwebapp import json_sqlalchemy
 from util import commit
 import requests
@@ -36,7 +37,7 @@ class Interaction(db.Model):
     timestamp = db.Column(db.DateTime())
     event = db.Column(db.Text)
     ip = db.Column(db.Text)
-    headers = db.Column(json_sqlalchemy.JSONAlchemy(db.Text))
+    headers = deferred(db.Column(json_sqlalchemy.JSONAlchemy(db.Text)))
     country = db.Column(db.Text)       # ALTER TABLE interaction ADD country text;
     user_type = db.Column(db.Text)     # ALTER TABLE interaction ADD user_type text;
 

@@ -141,19 +141,24 @@ class Scopus(Provider):
         title = biblio_dict["title"].replace("(", "{(}").replace(")", "{)}")
         journal = biblio_dict["journal"].replace("(", "{(}").replace(")", "{)}")
 
-        if journal in alt_journal_names.keys():
-            journal1 = journal
-            journal2 = alt_journal_names[journal]
-            url = url_template_two_journals.format(
-                    first_author=urllib.quote(biblio_dict["first_author"]), 
-                    title=urllib.quote(title), 
-                    journal1=urllib.quote(journal1), 
-                    journal2=urllib.quote(journal2))
+        url = None
+        if title and journal:
+            if journal in alt_journal_names.keys():
+                journal1 = journal
+                journal2 = alt_journal_names[journal]
+                url = url_template_two_journals.format(
+                        first_author=urllib.quote(biblio_dict["first_author"]), 
+                        title=urllib.quote(title), 
+                        journal1=urllib.quote(journal1), 
+                        journal2=urllib.quote(journal2))
+            else:
+                url = url_template_one_journal.format(
+                        first_author=urllib.quote(biblio_dict["first_author"]), 
+                        title=urllib.quote(title), 
+                        journal=urllib.quote(journal))
         else:
-            url = url_template_one_journal.format(
-                    first_author=urllib.quote(biblio_dict["first_author"]), 
-                    title=urllib.quote(title), 
-                    journal=urllib.quote(journal))
+            logger.debug("missing title or journal, so can't look up in scopus using biblio")
+
         return url
 
 
@@ -170,6 +175,9 @@ class Scopus(Provider):
 
         except KeyError:
             logger.debug("tried _get_relevant_record_with_biblio but leaving because KeyError")
+            return None
+
+        if not url:
             return None
 
         page = self._get_scopus_page(url)
