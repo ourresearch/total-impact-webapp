@@ -5,7 +5,7 @@ from totalimpact.providers.provider import Provider, ProviderContentMalformedErr
 from totalimpact import tiredis
 from retry import Retry
 from totalimpactwebapp.countries import iso_code_from_name
-from totalimpactwebapp.util import remove_punctuation
+from util import remove_punctuation
 
 import simplejson, urllib, os, string, itertools
 import requests
