@@ -13,6 +13,17 @@ logger = logging.getLogger("ti.biblio")
 
 
 
+def matches_biblio(product1, product2):
+    biblio1 = product1.clean_biblio_dedup_dict
+    biblio2 = product2.clean_biblio_dedup_dict
+
+    is_equivalent = False
+    if biblio1["title"]==biblio2["title"]:
+        if biblio1["genre"]==biblio2["genre"]:
+            if biblio1["is_preprint"]==biblio2["is_preprint"]:
+                is_equivalent = True
+    return is_equivalent
+
 
 
 class BiblioRow(db.Model):

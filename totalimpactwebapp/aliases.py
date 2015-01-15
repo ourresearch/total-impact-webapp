@@ -110,6 +110,13 @@ def merge_alias_dicts(aliases1, aliases2):
                 merged_aliases[ns] = [nid]
     return merged_aliases
     
+def matches_alias(product1, product2):
+    alias_tuple_list1 = [alias_row.my_alias_tuple_for_comparing for alias_row in product1.alias_rows]
+    alias_tuple_list2 = [alias_row.my_alias_tuple_for_comparing for alias_row in product2.alias_rows]
+    any_matches = any([alias_tuple1 in alias_tuple_list2 for alias_tuple1 in alias_tuple_list1])
+    return any_matches
+
+
 
 class AliasRow(db.Model):
 
@@ -137,7 +144,7 @@ class AliasRow(db.Model):
     def is_equivalent_alias(self, given_namespace, given_nid):
         if not given_nid:
             return False
-            
+
         given_clean_alias = clean_alias_tuple_for_comparing(given_namespace, given_nid)
         return given_clean_alias==self.my_alias_tuple_for_comparing
 

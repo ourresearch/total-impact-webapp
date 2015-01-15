@@ -27,8 +27,10 @@ from totalimpactwebapp.metric import make_metrics_list
 from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.biblio import BiblioRow
+from totalimpactwebapp.biblio import matches_biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.aliases import AliasRow
+from totalimpactwebapp.aliases import matches_alias
 from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.tweet import Tweet
 
@@ -212,26 +214,6 @@ class Product(db.Model):
         dedup_key_dict = self.clean_biblio_dedup_dict
         biblios_as_string = json.dumps(dedup_key_dict, sort_keys=True, indent=0, separators=(',', ':'))
         return ("biblio", biblios_as_string)
-
-    def matches_biblio(self, biblio1_tuple):
-        (ns, nid) = biblio1_tuple
-        if ns != "biblio":
-            return False
-
-        biblio1 = json.loads(nid)
-        biblio2 = self.clean_biblio_dedup_dict
-
-        try:
-            biblio1_title = remove_unneeded_characters(biblio1["title"]).lower()
-        except (AttributeError, TypeError):
-            biblio1_title = biblio1["title"]
-
-        is_equivalent = False
-        if biblio1_title==biblio2["title"]:
-            if biblio1["genre"]==biblio2["genre"]:
-                if biblio1["is_preprint"]==biblio2["is_preprint"]:
-                    is_equivalent = True
-        return is_equivalent
 
 
     @cached_property
@@ -885,14 +867,19 @@ def aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude):
 
     new_aliases = []
     for alias_tuple in retrieved_aliases:
-        found = False
+
+        temp_product = Product()
         (ns, nid) = alias_tuple
+        found = False
         if ns=="biblio":
-            found = any([product.matches_biblio(nid) for product in products_to_exclude])
+            temp_product = put_biblio_in_product(temp_product, nid, provider_name="bibtex")
+            found = any([matches_biblio(temp_product, product2) for product2 in products_to_exclude])
         else:
-            found = any([product.contains_alias(ns, nid) for product in products_to_exclude])
+            temp_product = put_aliases_in_product(temp_product, [alias_tuple])
+            found = any([matches_alias(temp_product, product2) for product2 in products_to_exclude])
         if not found:        
             new_aliases += [alias_tuple]
+
     return new_aliases
 
 
@@ -947,43 +934,33 @@ def import_and_create_products(profile_id, provider_name, importer_input, analyt
     return products
 
 
-def has_equivalent_alias_tuple_in_list(alias_row, comparing_tuple_list):
-    is_equivalent = (alias_row.my_alias_tuple_for_comparing in comparing_tuple_list)
+def has_equivalent_alias_in_list(product1, duplicate_products_group):
+    is_equivalent = any([matches_alias(product1, product2) for product2 in duplicate_products_group])
     return is_equivalent
 
-def has_equivalent_biblio_in_list(product, comparing_tuple_list):
-    is_equivalent = any([product.matches_biblio(biblio_key) for biblio_key in comparing_tuple_list])
+def has_equivalent_biblio_in_list(product1, duplicate_products_group):
+    is_equivalent = any([matches_biblio(product1, product2) for product2 in duplicate_products_group])
     return is_equivalent
 
 def build_duplicates_list(products):
     distinct_groups = defaultdict(list)
     duplication_list = {}
+
     for product in products:
         is_distinct_item = True
 
-        alias_tuples = product.alias_tuples
-
-        for alias_row in product.alias_rows:
-            if has_equivalent_alias_tuple_in_list(alias_row, duplication_list):
-                # we already have one of the aliases
-                distinct_item_id = duplication_list[alias_row.my_alias_tuple_for_comparing] 
+        for (group_id, duplicate_products_group) in duplication_list.iteritems():
+            if has_equivalent_biblio_in_list(product, duplicate_products_group) or \
+                has_equivalent_alias_in_list(product, duplicate_products_group):
                 is_distinct_item = False  
-
-        if has_equivalent_biblio_in_list(product, duplication_list):
-            # we already have one of the aliases
-            distinct_item_id = duplication_list[product.biblio_dedup_key] 
-            is_distinct_item = False  
+                distinct_group_id = group_id
 
         if is_distinct_item:
-            distinct_item_id = len(distinct_groups)
-            for alias_row in product.alias_rows:
-                # we went through all the aliases and don't have any that match, so make a new entries
-                duplication_list[alias_row.my_alias_tuple_for_comparing] = distinct_item_id
-            duplication_list[product.biblio_dedup_key] = distinct_item_id
+            distinct_group_id = len(distinct_groups)
 
         # whether distinct or not,
         # add this to the group, and add all its aliases too
-        distinct_groups[distinct_item_id] += [product]
+        distinct_groups[distinct_group_id] += [product]
 
     distinct_groups_values = [group for group in distinct_groups.values() if group]
     return distinct_groups_values
