@@ -45,28 +45,26 @@ class BiblioRow(db.Model):
         #    self.url = aliases.best_url
 
 
+def best_biblio_row(biblio_rows, field):
+    matching_biblio_rows = [row for row in biblio_rows if row.biblio_name==field]    
+    for provider in ["user_provided", "crossref", "pubmed", "mendeley"]:
+        best_matching_row = next((row for row in matching_biblio_rows if row.provider==provider), None)
+        if best_matching_row:
+            return best_matching_row
+    if matching_biblio_rows:
+        return matching_biblio_rows[0]
 
 class Biblio(object):
 
     def __init__(self, biblio_rows):
 
         # build out the properties of this object
-        for row in biblio_rows:
-
-            # if we don't have it already, write it.
-            if not hasattr(self, row.biblio_name):
+        biblio_name_fields = set([row.biblio_name for row in biblio_rows])
+        for field in biblio_name_fields:
+            row = best_biblio_row(biblio_rows, field)
+            if row:
                 setattr(self, row.biblio_name, row.biblio_value)
 
-            # if it's from the user, write it; those always win.
-            elif row.provider == "user_provided":
-                setattr(self, row.biblio_name, row.biblio_value)
-
-            else:
-                pass
-
-
-        #if aliases.best_url is not None:
-        #    self.url = aliases.best_url
 
     @cached_property
     def display_year(self):
