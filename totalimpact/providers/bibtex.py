@@ -83,7 +83,7 @@ class Bibtex(Provider):
             try:
                 parsed["journal"] = self._to_unicode(biblio.entries[mykey].fields["journal"])
             except KeyError:
-                parsed["journal"] = ""
+                pass
 
 
             try:
@@ -93,40 +93,40 @@ class Bibtex(Provider):
                 try:
                     parsed["first_author"] = self._to_unicode(biblio.entries[mykey].fields["author"][0].split(",")[0])
                 except (KeyError, AttributeError):
-                    parsed["first_author"] = ""
+                    pass
 
             try:
                 lnames = [person.get_part_as_text("last") for person in biblio.entries[mykey].persons["author"]]
                 parsed["authors"] = self._to_unicode(", ".join(lnames))
             except (KeyError, AttributeError):
-                parsed["authors"] = ""
+                pass
 
             try:
                 parsed["number"] = biblio.entries[mykey].fields["number"]
             except KeyError:
-                parsed["number"] = ""
+                pass
 
             try:
                 parsed["volume"] = biblio.entries[mykey].fields["volume"]
             except KeyError:
-                parsed["volume"] = ""
+                pass
 
             try:
                 pages = biblio.entries[mykey].fields["pages"]
                 parsed["first_page"] = pages.split("--")[0]
             except KeyError:
-                parsed["first_page"] = ""
+                pass
 
             try:
                 year_string = biblio.entries[mykey].fields["year"].replace("{}", "")
                 parsed["year"] = re.sub("\D", "", year_string)
             except KeyError:
-                parsed["year"]  = ""
+                pass
 
             try:
                 parsed["title"] = self._to_unicode(biblio.entries[mykey].fields["title"])
             except KeyError:
-                parsed["title"]  = ""
+                pass
 
             #parsed["key"] = mykey
 
