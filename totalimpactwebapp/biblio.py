@@ -47,12 +47,19 @@ class BiblioRow(db.Model):
 
 def best_biblio_row(biblio_rows, field):
     matching_biblio_rows = [row for row in biblio_rows if row.biblio_name==field]    
+
+    if not matching_biblio_rows:
+        return None
+
+    best_matching_row = None
     for provider in ["user_provided", "crossref", "pubmed", "mendeley"]:
-        best_matching_row = next((row for row in matching_biblio_rows if row.provider==provider), None)
-        if best_matching_row:
-            return best_matching_row
-    if matching_biblio_rows:
-        return matching_biblio_rows[0]
+        if not best_matching_row:
+            best_matching_row = next((row for row in matching_biblio_rows if row.provider==provider), None)
+    if not best_matching_row:
+        best_matching_row = next((row for row in matching_biblio_rows if row.provider!="webpage"), None)
+    if not best_matching_row:
+        best_matching_row = matching_biblio_rows[0]
+    return best_matching_row
 
 class Biblio(object):
 
