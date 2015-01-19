@@ -1050,7 +1050,8 @@ def put_snap_in_product(product, full_metric_name, metrics_method_response):
 def refresh_products_from_tiids(profile_id, tiids, analytics_credentials={}, source="webapp"):
     # assume the profile is the same one as the first product
     if not profile_id:
-        profile_id = products[0].profile_id
+        temp_profile = Product.query.get(tiids[0])
+        profile_id = temp_profile.profile_id
     
     from totalimpactwebapp.profile import Profile
     profile = Profile.query.get(profile_id)
