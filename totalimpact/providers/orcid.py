@@ -65,7 +65,9 @@ class Orcid(Provider):
 
         try:
             biblio["genre"] = work["work-type"].lower().replace("_", " ")
-            if biblio["genre"] == "undefined":
+            if biblio["genre"] == "data set":
+                biblio["genre"] = "dataset"
+            elif biblio["genre"] == "undefined":
                 del biblio["genre"]
         except (KeyError, TypeError, IndexError):
             pass

@@ -36,7 +36,7 @@ psql -c 'ALTER DATABASE freshdb RENAME to workingdb;'
 psql -c 'DROP DATABASE olddb;'
 
 # clean up temporary files
-rm fresh.db
+# rm fresh.db
 
 # show the newest snap on local, after update
 psql -d workingdb -c 'select max(last_collected_date) from snap;'
