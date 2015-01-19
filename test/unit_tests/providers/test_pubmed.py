@@ -2,7 +2,7 @@ from test.unit_tests.providers import common
 from test.unit_tests.providers.common import ProviderTestCase
 from test.utils import http
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError
-from totalimpact import app, db
+from totalimpactwebapp import app, db
 from totalimpact.providers import provider
 from test.utils import setup_postgres_for_unittests, teardown_postgres_for_unittests
 
@@ -129,13 +129,6 @@ class TestPubmed(ProviderTestCase):
         print aliases
         expected = [('biblio', {'title': u'Why most published research findings are false.', 'journal': u'PLoS medicine', 'issn': u'15491676', 'authors': u'Ioannidis', 'keywords': u'Bias (Epidemiology); Data Interpretation, Statistical; Likelihood Functions; Meta-Analysis as Topic; Odds Ratio; Publishing; Reproducibility of Results; Research Design; Sample Size', 'year': '2005', 'date': '2005-08-30T00:00:00', 'abstract': u'There is increasing concern that most current published research findings are false. The probability that a research claim is true may depend on study power and bias, the number of other studies on the same question, and, importantly, the ratio of true to no relationships among the relationships probed in each scientific field. In this framework, a research finding is less likely to be true when the studies conducted in a field are smaller; when effect sizes are smaller; when there is a greater number and lesser preselection of tested relationships; where there is greater flexibility in designs, definitions, outcomes, and analytical modes; when there is greater financial and other interest and prejudice; and when more teams are involved in a scientific field in chase of statistical significance. Simulations show that for most study designs and settings, it is more likely for a research claim to be false than true. Moreover, for many current scientific fields, claimed research findings may often be simply accurate measures of the prevailing bias. In this essay, I discuss the implications of these problems for the conduct and interpretation of research.'}), ('doi', u'10.1371/journal.pmed.0020124'), ('pmc', u'PMC1182327'), ('url', u'http://dx.doi.org/10.1371/journal.pmed.0020124'), ('url', u'http://www.ncbi.nlm.nih.gov/pmc/articles/PMC1182327'), ('url', 'http://www.ncbi.nlm.nih.gov/pubmed/16060722')]
         assert_equals(aliases, expected)
-
-    @http
-    def test_aliases_from_pmid_when_pubmed_misses_doi(self):
-        aliases = self.provider.aliases([("pmid", "18189011")])
-        print aliases
-        expected = ('doi', u'10.3758/CABN.7.4.380')
-        assert expected in aliases
 
     @http
     def test_aliases_from_pmid_different_date_format(self):

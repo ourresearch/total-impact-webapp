@@ -1,3 +1,4 @@
+from totalimpact.tiredis import REDIS_UNITTEST_DATABASE_NUMBER
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.sql import text    
 
@@ -73,9 +74,8 @@ def setup_postgres_for_unittests(db, app):
     db.create_all()
 
     from totalimpact import extra_schema 
-    extra_schema.create_view_min_biblio()
-    extra_schema.create_doaj_table()
-    extra_schema.create_doaj_view()
+    extra_schema.create_doaj_table(db)
+    extra_schema.create_doaj_view(db)
 
     doaj_setup_sql = """
         INSERT INTO doaj(title, publisher, issn, eissn, "cc license") VALUES ('ZooKeys', 'Pensoft Publishers', '1313-2989', '1313-2970', 'by');
@@ -88,3 +88,13 @@ def setup_postgres_for_unittests(db, app):
 
 def teardown_postgres_for_unittests(db):
     db.session.close_all()
+
+
+def setup_redis_for_unittests():
+    # do the same thing for the redis db, set up the test redis database.  We're using DB Number 8
+    r = tiredis.from_url("redis://localhost:6379", db=REDIS_UNITTEST_DATABASE_NUMBER)
+    r.flushdb()
+    return r
+
+
+
