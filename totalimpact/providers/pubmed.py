@@ -32,7 +32,7 @@ class Pubmed(Provider):
     metrics_f1000_url_template = elink_url
 
     aliases_from_doi_url_template = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?term=%s&email=team@total-impact.org&tool=total-impact" 
-    aliases_doi_from_pmid_url_template = "http://www.pmid2doi.org/rest/json/doi/%s"
+    aliases_doi_from_pmid_url_template = "http://www.ncbi.nlm.nih.gov/pmc/utils/idconv/v1.0/?email=team@total-impact.org&tool=total-impact&ids=%s&versions=no&format=json"
     aliases_from_pmid_url_template = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=%s&retmode=xml&email=team@total-impact.org&tool=total-impact" 
 
     aliases_pubmed_url_template = "http://www.ncbi.nlm.nih.gov/pubmed/%s"
@@ -298,9 +298,11 @@ class Pubmed(Provider):
                     aliases_doi_from_pmid_url = self.aliases_doi_from_pmid_url_template %nid
                     try:
                         response = self.http_get(aliases_doi_from_pmid_url, cache_enabled=cache_enabled)
-                        if response.status_code==200:
-                            doi = json.loads(response.text)["doi"]
+                        if response.status_code==200 and ("doi" in response.text):
+                            doi = json.loads(response.text)["records"][0]["doi"]
                             new_aliases += [("doi", doi)]
+                    except (KeyError, AttributeError):
+                        pass
                     except ProviderHttpError as e:
                         logger.warning(u"ProviderHttpError when calling {url}".format(
                             url=aliases_doi_from_pmid_url))

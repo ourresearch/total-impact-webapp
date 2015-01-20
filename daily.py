@@ -1015,41 +1015,50 @@ def update_profiles(limit=5, url_slug=None):
 
     number_profiles = 0.0
     for profile_id in q.all():
-        profile = Profile.query.get(profile_id)
+        product_count = db.session.query(Product.tiid).filter(Product.profile_id==profile_id, Product.removed==None).count()
+        logger.info(u"profile {profile_id} has {product_count} products".format(
+            profile_id=profile_id, product_count=product_count))
 
-        if limit and number_profiles >= limit:
-            logger.info(u"updated all {limit} profiles, done for now.".format(
-                limit=limit))
-            return
-            
-        logger.info(u"**updating {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
-            url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh.isoformat()[0:10]))
+        if product_count > 500:
+            logger.warning(u"Too many products (n={product_count}) for profile {profile_id}, skipping update".format(
+                product_count=product_count, profile_id=profile_id))
+        else:
 
-        try:
-            if profile.is_live:
-                number_products_before = len(profile.tiids)
-                added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
-                number_products_after = number_products_before + len(added_tiids)
-                if len(added_tiids)==0:
-                    logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
-                        number_products_before=number_products_before,
-                        url_slug=profile.url_slug))
-                else:
-                    logger.info(u"  BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
-                        number_products_before=number_products_before,
-                        number_products_after=number_products_after,
-                        percent=100.0*(number_products_after-number_products_before)/number_products_before,
-                        url_slug=profile.url_slug))
+            profile = Profile.query.get(profile_id)
 
-            # refresh all profiles, live and not, after the update from linked accounts is done
-            profile.refresh_products("scheduled")  # puts them on celery
+            if limit and number_profiles >= limit:
+                logger.info(u"updated all {limit} profiles, done for now.".format(
+                    limit=limit))
+                return
+                
+            logger.info(u"**updating {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
+                url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh.isoformat()[0:10]))
 
-        except Exception as e:
-            logger.exception(e)
-            logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(
-                url_slug=profile.url_slug))
+            try:
+                if profile.is_live:
+                    number_products_before = len(profile.tiids)
+                    added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+                    number_products_after = number_products_before + len(added_tiids)
+                    if len(added_tiids)==0:
+                        logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                            number_products_before=number_products_before,
+                            url_slug=profile.url_slug))
+                    else:
+                        logger.info(u"  BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                            number_products_before=number_products_before,
+                            number_products_after=number_products_after,
+                            percent=100.0*(number_products_after-number_products_before)/number_products_before,
+                            url_slug=profile.url_slug))
 
-        number_profiles += 1
+                # refresh all profiles, live and not, after the update from linked accounts is done
+                profile.refresh_products("scheduled")  # puts them on celery
+
+            except Exception as e:
+                logger.exception(e)
+                logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(
+                    url_slug=profile.url_slug))
+
+            number_profiles += 1
 
 
 

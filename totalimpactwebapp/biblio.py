@@ -8,11 +8,21 @@ from util import dict_from_dir
 from totalimpactwebapp import db
 from totalimpactwebapp import json_sqlalchemy
 
-from totalimpactwebapp.aliases import clean_alias_tuple_for_comparing
 
 logger = logging.getLogger("ti.biblio")
 
 
+
+def matches_biblio(product1, product2):
+    biblio1 = product1.clean_biblio_dedup_dict
+    biblio2 = product2.clean_biblio_dedup_dict
+
+    is_equivalent = False
+    if biblio1["title"]==biblio2["title"]:
+        if biblio1["genre"]==biblio2["genre"]:
+            if biblio1["is_preprint"]==biblio2["is_preprint"]:
+                is_equivalent = True
+    return is_equivalent
 
 
 
@@ -35,28 +45,33 @@ class BiblioRow(db.Model):
         #    self.url = aliases.best_url
 
 
+def best_biblio_row(biblio_rows, field):
+    matching_biblio_rows = [row for row in biblio_rows if row.biblio_name==field]    
+
+    if not matching_biblio_rows:
+        return None
+
+    best_matching_row = None
+    for provider in ["user_provided", "crossref", "pubmed", "mendeley"]:
+        if not best_matching_row:
+            best_matching_row = next((row for row in matching_biblio_rows if row.provider==provider), None)
+    if not best_matching_row:
+        best_matching_row = next((row for row in matching_biblio_rows if row.provider!="webpage"), None)
+    if not best_matching_row:
+        best_matching_row = matching_biblio_rows[0]
+    return best_matching_row
 
 class Biblio(object):
 
     def __init__(self, biblio_rows):
 
         # build out the properties of this object
-        for row in biblio_rows:
-
-            # if we don't have it already, write it.
-            if not hasattr(self, row.biblio_name):
+        biblio_name_fields = set([row.biblio_name for row in biblio_rows])
+        for field in biblio_name_fields:
+            row = best_biblio_row(biblio_rows, field)
+            if row:
                 setattr(self, row.biblio_name, row.biblio_value)
 
-            # if it's from the user, write it; those always win.
-            elif row.provider == "user_provided":
-                setattr(self, row.biblio_name, row.biblio_value)
-
-            else:
-                pass
-
-
-        #if aliases.best_url is not None:
-        #    self.url = aliases.best_url
 
     @cached_property
     def display_year(self):
@@ -139,18 +154,7 @@ class Biblio(object):
         return host
 
 
-    @cached_property
-    def dedup_key(self):
-        nid = self.to_dict()
-        biblio_for_comparing = clean_alias_tuple_for_comparing("biblio", nid)
-        return biblio_for_comparing
 
-
-    def is_equivalent_biblio(self, biblio_dict):
-        if not biblio_dict:
-            return False
-
-        return self.dedup_key == clean_alias_tuple_for_comparing("biblio", biblio_dict)
 
     def to_dict(self):
         attributes_to_ignore = [

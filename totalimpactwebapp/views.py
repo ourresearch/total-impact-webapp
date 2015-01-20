@@ -717,6 +717,13 @@ def profile_products_modify(id):
         resp = {"deleted_tiids": deleted_tiids}
         # local_sleep(30)
 
+    if request.method == "POST" and action == "dedup":
+        logger.info(u"deduplicating for {url_slug}".format(
+            url_slug=profile.url_slug))
+        deleted_tiids = profile.remove_duplicates()
+        resp = {"deleted_tiids": deleted_tiids}
+        # local_sleep(30)
+
     elif request.method == "POST" and action == "refresh":
         tiids_being_refreshed = profile.refresh_products(source)
         resp = {"products": tiids_being_refreshed}

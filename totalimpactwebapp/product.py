@@ -27,8 +27,10 @@ from totalimpactwebapp.metric import make_metrics_list
 from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.biblio import BiblioRow
+from totalimpactwebapp.biblio import matches_biblio
 from totalimpactwebapp.aliases import Aliases
 from totalimpactwebapp.aliases import AliasRow
+from totalimpactwebapp.aliases import matches_alias
 from totalimpactwebapp.snap import Snap
 from totalimpactwebapp.tweet import Tweet
 
@@ -39,6 +41,7 @@ from util import dict_from_dir
 from util import cached_property
 from util import commit
 from util import as_int_or_float_if_possible
+from util import remove_unneeded_characters
 from totalimpactwebapp.configs import get_genre_config
 
 from totalimpactwebapp import db
@@ -186,8 +189,32 @@ class Product(db.Model):
 
         return any([row.is_equivalent_alias(namespace, nid) for row in self.alias_rows])
 
-    def matches_biblio(self, biblio_dict):
-        return self.biblio.is_equivalent_biblio(biblio_dict)
+    @cached_property
+    def alias_row_count(self):
+        return len(self.alias_rows)
+
+    @cached_property
+    def biblio_key_count(self):
+        return len([key for key in self.biblio.to_dict().keys() if key])
+
+
+    @cached_property
+    def clean_biblio_dedup_dict(self):
+        dedup_key_dict = {}
+        try:
+            dedup_key_dict["title"] = remove_unneeded_characters(self.biblio.display_title).lower()
+        except (AttributeError, TypeError):
+            dedup_key_dict["title"] = self.biblio.display_title
+        dedup_key_dict["genre"] = self.genre
+        dedup_key_dict["is_preprint"] = self.is_preprint
+        return dedup_key_dict
+
+    @cached_property
+    def biblio_dedup_key(self):
+        dedup_key_dict = self.clean_biblio_dedup_dict
+        biblios_as_string = json.dumps(dedup_key_dict, sort_keys=True, indent=0, separators=(',', ':'))
+        return ("biblio", biblios_as_string)
+
 
     @cached_property
     def alias_dict(self):
@@ -438,11 +465,35 @@ class Product(db.Model):
 
     @cached_property
     def has_user_provided_biblio(self):
-        return any([1 for row in self.biblio_rows if "user_provided"==row.provider])
+        # don't include changing the genre
+        for row in self.biblio_rows:
+            if row.biblio_name != "genre":
+                if row.provider == "user_provided":
+                    return True
+        return False
 
     @cached_property
     def has_free_fulltext_url(self):
-        return self.biblio.free_fulltext_host != None
+        return (hasattr(self.biblio, "free_fulltext_host") and self.biblio.free_fulltext_host)
+
+    @cached_property
+    def is_preprint(self):
+        doi_fragments = ["/npre.", "/peerj.preprints", ".figshare."]
+        url_fragments = ["figshare.com/"]
+
+        if self.aliases and self.aliases.display_arxiv:
+            return True
+
+        if self.aliases and self.aliases.display_doi:
+            if any(fragment in self.aliases.display_doi for fragment in doi_fragments):
+                return True
+
+        if self.aliases and self.aliases.resolved_url:
+            if any(fragment in self.aliases.resolved_url for fragment in url_fragments):
+                return True
+
+        return False
+
 
 
     def get_metric_raw_value(self, provider, interaction):
@@ -816,14 +867,19 @@ def aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude):
 
     new_aliases = []
     for alias_tuple in retrieved_aliases:
-        found = False
+
+        temp_product = Product()
         (ns, nid) = alias_tuple
+        found = False
         if ns=="biblio":
-            found = any([product.matches_biblio(nid) for product in products_to_exclude])
+            temp_product = put_biblio_in_product(temp_product, nid, provider_name="bibtex")
+            found = any([matches_biblio(temp_product, product2) for product2 in products_to_exclude])
         else:
-            found = any([product.contains_alias(ns, nid) for product in products_to_exclude])
+            temp_product = put_aliases_in_product(temp_product, [alias_tuple])
+            found = any([matches_alias(temp_product, product2) for product2 in products_to_exclude])
         if not found:        
             new_aliases += [alias_tuple]
+
     return new_aliases
 
 
@@ -878,51 +934,33 @@ def import_and_create_products(profile_id, provider_name, importer_input, analyt
     return products
 
 
-def has_equivalent_alias_tuple_in_list(alias_row, comparing_tuple_list):
-    is_equivalent = (alias_row.my_alias_tuple_for_comparing in comparing_tuple_list)
+def has_equivalent_alias_in_list(product1, duplicate_products_group):
+    is_equivalent = any([matches_alias(product1, product2) for product2 in duplicate_products_group])
     return is_equivalent
 
-def has_equivalent_biblio_in_list(biblio, comparing_tuple_list):
-    is_equivalent = (biblio.dedup_key in comparing_tuple_list)
+def has_equivalent_biblio_in_list(product1, duplicate_products_group):
+    is_equivalent = any([matches_biblio(product1, product2) for product2 in duplicate_products_group])
     return is_equivalent
 
 def build_duplicates_list(products):
     distinct_groups = defaultdict(list)
     duplication_list = {}
+
     for product in products:
         is_distinct_item = True
 
-        alias_tuples = product.alias_tuples
-
-        for alias_row in product.alias_rows:
-            if has_equivalent_alias_tuple_in_list(alias_row, duplication_list):
-                # we already have one of the aliases
-                distinct_item_id = duplication_list[alias_row.my_alias_tuple_for_comparing] 
+        for (group_id, duplicate_products_group) in duplication_list.iteritems():
+            if has_equivalent_biblio_in_list(product, duplicate_products_group) or \
+                has_equivalent_alias_in_list(product, duplicate_products_group):
                 is_distinct_item = False  
-
-        if has_equivalent_biblio_in_list(product.biblio, duplication_list):
-            # we already have one of the aliases
-            distinct_item_id = duplication_list[product.biblio.dedup_key] 
-            is_distinct_item = False  
+                distinct_group_id = group_id
 
         if is_distinct_item:
-            distinct_item_id = len(distinct_groups)
-            for alias_row in product.alias_rows:
-                # we went through all the aliases and don't have any that match, so make a new entries
-                duplication_list[alias_row.my_alias_tuple_for_comparing] = distinct_item_id
-            duplication_list[product.biblio.dedup_key] = distinct_item_id
+            distinct_group_id = len(distinct_groups)
 
         # whether distinct or not,
         # add this to the group, and add all its aliases too
-        if product.created:
-            created_date = product.created.isoformat()
-        else:
-            created_date = "1999-01-01T14:42:49.818393"   
-        distinct_groups[distinct_item_id] += [{ "tiid":product.tiid, 
-                                                "has_user_provided_biblio":product.has_user_provided_biblio, 
-                                                "has_free_fulltext_url":product.has_free_fulltext_url, 
-                                                "created":created_date
-                                                }]
+        distinct_groups[distinct_group_id] += [product]
 
     distinct_groups_values = [group for group in distinct_groups.values() if group]
     return distinct_groups_values
@@ -1012,7 +1050,8 @@ def put_snap_in_product(product, full_metric_name, metrics_method_response):
 def refresh_products_from_tiids(profile_id, tiids, analytics_credentials={}, source="webapp"):
     # assume the profile is the same one as the first product
     if not profile_id:
-        profile_id = products[0].profile_id
+        temp_profile = Product.query.get(tiids[0])
+        profile_id = temp_profile.profile_id
     
     from totalimpactwebapp.profile import Profile
     profile = Profile.query.get(profile_id)
