@@ -141,7 +141,11 @@ class Scopus(Provider):
             "Ecol Letters": "Ecology Letters"
             }
 
+
+        # title lookups go better without question marks
+        # see https://api.elsevier.com/content/search/index:SCOPUS?query=AUTHLASTNAME(Piwowar)%20AND%20TITLE(Who%20shares%20Who%20doesn%27t%20Factors%20associated%20with%20openly%20archiving%20raw%20research%20data)%20AND%20SRCTITLE(PLOS%20ONE)&field=citedby-count&apiKey=
         title = biblio_dict["title"].replace("(", "{(}").replace(")", "{)}")
+        title = title.replace("?", "")
         journal = biblio_dict["journal"].replace("(", "{(}").replace(")", "{)}")
 
         url = None
@@ -200,7 +204,7 @@ class Scopus(Provider):
             relevant_record = self._get_relevant_record_with_biblio(id)
 
         if not relevant_record:
-            logger.info(u"no scopus page with id {id}".format(id=id))
+            # logger.info(u"no scopus page with id {id}".format(id=id))
             return {}
 
         metrics_dict = self._extract_metrics(relevant_record)
