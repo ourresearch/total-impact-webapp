@@ -96,6 +96,10 @@ angular.module('services.profileProducts', [
         function(resp){
             console.log("in profileService.get(), got ProductsResource() data back", resp)
 
+          if (!data.products){
+            data.products = []
+          }
+
           _.each(resp.list, function(newProduct){
             var oldProduct = getProductFromTiid(newProduct.tiid)
             if (!oldProduct){
@@ -204,6 +208,11 @@ angular.module('services.profileProducts', [
     }
 
     function getProductIndexFromTiid(tiid){
+
+      if (!data.products){
+        return -1
+      }
+
       for (var i=0; i<data.products.length; i++ ){
         if (data.products[i].tiid == tiid) {
           return i
