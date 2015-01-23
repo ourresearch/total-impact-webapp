@@ -55,8 +55,9 @@ def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, twe
                         tweeter.set_attributes_from_twitter_data(payload_dict["user"])
                         tweet.tweeter = tweeter
                         commit(db)
-                    logger.info(u"updated tweeter followers for {screen_name}".format(
-                        screen_name=tweet.tweeter.screen_name))
+                    if tweet.tweeter:
+                        logger.info(u"updated tweeter followers for {screen_name}".format(
+                            screen_name=tweet.tweeter.screen_name))
             
 
 def flag_deleted_tweets(tweet_ids):
