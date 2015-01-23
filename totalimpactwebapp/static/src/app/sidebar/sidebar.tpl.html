@@ -27,7 +27,7 @@
          </a>
          <a href="/{{ profileAboutService.data.url_slug }}/fans"
             class="animated fadeIn"
-            ng-if="profileService.data.tweets"
+            ng-if="profileService.data.hasTweets"
             ng-class="{active: page.isNamed('fans')}">
             <i class="fa fa-heart-o left"></i>
             <span class="text">

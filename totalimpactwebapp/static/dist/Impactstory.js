@@ -10996,7 +10996,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "         </a>\n" +
     "         <a href=\"/{{ profileAboutService.data.url_slug }}/fans\"\n" +
     "            class=\"animated fadeIn\"\n" +
-    "            ng-if=\"profileService.data.tweets\"\n" +
+    "            ng-if=\"profileService.data.hasTweets\"\n" +
     "            ng-class=\"{active: page.isNamed('fans')}\">\n" +
     "            <i class=\"fa fa-heart-o left\"></i>\n" +
     "            <span class=\"text\">\n" +
