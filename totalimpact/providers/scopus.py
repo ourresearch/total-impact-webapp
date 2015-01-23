@@ -136,7 +136,10 @@ class Scopus(Provider):
     def _get_scopus_url(self, biblio_dict):
         url_template_one_journal = "https://api.elsevier.com/content/search/index:SCOPUS?query=AUTHLASTNAME({first_author})%20AND%20TITLE({title})%20AND%20SRCTITLE({journal})&field=citedby-count&apiKey="+os.environ["SCOPUS_KEY"]+"&insttoken="+os.environ["SCOPUS_INSTTOKEN"]            
         url_template_two_journals = "https://api.elsevier.com/content/search/index:SCOPUS?query=AUTHLASTNAME({first_author})%20AND%20TITLE({title})%20AND%20(SRCTITLE({journal1})%20OR%20SRCTITLE({journal2}))&field=citedby-count&apiKey="+os.environ["SCOPUS_KEY"]+"&insttoken="+os.environ["SCOPUS_INSTTOKEN"]
-        alt_journal_names = {"BMJ": "British Medical Journal"}
+        alt_journal_names = {
+            "BMJ": "British Medical Journal",
+            "Ecol Letters": "Ecology Letters"
+            }
 
         title = biblio_dict["title"].replace("(", "{(}").replace(")", "{)}")
         journal = biblio_dict["journal"].replace("(", "{(}").replace(")", "{)}")
