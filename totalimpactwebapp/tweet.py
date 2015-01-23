@@ -51,6 +51,8 @@ def store_tweet_payload_and_tweeter_from_twitter(payload_dicts_from_twitter, twe
                         tweeter = Tweeter.query.get(tweet.screen_name)
                         if not tweeter:
                             tweeter = Tweeter(screen_name=tweet.screen_name)
+                            db.session.merge(tweeter)
+
                         tweeter.set_attributes_from_twitter_data(payload_dict["user"])
                         tweet.tweeter = tweeter
                     logger.info(u"updated tweeter followers for {screen_name}".format(
@@ -160,8 +162,8 @@ def hydrate_twitter_text_and_followers(profile_id, altmetric_twitter_posts):
                     tweeter = Tweeter.query.get(screen_name)
                     if not tweeter:
                         tweeter = Tweeter(screen_name=screen_name)
+                        db.session.merge(tweeter)
                     tweeter.set_attributes_from_altmetric_post(post)
-                    db.session.add(tweeter)
 
     logger.info(u"before tweets_to_hydrate_from_twitter for {profile_id}".format(
         profile_id=profile_id))
