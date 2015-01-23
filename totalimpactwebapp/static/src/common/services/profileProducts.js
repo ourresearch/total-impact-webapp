@@ -21,7 +21,8 @@ angular.module('services.profileProducts', [
     var loading = true
     var data = {
       products:[],
-      tweets: []
+      tweets: [],
+      hasTweets: false
     }
 
     function getProductStubs(url_slug){
@@ -62,6 +63,8 @@ angular.module('services.profileProducts', [
 
           // the Fans service needs the latest set of tweets.
           data.tweets = resp.tweets
+          data.hasTweets = !_.isEmpty(resp.tweets)
+
           FansService.setTweets(resp.tweets)
         }
       ).$promise

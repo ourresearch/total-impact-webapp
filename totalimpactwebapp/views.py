@@ -756,7 +756,6 @@ def get_profile_tweets(url_slug):
     resp = {
         "tweets": tweets
     }
-
     return json_resp_from_thing(resp)
 
 
