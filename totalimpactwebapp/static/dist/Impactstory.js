@@ -6721,6 +6721,7 @@ angular.module('services.profileProducts', [
 
           // the Fans service needs the latest set of tweets.
           data.tweets = resp.tweets
+
           FansService.setTweets(resp.tweets)
         }
       ).$promise
@@ -10991,7 +10992,10 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "            </span>\n" +
     "            <div class=\"arrow\"></div>\n" +
     "         </a>\n" +
-    "         <a href=\"/{{ profileAboutService.data.url_slug }}/fans\" ng-class=\"{active: page.isNamed('fans')}\">\n" +
+    "         <a href=\"/{{ profileAboutService.data.url_slug }}/fans\"\n" +
+    "            class=\"animated fadeIn\"\n" +
+    "            ng-if=\"profileService.data.tweets\"\n" +
+    "            ng-class=\"{active: page.isNamed('fans')}\">\n" +
     "            <i class=\"fa fa-heart-o left\"></i>\n" +
     "            <span class=\"text\">\n" +
     "               Fans\n" +
@@ -11317,7 +11321,7 @@ angular.module("update/update-progress.tpl.html", []).run(["$templateCache", fun
     "</div>\n" +
     "<div class=\"modal-body update\">\n" +
     "\n" +
-    "   <div class=\"intro dedup\" ng-if=\"status.isCrunching()\"><br>\n" +
+    "   <div class=\"intro dedup\" ng-if=\"!status.getNumUpdating()\"><br>\n" +
     "      <i class=\"icon-refresh icon-spin\"></i>\n" +
     "      Crunching the numbers&hellip;\n" +
     "   </div>\n" +

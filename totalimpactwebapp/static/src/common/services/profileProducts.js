@@ -62,6 +62,7 @@ angular.module('services.profileProducts', [
 
           // the Fans service needs the latest set of tweets.
           data.tweets = resp.tweets
+
           FansService.setTweets(resp.tweets)
         }
       ).$promise
