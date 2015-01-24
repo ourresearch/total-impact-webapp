@@ -1006,6 +1006,10 @@ def update_tweet_text_for_live_profiles(url_slug=None, min_url_slug=None):
         profile.parse_and_save_tweets()
 
 
+
+
+
+
 def update_profiles(limit=5, url_slug=None):
     if url_slug:
         q = db.session.query(Profile.id).filter(Profile.url_slug==url_slug)
@@ -1061,6 +1065,39 @@ def update_profiles(limit=5, url_slug=None):
             number_profiles += 1
 
 
+def debug_biblio_for_live_profiles(args):
+    url_slug = args.get("url_slug", None)
+    min_url_slug = args.get("min_url_slug", None)
+
+    q = profile_query(url_slug, min_url_slug)
+
+    from totalimpact.providers.bibtex import Bibtex
+    bibtex_provider = Bibtex()
+
+    from totalimpactwebapp.product import put_biblio_in_product
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.info(u"in debug_biblio_for_live_profiles for {url_slug}".format(
+            url_slug=profile.url_slug))
+
+        for product in profile.products_not_removed:
+            if product.biblio \
+                and not hasattr(product.biblio, "journal") \
+                and hasattr(product.biblio, "full_citation") \
+                and "journal" in product.biblio.full_citation:
+                    print "got one:", product.tiid, product.biblio.full_citation
+                    aliases = bibtex_provider.member_items(product.biblio.full_citation)
+                    print aliases
+                    for alias in aliases:
+                        (ns, nid) = alias
+                        if ns=="biblio":
+                            product = put_biblio_in_product(product, nid, provider_name="bibtex")
+                            print product.biblio
+                            db.session.merge(product)
+                            commit(db)
+            else:
+                pass
+                # print ".",
 
 
 def main(function, args):
@@ -1112,7 +1149,11 @@ def main(function, args):
     elif function=="update_tweet_text_for_live_profiles":
         update_tweet_text_for_live_profiles(args["url_slug"], args["min_url_slug"])
     else:
-        print "no matching function found, returning."
+        # call function by its name in this module, with all args :)
+        # http://stackoverflow.com/a/4605/596939
+
+        globals()[function](args)
+
 
 
 
