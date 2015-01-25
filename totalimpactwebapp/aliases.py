@@ -59,8 +59,11 @@ def normalize_alias_tuple(ns, nid):
 
 
 def clean_alias_tuple_for_comparing(ns, nid):
-    (ns, nid) = normalize_alias_tuple(ns, nid)
+    alias_tuple = normalize_alias_tuple(ns, nid)
+    if not alias_tuple:
+        return None
     try:
+        (ns, nid) = alias_tuple
         cleaned_alias = (ns.lower(), nid.lower())
     except AttributeError:
         logger.debug(u"problem cleaning {ns} {nid}".format(
@@ -156,6 +159,10 @@ class AliasRow(db.Model):
             return False
 
         given_clean_alias = clean_alias_tuple_for_comparing(given_namespace, given_nid)
+
+        if not given_clean_alias:
+            return False
+            
         return given_clean_alias==self.my_alias_tuple_for_comparing
 
 
