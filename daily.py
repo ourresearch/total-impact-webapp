@@ -1070,7 +1070,7 @@ def update_all_live_profiles(args):
 
     q = profile_query(url_slug, min_url_slug)
     if not force_all:
-        q = db.session.query(Profile.id).filter(Profile.next_refresh <= datetime.datetime.utcnow())
+        q = q.filter(Profile.next_refresh <= datetime.datetime.utcnow())
 
     limit = args.get("limit", 5)
     if url_slug:
