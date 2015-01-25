@@ -7,7 +7,7 @@
 
 
 def orders_of_magnitude_after_100():
-    ret += range(100, 1000, 100)  # hundreds
+    ret = range(100, 1000, 100)  # hundreds
     ret += range(1000, 10000, 1000)  # thousands
     ret += range (10000, 100000, 10000)  # ten-thousands
     ret += range(100000, 500000, 100000)  # hundred-thousands
