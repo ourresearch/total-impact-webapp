@@ -1066,8 +1066,12 @@ def update_profiles(limit=5, url_slug=None):
 def update_all_live_profiles(args):
     url_slug = args.get("url_slug", None)
     min_url_slug = args.get("min_url_slug", None)
+    min_url_slug = args.get("force_all", None)
 
     q = profile_query(url_slug, min_url_slug)
+    if not force_all:
+        q = db.session.query(Profile.id).filter(Profile.next_refresh <= datetime.datetime.utcnow())
+
     limit = args.get("limit", 5)
     if url_slug:
         limit = 1
@@ -1205,6 +1209,7 @@ if __name__ == "__main__":
     parser.add_argument('--end_days_ago', type=int)
     parser.add_argument('--limit', type=int, default=5)
     parser.add_argument('--max_pages', type=int)
+    parser.add_argument('--force_all', type=int)
 
     args = vars(parser.parse_args())
     function = args["function"]
