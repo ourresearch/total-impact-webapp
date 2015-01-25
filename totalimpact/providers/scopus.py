@@ -1,7 +1,8 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderServerError
+from unicode_helpers import to_unicode_or_bust
 
-import simplejson, re, os, random, string, urllib
+import json, re, os, random, string, urllib
 
 import logging
 logger = logging.getLogger('ti.providers.scopus')
@@ -144,9 +145,12 @@ class Scopus(Provider):
 
         # title lookups go better without question marks
         # see https://api.elsevier.com/content/search/index:SCOPUS?query=AUTHLASTNAME(Piwowar)%20AND%20TITLE(Who%20shares%20Who%20doesn%27t%20Factors%20associated%20with%20openly%20archiving%20raw%20research%20data)%20AND%20SRCTITLE(PLOS%20ONE)&field=citedby-count&apiKey=
-        title = biblio_dict["title"].replace("(", "{(}").replace(")", "{)}")
+        title = to_unicode_or_bust(biblio_dict["title"]).encode('utf8')
+        title = title.replace("(", "{(}").replace(")", "{)}")
         title = title.replace("?", "")
-        journal = biblio_dict["journal"].replace("(", "{(}").replace(")", "{)}")
+        journal = to_unicode_or_bust(biblio_dict["journal"]).encode('utf8')
+        journal = journal.replace("(", "{(}").replace(")", "{)}")
+        journal = journal.replace(" & ", " and ")
 
         url = None
         if title and journal:
