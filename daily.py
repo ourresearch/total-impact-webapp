@@ -1068,9 +1068,11 @@ def update_all_live_profiles(args):
     min_url_slug = args.get("min_url_slug", None)
 
     q = profile_query(url_slug, min_url_slug)
-    q = q.limit(args.get("limit", 5))
+    limit = args.get("limit", 5)
+    if url_slug:
+        limit = 1
 
-    number_profiles = 0.0
+    number_profiles_updated = 0.0
     for profile in windowed_query(q, Profile.url_slug, 25):
         product_count = len(profile.products_not_removed)
         logger.info(u"profile {url_slug} has {product_count} products".format(
@@ -1082,11 +1084,16 @@ def update_all_live_profiles(args):
         else:            
             update_this_profile(profile)
 
+
+            number_profiles_updated += 1
+            if limit and number_profiles_updated >= limit:
+                logger.info(u"updated all {limit} profiles, done for now.".format(
+                    limit=limit))
+                return
+
             pause_length = min(product_count * 3, 120)
             print "pausing", pause_length, "seconds after refreshing", product_count, "products"
             time.sleep(pause_length)
-
-            number_profiles += 1
 
 
 def debug_biblio_for_live_profiles(args):
