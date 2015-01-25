@@ -418,16 +418,16 @@ def email_report_to_live_profiles(url_slug=None, min_url_slug=None, max_emails=N
         try:
             if not profile.is_live:
                 pass
-                # logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
+                logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
             elif not profile.email or (u"@" not in profile.email):
                 pass
-                # logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
+                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
             elif profile.notification_email_frequency == "none":
                 pass
-                # logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
+                logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
             elif profile.last_email_sent and ((datetime.datetime.utcnow() - profile.last_email_sent).days < 7):
                 pass
-                # logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
+                logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
             else:
                 # logger.info(u"checking email for {url_slug}".format(url_slug=profile.url_slug))
                 # status = tasks.send_email_if_new_diffs.delay(profile.id)

@@ -181,6 +181,7 @@ class Scopus(Provider):
                         title=urllib.quote(title), 
                         journal=urllib.quote(journal))
         elif title and first_author and issn:
+            # example: http://www.mendeley.com/research/codeco-grammar-notation-controlled-natural-language-predictive-editors/
             url = url_template_issn.format(
                     first_author=urllib.quote(first_author), 
                     title=urllib.quote(title), 
