@@ -1,6 +1,6 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderFactory
-from totalimpact import app, db
+from totalimpactwebapp import app, db
 from nose.tools import assert_equals, nottest
 from xml.dom import minidom 
 from test.utils import setup_postgres_for_unittests, teardown_postgres_for_unittests

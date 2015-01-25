@@ -36,16 +36,26 @@ def normalize_alias_tuple(ns, nid):
     from totalimpact.providers import webpage
     from totalimpact import importer
 
-    if importer.is_doi(nid):
-        nid = crossref.clean_doi(nid)
-    elif importer.is_pmid(nid):
-        nid = pubmed.clean_pmid(nid)
-    elif importer.is_arxiv(nid):
-        nid = arxiv.clean_arxiv_id(nid)
-    elif importer.is_url(nid):
-        nid = webpage.clean_url(nid)
+    clean_nid = None
+    if ns=="doi" or importer.is_doi(nid):
+        ns = "doi"
+        clean_nid = crossref.clean_doi(nid)
+    elif ns=="pmid" or importer.is_pmid(nid):
+        ns = "pmid"
+        clean_nid = pubmed.clean_pmid(nid)
+    elif ns=="arxiv" or importer.is_arxiv(nid):
+        ns = "arxiv"
+        clean_nid = arxiv.clean_arxiv_id(nid)
+    elif ns=="url" or importer.is_url(nid):
+        ns = "url"
+        clean_nid = webpage.clean_url(nid)
+    elif ns not in ["doi", "pmid", "arxiv", "url"]:
+        clean_nid = nid
 
-    return (ns, nid)
+    if not clean_nid:
+        return None
+
+    return (ns, clean_nid)
 
 
 def clean_alias_tuple_for_comparing(ns, nid):
@@ -226,6 +236,8 @@ class Aliases(object):
                 elif "europepmc.org" in url:
                     continue
                 elif "mendeley.com" in url:
+                    continue
+                elif "scopus.com" in url:
                     continue
                 else:
                     return url

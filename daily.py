@@ -1109,7 +1109,8 @@ def debug_biblio_for_live_profiles(args):
 
         for product in profile.products_not_removed:
             if product.biblio \
-                and not hasattr(product.biblio, "journal") \
+                and hasattr(product.biblio, "journal") \
+                and "journal =" in product.biblio.journal \
                 and hasattr(product.biblio, "full_citation") \
                 and "journal" in product.biblio.full_citation:
                     print "got one:", product.tiid, product.biblio.full_citation
