@@ -1068,6 +1068,7 @@ def update_all_live_profiles(args):
     min_url_slug = args.get("min_url_slug", None)
 
     q = profile_query(url_slug, min_url_slug)
+    q = q.limit(args.get("limit", 5))
 
     number_profiles = 0.0
     for profile in windowed_query(q, Profile.url_slug, 25):
