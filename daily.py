@@ -403,20 +403,16 @@ def write_500_random_profile_urls():
 
 
 
-def email_report_to_url_slug(url_slug=None):
-    if url_slug:
-        profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
-        # print profile.url_slug
-        tasks.send_email_report(profile)
 
 
-def email_report_to_everyone_who_needs_one(max_emails=None):
+def email_report_to_live_profiles(url_slug=None, min_url_slug=None, max_emails=None):
     number_emails_sent = 0
 
-    q = db.session.query(Profile)
+    q = profile_query(url_slug, min_url_slug)
+
     for profile in windowed_query(q, Profile.url_slug, 25):
 
-        # logger.debug(u"in email_report_to_everyone_who_needs_one for {url_slug}".format(
+        # logger.debug(u"in email_report_to_live_profiles for {url_slug}".format(
         #     url_slug=profile.url_slug))
 
         try:
@@ -1130,10 +1126,7 @@ def debug_biblio_for_live_profiles(args):
 
 def main(function, args):
     if function=="emailreports":
-        if "url_slug" in args and args["url_slug"]:
-            email_report_to_url_slug(args["url_slug"])
-        else:    
-            email_report_to_everyone_who_needs_one(args["max_emails"])
+        email_report_to_live_profiles(args["url_slug"], args["min_url_slug"], args["max_emails"])
     elif function=="dedup":
         dedup_everyone(args["url_slug"], args["min_url_slug"])
     elif function=="productdeets":
