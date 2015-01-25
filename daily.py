@@ -551,7 +551,7 @@ def borked_pinboards_for_life_profiles(url_slug=None, min_url_slug=None):
 
 
 
-def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
+def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None, start_days_ago=7):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
     else:
@@ -561,15 +561,15 @@ def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
             q = q.filter(Profile.url_slug>=min_url_slug)
 
         # also, only if not refreshed recently
-        min_last_refreshed = datetime.datetime.utcnow() - datetime.timedelta(days=7)
-        q = q.filter(Profile.last_refreshed < min_last_refreshed)
+        min_last_refreshed = datetime.datetime.utcnow() - datetime.timedelta(days=start_days_ago)
+        q = q.filter(Profile.last_refreshed <= min_last_refreshed)
 
     start_time = datetime.datetime.utcnow()
     number_profiles = 0.0
     total_refreshes = 0
     for profile in windowed_query(q, Profile.url_slug, 25):
         number_profiles += 1
-        print profile.url_slug, profile.id, profile.last_refreshed
+        print profile.url_slug, profile.id, profile.last_refreshed, len(profile.display_products)
         number_refreshes = len(profile.display_products)
         if number_refreshes:
             profile.refresh_products(source="scheduled")
@@ -1135,7 +1135,7 @@ def main(function, args):
     elif function=="run_through_altmetric_tweets":
         run_through_altmetric_tweets(args["url_slug"], args["min_url_slug"])
     elif function=="new_metrics_for_live_profiles":
-        new_metrics_for_live_profiles(args["url_slug"], args["min_url_slug"])
+        new_metrics_for_live_profiles(args["url_slug"], args["min_url_slug"], args["start_days_ago"])
     elif function=="borked_pinboards_for_life_profiles":
         borked_pinboards_for_life_profiles(args["url_slug"], args["min_url_slug"])
     elif function=="update_mendeley_countries_for_live_profiles":
