@@ -1066,7 +1066,7 @@ def update_profiles(limit=5, url_slug=None):
 def update_all_live_profiles(args):
     url_slug = args.get("url_slug", None)
     min_url_slug = args.get("min_url_slug", None)
-    min_url_slug = args.get("force_all", None)
+    force_all = args.get("force_all", None)
 
     q = profile_query(url_slug, min_url_slug)
     if not force_all:
