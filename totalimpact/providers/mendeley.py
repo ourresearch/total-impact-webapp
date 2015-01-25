@@ -219,14 +219,14 @@ class Mendeley(Provider):
         doc = self._get_doc(aliases)
         new_aliases = []
         if doc:  
-            from totalimpactwebapp.aliases import alias_dict_from_tuples
-            aliases_dict = alias_dict_from_tuples(aliases)
-
-            for namespace in doc.identifiers:
-                if namespace in ["doi", "arxiv", "pmid", "scopus"] and (namespace not in aliases_dict):
-                    new_alias = normalize_alias_tuple(namespace, doc.identifiers[namespace])
-                    if new_alias:
-                        new_aliases += [new_alias]
+            if doc.identifiers:
+                from totalimpactwebapp.aliases import alias_dict_from_tuples
+                aliases_dict = alias_dict_from_tuples(aliases)
+                for namespace in doc.identifiers:
+                    if namespace in ["doi", "arxiv", "pmid", "scopus"] and (namespace not in aliases_dict):
+                        new_alias = normalize_alias_tuple(namespace, doc.identifiers[namespace])
+                        if new_alias:
+                            new_aliases += [new_alias]
 
             new_aliases += [("url", doc.link)]
             new_aliases += [("mendeley_uuid", doc.id)]
