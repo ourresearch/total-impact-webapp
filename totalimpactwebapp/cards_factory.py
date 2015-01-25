@@ -32,9 +32,6 @@ def make_product_list_cards(products, card_class, url_slug=None):
         if "citations" in interaction:
             continue  # we aren't allowed to accumulate scopus, don't want to accumulate PMC ciations
 
-        if provider=="impactstory" and interaction=="views":
-            continue  # don't include impactstory views right now
-
         if card_class.would_generate_a_card(products, provider, interaction):
             new_card = card_class(products, provider, interaction, url_slug)
             cards.append(new_card)
