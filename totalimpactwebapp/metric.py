@@ -136,6 +136,9 @@ class Metric(object):
         if not self.can_diff:
             return None
 
+        if not self.diff_value:
+            return None
+
         for milestone in sorted(self.config["milestones"], reverse=True):
             if self.diff_window_start_value < milestone <= self.diff_window_end_value:
                 return milestone

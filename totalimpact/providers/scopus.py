@@ -7,6 +7,10 @@ import json, re, os, random, string, urllib
 import logging
 logger = logging.getLogger('ti.providers.scopus')
 
+
+
+# some documentation here http://api.elsevier.com/documentation/search/SCOPUSSearchTips.htm
+
 class Scopus(Provider):  
 
     example_id = ("doi", "10.1371/journal.pone.0000308")
