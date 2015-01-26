@@ -403,35 +403,31 @@ def write_500_random_profile_urls():
 
 
 
-def email_report_to_url_slug(url_slug=None):
-    if url_slug:
-        profile = Profile.query.filter(func.lower(Profile.url_slug) == func.lower(url_slug)).first()
-        # print profile.url_slug
-        tasks.send_email_report(profile)
 
 
-def email_report_to_everyone_who_needs_one(max_emails=None):
+def email_report_to_live_profiles(url_slug=None, min_url_slug=None, max_emails=None):
     number_emails_sent = 0
 
-    q = db.session.query(Profile)
+    q = profile_query(url_slug, min_url_slug)
+
     for profile in windowed_query(q, Profile.url_slug, 25):
 
-        # logger.debug(u"in email_report_to_everyone_who_needs_one for {url_slug}".format(
+        # logger.debug(u"in email_report_to_live_profiles for {url_slug}".format(
         #     url_slug=profile.url_slug))
 
         try:
             if not profile.is_live:
                 pass
-                # logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
+                logger.info(u"not sending, profile is not live {url_slug}".format(url_slug=profile.url_slug))                
             elif not profile.email or (u"@" not in profile.email):
                 pass
-                # logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
+                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
             elif profile.notification_email_frequency == "none":
                 pass
-                # logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
+                logger.info(u"not sending, {url_slug} is unsubscribed".format(url_slug=profile.url_slug))
             elif profile.last_email_sent and ((datetime.datetime.utcnow() - profile.last_email_sent).days < 7):
                 pass
-                # logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
+                logger.info(u"not sending, {url_slug} already got email this week".format(url_slug=profile.url_slug))
             else:
                 # logger.info(u"checking email for {url_slug}".format(url_slug=profile.url_slug))
                 # status = tasks.send_email_if_new_diffs.delay(profile.id)
@@ -471,38 +467,37 @@ def build_refsets(save_after_every_profile=False):
 
 
 
-def collect_embed(tiid=None, min_tiid=None):
-    if tiid:
-        q = db.session.query(Product).filter(Product.tiid==tiid)
-    else:
-        q = db.session.query(Product).join(Profile).filter(Profile.stripe_id != None)
-        if min_tiid:
-            q = q.filter(Product.tiid>min_tiid)
+def collect_embed(url_slug=None, min_url_slug=None):
+    q = profile_query(url_slug, min_url_slug)
 
     start_time = datetime.datetime.utcnow()
     number_considered = 0.0
     number_markups = 0.0
-    for product in windowed_query(q, Product.tiid, 25):
-        number_considered += 1
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.debug("-->collecting embed for {url_slug}".format(
+            url_slug=profile.url_slug))
 
-        if product.genre=="unknown" or product.removed:
-            continue
+        for product in profile.display_products:
+            if not product.embed_markup:
 
-        try:
-            embed_markup = product.get_embed_markup()
-        except Exception:
-            print "got an exception, skipping", product.aliases.best_url
-            continue
+                number_considered += 1
 
-        if embed_markup:
-            print number_considered, number_markups, product.tiid, product.host, product.aliases.best_url
-            # print "  got an embed for", product.genre, "!"
-            product.embed_markup = embed_markup
-            db.session.add(product)
-            commit(db)
-            number_markups += 1
-            elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
-            print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+                try:
+                    embed_markup = product.get_embed_markup()
+                except Exception:
+                    print "got an exception, skipping", product.aliases.best_url
+                    continue
+
+                if embed_markup:
+
+                    print "GOT MARKUP for", product.tiid, product.host, product.aliases.best_url, embed_markup
+                    # print "  got an embed for", product.genre, "!"
+                    product.embed_markup = embed_markup
+                    db.session.add(product)
+                    commit(db)
+                    number_markups += 1
+                    elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+                    print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
 
 
 def live_profile_query():
@@ -551,7 +546,7 @@ def borked_pinboards_for_life_profiles(url_slug=None, min_url_slug=None):
 
 
 
-def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
+def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None, start_days_ago=7):
     if url_slug:
         q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
     else:
@@ -561,15 +556,15 @@ def new_metrics_for_live_profiles(url_slug=None, min_url_slug=None):
             q = q.filter(Profile.url_slug>=min_url_slug)
 
         # also, only if not refreshed recently
-        min_last_refreshed = datetime.datetime.utcnow() - datetime.timedelta(days=7)
-        q = q.filter(Profile.last_refreshed < min_last_refreshed)
+        min_last_refreshed = datetime.datetime.utcnow() - datetime.timedelta(days=start_days_ago)
+        q = q.filter(Profile.last_refreshed <= min_last_refreshed)
 
     start_time = datetime.datetime.utcnow()
     number_profiles = 0.0
     total_refreshes = 0
     for profile in windowed_query(q, Profile.url_slug, 25):
         number_profiles += 1
-        print profile.url_slug, profile.id, profile.last_refreshed
+        print profile.url_slug, profile.id, profile.last_refreshed, len(profile.display_products)
         number_refreshes = len(profile.display_products)
         if number_refreshes:
             profile.refresh_products(source="scheduled")
@@ -1006,6 +1001,37 @@ def update_tweet_text_for_live_profiles(url_slug=None, min_url_slug=None):
         profile.parse_and_save_tweets()
 
 
+
+def update_this_profile(profile):
+    logger.info(u"**updating {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
+        url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh.isoformat()[0:10]))
+
+    try:
+        if profile.is_live:
+            number_products_before = len(profile.tiids)
+            added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
+            number_products_after = number_products_before + len(added_tiids)
+            if len(added_tiids)==0:
+                logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
+                    number_products_before=number_products_before,
+                    url_slug=profile.url_slug))
+            else:
+                logger.info(u"  BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
+                    number_products_before=number_products_before,
+                    number_products_after=number_products_after,
+                    percent=100.0*(number_products_after-number_products_before)/number_products_before,
+                    url_slug=profile.url_slug))
+
+        # refresh all profiles, live and not, after the update from linked accounts is done
+        profile.refresh_products("scheduled")  # puts them on celery
+
+    except Exception as e:
+        logger.exception(e)
+        logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(
+            url_slug=profile.url_slug))
+
+
+
 def update_profiles(limit=5, url_slug=None):
     if url_slug:
         q = db.session.query(Profile.id).filter(Profile.url_slug==url_slug)
@@ -1030,45 +1056,88 @@ def update_profiles(limit=5, url_slug=None):
                 logger.info(u"updated all {limit} profiles, done for now.".format(
                     limit=limit))
                 return
-                
-            logger.info(u"**updating {url_slug: <16} is_live: {is_live}, next_refresh: {next_refresh}".format(
-                url_slug=profile.url_slug, is_live=profile.is_live, next_refresh=profile.next_refresh.isoformat()[0:10]))
-
-            try:
-                if profile.is_live:
-                    number_products_before = len(profile.tiids)
-                    added_tiids = profile.update_all_linked_accounts(add_even_if_removed=False)
-                    number_products_after = number_products_before + len(added_tiids)
-                    if len(added_tiids)==0:
-                        logger.info(u"  NO CHANGE on update for {url_slug}, {number_products_before} products".format(
-                            number_products_before=number_products_before,
-                            url_slug=profile.url_slug))
-                    else:
-                        logger.info(u"  BEFORE={number_products_before}, AFTER={number_products_after}; {percent} for {url_slug}".format(
-                            number_products_before=number_products_before,
-                            number_products_after=number_products_after,
-                            percent=100.0*(number_products_after-number_products_before)/number_products_before,
-                            url_slug=profile.url_slug))
-
-                # refresh all profiles, live and not, after the update from linked accounts is done
-                profile.refresh_products("scheduled")  # puts them on celery
-
-            except Exception as e:
-                logger.exception(e)
-                logger.debug(u"Exception in main loop on {url_slug}, so skipping".format(
-                    url_slug=profile.url_slug))
+            
+            update_this_profile(profile)
 
             number_profiles += 1
 
 
+def update_all_live_profiles(args):
+    url_slug = args.get("url_slug", None)
+    min_url_slug = args.get("min_url_slug", None)
+    force_all = args.get("force_all", None)
+
+    q = profile_query(url_slug, min_url_slug)
+    if not force_all:
+        q = q.filter(Profile.next_refresh <= datetime.datetime.utcnow())
+
+    limit = args.get("limit", 5)
+    if url_slug:
+        limit = 1
+
+    number_profiles_updated = 0.0
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        product_count = len(profile.products_not_removed)
+        logger.info(u"profile {url_slug} has {product_count} products".format(
+            url_slug=profile.url_slug, product_count=product_count))
+
+        if product_count > 500:
+            logger.warning(u"Too many products (n={product_count}) for profile {url_slug}, skipping update".format(
+                product_count=product_count, url_slug=profile.url_slug))
+        else:            
+            update_this_profile(profile)
+
+
+            number_profiles_updated += 1
+            if limit and number_profiles_updated >= limit:
+                logger.info(u"updated all {limit} profiles, done for now.".format(
+                    limit=limit))
+                return
+
+            pause_length = min(product_count * 3, 120)
+            print "pausing", pause_length, "seconds after refreshing", product_count, "products"
+            time.sleep(pause_length)
+
+
+def debug_biblio_for_live_profiles(args):
+    url_slug = args.get("url_slug", None)
+    min_url_slug = args.get("min_url_slug", None)
+
+    q = profile_query(url_slug, min_url_slug)
+
+    from totalimpact.providers.bibtex import Bibtex
+    bibtex_provider = Bibtex()
+
+    from totalimpactwebapp.product import put_biblio_in_product
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.info(u"in debug_biblio_for_live_profiles for {url_slug}".format(
+            url_slug=profile.url_slug))
+
+        for product in profile.products_not_removed:
+            if product.biblio \
+                and hasattr(product.biblio, "journal") \
+                and "journal =" in product.biblio.journal \
+                and hasattr(product.biblio, "full_citation") \
+                and "journal" in product.biblio.full_citation:
+                    print "got one:", product.tiid, product.biblio.full_citation
+                    aliases = bibtex_provider.member_items(product.biblio.full_citation)
+                    print aliases
+                    for alias in aliases:
+                        (ns, nid) = alias
+                        if ns=="biblio":
+                            product = put_biblio_in_product(product, nid, provider_name="bibtex")
+                            print product.biblio
+                            db.session.merge(product)
+                            commit(db)
+            else:
+                pass
+                # print ".",
 
 
 def main(function, args):
     if function=="emailreports":
-        if "url_slug" in args and args["url_slug"]:
-            email_report_to_url_slug(args["url_slug"])
-        else:    
-            email_report_to_everyone_who_needs_one(args["max_emails"])
+        email_report_to_live_profiles(args["url_slug"], args["min_url_slug"], args["max_emails"])
     elif function=="dedup":
         dedup_everyone(args["url_slug"], args["min_url_slug"])
     elif function=="productdeets":
@@ -1076,7 +1145,7 @@ def main(function, args):
     elif function=="refsets":
         build_refsets(args["save_after_every_profile"])
     elif function=="embed":
-        collect_embed(args["tiid"], args["min_tiid"])
+        collect_embed(args["url_slug"], args["min_url_slug"])
     elif function=="linked_accounts":
         linked_accounts(args["account_type"], args["url_slug"], args["min_url_slug"])
     elif function=="refresh_tweeted_products":
@@ -1098,7 +1167,7 @@ def main(function, args):
     elif function=="run_through_altmetric_tweets":
         run_through_altmetric_tweets(args["url_slug"], args["min_url_slug"])
     elif function=="new_metrics_for_live_profiles":
-        new_metrics_for_live_profiles(args["url_slug"], args["min_url_slug"])
+        new_metrics_for_live_profiles(args["url_slug"], args["min_url_slug"], args["start_days_ago"])
     elif function=="borked_pinboards_for_life_profiles":
         borked_pinboards_for_life_profiles(args["url_slug"], args["min_url_slug"])
     elif function=="update_mendeley_countries_for_live_profiles":
@@ -1112,7 +1181,11 @@ def main(function, args):
     elif function=="update_tweet_text_for_live_profiles":
         update_tweet_text_for_live_profiles(args["url_slug"], args["min_url_slug"])
     else:
-        print "no matching function found, returning."
+        # call function by its name in this module, with all args :)
+        # http://stackoverflow.com/a/4605/596939
+
+        globals()[function](args)
+
 
 
 
@@ -1135,6 +1208,7 @@ if __name__ == "__main__":
     parser.add_argument('--end_days_ago', type=int)
     parser.add_argument('--limit', type=int, default=5)
     parser.add_argument('--max_pages', type=int)
+    parser.add_argument('--force_all', type=int)
 
     args = vars(parser.parse_args())
     function = args["function"]

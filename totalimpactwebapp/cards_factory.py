@@ -13,6 +13,9 @@ def make_product_new_metrics_cards(products, url_slug):
     cards = []
     for product in products:
 
+        if product.is_account_product:
+            continue
+
         for metric in product.metrics:
             if ProductNewDiffCard.would_generate_a_card(metric):
                 new_card = ProductNewDiffCard(products, product, metric, url_slug)

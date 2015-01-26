@@ -2,7 +2,7 @@ from test.unit_tests.providers import common
 from test.unit_tests.providers.common import ProviderTestCase
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError
 from totalimpact.providers import provider
-from totalimpact import app, db
+from totalimpactwebapp import app, db
 from test.utils import setup_postgres_for_unittests, teardown_postgres_for_unittests
 
 from test.utils import http

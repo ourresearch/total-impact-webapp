@@ -1,10 +1,15 @@
 from totalimpact.providers import provider
 from totalimpact.providers.provider import Provider, ProviderContentMalformedError, ProviderServerError
+from unicode_helpers import to_unicode_or_bust
 
-import simplejson, re, os, random, string, urllib
+import json, re, os, random, string, urllib
 
 import logging
 logger = logging.getLogger('ti.providers.scopus')
+
+
+
+# some documentation here http://api.elsevier.com/documentation/search/SCOPUSSearchTips.htm
 
 class Scopus(Provider):  
 
@@ -136,31 +141,53 @@ class Scopus(Provider):
     def _get_scopus_url(self, biblio_dict):
         url_template_one_journal = "https://api.elsevier.com/content/search/index:SCOPUS?query=AUTHLASTNAME({first_author})%20AND%20TITLE({title})%20AND%20SRCTITLE({journal})&field=citedby-count&apiKey="+os.environ["SCOPUS_KEY"]+"&insttoken="+os.environ["SCOPUS_INSTTOKEN"]            
         url_template_two_journals = "https://api.elsevier.com/content/search/index:SCOPUS?query=AUTHLASTNAME({first_author})%20AND%20TITLE({title})%20AND%20(SRCTITLE({journal1})%20OR%20SRCTITLE({journal2}))&field=citedby-count&apiKey="+os.environ["SCOPUS_KEY"]+"&insttoken="+os.environ["SCOPUS_INSTTOKEN"]
+        url_template_issn = "https://api.elsevier.com/content/search/index:SCOPUS?query=AUTHLASTNAME({first_author})%20AND%20TITLE({title})%20AND%20ISSN({issn})&field=citedby-count&apiKey="+os.environ["SCOPUS_KEY"]+"&insttoken="+os.environ["SCOPUS_INSTTOKEN"]            
         alt_journal_names = {
             "BMJ": "British Medical Journal",
             "Ecol Letters": "Ecology Letters"
             }
 
-        title = biblio_dict["title"].replace("(", "{(}").replace(")", "{)}")
-        journal = biblio_dict["journal"].replace("(", "{(}").replace(")", "{)}")
+        first_author = biblio_dict.get("first_author", None)
+        if not first_author:
+            first_author = biblio_dict["authors"].split(" ")[0]
+
+        # title lookups go better without question marks
+        # see https://api.elsevier.com/content/search/index:SCOPUS?query=AUTHLASTNAME(Piwowar)%20AND%20TITLE(Who%20shares%20Who%20doesn%27t%20Factors%20associated%20with%20openly%20archiving%20raw%20research%20data)%20AND%20SRCTITLE(PLOS%20ONE)&field=citedby-count&apiKey=
+        title = to_unicode_or_bust(biblio_dict["title"]).encode('utf8')
+        title = title.replace("(", "{(}").replace(")", "{)}")
+        title = title.replace("?", "")
+
+        journal = None
+        if "journal" in biblio_dict:
+            journal = to_unicode_or_bust(biblio_dict["journal"]).encode('utf8')
+            journal = journal.replace("(", "{(}").replace(")", "{)}")
+            journal = journal.replace(" & ", " and ")
+
+        issn = biblio_dict.get("issn", None)
 
         url = None
-        if title and journal:
+        if title and first_author and journal:
             if journal in alt_journal_names.keys():
                 journal1 = journal
                 journal2 = alt_journal_names[journal]
                 url = url_template_two_journals.format(
-                        first_author=urllib.quote(biblio_dict["first_author"]), 
+                        first_author=urllib.quote(first_author), 
                         title=urllib.quote(title), 
                         journal1=urllib.quote(journal1), 
                         journal2=urllib.quote(journal2))
             else:
                 url = url_template_one_journal.format(
-                        first_author=urllib.quote(biblio_dict["first_author"]), 
+                        first_author=urllib.quote(first_author), 
                         title=urllib.quote(title), 
                         journal=urllib.quote(journal))
+        elif title and first_author and issn:
+            # example: http://www.mendeley.com/research/codeco-grammar-notation-controlled-natural-language-predictive-editors/
+            url = url_template_issn.format(
+                    first_author=urllib.quote(first_author), 
+                    title=urllib.quote(title), 
+                    issn=urllib.quote(issn))
         else:
-            logger.debug("missing title or journal, so can't look up in scopus using biblio")
+            logger.debug("missing title or journal/issn, so can't look up in scopus using biblio")
 
         return url
 
@@ -168,12 +195,6 @@ class Scopus(Provider):
 
     def _get_relevant_record_with_biblio(self, biblio_dict):
         try:        
-            if not "first_author" in biblio_dict:
-                biblio_dict["first_author"] = biblio_dict["authors"].split(" ")[0]
-            if not biblio_dict["first_author"]:
-                return None
-            if not biblio_dict["title"] and biblio_dict["journal"] and biblio_dict["first_author"]:
-                logger.debug("not enough info in _get_relevant_record_with_biblio to look up citations")
             url = self._get_scopus_url(biblio_dict)
 
         except KeyError:
@@ -200,7 +221,7 @@ class Scopus(Provider):
             relevant_record = self._get_relevant_record_with_biblio(id)
 
         if not relevant_record:
-            logger.info(u"no scopus page with id {id}".format(id=id))
+            # logger.info(u"no scopus page with id {id}".format(id=id))
             return {}
 
         metrics_dict = self._extract_metrics(relevant_record)
@@ -232,6 +253,7 @@ class Scopus(Provider):
             metrics_and_drilldown = self._get_metrics_and_drilldown_from_metrics_page(provider_url_template, 
                     namespace="doi", 
                     id=nid)
+
         if not metrics_and_drilldown and "biblio" in aliases_dict:
             nid = aliases_dict["biblio"][0]
             metrics_and_drilldown = self._get_metrics_and_drilldown_from_metrics_page(provider_url_template, 

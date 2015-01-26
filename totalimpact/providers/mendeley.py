@@ -5,6 +5,7 @@ from totalimpact.providers.provider import Provider, ProviderContentMalformedErr
 from totalimpact import tiredis
 from retry import Retry
 from totalimpactwebapp.countries import iso_code_from_name
+from totalimpactwebapp.aliases import normalize_alias_tuple
 from util import remove_punctuation
 
 import simplejson, urllib, os, string, itertools
@@ -101,7 +102,7 @@ class Mendeley(Provider):
         doc = None
         try:
             biblio = aliases_dict["biblio"][0]
-            biblio_title = remove_punctuation(biblio["title"])
+            biblio_title = remove_punctuation(biblio["title"]).lower()
             biblio_year = str(biblio["year"])
             if biblio_title and biblio_year:
                 try:
@@ -218,12 +219,14 @@ class Mendeley(Provider):
         doc = self._get_doc(aliases)
         new_aliases = []
         if doc:  
-            from totalimpactwebapp.aliases import alias_dict_from_tuples
-            aliases_dict = alias_dict_from_tuples(aliases)
-
-            for namespace in doc.identifiers:
-                if namespace in ["doi", "arxiv", "pmid", "scopus"] and (namespace not in aliases_dict):
-                    new_aliases += [(namespace, doc.identifiers[namespace])]
+            if doc.identifiers:
+                from totalimpactwebapp.aliases import alias_dict_from_tuples
+                aliases_dict = alias_dict_from_tuples(aliases)
+                for namespace in doc.identifiers:
+                    if namespace in ["doi", "arxiv", "pmid", "scopus"] and (namespace not in aliases_dict):
+                        new_alias = normalize_alias_tuple(namespace, doc.identifiers[namespace])
+                        if new_alias:
+                            new_aliases += [new_alias]
 
             new_aliases += [("url", doc.link)]
             new_aliases += [("mendeley_uuid", doc.id)]

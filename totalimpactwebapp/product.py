@@ -685,21 +685,15 @@ class Product(db.Model):
         if self.is_account_product:
             return None
 
-        try:
-            if not self.aliases.best_url:
-                return None
-        except AttributeError:
-            return None
-
         html = None
 
-        if "github" in self.aliases.best_url:
+        if self.aliases and self.aliases.best_url and "github" in self.aliases.best_url:
             html = embed_markup.get_github_embed_html(self.aliases.best_url)
 
-        elif "dryad" in self.aliases.best_url:
+        elif self.aliases and self.aliases.best_url and "dryad" in self.aliases.best_url:
             html = embed_markup.get_dryad_embed_html(self.aliases.best_url)
 
-        elif "figshare" in self.aliases.best_url:
+        elif self.aliases and self.aliases.best_url and "figshare" in self.aliases.best_url:
             html = embed_markup.get_figshare_embed_html(self.aliases.best_url)
 
         else:
@@ -724,8 +718,9 @@ class Product(db.Model):
                             pass
 
         if not html and self.genre not in ["article", "unknown"]:
-            # this is how we embed slides, videos, etc
-            html = embed_markup.wrap_with_embedly(self.aliases.best_url)
+            if self.aliases and self.aliases.best_url:
+                # this is how we embed slides, videos, etc
+                html = embed_markup.wrap_with_embedly(self.aliases.best_url)
 
         return html
 
@@ -985,8 +980,10 @@ def patch_biblio(tiid, patch_dict, provider="user_provided"):
                     provider=provider)
             product.biblio_rows.append(biblio_row_object)
 
-    commit(db)
+        if biblio_name == "free_fulltext_url":
+            product.embed_markup = product.get_embed_markup() #alters an attribute, so caller should commit
 
+    commit(db)
     return {"product": product}
 
 def put_aliases_in_product(product, alias_tuples):

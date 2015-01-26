@@ -119,8 +119,15 @@ class ProductNewDiffCard(Card):
 
     @classmethod
     def would_generate_a_card(cls, metric):
+        # for impactstory views, only make milestone cards
+        if metric.provider=="impactstory" and metric.interaction=="views":
+            if metric.milestone_just_reached:
+                return True
+            else:
+                return False
+
         # a milestone can be awarded if the previous value was 0, 
-        # which would mean there is no diff_value
+        # which would mean there is no diff_value            
         return metric.diff_value > 0
 
     @property
@@ -254,7 +261,7 @@ class AbstractNewDiffCard(AbstractProductsAccumulationCard):
     def metric_accumulations(cls, products, provider, interaction):
         matching_metrics = get_metrics_by_name(products, provider, interaction)
 
-        metrics_with_diffs = [m for m in matching_metrics if m.can_diff]
+        metrics_with_diffs = [m for m in matching_metrics if m.can_diff and m.diff_value]
 
          # quit if there's no matching metrics or they dont' have no diffs
         if not len(metrics_with_diffs):

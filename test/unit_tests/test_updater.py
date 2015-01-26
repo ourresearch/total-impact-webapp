@@ -1,6 +1,6 @@
 import json, os, Queue, datetime, copy
 
-from totalimpact import app, db
+from totalimpactwebapp import app, db
 from totalimpact import tiredis
 from totalimpact import updater
 from totalimpact import item as item_module

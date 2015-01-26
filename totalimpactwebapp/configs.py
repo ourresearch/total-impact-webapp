@@ -4,25 +4,31 @@
 #*
 #***************************************************************************
 
-def orders_of_magnitude(start_with_fives=False):
-    ret = [1]
-    if start_with_fives:
-        ret += range(5, 50, 5) + range(50, 100, 10)  # fives then tens
-    else:
-        ret += range(10, 100, 10)  # tens
 
-    ret += range(100, 1000, 100)  # hundreds
+
+def orders_of_magnitude_after_100():
+    ret = range(100, 1000, 100)  # hundreds
     ret += range(1000, 10000, 1000)  # thousands
     ret += range (10000, 100000, 10000)  # ten-thousands
     ret += range(100000, 500000, 100000)  # hundred-thousands
     return ret
 
+def orders_of_magnitude():
+    ret = [1]
+    ret += range(10, 100, 10)  # tens
+    ret += orders_of_magnitude_after_100()
+    return ret
 
 def fives_then_orders_of_magnitude():
-    # convenience wrapper for readability below
-    return orders_of_magnitude(True)
+    ret = [1]
+    ret += range(5, 50, 5) + range(50, 100, 10)  # fives then tens
+    ret += orders_of_magnitude_after_100()
+    return ret
 
-
+def fifty_then_orders_of_magnitude():
+    ret = [50]
+    ret += orders_of_magnitude_after_100()
+    return ret
 
 
 
@@ -117,7 +123,7 @@ providers = [
                 "provider_url": "https://impactstory.org/",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "milestones": orders_of_magnitude()
+                "milestones": fifty_then_orders_of_magnitude()
             },
             "downloads": {
                 "description": "the number of downloads of the product on Impactstory",
@@ -127,7 +133,7 @@ providers = [
                 "provider_url": "https://impactstory.org/",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "milestones": orders_of_magnitude()
+                "milestones": fifty_then_orders_of_magnitude()
             },
             "countries": {
                 "description": "the countries of the views of a product on Impactstory",
@@ -138,7 +144,7 @@ providers = [
                 "audience": "public",
                 "engagement_type": "viewed",
                 "hide_badge": True,
-                "milestones": orders_of_magnitude()
+                "milestones": fifty_then_orders_of_magnitude()
             }            
         },
         "name": "impactstory",
@@ -257,6 +263,7 @@ providers = [
         "name": "slideshare_account",
         "provides_aliases": True,
         "provides_metrics": True,
+        "is_account": True,        
         "url": "http://www.slideshare.net/"
     },
 
@@ -623,6 +630,7 @@ providers = [
         "name": "github_account",
         "provides_aliases": True,
         "provides_metrics": True,
+        "is_account": True,        
         "url": "http://github.com"
     },
 
@@ -989,6 +997,7 @@ providers = [
         "name": "twitter",
         "provides_aliases": True,
         "provides_metrics": True,
+        "is_account": True,
         "url": "http://twitter.com"
     },
 

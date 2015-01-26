@@ -128,12 +128,19 @@ class Metric(object):
             provider=self.provider, interaction=self.interaction)
 
     @cached_property
+    def is_account(self):
+        return self.config.get("is_account", False)
+
+    @cached_property
     def can_diff(self):
         return self.most_recent_snap.can_diff and self.diff_window_start_value is not None
 
     @cached_property
     def milestone_just_reached(self):
         if not self.can_diff:
+            return None
+
+        if not self.diff_value:
             return None
 
         for milestone in sorted(self.config["milestones"], reverse=True):
