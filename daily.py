@@ -474,6 +474,9 @@ def collect_embed(url_slug=None, min_url_slug=None):
     number_considered = 0.0
     number_markups = 0.0
     for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.debug("-->collecting embed for {url_slug}".format(
+            url_slug=profile.url_slug))
+
         for product in profile.display_products:
             if not product.embed_markup:
 
