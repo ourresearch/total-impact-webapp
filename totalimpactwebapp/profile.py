@@ -677,8 +677,8 @@ def build_profile_dict(profile, hide_keys, embed):
     profile_dict["is_refreshing"] = profile.is_refreshing
     profile_dict["product_count"] = profile.product_count
     profile_dict["genres"] = profile.genres
-    profile_dict["account_products"] = profile.account_products
-    profile_dict["account_products_dict"] = profile.account_products_dict
+    # profile_dict["account_products"] = profile.account_products
+    # profile_dict["account_products_dict"] = profile.account_products_dict
     profile_dict["drip_emails"] = profile.drip_emails
     profile_dict["countries"] = profile.countries
 

@@ -119,11 +119,6 @@ class ProductNewDiffCard(Card):
 
     @classmethod
     def would_generate_a_card(cls, metric):
-
-        # don't make cards for account products right now
-        if metric.is_account:
-            return False
-
         # for impactstory views, only make milestone cards
         if metric.provider=="impactstory" and metric.interaction=="views":
             if metric.milestone_just_reached:
