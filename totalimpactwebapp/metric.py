@@ -128,6 +128,10 @@ class Metric(object):
             provider=self.provider, interaction=self.interaction)
 
     @cached_property
+    def is_account(self):
+        return self.config.get("is_account", False)
+
+    @cached_property
     def can_diff(self):
         return self.most_recent_snap.can_diff and self.diff_window_start_value is not None
 

@@ -263,6 +263,7 @@ providers = [
         "name": "slideshare_account",
         "provides_aliases": True,
         "provides_metrics": True,
+        "is_account": True,        
         "url": "http://www.slideshare.net/"
     },
 
@@ -629,6 +630,7 @@ providers = [
         "name": "github_account",
         "provides_aliases": True,
         "provides_metrics": True,
+        "is_account": True,        
         "url": "http://github.com"
     },
 
@@ -995,6 +997,7 @@ providers = [
         "name": "twitter",
         "provides_aliases": True,
         "provides_metrics": True,
+        "is_account": True,
         "url": "http://twitter.com"
     },
 
