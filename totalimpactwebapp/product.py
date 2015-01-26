@@ -718,8 +718,9 @@ class Product(db.Model):
                             pass
 
         if not html and self.genre not in ["article", "unknown"]:
-            # this is how we embed slides, videos, etc
-            html = embed_markup.wrap_with_embedly(self.aliases.best_url)
+            if self.aliases and self.aliases.best_url:
+                # this is how we embed slides, videos, etc
+                html = embed_markup.wrap_with_embedly(self.aliases.best_url)
 
         return html
 

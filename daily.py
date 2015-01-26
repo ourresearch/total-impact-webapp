@@ -467,38 +467,34 @@ def build_refsets(save_after_every_profile=False):
 
 
 
-def collect_embed(tiid=None, min_tiid=None):
-    if tiid:
-        q = db.session.query(Product).filter(Product.tiid==tiid)
-    else:
-        q = db.session.query(Product).join(Profile).filter(Profile.stripe_id != None)
-        if min_tiid:
-            q = q.filter(Product.tiid>min_tiid)
+def collect_embed(url_slug=None, min_url_slug=None):
+    q = profile_query(url_slug, min_url_slug)
 
     start_time = datetime.datetime.utcnow()
     number_considered = 0.0
     number_markups = 0.0
-    for product in windowed_query(q, Product.tiid, 25):
-        number_considered += 1
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        for product in profile.display_products:
+            if not product.embed_markup:
 
-        if product.genre=="unknown" or product.removed:
-            continue
+                number_considered += 1
 
-        try:
-            embed_markup = product.get_embed_markup()
-        except Exception:
-            print "got an exception, skipping", product.aliases.best_url
-            continue
+                try:
+                    embed_markup = product.get_embed_markup()
+                except Exception:
+                    print "got an exception, skipping", product.aliases.best_url
+                    continue
 
-        if embed_markup:
-            print number_considered, number_markups, product.tiid, product.host, product.aliases.best_url
-            # print "  got an embed for", product.genre, "!"
-            product.embed_markup = embed_markup
-            db.session.add(product)
-            commit(db)
-            number_markups += 1
-            elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
-            print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+                if embed_markup:
+
+                    print "GOT MARKUP for", product.tiid, product.host, product.aliases.best_url, embed_markup
+                    # print "  got an embed for", product.genre, "!"
+                    product.embed_markup = embed_markup
+                    db.session.add(product)
+                    commit(db)
+                    number_markups += 1
+                    elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+                    print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
 
 
 def live_profile_query():
@@ -1146,7 +1142,7 @@ def main(function, args):
     elif function=="refsets":
         build_refsets(args["save_after_every_profile"])
     elif function=="embed":
-        collect_embed(args["tiid"], args["min_tiid"])
+        collect_embed(args["url_slug"], args["min_url_slug"])
     elif function=="linked_accounts":
         linked_accounts(args["account_type"], args["url_slug"], args["min_url_slug"])
     elif function=="refresh_tweeted_products":

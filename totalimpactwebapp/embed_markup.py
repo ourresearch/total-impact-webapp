@@ -57,10 +57,11 @@ def get_github_embed_html(github_url):
     return None
 
 def get_dryad_embed_html(dryad_url):
+    dryad_url = re.sub(r"/\d+$", "", dryad_url)
     try:
         r = requests.get(dryad_url, timeout=20)
     except requests.exceptions.Timeout:
-        return None        
+        return None    
     soup = BeautifulSoup(r.text)
     html = "".join([repr(tag) for tag in soup.find_all(attrs={'class': "package-file-description"})])  #because class is reserved
     if html:
