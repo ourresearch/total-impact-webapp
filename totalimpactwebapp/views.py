@@ -361,7 +361,7 @@ def login():
         abort(401, "Wrong password")
     else:
         # Yay, no errors! Log the user in.
-        login_user(profile)
+        login_user(profile, remember=True)
         profile.update_last_viewed_profile(async=True)
 
     return json_resp_from_thing({"user": profile.dict_about()})
@@ -446,7 +446,7 @@ def create_new_user_profile(profile_id):
 
     welcome_email.send_welcome_email(new_profile.email, new_profile.given_name)
     event_monitoring.new_user(new_profile.url_slug, new_profile.given_name)
-    login_user(new_profile)
+    login_user(new_profile, remember=True)
     return json_resp_from_thing({"user": new_profile.dict_about()})
 
 
