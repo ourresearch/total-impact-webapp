@@ -116,7 +116,8 @@ app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 
 
 # set cookies to Secure since we're using https
-app.config['SESSION_COOKIE_SECURE'] = True
+# commented out for now because it breaks on localhost
+#app.config['SESSION_COOKIE_SECURE'] = True
 
 
 from totalimpactwebapp import aliases
