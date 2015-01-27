@@ -1,3 +1,12 @@
+"""
+Scripts for doing stuff
+"""
+
+# this is needed to run on Jason's machine
+import config
+config.set_env_vars_from_dot_env()
+
+# these are the regular 'ol imports
 import stripe
 import random
 import logging
@@ -12,6 +21,7 @@ requires these env vars be set in this environment:
 DATABASE_URL
 STRIPE_API_KEY
 """
+
 
 
 def page_query(q):
@@ -66,6 +76,46 @@ def mint_stripe_customers_for_all_profiles():
         db.session.commit()
 
 
+def delete_if_not_subscribed(stripe_customer):
+    print u"calling delete_if_not_subscribed() on customer '{name}' ({email})".format(
+        name=stripe_customer.description,
+        email=stripe_customer.email
+    )
+
+    if stripe_customer.subscriptions.total_count == 0:
+        pass
+    else:
+        print u"this user has a subscription, they get to stay in Stripe"
+
+    return True
+
+
+def apply_to_stripe_customers(func, starting_after=None):
+    """
+    Apply a given function to every one of our Stripe customers in turn.
+
+    The supplied function must take one argument, a Stripe Customer object.
+    """
+
+    print u"calling apply_to_stripe_customers({func_name}, starting_after={starting_after})".format(
+        func_name=func,
+        starting_after=starting_after
+    )
+
+    # get a page of customers
+    resp = stripe.Customer.all(limit=100, starting_after=starting_after)
+
+    # do something with each customer
+    for customer in resp.data:
+        func(customer)
+
+    # load another page if we're not done yet
+    if resp.has_more:
+        last_customer_on_page = resp.data[-1]
+        apply_to_stripe_customers(func, starting_after=last_customer_on_page.id)
+
+
+
 def write_500_random_profile_urls():
     urls = []
     sample_size = 500
@@ -95,4 +145,18 @@ def write_500_random_profile_urls():
 
 
 
-mint_stripe_customers_for_all_profiles()
+#mint_stripe_customers_for_all_profiles()
+print "i am running"
+apply_to_stripe_customers(delete_if_not_subscribed)
+
+
+
+
+
+
+
+
+
+
+
+
