@@ -115,6 +115,10 @@ login_manager.setup_app(app)
 app.config["ASSETS_DEBUG"] = (os.getenv("PACK_ASSETS") != "True")
 
 
+# set cookies to Secure since we're using https
+app.config['SESSION_COOKIE_SECURE'] = True
+
+
 from totalimpactwebapp import aliases
 from totalimpactwebapp import biblio
 from totalimpactwebapp import interaction
