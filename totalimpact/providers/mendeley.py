@@ -216,6 +216,12 @@ class Mendeley(Provider):
             provider_url_template=None,
             cache_enabled=True):            
 
+        # have reported all of these to mendeley, ie http://support.mendeley.com/customer/en/portal/questions/11307109-wrong-pmid?new=11307109
+        bad_mendeley_aliases = [
+            ("pmid", "19016882"),  # http://www.mendeley.com/catalog/scientific-workflow-management-kepler-system-1/
+            ("pmid", "22170219")  #http://www.mendeley.com/catalog/social-network-analysis-animal-behaviour-promising-tool-study-sociality-1/
+        ]
+
         doc = self._get_doc(aliases)
         new_aliases = []
         if doc:  
@@ -225,7 +231,7 @@ class Mendeley(Provider):
                 for namespace in doc.identifiers:
                     if namespace in ["doi", "arxiv", "pmid", "scopus"] and (namespace not in aliases_dict):
                         new_alias = normalize_alias_tuple(namespace, doc.identifiers[namespace])
-                        if new_alias:
+                        if new_alias and new_alias not in bad_mendeley_aliases:
                             new_aliases += [new_alias]
 
             new_aliases += [("url", doc.link)]
