@@ -267,6 +267,8 @@ class Crossref(Provider):
         return new_aliases
 
     def _lookup_doi_from_biblio(self, biblio, cache_enabled):
+        LOOKUP_SELF_ID_STRING = "impactstory"
+
         if not biblio:
             return []
 
@@ -283,7 +285,7 @@ class Crossref(Provider):
                 biblio.get("number", ""),
                 biblio.get("first_page", ""),
                 biblio.get("year", ""),
-                "ImpactStory"
+                LOOKUP_SELF_ID_STRING
                 ))
         except KeyError:
             logger.info(u"%20s /biblio_print NO DOI because missing needed attribute in %s" % (
@@ -305,7 +307,7 @@ class Crossref(Provider):
         if response.status_code != 200:
             raise ProviderServerError("CrossRef status code was not 200")
 
-        if not biblio["journal"].lower() in response.text.lower():
+        if not LOOKUP_SELF_ID_STRING in response.text:
             raise ProviderServerError("CrossRef returned invalid text response")
 
         response_lines = response.text.split("\n")

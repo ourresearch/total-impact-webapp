@@ -342,7 +342,7 @@ providers = [
     #                             webpages
     # *************************************************************************
     {
-        "descr": "Information scraped from webpages by ImpactStory",
+        "descr": "Information scraped from webpages by Impactstory",
         "name": "webpage",
         "provides_aliases": False,
         "provides_metrics": False,

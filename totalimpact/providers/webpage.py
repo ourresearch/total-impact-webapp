@@ -21,7 +21,7 @@ class Webpage(Provider):
 
     biblio_url_template = "%s"
     provenance_url_template = "%s"
-    descr = "Information scraped from webpages by ImpactStory"
+    descr = "Information scraped from webpages by Impactstory"
     url = "http://impactstory.org"
 
 
