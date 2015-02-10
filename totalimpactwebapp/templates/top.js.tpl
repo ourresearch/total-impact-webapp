@@ -52,10 +52,9 @@ var stripePublishableKey = "{{ stripe_publishable_key }}"
 // variables.less, and need to stay in sync with them.
 responsiveDesignBreakpoints = {
    phone: [0, 767],
-   tablet: [768, 1279],
-   desktop: [1280, 99999]
+   tablet: [768, 999],
+   desktop: [1000, 99999]
 }
-
 
 
 

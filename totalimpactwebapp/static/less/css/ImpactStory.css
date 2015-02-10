@@ -6407,7 +6407,7 @@ div.no-page p span.slug {
   padding: 20px 0 20px;
   background: #fff;
 }
-@media only screen and (max-width: 767px), only screen and (min-width: 768px) and (max-width: 1279px) {
+@media only screen and (max-width: 767px), only screen and (min-width: 768px) and (max-width: 999px) {
   #sidebar {
     position: absolute;
   }
@@ -6735,6 +6735,12 @@ div.main-sidebar div.sidebar-footer a.logo img:hover {
 }
 #page-footer-container #page-footer:after {
   clear: both;
+}
+@media only screen and (max-width: 767px), only screen and (min-width: 768px) and (max-width: 999px) {
+  #page-footer-container #page-footer {
+    background: red;
+    position: absolute;
+  }
 }
 #page-footer-container #page-footer p {
   margin: 6px 0 0 0;

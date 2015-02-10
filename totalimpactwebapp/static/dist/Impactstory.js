@@ -2687,7 +2687,7 @@ angular.module('security.service', [
 
       if ($rootScope.isOnMobile() ) {
         // looks like we are On Mobile here. too bad for you, user.
-        alert("Sorry! We're working on it, but login isn't supported on this mobile device yet.")
+        alert("Sorry! Login isn't supported on this mobile device yet.")
 
       }
       else {
@@ -3394,7 +3394,7 @@ angular.module( 'signup', [
           console.log("trying to resolve /signup")
           var deferred = $q.defer()
           if ($rootScope.isOnMobile()){
-            alert("Sorry! Creating new profiles isn't supported yet on your mobile device.")
+            alert("Sorry! Creating new profiles isn't yet supported on your mobile device.")
             $location.path("/")
             deferred.reject()
           }

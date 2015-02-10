@@ -21,7 +21,7 @@ angular.module( 'signup', [
           console.log("trying to resolve /signup")
           var deferred = $q.defer()
           if ($rootScope.isOnMobile()){
-            alert("Sorry! Creating new profiles isn't supported yet on your mobile device.")
+            alert("Sorry! Creating new profiles isn't yet supported on your mobile device.")
             $location.path("/")
             deferred.reject()
           }
