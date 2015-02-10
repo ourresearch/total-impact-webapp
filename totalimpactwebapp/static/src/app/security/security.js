@@ -10,6 +10,7 @@ angular.module('security.service', [
                                 $q,
                                 $location,
                                 $modal,
+                                $rootScope,
                                 TiMixpanel,
                                 UserMessage) {
     var useCachedUser = true
@@ -32,9 +33,8 @@ angular.module('security.service', [
     var loginDialog = null;
     function openLoginDialog(redirectTo) {
       console.log("openLoginDialog() fired.")
-      var viewportWidth = $(window).width()
 
-      if (viewportWidth <= responsiveDesignBreakpoints.tablet[1] ) {
+      if ($rootScope.isOnMobile() ) {
         // looks like we are On Mobile here. too bad for you, user.
         alert("Sorry! We're working on it, but login isn't supported on this mobile device yet.")
 

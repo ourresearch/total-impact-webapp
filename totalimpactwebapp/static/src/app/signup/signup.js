@@ -16,13 +16,25 @@ angular.module( 'signup', [
       resolve:{
         userNotLoggedIn: function(security){
           return security.testUserAuthenticationLevel("loggedIn", false)
+        },
+        notOnMobile: function($q, $rootScope, $location){
+          console.log("trying to resolve /signup")
+          var deferred = $q.defer()
+          if ($rootScope.isOnMobile()){
+            alert("Sorry! Creating new profiles isn't supported yet on your mobile device.")
+            $location.path("/")
+            deferred.reject()
+          }
+          else {
+            deferred.resolve()
+          }
+          return deferred.promise
         }
       }
     })
 }])
 
-  .controller('signupCtrl', function($scope, Page){
-
+  .controller('signupCtrl', function($scope, $location, $rootScope, Page){
 
   })
 

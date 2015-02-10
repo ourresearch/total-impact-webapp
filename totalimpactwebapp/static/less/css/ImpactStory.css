@@ -9202,6 +9202,15 @@ div.modal-body.change-product-genre label {
   float: right;
   padding-left: 20px;
 }
+div#signup-page-hider {
+  background: #fff;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999999999999;
+}
 div.signup-page {
   position: fixed;
   top: 0;

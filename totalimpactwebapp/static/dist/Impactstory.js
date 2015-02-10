@@ -653,6 +653,10 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $rootScope.adminMode = $location.search().admin == 42
 
+  $rootScope.isOnMobile = function() {
+      return $(window).width() <= responsiveDesignBreakpoints.tablet[1]
+  }
+
 
   // init the genre configs service
   $scope.GenreConfigs = GenreConfigs
@@ -2657,6 +2661,7 @@ angular.module('security.service', [
                                 $q,
                                 $location,
                                 $modal,
+                                $rootScope,
                                 TiMixpanel,
                                 UserMessage) {
     var useCachedUser = true
@@ -2679,9 +2684,8 @@ angular.module('security.service', [
     var loginDialog = null;
     function openLoginDialog(redirectTo) {
       console.log("openLoginDialog() fired.")
-      var viewportWidth = $(window).width()
 
-      if (viewportWidth <= responsiveDesignBreakpoints.tablet[1] ) {
+      if ($rootScope.isOnMobile() ) {
         // looks like we are On Mobile here. too bad for you, user.
         alert("Sorry! We're working on it, but login isn't supported on this mobile device yet.")
 
@@ -3385,13 +3389,25 @@ angular.module( 'signup', [
       resolve:{
         userNotLoggedIn: function(security){
           return security.testUserAuthenticationLevel("loggedIn", false)
+        },
+        notOnMobile: function($q, $rootScope, $location){
+          console.log("trying to resolve /signup")
+          var deferred = $q.defer()
+          if ($rootScope.isOnMobile()){
+            alert("Sorry! Creating new profiles isn't supported yet on your mobile device.")
+            $location.path("/")
+            deferred.reject()
+          }
+          else {
+            deferred.resolve()
+          }
+          return deferred.promise
         }
       }
     })
 }])
 
-  .controller('signupCtrl', function($scope, Page){
-
+  .controller('signupCtrl', function($scope, $location, $rootScope, Page){
 
   })
 
@@ -7373,7 +7389,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'not-on-mobile.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -8872,18 +8888,6 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "</div>\n" +
     "\n" +
     "");
-}]);
-
-angular.module("not-on-mobile.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("not-on-mobile.tpl.html",
-    "<div id=\"not-on-mobile\">\n" +
-    "   <div class=\"msg\">\n" +
-    "      Sorry, you can't do that on mobile devices yet...\n" +
-    "   </div>\n" +
-    "   <div class=\"sub-msg\">\n" +
-    "      but we're working on it!\n" +
-    "   </div>\n" +
-    "</div>");
 }]);
 
 angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -11125,6 +11129,8 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
 
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
+    "\n" +
+    "\n" +
     "<div class=\"signup-page\">\n" +
     "\n" +
     "   <div class=\"signup-sidebar\">\n" +
