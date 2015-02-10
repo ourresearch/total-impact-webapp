@@ -32,12 +32,21 @@ angular.module('security.service', [
     var loginDialog = null;
     function openLoginDialog(redirectTo) {
       console.log("openLoginDialog() fired.")
-      loginDialog = $modal.open({
-        templateUrl: "security/login/form.tpl.html",
-        controller: "LoginFormController",
-        windowClass: "creds"
-      });
-      loginDialog.result.then();
+      var viewportWidth = $(window).width()
+
+      if (viewportWidth <= responsiveDesignBreakpoints.tablet[1] ) {
+        // looks like we are On Mobile here. too bad for you, user.
+        alert("Sorry! We're working on it, but login isn't supported on this mobile device yet.")
+
+      }
+      else {
+        loginDialog = $modal.open({
+          templateUrl: "security/login/form.tpl.html",
+          controller: "LoginFormController",
+          windowClass: "creds"
+        });
+        loginDialog.result.then();
+      }
     }
 
     function setCurrentUser(newCurrentUser){

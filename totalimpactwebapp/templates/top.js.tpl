@@ -48,6 +48,16 @@ var globalCountryNames = {{ country_names | tojson | safe }}
 // set the Stripe publishable key. Different on staging and prod
 var stripePublishableKey = "{{ stripe_publishable_key }}"
 
+// Responsive design breakpoints. These are just copies of the ones in
+// variables.less, and need to stay in sync with them.
+responsiveDesignBreakpoints = {
+   phone: [0, 767],
+   tablet: [768, 1279],
+   desktop: [1280, 99999]
+}
+
+
+
 
 // facebook sdk
 /*

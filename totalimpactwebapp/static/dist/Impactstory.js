@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-01-22
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-02-10
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -2679,12 +2679,21 @@ angular.module('security.service', [
     var loginDialog = null;
     function openLoginDialog(redirectTo) {
       console.log("openLoginDialog() fired.")
-      loginDialog = $modal.open({
-        templateUrl: "security/login/form.tpl.html",
-        controller: "LoginFormController",
-        windowClass: "creds"
-      });
-      loginDialog.result.then();
+      var viewportWidth = $(window).width()
+
+      if (viewportWidth <= responsiveDesignBreakpoints.tablet[1] ) {
+        // looks like we are On Mobile here. too bad for you, user.
+        alert("Sorry! We're working on it, but login isn't supported on this mobile device yet.")
+
+      }
+      else {
+        loginDialog = $modal.open({
+          templateUrl: "security/login/form.tpl.html",
+          controller: "LoginFormController",
+          windowClass: "creds"
+        });
+        loginDialog.result.then();
+      }
     }
 
     function setCurrentUser(newCurrentUser){
@@ -7364,7 +7373,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'not-on-mobile.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -8865,6 +8874,18 @@ angular.module("infopages/spread-the-word.tpl.html", []).run(["$templateCache", 
     "");
 }]);
 
+angular.module("not-on-mobile.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("not-on-mobile.tpl.html",
+    "<div id=\"not-on-mobile\">\n" +
+    "   <div class=\"msg\">\n" +
+    "      Sorry, you can't do that on mobile devices yet...\n" +
+    "   </div>\n" +
+    "   <div class=\"sub-msg\">\n" +
+    "      but we're working on it!\n" +
+    "   </div>\n" +
+    "</div>");
+}]);
+
 angular.module("password-reset/password-reset.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("password-reset/password-reset.tpl.html",
     "<div class=\"password-reset-header\">\n" +
@@ -10198,7 +10219,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
-    "         <label class=\"sr-only\">Password foo</label>\n" +
+    "         <label class=\"sr-only\">Password</label>\n" +
     "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "            <input name=\"pass\" required\n" +
