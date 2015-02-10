@@ -23,15 +23,15 @@ def send_reset_token(email, url_base):
     # send the email here...
     mailer = mandrill.Mandrill(os.getenv("MANDRILL_APIKEY"))
 
-    text = """Hi! You asked to reset your ImpactStory password. To do that, just
+    text = """Hi! You asked to reset your Impactstory password. To do that, just
 copy and paste the URL below into your browser's address
 bar:\n\n{url}\n\n(If you didn't ask to reset your password, you can just ignore
-this message).\nBest,\nThe ImpactStory team""".format(url=full_reset_url)
+this message).\nBest,\nThe Impactstory team""".format(url=full_reset_url)
 
-    html = """<p>Hi! You asked to reset your ImpactStory password. To do that, just
+    html = """<p>Hi! You asked to reset your Impactstory password. To do that, just
 <a href="{url}">click this reset link</a>, or copy and paste the URL below into your
 browser's address bar:</p><pre>{url}</pre><p>(If you didn't ask to reset your password,
-you can just ignore this message.)<br>Best,<br>The ImpactStory
+you can just ignore this message.)<br>Best,<br>The Impactstory
 team</p>""".format(url=full_reset_url)
 
     msg = {
@@ -39,8 +39,8 @@ team</p>""".format(url=full_reset_url)
         "html": html,
         "subject": "Password reset link",
         "from_email": "team@impactstory.org",
-        "from_name": "ImpactStory support",
-        "to": [{"email":email, "name":"ImpactStory user"}],  # must be a list
+        "from_name": "Impactstory support",
+        "to": [{"email":email, "name":"Impactstory user"}],  # must be a list
         "tags": ["password-resets"],
         "track_opens": False,
         "track_clicks": False
