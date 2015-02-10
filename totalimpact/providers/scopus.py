@@ -175,6 +175,14 @@ class Scopus(Provider):
                         title=urllib.quote(title), 
                         journal1=urllib.quote(journal1), 
                         journal2=urllib.quote(journal2))
+            elif journal.lower().startswith("the journal"):
+                journal1 = journal
+                journal2 = re.sub("^the journal", "Journal", journal, flags=re.IGNORECASE)
+                url = url_template_two_journals.format(
+                        first_author=urllib.quote(first_author), 
+                        title=urllib.quote(title), 
+                        journal1=urllib.quote(journal1), 
+                        journal2=urllib.quote(journal2))                
             else:
                 url = url_template_one_journal.format(
                         first_author=urllib.quote(first_author), 
