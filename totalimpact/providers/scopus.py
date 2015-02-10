@@ -53,27 +53,26 @@ class Scopus(Provider):
 
 
 
-    def _extract_metrics(self, record, status_code=200, id=None):
+    def _extract_metrics_and_provenance_url(self, entries, status_code=200, id=None):
         try:
-            citations = int(record["citedby-count"])    
+            max_citation = 0
+            for entry in entries:
+                citation = int(entry["citedby-count"])
+                if citation > max_citation:
+                    max_citation = citation
+                    api_url = entry["prism:url"] 
+                    match = re.findall("scopus_id:([\dA-Z]+)", api_url)
+                    scopus_id = match[0]
+                    provenance_url = self._get_templated_url(self.provenance_url_template, scopus_id)
         except (KeyError, TypeError, ValueError):
             return {}
 
-        if citations:
-            metrics_dict = {"scopus:citations": citations}
+        if max_citation:
+            metrics_dict = {"scopus:citations": (max_citation, provenance_url)}
         else:
-            metrics_dict = {}                    
+            metrics_dict = {}   
         return metrics_dict
 
-    def _extract_provenance_url(self, record, status_code=200, id=None):
-        try:
-            api_url = record["prism:url"] 
-            match = re.findall("scopus_id:([\dA-Z]+)", api_url)
-            scopus_id = match[0]
-            provenance_url = self._get_templated_url(self.provenance_url_template, scopus_id)
-        except (KeyError, TypeError):
-            provenance_url = ""
-        return provenance_url
 
     def _get_page(self, url, headers={}):
         response = self.http_get(url, headers=headers, timeout=60)
@@ -87,11 +86,11 @@ class Scopus(Provider):
             raise ProviderContentMalformedError()
         return page
 
-    def _extract_relevant_record(self, fullpage, id):
+    def _extract_relevant_records(self, fullpage, id):
         data = provider._load_json(fullpage)
         response = None
         try:
-            response = data["search-results"]["entry"][0]
+            response = data["search-results"]["entry"]
         except (KeyError, ValueError):
             # not in Scopus database
             return None
@@ -134,8 +133,8 @@ class Scopus(Provider):
         if not page:
             return None  # empty result set
 
-        relevant_record = self._extract_relevant_record(page, id)
-        return relevant_record
+        relevant_records = self._extract_relevant_records(page, id)
+        return relevant_records
 
 
     def _get_scopus_url(self, biblio_dict):
@@ -217,27 +216,23 @@ class Scopus(Provider):
         if not page:
             return None  # empty result set
 
-        relevant_record = self._extract_relevant_record(page, biblio_dict)
-        return relevant_record
+        relevant_records = self._extract_relevant_records(page, biblio_dict)
+        return relevant_records
 
 
     def _get_metrics_and_drilldown_from_metrics_page(self, provider_url_template, namespace, id):
-        relevant_record = None
+        relevant_records = None
         if namespace=="doi":
-            relevant_record = self._get_relevant_record_with_doi(id)
+            relevant_records = self._get_relevant_record_with_doi(id)
         elif namespace=="biblio":
-            relevant_record = self._get_relevant_record_with_biblio(id)
+            relevant_records = self._get_relevant_record_with_biblio(id)
 
-        if not relevant_record:
+        if not relevant_records:
             # logger.info(u"no scopus page with id {id}".format(id=id))
             return {}
 
-        metrics_dict = self._extract_metrics(relevant_record)
+        metrics_and_drilldown = self._extract_metrics_and_provenance_url(relevant_records)
         
-        metrics_and_drilldown = {}
-        for metric_name in metrics_dict:
-            drilldown_url = self._extract_provenance_url(relevant_record)
-            metrics_and_drilldown[metric_name] = (metrics_dict[metric_name], drilldown_url)
         return metrics_and_drilldown  
 
 

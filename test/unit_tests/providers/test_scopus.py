@@ -39,32 +39,32 @@ class TestScopus(ProviderTestCase):
     def test_extract_metrics_success(self):
         f = open(SAMPLE_EXTRACT_METRICS_PAGE, "r")
         good_page = f.read()
-        relevant_record = self.provider._extract_relevant_record(good_page, id=TEST_ID)
-        metrics_dict = self.provider._extract_metrics(relevant_record, id=TEST_ID)
-        expected = {'scopus:citations': 97}
+        relevant_record = self.provider._extract_relevant_records(good_page, id=TEST_ID)
+        metrics_dict = self.provider._extract_metrics_and_provenance_url(relevant_record, id=TEST_ID)
+        expected = {'scopus:citations': (97, 'http://www.scopus.com/inward/record.url?partnerID=HzOxMe3b&scp=36248970413') }
         assert_equals(metrics_dict, expected)
 
     def test_extract_relevant_record_with_doi(self):
         f = open(SAMPLE_EXTRACT_METRICS_PAGE, "r")
         good_page = f.read()
-        relevant_record = self.provider._extract_relevant_record(good_page, id=TEST_ID)
+        relevant_record = self.provider._extract_relevant_records(good_page, id=TEST_ID)
         print relevant_record
-        expected = {'prism:url': 'http://api.elsevier.com/content/abstract/scopus_id:36248970413', '@_fa': 'true', 'citedby-count': '97'}
+        expected = [{'prism:url': 'http://api.elsevier.com/content/abstract/scopus_id:36248970413', '@_fa': 'true', 'citedby-count': '97'}]
         assert_equals(relevant_record, expected)
 
     def test_extract_relevant_record_with_biblio(self):
         f = open(SAMPLE_EXTRACT_METRICS_PAGE, "r")
         good_page = f.read()
-        relevant_record = self.provider._extract_relevant_record(good_page, id=TEST_BIBLIO)
+        relevant_record = self.provider._extract_relevant_records(good_page, id=TEST_BIBLIO)
         print relevant_record
-        expected = {'prism:url': 'http://api.elsevier.com/content/abstract/scopus_id:36248970413', '@_fa': 'true', 'citedby-count': '97'}
+        expected = [{'prism:url': 'http://api.elsevier.com/content/abstract/scopus_id:36248970413', '@_fa': 'true', 'citedby-count': '97'}]
         assert_equals(relevant_record, expected)        
 
     def test_provenance_url(self):
         f = open(SAMPLE_EXTRACT_METRICS_PAGE, "r")
         good_page = f.read()
-        relevant_record = self.provider._extract_relevant_record(good_page, id=TEST_ID)
-        provenance_url = self.provider._extract_provenance_url(relevant_record, id=TEST_ID)
+        relevant_record = self.provider._extract_relevant_records(good_page, id=TEST_ID)
+        provenance_url = self.provider._extract_metrics_and_provenance_url(relevant_record, id=TEST_ID).values()[0][1]
         expected = "http://www.scopus.com/inward/record.url?partnerID=HzOxMe3b&scp=36248970413"
         assert_equals(provenance_url, expected)
 
@@ -79,6 +79,15 @@ class TestScopus(ProviderTestCase):
     def test_metrics_with_doi(self):
         metrics_dict = self.provider.metrics([self.testitem_metrics])
         expected = {'scopus:citations': (65, u'http://www.scopus.com/inward/record.url?partnerID=HzOxMe3b&scp=36248970413')}
+        print metrics_dict
+        for key in expected:
+            assert metrics_dict[key][0] >= expected[key][0], [key, metrics_dict[key], expected[key]]
+            assert metrics_dict[key][1] == expected[key][1], [key, metrics_dict[key], expected[key]]
+
+    @http
+    def test_metrics_with_another_doi(self):
+        metrics_dict = self.provider.metrics([("doi", "10.1162/089892905774589226")])
+        expected = {'scopus:citations': (39, 'http://www.scopus.com/inward/record.url?partnerID=HzOxMe3b&scp=28044441674')}
         print metrics_dict
         for key in expected:
             assert metrics_dict[key][0] >= expected[key][0], [key, metrics_dict[key], expected[key]]
@@ -105,7 +114,7 @@ class TestScopus(ProviderTestCase):
     @http
     def test_metrics2(self):
         metrics_dict = self.provider.metrics([("doi", "10.1371/journal.pbio.0040286")])
-        expected = {'scopus:citations': (113, u'http://www.scopus.com/inward/record.url?partnerID=HzOxMe3b&scp=33748598232')}
+        expected = {'scopus:citations': (179, 'http://www.scopus.com/inward/record.url?partnerID=HzOxMe3b&scp=34250706218')}
         print metrics_dict
         for key in expected:
             assert metrics_dict[key][0] >= expected[key][0], [key, metrics_dict[key], expected[key]]
