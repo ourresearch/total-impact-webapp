@@ -6407,6 +6407,11 @@ div.no-page p span.slug {
   padding: 20px 0 20px;
   background: #fff;
 }
+@media only screen and (max-width: 767px), only screen and (min-width: 768px) and (max-width: 1279px) {
+  #sidebar {
+    position: absolute;
+  }
+}
 @media all and (max-width: 1100px) {
   #sidebar {
     left: 0;
@@ -6442,6 +6447,7 @@ div.no-page p span.slug {
 #wrapper {
   width: 1100px;
   margin: 0 auto;
+  position: relative;
 }
 #header {
   top: 20px;

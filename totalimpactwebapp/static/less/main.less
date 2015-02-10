@@ -547,6 +547,12 @@ div.no-page {
    margin-left: -@wrapperWidth / 2;
    padding: 20px 0 20px;
    background: #fff;
+
+   @media @phone, @tablet {
+      position:absolute;
+   }
+
+
 }
 
 @media all and (max-width: @wrapperWidth) {
@@ -575,6 +581,10 @@ div.no-page {
 #wrapper {
    width: @wrapperWidth;
    margin: 0 auto;
+
+   // so we can position the sidebar with absolute positioning on phones
+   // and tablets, using the page wrapper as a reference.
+   position: relative;
 }
 
 #header {
