@@ -35,6 +35,10 @@ class Scopus(Provider):
     def __init__(self):
         super(Scopus, self).__init__()
 
+    @property
+    def provides_metrics(self):
+        return True
+
     def is_relevant_alias(self, alias):
         (namespace, nid) = alias
         return (namespace in ["doi", "biblio"])
