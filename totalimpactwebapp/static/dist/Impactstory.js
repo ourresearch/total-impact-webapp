@@ -3371,6 +3371,7 @@ angular.module('profileSidebar', [
   .controller("infopageSidebarCtrl", function($scope, $rootScope, ProfileProducts, Page, security){
 
   })
+
 angular.module( 'signup', [
     'services.slug',
     'services.page',
@@ -6267,6 +6268,9 @@ angular.module("services.page")
       },
 
       findProfileSlug: findProfileSlug,
+      isOnMobile:function(){
+        return $rootScope.isOnMobile()
+      },
 
       sendPageloadToSegmentio: function(){
 
@@ -11119,6 +11123,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "      <i class=\"icon-reorder show-footer-button\"\n" +
+    "         ng-if=\"!page.isOnMobile()\"\n" +
     "         ng-mouseover=\"footer.show=true\"></i>\n" +
     "\n" +
     "   </div>\n" +
