@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-01-22
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-02-10
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -652,6 +652,10 @@ angular.module('app').controller('AppCtrl', function($scope,
   $scope.profileAboutService = ProfileAboutService
 
   $rootScope.adminMode = $location.search().admin == 42
+
+  $rootScope.isOnMobile = function() {
+      return $(window).width() <= responsiveDesignBreakpoints.tablet[1]
+  }
 
 
   // init the genre configs service
@@ -2657,6 +2661,7 @@ angular.module('security.service', [
                                 $q,
                                 $location,
                                 $modal,
+                                $rootScope,
                                 TiMixpanel,
                                 UserMessage) {
     var useCachedUser = true
@@ -2679,12 +2684,20 @@ angular.module('security.service', [
     var loginDialog = null;
     function openLoginDialog(redirectTo) {
       console.log("openLoginDialog() fired.")
-      loginDialog = $modal.open({
-        templateUrl: "security/login/form.tpl.html",
-        controller: "LoginFormController",
-        windowClass: "creds"
-      });
-      loginDialog.result.then();
+
+      if ($rootScope.isOnMobile() ) {
+        // looks like we are On Mobile here. too bad for you, user.
+        alert("Sorry! Login isn't supported on this mobile device yet.")
+
+      }
+      else {
+        loginDialog = $modal.open({
+          templateUrl: "security/login/form.tpl.html",
+          controller: "LoginFormController",
+          windowClass: "creds"
+        });
+        loginDialog.result.then();
+      }
     }
 
     function setCurrentUser(newCurrentUser){
@@ -3358,6 +3371,7 @@ angular.module('profileSidebar', [
   .controller("infopageSidebarCtrl", function($scope, $rootScope, ProfileProducts, Page, security){
 
   })
+
 angular.module( 'signup', [
     'services.slug',
     'services.page',
@@ -3376,13 +3390,25 @@ angular.module( 'signup', [
       resolve:{
         userNotLoggedIn: function(security){
           return security.testUserAuthenticationLevel("loggedIn", false)
+        },
+        notOnMobile: function($q, $rootScope, $location){
+          console.log("trying to resolve /signup")
+          var deferred = $q.defer()
+          if ($rootScope.isOnMobile()){
+            alert("Sorry! Creating new profiles isn't yet supported on your mobile device.")
+            $location.path("/")
+            deferred.reject()
+          }
+          else {
+            deferred.resolve()
+          }
+          return deferred.promise
         }
       }
     })
 }])
 
-  .controller('signupCtrl', function($scope, Page){
-
+  .controller('signupCtrl', function($scope, $location, $rootScope, Page){
 
   })
 
@@ -6242,6 +6268,9 @@ angular.module("services.page")
       },
 
       findProfileSlug: findProfileSlug,
+      isOnMobile:function(){
+        return $rootScope.isOnMobile()
+      },
 
       sendPageloadToSegmentio: function(){
 
@@ -8285,13 +8314,6 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "         <p>Jason has contributed to and created several open-source software projects, including <a href=\"http://www.zotero.org\">Zotero</a> and <a href=\"http://feedvis.com\">Feedvis</a>, and has experience and training in art, design, and information visualisation.  Sometimes he writes on a <a href=\"http://jasonpriem.org/blog\">blog</a> and <a href=\"https://twitter.com/#!/jasonpriem\">tweets</a>.</p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"team-member subsequent\">\n" +
-    "         <img src=\"/static/img/stacy.jpg\" height=100/>\n" +
-    "         <p><strong>Stacy Konkiel</strong> is the Director of Marketing & Research at Impactstory. A former academic librarian, Stacy has written and spoken most often about the potential for altmetrics in academic libraries.</p>\n" +
-    "\n" +
-    "         <p>Stacy has been an advocate for Open Scholarship since the beginning of her career, but credits her time at Public Library of Science (PLOS) with sparking her interest in altmetrics and other revolutions in scientific communication. Prior, she earned her dual master’s degrees in Information Science and Library Science at Indiana University (2008). You can connect with Stacy on Twitter at <a href=\"http://twitter.com/skonkiel\">@skonkiel</a>.</p>\n" +
-    "      </div>\n" +
-    "\n" +
     "      <div class=\"clearfix\"></div>\n" +
     "\n" +
     "\n" +
@@ -10198,7 +10220,7 @@ angular.module("security/login/form.tpl.html", []).run(["$templateCache", functi
     "         </div>\n" +
     "      </div>\n" +
     "      <div class=\"form-group\">\n" +
-    "         <label class=\"sr-only\">Password foo</label>\n" +
+    "         <label class=\"sr-only\">Password</label>\n" +
     "         <div class=\"controls input-group\" has-focus ng-class=\"{'has-success': loginForm.pass.$valid}\">\n" +
     "            <span class=\"input-group-addon\"><i class=\"icon-key\"></i></span>\n" +
     "            <input name=\"pass\" required\n" +
@@ -11094,6 +11116,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "      <i class=\"icon-reorder show-footer-button\"\n" +
+    "         ng-if=\"!page.isOnMobile()\"\n" +
     "         ng-mouseover=\"footer.show=true\"></i>\n" +
     "\n" +
     "   </div>\n" +
@@ -11104,6 +11127,8 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
 
 angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("signup/signup.tpl.html",
+    "\n" +
+    "\n" +
     "<div class=\"signup-page\">\n" +
     "\n" +
     "   <div class=\"signup-sidebar\">\n" +

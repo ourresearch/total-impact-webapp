@@ -6407,7 +6407,7 @@ div.no-page p span.slug {
   padding: 20px 0 20px;
   background: #fff;
 }
-@media only screen and (max-width: 767px), only screen and (min-width: 768px) and (max-width: 1279px) {
+@media only screen and (max-width: 767px), only screen and (min-width: 768px) and (max-width: 999px) {
   #sidebar {
     position: absolute;
   }
@@ -6735,6 +6735,12 @@ div.main-sidebar div.sidebar-footer a.logo img:hover {
 }
 #page-footer-container #page-footer:after {
   clear: both;
+}
+@media only screen and (max-width: 767px), only screen and (min-width: 768px) and (max-width: 999px) {
+  #page-footer-container #page-footer {
+    background: red;
+    position: absolute;
+  }
 }
 #page-footer-container #page-footer p {
   margin: 6px 0 0 0;
@@ -7162,6 +7168,10 @@ div.map-stats table.table tbody tr td i.fa-asterisk {
   vertical-align: middle;
   color: #555;
 }
+/* mobile hacks
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
 /* info pages in general
 *****************************************************************************
 *****************************************************************************
@@ -9197,6 +9207,15 @@ div.modal-body.change-product-genre label {
   width: 250px;
   float: right;
   padding-left: 20px;
+}
+div#signup-page-hider {
+  background: #fff;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999999999999;
 }
 div.signup-page {
   position: fixed;

@@ -10,6 +10,7 @@ angular.module('security.service', [
                                 $q,
                                 $location,
                                 $modal,
+                                $rootScope,
                                 TiMixpanel,
                                 UserMessage) {
     var useCachedUser = true
@@ -32,12 +33,20 @@ angular.module('security.service', [
     var loginDialog = null;
     function openLoginDialog(redirectTo) {
       console.log("openLoginDialog() fired.")
-      loginDialog = $modal.open({
-        templateUrl: "security/login/form.tpl.html",
-        controller: "LoginFormController",
-        windowClass: "creds"
-      });
-      loginDialog.result.then();
+
+      if ($rootScope.isOnMobile() ) {
+        // looks like we are On Mobile here. too bad for you, user.
+        alert("Sorry! Login isn't supported on this mobile device yet.")
+
+      }
+      else {
+        loginDialog = $modal.open({
+          templateUrl: "security/login/form.tpl.html",
+          controller: "LoginFormController",
+          windowClass: "creds"
+        });
+        loginDialog.result.then();
+      }
     }
 
     function setCurrentUser(newCurrentUser){

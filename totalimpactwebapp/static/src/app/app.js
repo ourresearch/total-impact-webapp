@@ -158,6 +158,10 @@ angular.module('app').controller('AppCtrl', function($scope,
 
   $rootScope.adminMode = $location.search().admin == 42
 
+  $rootScope.isOnMobile = function() {
+      return $(window).width() <= responsiveDesignBreakpoints.tablet[1]
+  }
+
 
   // init the genre configs service
   $scope.GenreConfigs = GenreConfigs

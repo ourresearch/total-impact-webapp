@@ -243,6 +243,9 @@ angular.module("services.page")
       },
 
       findProfileSlug: findProfileSlug,
+      isOnMobile:function(){
+        return $rootScope.isOnMobile()
+      },
 
       sendPageloadToSegmentio: function(){
 
