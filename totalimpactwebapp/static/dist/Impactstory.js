@@ -360,8 +360,8 @@ angular.module('accounts.allTheAccounts', [
       sync: true,
       username:{
         inputNeeded: "ID",
-        placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
+        placeholder: "paste your ORCID ID here",
+        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in). It looks like http://orcid.org/xxxx-xxxx-xxxx-xxxx"
       },
       usernameCleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
       url: 'http://orcid.org',
@@ -7500,7 +7500,6 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "            <div class=\"form-group username\">\n" +
     "               <label class=\"control-label\">\n" +
     "                  {{ account.CSSname }} {{ account.username.inputNeeded }}\n" +
-    "                  <i class=\"icon-question-sign\" ng-show=\"account.username.help\" tooltip-html-unsafe=\"{{ account.username.help }}\"></i>\n" +
     "               </label>\n" +
     "               <div class=\"account-input\">\n" +
     "                  <input\n" +
@@ -7513,6 +7512,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                          autofocus=\"autofocus\"\n" +
     "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
     "\n" +
+    "               </div>\n" +
+    "               <div class=\"help\" ng-show=\"account.username.help\">\n" +
+    "                  {{ account.username.help }}\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +

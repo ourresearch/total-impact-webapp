@@ -84,8 +84,8 @@ angular.module('accounts.allTheAccounts', [
       sync: true,
       username:{
         inputNeeded: "ID",
-        placeholder: "http://orcid.org/xxxx-xxxx-xxxx-xxxx",
-        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in)."
+        placeholder: "paste your ORCID ID here",
+        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in). It looks like http://orcid.org/xxxx-xxxx-xxxx-xxxx"
       },
       usernameCleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
       url: 'http://orcid.org',
