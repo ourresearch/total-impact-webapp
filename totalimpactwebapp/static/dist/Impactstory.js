@@ -8314,13 +8314,6 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "         <p>Jason has contributed to and created several open-source software projects, including <a href=\"http://www.zotero.org\">Zotero</a> and <a href=\"http://feedvis.com\">Feedvis</a>, and has experience and training in art, design, and information visualisation.  Sometimes he writes on a <a href=\"http://jasonpriem.org/blog\">blog</a> and <a href=\"https://twitter.com/#!/jasonpriem\">tweets</a>.</p>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div class=\"team-member subsequent\">\n" +
-    "         <img src=\"/static/img/stacy.jpg\" height=100/>\n" +
-    "         <p><strong>Stacy Konkiel</strong> is the Director of Marketing & Research at Impactstory. A former academic librarian, Stacy has written and spoken most often about the potential for altmetrics in academic libraries.</p>\n" +
-    "\n" +
-    "         <p>Stacy has been an advocate for Open Scholarship since the beginning of her career, but credits her time at Public Library of Science (PLOS) with sparking her interest in altmetrics and other revolutions in scientific communication. Prior, she earned her dual master’s degrees in Information Science and Library Science at Indiana University (2008). You can connect with Stacy on Twitter at <a href=\"http://twitter.com/skonkiel\">@skonkiel</a>.</p>\n" +
-    "      </div>\n" +
-    "\n" +
     "      <div class=\"clearfix\"></div>\n" +
     "\n" +
     "\n" +
