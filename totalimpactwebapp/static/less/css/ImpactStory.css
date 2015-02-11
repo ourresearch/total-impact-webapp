@@ -9824,6 +9824,11 @@ div.accounts div.account-window-wrapper div.account-window .content form .form-g
   min-width: 400px;
   padding: 20px;
 }
+div.accounts div.account-window-wrapper div.account-window .content form .form-group .help {
+  font-size: 16px;
+  color: #555;
+  padding: 10px 10px 0;
+}
 div.accounts div.account-window-wrapper div.account-window .content form .form-group .input-extra {
   color: #999;
   font-size: 15px;
