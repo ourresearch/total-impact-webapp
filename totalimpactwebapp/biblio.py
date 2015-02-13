@@ -48,7 +48,10 @@ class BiblioRow(db.Model):
     @cached_property
     def is_good_choice(self):
         if self.biblio_name=="title":
-            if self.biblio_value.isupper():
+            try:
+                if self.biblio_value.isupper():
+                    return False
+            except AttributeError:  #some titles are ints, apparently
                 return False
         return True
 
