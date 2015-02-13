@@ -771,26 +771,27 @@ def run_through_twitter_pages(url_slug=None, min_url_slug=None):
 
 
 
-def star_best_products(url_slug=None, min_url_slug=None):
-    if url_slug:
-        q = db.session.query(Profile).filter(Profile.url_slug==url_slug)
-    else:
-        if min_url_slug:
-            q = db.session.query(Profile).filter(Profile.url_slug>=min_url_slug)
+def star_best_products(args):
+    url_slug = args.get("url_slug", None)
+    min_url_slug = args.get("min_url_slug", None)
 
-        else:
-            q = db.session.query(Profile)
+    q = profile_query(url_slug, min_url_slug)
 
     number_considered = 0.0
     start_time = datetime.datetime.utcnow()
     for profile in windowed_query(q, Profile.url_slug, 25):
         number_considered += 1
 
+        board = Pinboard.query.filter_by(profile_id=profile.id).first()
+        if board:
+            # already has one!  skip and keep going
+            continue
+
         if not profile.products:
             # print "no products"
             continue
 
-        logger.info(u"*******calculating stars on {url_slug}".format(
+        logger.info(u"*******calculating pinboard for {url_slug}".format(
             url_slug=profile.url_slug))
 
         sorted_products = sorted(profile.products_not_removed, key=lambda x: x.awardedness_score, reverse=True)
@@ -823,16 +824,7 @@ def star_best_products(url_slug=None, min_url_slug=None):
         contents["one"] = [["product", p.tiid] for p in selected_products]
         contents["two"] = [c.genre_card_address for c in selected_cards]
 
-        # print contents
-        board = Pinboard.query.filter_by(profile_id=profile.id).first()
-        if board:
-            board.contents = contents
-            board.timestamp = datetime.datetime.utcnow()
-        else:        
-            board = Pinboard(
-                profile_id=profile.id,
-                contents=contents)
-
+        board = Pinboard(profile_id=profile.id, contents=contents)
         db.session.add(board)
         commit(db)
 
@@ -1152,8 +1144,6 @@ def main(function, args):
         refresh_tweeted_products(args["min_tiid"])
     elif function=="run_through_twitter_pages":
         run_through_twitter_pages(args["url_slug"], args["min_url_slug"])
-    elif function=="star":
-        star_best_products(args["url_slug"], args["min_url_slug"])
     elif function=="count_news":
         count_news_for_subscribers(args["url_slug"], args["min_url_slug"])
     elif function=="drip_email":
