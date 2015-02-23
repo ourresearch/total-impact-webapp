@@ -3,6 +3,7 @@ from totalimpactwebapp.product import Product
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.pinboard import Pinboard
+# from totalimpactwebapp.pinboard import auto_populate_pinboard
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
@@ -291,6 +292,39 @@ def profile_deets(url_slug=None,
     upload_to_s3(temp_csv_file.name, "exploring/profile_deets.csv")
     time.sleep(30)
 
+
+def profile_deets_live(args):
+
+    url_slug = args.get("url_slug", None)
+    min_url_slug = args.get("min_url_slug", None)
+
+    q = profile_query(url_slug, min_url_slug)
+
+    number_considered = 0.0
+    start_time = datetime.datetime.utcnow()
+    profile_deets = []
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        logger.info(u"profile_deets: {url_slug}".format(
+            url_slug=profile.url_slug))
+        profile_deets += [populate_profile_deets(profile)]
+        db.session.expunge(profile)
+        # print csv_of_dict(profile_deets)
+        # with open("profile_deets.pickle", "wb") as handle:
+        #   pickle.dump(profile_deets, handle)
+
+    # print json.dumps(profile_deets, sort_keys=True, indent=4)
+
+    print "****"
+    csv_contents = csv_of_dict(profile_deets)
+    print csv_contents
+    import tempfile
+    temp_csv_file = tempfile.NamedTemporaryFile(delete=False)
+    temp_csv_file.write(csv_contents)
+    temp_csv_file.close()
+
+    upload_to_s3(temp_csv_file.name, "exploring/profile_deets.csv")
+    time.sleep(30)
 
 
 def add_product_deets_for_everyone(url_slug=None, skip_until_url_slug=None):
@@ -771,66 +805,39 @@ def run_through_twitter_pages(url_slug=None, min_url_slug=None):
 
 
 
-def star_best_products(args):
-    url_slug = args.get("url_slug", None)
-    min_url_slug = args.get("min_url_slug", None)
+# def star_best_products(args):
+#     url_slug = args.get("url_slug", None)
+#     min_url_slug = args.get("min_url_slug", None)
 
-    q = profile_query(url_slug, min_url_slug)
+#     q = profile_query(url_slug, min_url_slug)
 
-    number_considered = 0.0
-    start_time = datetime.datetime.utcnow()
-    for profile in windowed_query(q, Profile.url_slug, 25):
-        number_considered += 1
+#     number_considered = 0.0
+#     start_time = datetime.datetime.utcnow()
+#     for profile in windowed_query(q, Profile.url_slug, 25):
+#         number_considered += 1
 
-        board = Pinboard.query.filter_by(profile_id=profile.id).first()
-        if board:
-            # already has one!  skip and keep going
-            continue
+#         board = Pinboard.query.filter_by(profile_id=profile.id).first()
+#         if board:
+#             # already has one!  skip and keep going
+#             continue
 
-        if not profile.products:
-            # print "no products"
-            continue
+#         if not profile.products:
+#             # print "no products"
+#             continue
 
-        logger.info(u"*******calculating pinboard for {url_slug}".format(
-            url_slug=profile.url_slug))
+#         logger.info(u"*******saved pinboard for {url_slug}".format(
+#             url_slug=profile.url_slug))
 
-        sorted_products = sorted(profile.products_not_removed, key=lambda x: x.awardedness_score, reverse=True)
-        sorted_products_articles = [p for p in sorted_products if p.genre=="article"]
-        sorted_products_nonarticles = [p for p in sorted_products if p.genre!="article"]
-        selected_products = []
-        num_article_pins = min(3, len(sorted_products_articles))
-        num_nonarticle_pins = min((4 - num_article_pins), len(sorted_products_nonarticles))
-        selected_products += [p for p in sorted_products_articles[0:num_article_pins]]
-        selected_products += [p for p in sorted_products_nonarticles[0:num_nonarticle_pins]]
-        # print
-        # print "\n".join([p.biblio.title for p in selected_products])
+#         contents = auto_populate_pinboard(profile)
+#         board = Pinboard(profile_id=profile.id, contents=contents)
+#         db.session.add(board)
+#         commit(db)
 
-        all_cards = []
-        for genre in profile.genres:
-            all_cards.extend(genre.cards)
-        sorted_cards = sorted(all_cards, key=lambda x: x.sort_by, reverse=True)
-
-        sorted_cards_articles = [c for c in sorted_cards if c.genre=="article"]
-        sorted_cards_nonarticles = [c for c in sorted_cards if c.genre!="article"]
-        num_article_cards = min(2, len(sorted_cards_articles))
-        num_nonarticle_cards = min((4 - num_article_cards), len(sorted_cards_nonarticles))
-
-        selected_cards = []
-        selected_cards += [c for c in sorted_cards_articles[0:num_article_cards]]
-        selected_cards += [c for c in sorted_cards_nonarticles[0:num_nonarticle_cards]]
-        # print [(c.card_type, c.genre, c.img_filename) for c in selected_cards]
-
-        contents = {"one":[], "two":[]}
-        contents["one"] = [["product", p.tiid] for p in selected_products]
-        contents["two"] = [c.genre_card_address for c in selected_cards]
-
-        board = Pinboard(profile_id=profile.id, contents=contents)
-        db.session.add(board)
-        commit(db)
-
-        elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
-        print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+#         elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+#         print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
   
+
+
 
 def count_news_for_subscribers(url_slug=None, min_url_slug=None):
     if url_slug:
@@ -1054,41 +1061,15 @@ def update_profiles(limit=5, url_slug=None):
             number_profiles += 1
 
 
-def update_all_live_profiles(args):
+def live_profile_emails(args):
     url_slug = args.get("url_slug", None)
     min_url_slug = args.get("min_url_slug", None)
-    force_all = args.get("force_all", None)
 
     q = profile_query(url_slug, min_url_slug)
-    if not force_all:
-        q = q.filter(Profile.next_refresh <= datetime.datetime.utcnow())
-
-    limit = args.get("limit", 5)
-    if url_slug:
-        limit = 1
 
     number_profiles_updated = 0.0
     for profile in windowed_query(q, Profile.url_slug, 25):
-        product_count = len(profile.products_not_removed)
-        logger.info(u"profile {url_slug} has {product_count} products".format(
-            url_slug=profile.url_slug, product_count=product_count))
-
-        if product_count > 500:
-            logger.warning(u"Too many products (n={product_count}) for profile {url_slug}, skipping update".format(
-                product_count=product_count, url_slug=profile.url_slug))
-        else:            
-            update_this_profile(profile)
-
-
-            number_profiles_updated += 1
-            if limit and number_profiles_updated >= limit:
-                logger.info(u"updated all {limit} profiles, done for now.".format(
-                    limit=limit))
-                return
-
-            pause_length = min(product_count * 3, 120)
-            print "pausing", pause_length, "seconds after refreshing", product_count, "products"
-            time.sleep(pause_length)
+        print profile.email
 
 
 def debug_biblio_for_live_profiles(args):
