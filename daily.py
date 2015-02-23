@@ -3,7 +3,7 @@ from totalimpactwebapp.product import Product
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.product import refresh_products_from_tiids
 from totalimpactwebapp.pinboard import Pinboard
-from totalimpactwebapp.pinboard import auto_populate_pinboard
+# from totalimpactwebapp.pinboard import auto_populate_pinboard
 from totalimpactwebapp.reference_set import save_all_reference_set_lists
 from totalimpactwebapp.reference_set import RefsetBuilder
 from totalimpactwebapp.product_deets import populate_product_deets
@@ -805,36 +805,36 @@ def run_through_twitter_pages(url_slug=None, min_url_slug=None):
 
 
 
-def star_best_products(args):
-    url_slug = args.get("url_slug", None)
-    min_url_slug = args.get("min_url_slug", None)
+# def star_best_products(args):
+#     url_slug = args.get("url_slug", None)
+#     min_url_slug = args.get("min_url_slug", None)
 
-    q = profile_query(url_slug, min_url_slug)
+#     q = profile_query(url_slug, min_url_slug)
 
-    number_considered = 0.0
-    start_time = datetime.datetime.utcnow()
-    for profile in windowed_query(q, Profile.url_slug, 25):
-        number_considered += 1
+#     number_considered = 0.0
+#     start_time = datetime.datetime.utcnow()
+#     for profile in windowed_query(q, Profile.url_slug, 25):
+#         number_considered += 1
 
-        board = Pinboard.query.filter_by(profile_id=profile.id).first()
-        if board:
-            # already has one!  skip and keep going
-            continue
+#         board = Pinboard.query.filter_by(profile_id=profile.id).first()
+#         if board:
+#             # already has one!  skip and keep going
+#             continue
 
-        if not profile.products:
-            # print "no products"
-            continue
+#         if not profile.products:
+#             # print "no products"
+#             continue
 
-        logger.info(u"*******saved pinboard for {url_slug}".format(
-            url_slug=profile.url_slug))
+#         logger.info(u"*******saved pinboard for {url_slug}".format(
+#             url_slug=profile.url_slug))
 
-        contents = auto_populate_pinboard(profile)
-        board = Pinboard(profile_id=profile.id, contents=contents)
-        db.session.add(board)
-        commit(db)
+#         contents = auto_populate_pinboard(profile)
+#         board = Pinboard(profile_id=profile.id, contents=contents)
+#         db.session.add(board)
+#         commit(db)
 
-        elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
-        print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
+#         elapsed_seconds = (datetime.datetime.utcnow() - start_time).seconds
+#         print "elapsed seconds=", elapsed_seconds, ";  number per second=", number_considered/(0.1+elapsed_seconds)
   
 
 
