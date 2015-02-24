@@ -174,7 +174,11 @@ def populate_profile_deets(profile):
     deets["has_bio"] = (None != profile.bio)
     deets["got_new_metrics_email"] = (None != profile.last_email_sent)
     deets["subscription_date"] = profile.subscription_start_date
-    deets["oa_badge"] = profile.awards[0].level_name
+    awards = profile.get_profile_awards()
+    if awards:
+        deets["oa_badge"] = awards[0].level_name
+    else:
+        deets["oa_badge"] = None
     deets["num_countries"] = len(profile.countries.countries)
 
 
