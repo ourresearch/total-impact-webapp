@@ -162,7 +162,7 @@ def populate_profile_deets(profile):
     deets["profile_id"] = profile.id
     deets["email"] = profile.email
     deets["full_name"] = profile.full_name
-    deets["first_name"] = profile.first_name
+    deets["given_name"] = profile.given_name
     deets["surname"] = profile.surname
     deets["stripe_id"] = profile.stripe_id
     deets["created"] = profile.created.isoformat()
