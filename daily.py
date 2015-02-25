@@ -158,8 +158,13 @@ def build_csv_rows_from_dict(mydicts):
 def populate_profile_deets(profile):
     deets = defaultdict(int)
     deets["url_slug"] = profile.url_slug
+    deets["url"] = u"https://impactstory.org/{url}".format(url=profile.url_slug)
+    deets["profile_id"] = profile.id
     deets["email"] = profile.email
     deets["full_name"] = profile.full_name
+    deets["first_name"] = profile.first_name
+    deets["surname"] = profile.surname
+    deets["stripe_id"] = profile.stripe_id
     deets["created"] = profile.created.isoformat()
     deets["is_subscriber"] = profile.is_subscribed
     deets["is_paid_subscriber"] = profile.is_paid_subscriber
