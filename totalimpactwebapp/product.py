@@ -766,6 +766,7 @@ class Product(db.Model):
             "awards",
             "genre",
             "genre_icon",
+            "display_genre_plural",
             "countries_str",
 
              # for sorting
