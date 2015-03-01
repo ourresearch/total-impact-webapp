@@ -1040,10 +1040,14 @@ def get_profile_summary_dict(profile):
 
     deets["highly_badges"] = highly_badges.most_common(5)
     deets["badges"] = badges.most_common(5)
+    deets["num_genres"] = len(profile.genres)
+
     top_disciplines = mendeley_disciplines.most_common(4)
     deets["mendeley_discipline_top_3"] = [(name, count) for (name, count) in top_disciplines if name!=None]
-    deets["mendeley_discipline"] = deets["mendeley_discipline_top_3"][0][0]
-    deets["num_genres"] = len(profile.genres)
+    try:
+        deets["mendeley_discipline"] = deets["mendeley_discipline_top_3"][0][0]
+    except IndexError:
+        pass
 
     sorted_citations = citations.most_common()
     sorted_citations.sort(key=lambda tup: tup[0], reverse=True) 
