@@ -37,23 +37,6 @@ def make_metrics_list(tiid, snaps, product_created):
 
 
 
-def make_mendeley_metric(tiid, snaps, product_created):
-    metric = MendeleyDisciplineMetric(
-        tiid,
-        "mendeley",
-        "discipline",
-        configs.metrics()["mendeley:discipline"]
-    )
-    metric.add_snaps_from_list(snaps)
-    metric.product_create_date = arrow.get(product_created, 'UTC')
-
-    if len(metric.snaps):
-        return metric
-    else:
-        return None
-
-
-
 class Metric(object):
 
     window_start_min_days_ago = 8
@@ -354,25 +337,6 @@ class Metric(object):
         ret = dict_from_dir(self, ["config", "snaps"])
         return ret
 
-
-
-
-class MendeleyDisciplineMetric(Metric):
-
-    def __init__(self, *args):
-        super(MendeleyDisciplineMetric, self).__init__(*args)
-
-    @cached_property
-    def mendeley_discipine(self):
-        disciplines = self.most_recent_snap.raw_value
-
-        by_name = sorted(disciplines, key=lambda d: d["name"])
-        by_value_then_name = sorted(
-            by_name,
-            key=lambda d: d["value"],
-            reverse=True
-        )
-        return by_value_then_name[0]
 
 
 

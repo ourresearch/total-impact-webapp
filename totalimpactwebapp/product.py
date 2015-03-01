@@ -24,7 +24,6 @@ from totalimpactwebapp import reference_set
 from totalimpactwebapp import embed_markup
 from totalimpactwebapp import countries
 from totalimpactwebapp.metric import make_metrics_list
-from totalimpactwebapp.metric import make_mendeley_metric
 from totalimpactwebapp.biblio import Biblio
 from totalimpactwebapp.biblio import BiblioRow
 from totalimpactwebapp.biblio import matches_biblio
@@ -334,11 +333,21 @@ class Product(db.Model):
 
     @cached_property
     def mendeley_discipline(self):
-        mendeley_metric = make_mendeley_metric(self.tiid, self.snaps, self.created)
-        try:
-            return mendeley_metric.mendeley_discipine["name"]
-        except (AttributeError, TypeError):
-            return None
+        top_discipline = None
+        discipline_snaps = [snap for snap in self.snaps if snap.provider=="mendeley" and snap.interaction=="discipline"]
+        if discipline_snaps:
+            most_recent_discipline_snap = sorted(
+                        discipline_snaps,
+                        key=lambda x: x.last_collected_date,
+                        reverse=True
+                    )[0]            
+            all_disciplines = most_recent_discipline_snap.raw_value
+            try:
+                by_value = sorted(all_disciplines, key=all_disciplines.get, reverse=True)
+                top_discipline = by_value[0]
+            except AttributeError:
+                pass
+        return top_discipline
 
     @cached_property
     def year(self):
@@ -408,7 +417,6 @@ class Product(db.Model):
 
     @cached_property
     def percentile_snaps(self):
-
         my_refset = reference_set.ProductLevelReferenceSet()
         my_refset.year = self.year
         my_refset.genre = self.genre
@@ -766,6 +774,9 @@ class Product(db.Model):
             "metrics_raw_sum",
             "title",
             "authors",
+
+             # for debugging
+            "mendeley_discipline",
 
             # to show the "view on impactstory" badges
             "embed_markup",

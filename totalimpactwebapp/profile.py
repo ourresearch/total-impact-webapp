@@ -50,6 +50,7 @@ import redis
 import csv
 import StringIO
 import arrow
+import urllib
 
 
 logger = logging.getLogger("ti.profile")
@@ -940,3 +941,123 @@ def _make_id(len=6):
     return ''.join(random.choice(choices) for x in range(len))
 
     
+def get_profile_summary_dict(profile):
+    deets = defaultdict(int)
+    deets["url_slug"] = profile.url_slug
+    deets["url"] = u"https://impactstory.org/{url}".format(url=profile.url_slug)
+    deets["profile_id"] = profile.id
+    deets["email"] = profile.email
+    deets["full_name"] = profile.full_name
+    deets["given_name"] = profile.given_name
+    deets["surname"] = profile.surname
+    deets["stripe_id"] = profile.stripe_id
+    deets["created"] = profile.created.isoformat()
+    deets["is_subscriber"] = profile.is_subscribed
+    deets["is_paid_subscriber"] = profile.is_paid_subscriber
+    deets["is_unpaid_subscriber"] = profile.is_subscribed and not profile.is_paid_subscriber
+    deets["is_advisor"] = profile.is_advisor
+    deets["google_scholar_id"] = profile.google_scholar_id
+    deets["orcid_id"] = profile.orcid_id
+    deets["github_id"] = profile.github_id
+    deets["slideshare_id"] = profile.slideshare_id
+    deets["twitter_id"] = profile.twitter_id
+    deets["figshare_id"] = profile.figshare_id
+    deets["publons_id"] = profile.publons_id
+    deets["has_bio"] = (None != profile.bio)
+    deets["got_new_metrics_email"] = (None != profile.last_email_sent)
+    deets["subscription_date"] = profile.subscription_start_date
+    awards = profile.get_profile_awards()
+    if awards:
+        deets["oa_badge"] = awards[0].level_name
+    else:
+        deets["oa_badge"] = None
+    deets["num_countries"] = len(profile.countries.countries)
+
+
+    products = profile.display_products
+    deets["num_products"] = len(products)
+    deets["earliest_publication_year"] = 9999
+    mendeley_disciplines = Counter()
+    badges = Counter()
+    highly_badges = Counter()
+    citations = Counter()
+    for product in products:
+        for award in product.awards:
+            badges[award.engagement_type] += 1
+            if award.is_highly:
+                highly_badges[award.engagement_type] += 1
+        if product.awards:
+            deets["num_products_with_awards"] += 1
+        if product.awards and product.genre=="article":
+            deets["num_articles_with_awards"] += 1
+        num_highly_awards_for_this_product = len([1 for award in product.awards if award.is_highly])
+        if num_highly_awards_for_this_product:
+            deets["num_highly_awards"] += 1
+        if product.has_file:
+            deets["num_uploaded_files"] += 1
+        if product.embed_markup:
+            deets["num_products_with_embed_markup"] += 1
+        if product.has_metrics:
+            deets["num_products_with_metrics"] += 1
+        if product.aliases:
+            if product.aliases.display_doi:
+                deets["num_with_dois"] += 1
+            if product.aliases.display_pmid:
+                deets["num_with_pmids"] += 1
+            if product.aliases.display_pmc:
+                deets["num_with_pmcs"] += 1
+            if product.aliases.resolved_url:
+                if "peerj" in product.aliases.resolved_url:
+                    deets["num_with_peerj"] += 1
+                if "arxiv" in product.aliases.resolved_url:
+                    deets["num_with_arxiv"] += 1
+                if "plos" in product.aliases.resolved_url:
+                    deets["num_with_plos"] += 1            
+        if product.biblio:
+            try:
+                if product.biblio.year and int(product.biblio.year) < deets["earliest_publication_year"]:
+                    deets["earliest_publication_year"] = int(product.biblio.year)
+            except (AttributeError, ValueError):
+                pass
+            if hasattr(product.biblio, "journal") and "ecology" in product.biblio.journal.lower():
+                deets["num_with_ecology_journal"] += 1            
+
+        citation_metric = product.get_metric_by_name("scopus", "citations")
+        if citation_metric:
+            citations[citation_metric.current_value] += 1    
+            deets["num_products_with_citations"] += 1
+            deets["num_citations"] += citation_metric.current_value            
+        mendeley_disciplines[product.mendeley_discipline] += 1
+
+ 
+    gravatar_url = "http://www.gravatar.com/avatar.php?"
+    gravatar_url += urllib.urlencode({'gravatar_id':hashlib.md5(profile.email.lower()).hexdigest()})
+    gravatar_url += "?d=404"  #gravatar returns 404 if doesn't exist, with this
+    gravitar_response = requests.get(gravatar_url)
+    if gravitar_response.status_code==200:
+        deets["has_gravitar"] = True
+
+
+    deets["highly_badges"] = highly_badges.most_common(5)
+    deets["badges"] = badges.most_common(5)
+    top_disciplines = mendeley_disciplines.most_common(4)
+    deets["mendeley_discipline_top_3"] = [(name, count) for (name, count) in top_disciplines if name!=None]
+    deets["mendeley_discipline"] = deets["mendeley_discipline_top_3"][0][0]
+    deets["num_genres"] = len(profile.genres)
+
+    sorted_citations = citations.most_common()
+    sorted_citations.sort(key=lambda tup: tup[0], reverse=True) 
+    # print sorted_citations
+    number_of_papers_with_more_citations = 0
+    for (cites, count) in sorted_citations:
+        number_of_papers_with_more_citations += count
+        if number_of_papers_with_more_citations > cites:
+            break
+        deets["hindex"] = number_of_papers_with_more_citations
+        # print deets["hindex"]
+    # print deets["hindex"]
+
+    for genre_dict in profile.genres:
+        deets["num_genre_" + genre_dict.name] = genre_dict.num_products
+
+    return deets    
