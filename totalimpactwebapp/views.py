@@ -7,6 +7,7 @@ import datetime
 import analytics
 import stripe
 from collections import defaultdict
+from time import sleep
 
 from util import local_sleep
 from util import commit
@@ -662,6 +663,9 @@ def profile_products_get(url_slug):
             if p.genre not in ["account"]
         ]
         load_times["product_list"] = timer.since_last_check()
+
+        # temporary for bug fixing!!
+        sleep(10)
 
     else:
         profile = get_profile_from_id(url_slug)
