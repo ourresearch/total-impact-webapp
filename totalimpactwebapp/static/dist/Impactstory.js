@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-02-11
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-02
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -6721,7 +6721,13 @@ angular.module('services.profileProducts', [
         {id: url_slug, stubs: true},
         function(resp){
           console.log("ProfileProducts got stubs back", resp)
-          data.products = resp.list
+          if (data.products && data.products.length){
+            // looks like the full /products call returned already; we can
+            // just throw this data away, we got it already.
+          }
+          else {
+            data.products = resp.list
+          }
         },
         function(resp){
           console.log("stubs call failed", resp)
