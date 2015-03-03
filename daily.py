@@ -978,6 +978,44 @@ def live_profile_emails(args):
         print profile.email
 
 
+def update_all_live_profiles(args):
+    url_slug = args.get("url_slug", None)
+    min_url_slug = args.get("min_url_slug", None)
+    force_all = args.get("force_all", None)
+
+    q = profile_query(url_slug, min_url_slug)
+    if not force_all:
+        q = q.filter(Profile.next_refresh <= datetime.datetime.utcnow())
+
+    limit = args.get("limit", 5)
+    if url_slug:
+        limit = 1
+
+    number_profiles_updated = 0.0
+    for profile in windowed_query(q, Profile.url_slug, 25):
+        product_count = len(profile.products_not_removed)
+        logger.info(u"profile {url_slug} has {product_count} products".format(
+            url_slug=profile.url_slug, product_count=product_count))
+
+        if product_count > 500:
+            logger.warning(u"Too many products (n={product_count}) for profile {url_slug}, skipping update".format(
+                product_count=product_count, url_slug=profile.url_slug))
+        else:            
+            update_this_profile(profile)
+
+
+            number_profiles_updated += 1
+            if limit and number_profiles_updated >= limit:
+                logger.info(u"updated all {limit} profiles, done for now.".format(
+                    limit=limit))
+                return
+
+            pause_length = min(product_count * 3, 120)
+            print "pausing", pause_length, "seconds after refreshing", product_count, "products"
+            time.sleep(pause_length)
+
+
+
 def debug_biblio_for_live_profiles(args):
     url_slug = args.get("url_slug", None)
     min_url_slug = args.get("min_url_slug", None)
