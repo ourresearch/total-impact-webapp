@@ -1,6 +1,7 @@
 import logging
 import datetime
 import json
+import operator
 from urlparse import urlparse
 
 from util import cached_property
@@ -44,6 +45,27 @@ class BiblioRow(db.Model):
         #if aliases.best_url is not None:
         #    self.url = aliases.best_url
 
+    @cached_property
+    def is_good_choice(self):
+        if self.biblio_name=="title":
+            try:
+                if self.biblio_value.isupper():
+                    return False
+            except AttributeError:  #some titles are ints, apparently
+                return False
+        return True
+
+    @cached_property
+    def sort_score(self):
+        score = {
+            "user_provided":0,
+            "crossref":1, 
+            "pubmed":2, 
+            "mendeley":3,
+            "webpage":99
+        }
+        return score.get(self.provider, 50)
+
 
 def best_biblio_row(biblio_rows, field):
     matching_biblio_rows = [row for row in biblio_rows if row.biblio_name==field]    
@@ -51,15 +73,14 @@ def best_biblio_row(biblio_rows, field):
     if not matching_biblio_rows:
         return None
 
-    best_matching_row = None
-    for provider in ["user_provided", "crossref", "pubmed", "mendeley"]:
-        if not best_matching_row:
-            best_matching_row = next((row for row in matching_biblio_rows if row.provider==provider), None)
-    if not best_matching_row:
-        best_matching_row = next((row for row in matching_biblio_rows if row.provider!="webpage"), None)
+    matching_biblio_rows.sort(key=operator.attrgetter('sort_score'))
+    best_matching_row = next((row for row in matching_biblio_rows if row.is_good_choice), None)
+
+    # if no good choice, just pick the first one
     if not best_matching_row:
         best_matching_row = matching_biblio_rows[0]
     return best_matching_row
+
 
 class Biblio(object):
 

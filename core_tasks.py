@@ -288,6 +288,10 @@ def after_refresh_complete(tiid, failure_message=None):
 
     profile = Profile.query.get(product.profile_id)
 
+    if not profile:
+        print "\n\n-------> no profile after done all refreshes?!?", product.profile_id, "\n\n\n---------------\n\n\n"
+        return None
+
     refresh_status = profile.get_refresh_status()
 
     if refresh_status.is_done_refreshing and refresh_status.refresh_state == "progress bar":

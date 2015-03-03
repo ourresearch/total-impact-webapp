@@ -41,6 +41,7 @@ from totalimpactwebapp.profile import subscribe
 from totalimpactwebapp.profile import unsubscribe
 from totalimpactwebapp.profile import build_profile_dict
 from totalimpactwebapp.profile import default_free_trial_days
+from totalimpactwebapp.profile import get_profile_summary_dict
 
 from totalimpactwebapp.product import Product
 from totalimpactwebapp.product import get_product
@@ -1210,6 +1211,13 @@ def create_page():
 @app.route("/scratchpad")
 def scratchpad():
     return render_template("scratchpad.html")
+
+
+@app.route("/<profile_id>/summary")
+def render_profile_details(profile_id, format="html"):
+    profile = get_user_for_response(profile_id, request)
+    deets = get_profile_summary_dict(profile)
+    return json_resp_from_thing(deets)
 
 
 @app.route("/<profile_id>/notification-cards")
