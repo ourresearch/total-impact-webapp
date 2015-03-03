@@ -664,9 +664,6 @@ def profile_products_get(url_slug):
         ]
         load_times["product_list"] = timer.since_last_check()
 
-        # temporary for bug fixing!!
-        sleep(10)
-
     else:
         profile = get_profile_from_id(url_slug)
         if not profile:
