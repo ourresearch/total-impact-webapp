@@ -106,7 +106,7 @@ class Metric(object):
         try:
             min_count_for_highly = self.config["min_count_for_highly"]
         except KeyError:
-            min_count_for_highly = 0
+            min_count_for_highly = 3
 
         try:
             percentile = self.most_recent_snap.percentile["value"]
