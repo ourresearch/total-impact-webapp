@@ -123,7 +123,7 @@ providers = [
                 "provider_url": "https://impactstory.org/",
                 "audience": "public",
                 "engagement_type": "viewed",
-                "min_count_for_highly": 100,
+                "min_count_for_highly": 50,
                 "milestones": fifty_then_orders_of_magnitude()
             },
             "downloads": {
