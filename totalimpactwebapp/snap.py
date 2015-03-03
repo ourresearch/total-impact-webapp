@@ -107,24 +107,6 @@ class Snap(db.Model):
         except TypeError:
             return None
 
-    @cached_property
-    def is_highly(self):
-        try:
-            percentile_high_enough = self.percentile["value"] >= 75
-        except TypeError:  # no percentiles listed
-            percentile_high_enough = False
-
-        #min_count_for_highly
-        raw_high_enough = self.display_count >= 3
-
-        if percentile_high_enough and raw_high_enough:
-            return True
-        else:
-            return False
-
-    def __repr__(self):
-        return u'<Snap {tiid} {provider} {interaction} {raw_value}>'.format(
-            tiid=self.tiid, provider=self.provider, interaction=self.interaction, raw_value=self.raw_value)
 
 
 class ZeroSnap(object):

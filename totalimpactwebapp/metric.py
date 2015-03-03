@@ -103,7 +103,21 @@ class Metric(object):
 
     @cached_property
     def is_highly(self):
-        return self.most_recent_snap.is_highly
+        try:
+            min_count_for_highly = self.config["min_count_for_highly"]
+        except KeyError:
+            min_count_for_highly = 0
+
+        try:
+            percentile = self.most_recent_snap.percentile["value"]
+        except TypeError:
+            percentile = 0
+
+        raw_high_enough = self.most_recent_snap.display_count > min_count_for_highly
+        percentile_high_enough = percentile >= 75
+
+        return raw_high_enough and percentile_high_enough
+
 
     @cached_property
     def fully_qualified_metric_name(self):

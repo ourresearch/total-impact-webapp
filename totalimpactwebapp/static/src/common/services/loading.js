@@ -44,6 +44,8 @@ angular.module("services.loading")
     },
     finishAll: clear,  // alias because i keep forgetting clear()
     clear: clear,
+
+
     startPage: function(){
       ngProgress.start()
       pageLoading = true
