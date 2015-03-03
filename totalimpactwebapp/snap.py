@@ -114,6 +114,7 @@ class Snap(db.Model):
         except TypeError:  # no percentiles listed
             percentile_high_enough = False
 
+        #min_count_for_highly
         raw_high_enough = self.display_count >= 3
 
         if percentile_high_enough and raw_high_enough:

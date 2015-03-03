@@ -123,6 +123,7 @@ providers = [
                 "provider_url": "https://impactstory.org/",
                 "audience": "public",
                 "engagement_type": "viewed",
+                "min_count_for_highly": 1000,                
                 "milestones": fifty_then_orders_of_magnitude()
             },
             "downloads": {
@@ -427,6 +428,7 @@ providers = [
                 "provider_url": "http://www.wikipedia.org/",
                 "audience": "public",
                 "engagement_type": "cited",
+                "min_count_for_highly": 1,
                 "milestones": fives_then_orders_of_magnitude()
             }
         },
