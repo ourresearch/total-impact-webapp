@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-02-10
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-02
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -361,9 +361,11 @@ angular.module('accounts.allTheAccounts', [
       username:{
         inputNeeded: "ID",
         placeholder: "paste your ORCID ID here",
-        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in). It looks like http://orcid.org/xxxx-xxxx-xxxx-xxxx"
+        help: "Find your ORCID ID at top left of your ORCID profile page, beneath your name. It looks like <code>orcid.org/xxxx-xxxx-xxxx-xxxx</code>"
       },
-      usernameCleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
+      usernameCleanupFunction: function(x) {
+        return x.replace('http://orcid.org/', '').replace('orcid.org/', '')
+      },
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",
@@ -6719,7 +6721,13 @@ angular.module('services.profileProducts', [
         {id: url_slug, stubs: true},
         function(resp){
           console.log("ProfileProducts got stubs back", resp)
-          data.products = resp.list
+          if (data.products && data.products.length){
+            // looks like the full /products call returned already; we can
+            // just throw this data away, we got it already.
+          }
+          else {
+            data.products = resp.list
+          }
         },
         function(resp){
           console.log("stubs call failed", resp)
@@ -7513,8 +7521,9 @@ angular.module("accounts/account.tpl.html", []).run(["$templateCache", function(
     "                          placeholder=\"{{ account.username.placeholder }}\">\n" +
     "\n" +
     "               </div>\n" +
-    "               <div class=\"help\" ng-show=\"account.username.help\">\n" +
-    "                  {{ account.username.help }}\n" +
+    "               <div class=\"help\"\n" +
+    "                    ng-bind-html=\"trustHtml(account.username.help)\"\n" +
+    "                    ng-show=\"account.username.help\">\n" +
     "               </div>\n" +
     "            </div>\n" +
     "\n" +

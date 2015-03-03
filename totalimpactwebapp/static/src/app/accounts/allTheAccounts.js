@@ -85,9 +85,11 @@ angular.module('accounts.allTheAccounts', [
       username:{
         inputNeeded: "ID",
         placeholder: "paste your ORCID ID here",
-        help: "You can find your ID at top left of your ORCID page, beneath your name (make sure you're logged in). It looks like http://orcid.org/xxxx-xxxx-xxxx-xxxx"
+        help: "Find your ORCID ID at top left of your ORCID profile page, beneath your name. It looks like <code>orcid.org/xxxx-xxxx-xxxx-xxxx</code>"
       },
-      usernameCleanupFunction: function(x) {return(x.replace('http://orcid.org/', ''))},
+      usernameCleanupFunction: function(x) {
+        return x.replace('http://orcid.org/', '').replace('orcid.org/', '')
+      },
       url: 'http://orcid.org',
       signupUrl: 'http://orcid.org/register',
       descr: "ORCID is an open, non-profit, community-based effort to create unique IDs for researchers, and link these to research products. It's the preferred way to import products into Impactstory.",

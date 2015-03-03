@@ -7992,6 +7992,7 @@ div.modal-body.embed div.code h3 {
   color: #0053b0;
 }
 #pinboard div.pinboard-col div.instr {
+  display: none;
   margin-bottom: 20px;
   font-size: 12px;
   margin-top: -10px;

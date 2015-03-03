@@ -82,8 +82,9 @@
                           placeholder="{{ account.username.placeholder }}">
 
                </div>
-               <div class="help" ng-show="account.username.help">
-                  {{ account.username.help }}
+               <div class="help"
+                    ng-bind-html="trustHtml(account.username.help)"
+                    ng-show="account.username.help">
                </div>
             </div>
 

@@ -31,7 +31,13 @@ angular.module('services.profileProducts', [
         {id: url_slug, stubs: true},
         function(resp){
           console.log("ProfileProducts got stubs back", resp)
-          data.products = resp.list
+          if (data.products && data.products.length){
+            // looks like the full /products call returned already; we can
+            // just throw this data away, we got it already.
+          }
+          else {
+            data.products = resp.list
+          }
         },
         function(resp){
           console.log("stubs call failed", resp)
