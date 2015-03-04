@@ -1026,10 +1026,16 @@ def get_profile_summary_dict(profile):
                     deets["num_tweets_on_articles_since_2007"] += len(product.tweets)            
             except (AttributeError, ValueError):
                 pass
-            if hasattr(product.biblio, "journal") and "ecolog" in product.biblio.journal.lower():
-                deets["num_articles_with_ecology_journal"] += 1            
-            if hasattr(product.biblio, "journal") and "librar" in product.biblio.journal.lower():
-                deets["num_articles_with_library_journal"] += 1            
+            try:
+                if hasattr(product.biblio, "journal") and "ecolog" in product.biblio.journal.lower():
+                    deets["num_articles_with_ecology_journal"] += 1            
+            except AttributeError:
+                pass
+            try:
+                if hasattr(product.biblio, "journal") and "librar" in product.biblio.journal.lower():
+                    deets["num_articles_with_library_journal"] += 1     
+            except AttributeError:
+                pass       
 
         citation_metric = product.get_metric_by_name("scopus", "citations")
         if citation_metric:
