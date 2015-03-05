@@ -124,10 +124,15 @@ class Biblio(object):
     def display_authors(self):
         try:
             auths = ",".join(self.authors.split(",")[0:3])
+
+            if auths.isupper():
+                auths = auths.title()
+
             if len(auths) < len(self.authors):
                 auths += " et al."
         except AttributeError:
             auths = None
+
 
         return auths
 
@@ -135,9 +140,16 @@ class Biblio(object):
     @cached_property
     def display_title(self):
         try:
-            return self.title
+            ret = self.title
         except AttributeError:
-            return "no title"
+            ret = "no title available"
+
+        if ret.isupper():
+            ret = ret.title()
+
+        return ret
+
+
 
     @cached_property
     def display_host(self):
