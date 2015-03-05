@@ -982,14 +982,31 @@ def get_profile_summary_dict(profile):
     highly_badges = Counter()
     citations = Counter()
     for product in products:
+        deets["num_tweets_on_products"] += len(product.tweets)
         for award in product.awards:
             badges[award.engagement_type] += 1
             if award.is_highly:
                 highly_badges[award.engagement_type] += 1
         if product.awards:
             deets["num_products_with_awards"] += 1
-        if product.awards and product.genre=="article":
-            deets["num_articles_with_awards"] += 1
+        if product.genre=="article":
+            if product.awards:
+                deets["num_articles_with_awards"] += 1
+            if product.aliases:
+                if product.aliases.display_doi:
+                    deets["num_articles_with_dois"] += 1
+                if product.aliases.display_pmid:
+                    deets["num_articles_with_pmids"] += 1
+                if product.aliases.display_pmc:
+                    deets["num_articles_with_pmcs"] += 1
+                if product.aliases.resolved_url:
+                    if "peerj" in product.aliases.resolved_url:
+                        deets["num_articles_with_peerj"] += 1
+                    if "arxiv" in product.aliases.resolved_url:
+                        deets["num_articles_with_arxiv"] += 1
+                    if "plos" in product.aliases.resolved_url:
+                        deets["num_articles_with_plos"] += 1  
+
         num_highly_awards_for_this_product = len([1 for award in product.awards if award.is_highly])
         if num_highly_awards_for_this_product:
             deets["num_highly_awards"] += 1
@@ -999,28 +1016,26 @@ def get_profile_summary_dict(profile):
             deets["num_products_with_embed_markup"] += 1
         if product.has_metrics:
             deets["num_products_with_metrics"] += 1
-        if product.aliases:
-            if product.aliases.display_doi:
-                deets["num_with_dois"] += 1
-            if product.aliases.display_pmid:
-                deets["num_with_pmids"] += 1
-            if product.aliases.display_pmc:
-                deets["num_with_pmcs"] += 1
-            if product.aliases.resolved_url:
-                if "peerj" in product.aliases.resolved_url:
-                    deets["num_with_peerj"] += 1
-                if "arxiv" in product.aliases.resolved_url:
-                    deets["num_with_arxiv"] += 1
-                if "plos" in product.aliases.resolved_url:
-                    deets["num_with_plos"] += 1            
+          
         if product.biblio:
             try:
                 if product.biblio.year and int(product.biblio.year) < deets["earliest_publication_year"]:
                     deets["earliest_publication_year"] = int(product.biblio.year)
+                if product.biblio.year and int(product.biblio.year) > 2007:
+                    deets["num_articles_since_2007"] += 1
+                    deets["num_tweets_on_articles_since_2007"] += len(product.tweets)            
             except (AttributeError, ValueError):
                 pass
-            if hasattr(product.biblio, "journal") and "ecology" in product.biblio.journal.lower():
-                deets["num_with_ecology_journal"] += 1            
+            try:
+                if hasattr(product.biblio, "journal") and "ecolog" in product.biblio.journal.lower():
+                    deets["num_articles_with_ecology_journal"] += 1            
+            except AttributeError:
+                pass
+            try:
+                if hasattr(product.biblio, "journal") and "librar" in product.biblio.journal.lower():
+                    deets["num_articles_with_library_journal"] += 1     
+            except AttributeError:
+                pass       
 
         citation_metric = product.get_metric_by_name("scopus", "citations")
         if citation_metric:
@@ -1037,11 +1052,9 @@ def get_profile_summary_dict(profile):
     if gravitar_response.status_code==200:
         deets["has_gravitar"] = True
 
-
     deets["highly_badges"] = highly_badges.most_common(5)
     deets["badges"] = badges.most_common(5)
     deets["num_genres"] = len(profile.genres)
-
     top_disciplines = mendeley_disciplines.most_common(4)
     deets["mendeley_discipline_top_3"] = [(name, count) for (name, count) in top_disciplines if name!=None]
     try:
@@ -1063,5 +1076,15 @@ def get_profile_summary_dict(profile):
 
     for genre_dict in profile.genres:
         deets["num_genre_" + genre_dict.name] = genre_dict.num_products
+
+    if deets["num_tweets_on_articles_since_2007"]:
+        deets["num_tweets_per_recent_article"] = deets["num_tweets_on_articles_since_2007"] / deets["num_articles_since_2007"]
+    num_articles = deets["num_genre_article"]
+    if num_articles:
+        for key in deets.keys():
+            if key.startswith("num_articles_with", ):
+                key_percent = key.replace("num_articles_with", "percent_articles_with")
+                deets[key_percent] = int(round(100*deets[key] / num_articles))
+                del deets[key]
 
     return deets    

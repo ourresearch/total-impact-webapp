@@ -219,7 +219,8 @@ class Mendeley(Provider):
         # have reported all of these to mendeley, ie http://support.mendeley.com/customer/en/portal/questions/11307109-wrong-pmid?new=11307109
         bad_mendeley_aliases = [
             ("pmid", "19016882"),  # http://www.mendeley.com/catalog/scientific-workflow-management-kepler-system-1/
-            ("pmid", "22170219")  #http://www.mendeley.com/catalog/social-network-analysis-animal-behaviour-promising-tool-study-sociality-1/
+            ("pmid", "22170219"),  #http://www.mendeley.com/catalog/social-network-analysis-animal-behaviour-promising-tool-study-sociality-1/
+            ("pmid", "20433197")  #http://support.mendeley.com/customer/en/portal/questions/11494864-wrong-pmid?new=11494864
         ]
 
         doc = self._get_doc(aliases)
