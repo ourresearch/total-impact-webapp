@@ -93,8 +93,10 @@
 
    <div id="pinboard">
       <div class="pinboard-col col-one">
-         <h3 class="pinboard-col-heading">Selected works</h3>
-         <div class="instr" ng-show="security.isLoggedIn(url_slug)">Drag to change order</div>
+         <h3 class="pinboard-col-heading">
+            <i class="fa fa-thumb-tack"></i>
+            Selected works
+         </h3>
          <div class="loading" ng-if="loading.is('KeyProducts')">
             <i class="fa fa-refresh fa-spin left"></i>
             <span class="text">Loading...</span>
@@ -143,8 +145,10 @@
 
       <div class="pinboard-col col-two">
          <div class="col-header">
-            <h3 class="pinboard-col-heading">Key profile metrics</h3>
-            <div class="instr" ng-show="security.isLoggedIn(url_slug)">Drag to change order</div>
+            <h3 class="pinboard-col-heading">
+               <i class="fa fa-thumb-tack"></i>
+               Key profile metrics
+            </h3>
             <div class="loading" ng-if="loading.is('KeyMetrics')">
                <i class="fa fa-refresh fa-spin left"></i>
                <span class="text">Loading...</span>

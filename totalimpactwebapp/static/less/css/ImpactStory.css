@@ -7991,6 +7991,9 @@ div.modal-body.embed div.code h3 {
   margin: 0 0 20px 0;
   color: #0053b0;
 }
+#pinboard div.pinboard-col h3.pinboard-col-heading i.fa-thumb-tack {
+  font-size: 20px;
+}
 #pinboard div.pinboard-col div.instr {
   display: none;
   margin-bottom: 20px;
@@ -10471,7 +10474,7 @@ div.collection-page div.header div.header-content h2 span.count {
   font-weight: normal;
 }
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top {
-  margin-bottom: 20px;
+  margin-top: 10px;
 }
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .clearfix,
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top .container,
@@ -10496,13 +10499,18 @@ div.collection-page div.header div.header-content div.genre-summary div.genre-su
   font-size: 14px;
   font-weight: 300;
 }
+div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best {
+  text-align: right;
+}
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card {
-  float: right;
+  display: inline-block;
   margin: 0 20px 0 40px;
   line-height: 1;
 }
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls {
-  margin-right: 3px;
+  margin: 0 4px;
+  padding: 0 4px;
+  border-right: 1px solid #ddd;
 }
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a {
   font-size: 16px;
@@ -10511,7 +10519,7 @@ div.collection-page div.header div.header-content div.genre-summary div.genre-su
   color: #ff4000;
 }
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this {
-  color: #999;
+  color: #aaa;
 }
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.feature-controls a.feature-this:hover {
   color: #000;
@@ -10541,7 +10549,6 @@ div.collection-page div.header div.header-content div.genre-summary div.genre-su
   margin: 0 5px 0 0;
   font-size: 22px;
   font-weight: bold;
-  display: inline-block;
 }
 div.collection-page div.header div.header-content div.genre-summary div.genre-summary-top ul.genre-cards-best li.genre-card span.data span.img-and-value img {
   height: 20px;

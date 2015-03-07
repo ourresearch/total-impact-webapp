@@ -22,37 +22,37 @@
                   <li class="genre-card"
                       ng-repeat="card in genreCards">
 
-                  <span class="data"
-                        tooltip-placement="bottom"
-                        tooltip-html-unsafe="{{ card.tooltip }}">
-                     <span class="img-and-value">
-                        <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >
-                        <span class="value">{{ nFormat(card.current_value) }}</span>
-                     </span>
-
-                        <span class="key">
-                           <span class="interaction">{{ card.display_things_we_are_counting }}</span>
-                        </span>
-                     </span>
-
                      <span class="feature-controls" ng-show="security.isLoggedIn(page.getUrlSlug())">
 
                         <a ng-click="KeyMetrics.pin(card)"
                            ng-if="!KeyMetrics.isPinned(card)"
-                           tooltip="Feature this metric on your profile front page"
+                           tooltip="Pin this metric to your profile front page"
                            tooltip-placement="bottom"
                            class="feature-this">
-                           <i class="icon-star-empty"></i>
+                           <i class="fa fa-thumb-tack"></i>
                         </a>
 
                         <a ng-click="KeyMetrics.unpin(card)"
                            ng-if="KeyMetrics.isPinned(card)"
-                           tooltip="Feature this metric on your profile front page"
+                           tooltip="Unpin this metric from your profile front page"
                            tooltip-placement="bottom"
                            class="unfeature-this">
-                           <i class="icon-star"></i>
+                           <i class="fa fa-thumb-tack"></i>
                         </a>
+                     </span>
 
+                     <span class="data"
+                           tooltip-placement="bottom"
+                           tooltip-html-unsafe="{{ card.tooltip }}">
+
+                        <span class="img-and-value">
+                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >
+                           <span class="value">{{ nFormat(card.current_value) }}</span>
+                        </span>
+
+                        <span class="key">
+                           <span class="interaction">{{ card.display_things_we_are_counting }}</span>
+                        </span>
                      </span>
 
                   </li>

@@ -7821,37 +7821,37 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
     "                  <li class=\"genre-card\"\n" +
     "                      ng-repeat=\"card in genreCards\">\n" +
     "\n" +
-    "                  <span class=\"data\"\n" +
-    "                        tooltip-placement=\"bottom\"\n" +
-    "                        tooltip-html-unsafe=\"{{ card.tooltip }}\">\n" +
-    "                     <span class=\"img-and-value\">\n" +
-    "                        <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
-    "                        <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
-    "                     </span>\n" +
-    "\n" +
-    "                        <span class=\"key\">\n" +
-    "                           <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
-    "                        </span>\n" +
-    "                     </span>\n" +
-    "\n" +
     "                     <span class=\"feature-controls\" ng-show=\"security.isLoggedIn(page.getUrlSlug())\">\n" +
     "\n" +
     "                        <a ng-click=\"KeyMetrics.pin(card)\"\n" +
     "                           ng-if=\"!KeyMetrics.isPinned(card)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                           tooltip=\"Pin this metric to your profile front page\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           class=\"feature-this\">\n" +
-    "                           <i class=\"icon-star-empty\"></i>\n" +
+    "                           <i class=\"fa fa-thumb-tack\"></i>\n" +
     "                        </a>\n" +
     "\n" +
     "                        <a ng-click=\"KeyMetrics.unpin(card)\"\n" +
     "                           ng-if=\"KeyMetrics.isPinned(card)\"\n" +
-    "                           tooltip=\"Feature this metric on your profile front page\"\n" +
+    "                           tooltip=\"Unpin this metric from your profile front page\"\n" +
     "                           tooltip-placement=\"bottom\"\n" +
     "                           class=\"unfeature-this\">\n" +
-    "                           <i class=\"icon-star\"></i>\n" +
+    "                           <i class=\"fa fa-thumb-tack\"></i>\n" +
     "                        </a>\n" +
+    "                     </span>\n" +
     "\n" +
+    "                     <span class=\"data\"\n" +
+    "                           tooltip-placement=\"bottom\"\n" +
+    "                           tooltip-html-unsafe=\"{{ card.tooltip }}\">\n" +
+    "\n" +
+    "                        <span class=\"img-and-value\">\n" +
+    "                           <img ng-src='/static/img/favicons/{{ card.img_filename }}' class='icon' >\n" +
+    "                           <span class=\"value\">{{ nFormat(card.current_value) }}</span>\n" +
+    "                        </span>\n" +
+    "\n" +
+    "                        <span class=\"key\">\n" +
+    "                           <span class=\"interaction\">{{ card.display_things_we_are_counting }}</span>\n" +
+    "                        </span>\n" +
     "                     </span>\n" +
     "\n" +
     "                  </li>\n" +
@@ -9991,8 +9991,10 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "   <div id=\"pinboard\">\n" +
     "      <div class=\"pinboard-col col-one\">\n" +
-    "         <h3 class=\"pinboard-col-heading\">Selected works</h3>\n" +
-    "         <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
+    "         <h3 class=\"pinboard-col-heading\">\n" +
+    "            <i class=\"fa fa-thumb-tack\"></i>\n" +
+    "            Selected works\n" +
+    "         </h3>\n" +
     "         <div class=\"loading\" ng-if=\"loading.is('KeyProducts')\">\n" +
     "            <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
     "            <span class=\"text\">Loading...</span>\n" +
@@ -10041,8 +10043,10 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <div class=\"pinboard-col col-two\">\n" +
     "         <div class=\"col-header\">\n" +
-    "            <h3 class=\"pinboard-col-heading\">Key profile metrics</h3>\n" +
-    "            <div class=\"instr\" ng-show=\"security.isLoggedIn(url_slug)\">Drag to change order</div>\n" +
+    "            <h3 class=\"pinboard-col-heading\">\n" +
+    "               <i class=\"fa fa-thumb-tack\"></i>\n" +
+    "               Key profile metrics\n" +
+    "            </h3>\n" +
     "            <div class=\"loading\" ng-if=\"loading.is('KeyMetrics')\">\n" +
     "               <i class=\"fa fa-refresh fa-spin left\"></i>\n" +
     "               <span class=\"text\">Loading...</span>\n" +
