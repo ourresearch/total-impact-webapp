@@ -8363,19 +8363,22 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
   text-align: right;
   line-height: 1;
   font-size: 14px;
-  margin: 1px 5px 0 0;
+  margin: 1px 7px 0 0;
 }
 .product div.product-margin a {
   color: #aaa;
   padding: 3px 5px;
 }
+.product div.product-margin span.feature-product-controls i.fa {
+  vertical-align: -2px;
+}
 .product div.product-margin span.feature-product-controls a.feature-product {
-  color: #777;
+  color: #aaa;
 }
 .product div.product-margin span.feature-product-controls a.feature-product:hover {
   color: #000;
 }
-.product div.product-margin span.feature-product-controls a.unfeature-product i.icon-star {
+.product div.product-margin span.feature-product-controls a.unfeature-product i.fa {
   display: inline;
   color: #ff4000;
 }

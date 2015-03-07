@@ -7721,14 +7721,14 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "                  <a class=\"feature-product\"\n" +
     "                     ng-click=\"KeyProducts.pin(product)\"\n" +
     "                     ng-if=\"!KeyProducts.isPinned(product)\"\n" +
-    "                     tooltip=\"Feature this product on your profile front page\">\n" +
-    "                     <i class=\"icon-star-empty\"></i>\n" +
+    "                     tooltip=\"Pin this product to your front page\">\n" +
+    "                     <i class=\"fa fa-thumb-tack\"></i>\n" +
     "                  </a>\n" +
     "                  <a class=\"unfeature-product\"\n" +
     "                     ng-click=\"KeyProducts.unpin(product)\"\n" +
     "                     ng-if=\"KeyProducts.isPinned(product)\"\n" +
-    "                     tooltip=\"This product is featured on your profile front page; click to unfeature.\">\n" +
-    "                     <i class=\"icon-star\"></i>\n" +
+    "                     tooltip=\"Unpin this product\">\n" +
+    "                     <i class=\"fa fa-thumb-tack\"></i>\n" +
     "                  </a>\n" +
     "               </span>\n" +
     "            </span>\n" +

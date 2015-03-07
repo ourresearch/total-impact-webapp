@@ -133,14 +133,14 @@
                   <a class="feature-product"
                      ng-click="KeyProducts.pin(product)"
                      ng-if="!KeyProducts.isPinned(product)"
-                     tooltip="Feature this product on your profile front page">
-                     <i class="icon-star-empty"></i>
+                     tooltip="Pin this product to your front page">
+                     <i class="fa fa-thumb-tack"></i>
                   </a>
                   <a class="unfeature-product"
                      ng-click="KeyProducts.unpin(product)"
                      ng-if="KeyProducts.isPinned(product)"
-                     tooltip="This product is featured on your profile front page; click to unfeature.">
-                     <i class="icon-star"></i>
+                     tooltip="Unpin this product">
+                     <i class="fa fa-thumb-tack"></i>
                   </a>
                </span>
             </span>
