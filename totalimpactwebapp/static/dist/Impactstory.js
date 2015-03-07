@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-03
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-06
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -10069,7 +10069,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                        <span class=\"things-we-are-counting\">\n" +
     "                           {{ keyMetric.display_things_we_are_counting }}\n" +
     "                        </span>\n" +
-    "                         on\n" +
+    "                         across\n" +
     "                     </span>\n" +
     "                  </span>\n" +
     "                  <span class=\"genre\">\n" +
@@ -10101,7 +10101,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                        <span class=\"things-we-are-counting\">\n" +
     "                           {{ keyMetric.display_things_we_are_counting }}\n" +
     "                        </span>\n" +
-    "                         on\n" +
+    "                         across\n" +
     "                     </span>\n" +
     "                  </span>\n" +
     "                  <span class=\"genre\">\n" +
