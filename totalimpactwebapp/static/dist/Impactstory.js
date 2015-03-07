@@ -7825,16 +7825,16 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
     "\n" +
     "                        <a ng-click=\"KeyMetrics.pin(card)\"\n" +
     "                           ng-if=\"!KeyMetrics.isPinned(card)\"\n" +
-    "                           tooltip=\"Pin this metric to your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
+    "                           tooltip=\"Pin to front page\"\n" +
+    "                           tooltip-placement=\"left\"\n" +
     "                           class=\"feature-this\">\n" +
     "                           <i class=\"fa fa-thumb-tack\"></i>\n" +
     "                        </a>\n" +
     "\n" +
     "                        <a ng-click=\"KeyMetrics.unpin(card)\"\n" +
     "                           ng-if=\"KeyMetrics.isPinned(card)\"\n" +
-    "                           tooltip=\"Unpin this metric from your profile front page\"\n" +
-    "                           tooltip-placement=\"bottom\"\n" +
+    "                           tooltip=\"Unpin\"\n" +
+    "                           tooltip-placement=\"left\"\n" +
     "                           class=\"unfeature-this\">\n" +
     "                           <i class=\"fa fa-thumb-tack\"></i>\n" +
     "                        </a>\n" +

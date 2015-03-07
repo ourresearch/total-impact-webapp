@@ -26,16 +26,16 @@
 
                         <a ng-click="KeyMetrics.pin(card)"
                            ng-if="!KeyMetrics.isPinned(card)"
-                           tooltip="Pin this metric to your profile front page"
-                           tooltip-placement="bottom"
+                           tooltip="Pin to front page"
+                           tooltip-placement="left"
                            class="feature-this">
                            <i class="fa fa-thumb-tack"></i>
                         </a>
 
                         <a ng-click="KeyMetrics.unpin(card)"
                            ng-if="KeyMetrics.isPinned(card)"
-                           tooltip="Unpin this metric from your profile front page"
-                           tooltip-placement="bottom"
+                           tooltip="Unpin"
+                           tooltip-placement="left"
                            class="unfeature-this">
                            <i class="fa fa-thumb-tack"></i>
                         </a>
