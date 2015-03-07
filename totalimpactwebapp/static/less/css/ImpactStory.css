@@ -7994,11 +7994,9 @@ div.modal-body.embed div.code h3 {
 #pinboard div.pinboard-col h3.pinboard-col-heading i.fa-thumb-tack {
   font-size: 20px;
 }
-#pinboard div.pinboard-col div.instr {
-  display: none;
+#pinboard div.pinboard-col div.empty-list-instr {
   margin-bottom: 20px;
-  font-size: 12px;
-  margin-top: -10px;
+  font-size: 15px;
   color: #999;
 }
 #pinboard div.pinboard-col div.loading {
@@ -8028,8 +8026,8 @@ div.modal-body.embed div.code h3 {
   margin: 10px 0 10px 0;
   font-size: 22px;
 }
-#pinboard div.pinboard-col.col-two div.instr {
-  margin-bottom: 5px;
+#pinboard div.pinboard-col.col-two div.empty-list-instr {
+  margin: 0 15px;
 }
 #pinboard div.pinboard-col.col-two div.col-header {
   margin-left: 17px;

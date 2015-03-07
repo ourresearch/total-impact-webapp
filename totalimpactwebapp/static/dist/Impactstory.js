@@ -10002,6 +10002,12 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "\n" +
     "         <!-- LOGGED IN version -->\n" +
+    "         <div class=\"empty-list-instr\"\n" +
+    "              ng-if=\"security.isLoggedIn(url_slug) && !KeyProducts.data.list.length && !loading.is('KeyProducts')\">\n" +
+    "            Feature products here by clicking the\n" +
+    "            <i class=\"fa fa-thumb-tack\"></i>\n" +
+    "            icon next to any of your products.\n" +
+    "         </div>\n" +
     "         <ul class=\"col-one pinboard-list logged-in\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
     "             ng-if=\"security.isLoggedIn(url_slug)\"\n" +
@@ -10054,6 +10060,13 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "         </div>\n" +
     "\n" +
     "         <!-- LOGGED-IN version -->\n" +
+    "         <div class=\"empty-list-instr\"\n" +
+    "              ng-if=\"security.isLoggedIn(url_slug) && !KeyMetrics.data.list.length && !loading.is('KeyMetrics')\">\n" +
+    "            Feature your best metrics here! Click the\n" +
+    "            <i class=\"fa fa-thumb-tack\"></i>\n" +
+    "            icon next to any summary metrics (they're often at the top of pages).\n" +
+    "\n" +
+    "         </div>\n" +
     "         <ul class=\"col-two pinboard-list logged-in\"\n" +
     "             ng-if=\"security.isLoggedIn(url_slug)\"\n" +
     "             ui-sortable=\"sortableOptions\"\n" +
@@ -10088,6 +10101,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "               </div>\n" +
     "            </li>\n" +
     "         </ul>\n" +
+    "\n" +
     "\n" +
     "\n" +
     "         <!-- LOGGED-OUT version -->\n" +
