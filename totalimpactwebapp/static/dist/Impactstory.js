@@ -863,10 +863,10 @@ angular.module("collectionPage", [
       function(resp){
         console.log("got some cards back!", resp)
         var sortedCards = _.sortBy(resp, function(card){
-          return card.sort_by * -1
+          return card.current_value * -1
         })
 
-        $scope.genreCards = sortedCards.slice(0, 3).reverse()
+        $scope.genreCards = sortedCards.slice(0, 3)
       },
       function(resp){
         console.log("problem with the cards call. #sadface.", resp)
