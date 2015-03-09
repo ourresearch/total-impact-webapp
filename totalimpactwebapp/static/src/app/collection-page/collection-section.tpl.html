@@ -81,24 +81,11 @@
                    id="show-tweets-checkbox"
                    ng-model="Collection.ui.showTweets" />
          </div>
-         <div class="has-no-tweets"
-              tooltip="We haven't found any tweets for these products."
-              tooltip-placement="left"
-              ng-show="!Collection.numTweets()">
-            <label for="disabled-show-tweets-checkbox">
-               <i class="fa fa-twitter"></i>
-               <span class="text">Show tweets</span>
-            </label>
-            <input type="checkbox"
-                   id="disabled-show-tweets-checkbox"
-                   disabled="disabled" />
-         </div>
       </div>
        <div class="show-tweets tweets-loading" ng-show="loading.is('tweets')">
           <i class="fa fa-refresh icon-spin left"></i>
-          loading tweets&hellip;
+          checking for tweets&hellip;
        </div>
-
 
       <our-sort></our-sort>
 

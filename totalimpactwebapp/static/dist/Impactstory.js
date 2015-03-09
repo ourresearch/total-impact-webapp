@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-06
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-09
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -7669,24 +7669,11 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "                   id=\"show-tweets-checkbox\"\n" +
     "                   ng-model=\"Collection.ui.showTweets\" />\n" +
     "         </div>\n" +
-    "         <div class=\"has-no-tweets\"\n" +
-    "              tooltip=\"We haven't found any tweets for these products.\"\n" +
-    "              tooltip-placement=\"left\"\n" +
-    "              ng-show=\"!Collection.numTweets()\">\n" +
-    "            <label for=\"disabled-show-tweets-checkbox\">\n" +
-    "               <i class=\"fa fa-twitter\"></i>\n" +
-    "               <span class=\"text\">Show tweets</span>\n" +
-    "            </label>\n" +
-    "            <input type=\"checkbox\"\n" +
-    "                   id=\"disabled-show-tweets-checkbox\"\n" +
-    "                   disabled=\"disabled\" />\n" +
-    "         </div>\n" +
     "      </div>\n" +
     "       <div class=\"show-tweets tweets-loading\" ng-show=\"loading.is('tweets')\">\n" +
     "          <i class=\"fa fa-refresh icon-spin left\"></i>\n" +
-    "          loading tweets&hellip;\n" +
+    "          checking for tweets&hellip;\n" +
     "       </div>\n" +
-    "\n" +
     "\n" +
     "      <our-sort></our-sort>\n" +
     "\n" +

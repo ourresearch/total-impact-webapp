@@ -10644,16 +10644,6 @@ div.collection-page div.collection-controls div.display-controls div.show-tweets
 div.collection-page div.collection-controls div.display-controls div.show-tweets label span.num-tweets {
   font-weight: 300;
 }
-div.collection-page div.collection-controls div.display-controls div.show-tweets .has-no-tweets {
-  color: #ccc;
-}
-div.collection-page div.collection-controls div.display-controls div.show-tweets .has-no-tweets label {
-  cursor: not-allowed;
-  font-weight: 300;
-}
-div.collection-page div.collection-controls div.display-controls div.show-tweets .has-no-tweets i.fa-twitter {
-  color: #ddd;
-}
 div.collection-page div.collection-controls div.display-controls div.show-tweets.tweets-loading {
   color: #999;
   font-weight: 300;
