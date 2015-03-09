@@ -7708,13 +7708,13 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "                  <a class=\"feature-product\"\n" +
     "                     ng-click=\"KeyProducts.pin(product)\"\n" +
     "                     ng-if=\"!KeyProducts.isPinned(product)\"\n" +
-    "                     tooltip=\"Pin this product to your front page\">\n" +
+    "                     tooltip=\"Pin to Overview page\">\n" +
     "                     <i class=\"fa fa-thumb-tack\"></i>\n" +
     "                  </a>\n" +
     "                  <a class=\"unfeature-product\"\n" +
     "                     ng-click=\"KeyProducts.unpin(product)\"\n" +
     "                     ng-if=\"KeyProducts.isPinned(product)\"\n" +
-    "                     tooltip=\"Unpin this product\">\n" +
+    "                     tooltip=\"Unpin\">\n" +
     "                     <i class=\"fa fa-thumb-tack\"></i>\n" +
     "                  </a>\n" +
     "               </span>\n" +
@@ -7812,7 +7812,7 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
     "\n" +
     "                        <a ng-click=\"KeyMetrics.pin(card)\"\n" +
     "                           ng-if=\"!KeyMetrics.isPinned(card)\"\n" +
-    "                           tooltip=\"Pin to front page\"\n" +
+    "                           tooltip=\"Pin to Overview page\"\n" +
     "                           tooltip-placement=\"left\"\n" +
     "                           class=\"feature-this\">\n" +
     "                           <i class=\"fa fa-thumb-tack\"></i>\n" +
@@ -9979,7 +9979,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "   <div id=\"pinboard\">\n" +
     "      <div class=\"pinboard-col col-one\">\n" +
     "         <h3 class=\"pinboard-col-heading\">\n" +
-    "            <i class=\"fa fa-thumb-tack\"></i>\n" +
+    "            <i class=\"fa fa-thumb-tack\" ng-show=\"security.isLoggedIn(url_slug)\"></i>\n" +
     "            Selected works\n" +
     "         </h3>\n" +
     "         <div class=\"loading\" ng-if=\"loading.is('KeyProducts')\">\n" +
@@ -10037,7 +10037,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "      <div class=\"pinboard-col col-two\">\n" +
     "         <div class=\"col-header\">\n" +
     "            <h3 class=\"pinboard-col-heading\">\n" +
-    "               <i class=\"fa fa-thumb-tack\"></i>\n" +
+    "               <i class=\"fa fa-thumb-tack\" ng-show=\"security.isLoggedIn(url_slug)\"></i>\n" +
     "               Key profile metrics\n" +
     "            </h3>\n" +
     "            <div class=\"loading\" ng-if=\"loading.is('KeyMetrics')\">\n" +

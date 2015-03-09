@@ -94,7 +94,7 @@
    <div id="pinboard">
       <div class="pinboard-col col-one">
          <h3 class="pinboard-col-heading">
-            <i class="fa fa-thumb-tack"></i>
+            <i class="fa fa-thumb-tack" ng-show="security.isLoggedIn(url_slug)"></i>
             Selected works
          </h3>
          <div class="loading" ng-if="loading.is('KeyProducts')">
@@ -152,7 +152,7 @@
       <div class="pinboard-col col-two">
          <div class="col-header">
             <h3 class="pinboard-col-heading">
-               <i class="fa fa-thumb-tack"></i>
+               <i class="fa fa-thumb-tack" ng-show="security.isLoggedIn(url_slug)"></i>
                Key profile metrics
             </h3>
             <div class="loading" ng-if="loading.is('KeyMetrics')">
