@@ -81,24 +81,11 @@
                    id="show-tweets-checkbox"
                    ng-model="Collection.ui.showTweets" />
          </div>
-         <div class="has-no-tweets"
-              tooltip="We haven't found any tweets for these products."
-              tooltip-placement="left"
-              ng-show="!Collection.numTweets()">
-            <label for="disabled-show-tweets-checkbox">
-               <i class="fa fa-twitter"></i>
-               <span class="text">Show tweets</span>
-            </label>
-            <input type="checkbox"
-                   id="disabled-show-tweets-checkbox"
-                   disabled="disabled" />
-         </div>
       </div>
        <div class="show-tweets tweets-loading" ng-show="loading.is('tweets')">
           <i class="fa fa-refresh icon-spin left"></i>
-          loading tweets&hellip;
+          checking for tweets&hellip;
        </div>
-
 
       <our-sort></our-sort>
 
@@ -133,14 +120,14 @@
                   <a class="feature-product"
                      ng-click="KeyProducts.pin(product)"
                      ng-if="!KeyProducts.isPinned(product)"
-                     tooltip="Feature this product on your profile front page">
-                     <i class="icon-star-empty"></i>
+                     tooltip="Pin to Overview page">
+                     <i class="fa fa-thumb-tack"></i>
                   </a>
                   <a class="unfeature-product"
                      ng-click="KeyProducts.unpin(product)"
                      ng-if="KeyProducts.isPinned(product)"
-                     tooltip="This product is featured on your profile front page; click to unfeature.">
-                     <i class="icon-star"></i>
+                     tooltip="Unpin">
+                     <i class="fa fa-thumb-tack"></i>
                   </a>
                </span>
             </span>

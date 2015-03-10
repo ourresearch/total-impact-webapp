@@ -14,20 +14,23 @@
       text-align:right;
       line-height: 1;
       font-size:14px;
-      margin: 1px 5px 0 0;
+      margin: 1px 7px 0 0;
       a {
          color: #aaa;
          padding: 3px 5px;
       }
       span.feature-product-controls {
+         i.fa {
+            vertical-align: -2px;
+         }
          a.feature-product {
-            color: #777;
+            color: #aaa;
             &:hover {
                color: #000;
             }
          }
          a.unfeature-product {
-            i.icon-star {display:inline; color: @linkColor;}
+            i.fa {display:inline; color: @linkColor;}
          }
       }
       span.select-product-controls{

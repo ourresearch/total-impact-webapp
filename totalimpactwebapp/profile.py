@@ -1006,6 +1006,8 @@ def get_profile_summary_dict(profile):
                         deets["num_articles_with_arxiv"] += 1
                     if "plos" in product.aliases.resolved_url:
                         deets["num_articles_with_plos"] += 1  
+                    if "figshare" in product.aliases.resolved_url:
+                        deets["num_articles_with_figshare"] += 1  
 
         num_highly_awards_for_this_product = len([1 for award in product.awards if award.is_highly])
         if num_highly_awards_for_this_product:
@@ -1083,7 +1085,7 @@ def get_profile_summary_dict(profile):
     if num_articles:
         for key in deets.keys():
             if key.startswith("num_articles_with", ):
-                key_percent = key.replace("num_articles_with", "percent_articles_with")
+                key_percent = key.replace("num_articles_with_", "perc_")
                 deets[key_percent] = int(round(100*deets[key] / num_articles))
                 del deets[key]
 

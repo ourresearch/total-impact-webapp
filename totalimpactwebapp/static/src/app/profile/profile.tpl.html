@@ -93,8 +93,10 @@
 
    <div id="pinboard">
       <div class="pinboard-col col-one">
-         <h3 class="pinboard-col-heading">Selected works</h3>
-         <div class="instr" ng-show="security.isLoggedIn(url_slug)">Drag to change order</div>
+         <h3 class="pinboard-col-heading">
+            <i class="fa fa-thumb-tack" ng-show="security.isLoggedIn(url_slug)"></i>
+            Selected works
+         </h3>
          <div class="loading" ng-if="loading.is('KeyProducts')">
             <i class="fa fa-refresh fa-spin left"></i>
             <span class="text">Loading...</span>
@@ -102,6 +104,12 @@
 
 
          <!-- LOGGED IN version -->
+         <div class="empty-list-instr"
+              ng-if="security.isLoggedIn(url_slug) && !KeyProducts.data.list.length && !loading.is('KeyProducts')">
+            Feature products here by clicking the
+            <i class="fa fa-thumb-tack"></i>
+            icon next to any of your products.
+         </div>
          <ul class="col-one pinboard-list logged-in"
              ui-sortable="sortableOptions"
              ng-if="security.isLoggedIn(url_slug)"
@@ -143,8 +151,10 @@
 
       <div class="pinboard-col col-two">
          <div class="col-header">
-            <h3 class="pinboard-col-heading">Key profile metrics</h3>
-            <div class="instr" ng-show="security.isLoggedIn(url_slug)">Drag to change order</div>
+            <h3 class="pinboard-col-heading">
+               <i class="fa fa-thumb-tack" ng-show="security.isLoggedIn(url_slug)"></i>
+               Key profile metrics
+            </h3>
             <div class="loading" ng-if="loading.is('KeyMetrics')">
                <i class="fa fa-refresh fa-spin left"></i>
                <span class="text">Loading...</span>
@@ -152,6 +162,13 @@
          </div>
 
          <!-- LOGGED-IN version -->
+         <div class="empty-list-instr"
+              ng-if="security.isLoggedIn(url_slug) && !KeyMetrics.data.list.length && !loading.is('KeyMetrics')">
+            Feature your best metrics here! Click the
+            <i class="fa fa-thumb-tack"></i>
+            icon next to any summary metrics (they're often at the top of pages).
+
+         </div>
          <ul class="col-two pinboard-list logged-in"
              ng-if="security.isLoggedIn(url_slug)"
              ui-sortable="sortableOptions"
@@ -171,7 +188,7 @@
                         <span class="things-we-are-counting">
                            {{ keyMetric.display_things_we_are_counting }}
                         </span>
-                         on
+                         across
                      </span>
                   </span>
                   <span class="genre">
@@ -186,6 +203,7 @@
                </div>
             </li>
          </ul>
+
 
 
          <!-- LOGGED-OUT version -->
@@ -203,7 +221,7 @@
                         <span class="things-we-are-counting">
                            {{ keyMetric.display_things_we_are_counting }}
                         </span>
-                         on
+                         across
                      </span>
                   </span>
                   <span class="genre">

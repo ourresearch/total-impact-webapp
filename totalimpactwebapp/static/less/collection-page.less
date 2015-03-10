@@ -247,7 +247,7 @@ div.collection-page {
          }
          div.genre-summary {
             div.genre-summary-top {
-               margin-bottom: 20px;
+               margin-top: 10px;
                .clearfix {
                   clear:both;
                }
@@ -260,20 +260,23 @@ div.collection-page {
                }
 
                ul.genre-cards-best {
+                  text-align: right;
                   li.genre-card {
-                     float:right;
+                     display: inline-block;
                      margin: 0 20px 0 40px;
                      line-height: 1;
 
                      span.feature-controls {
-                        margin-right: 3px;
+                        margin: 0 4px;
+                        padding: 0 4px;
+                        border-right: 1px solid #ddd;
                         a {
                            font-size: 16px;
                            &.unfeature-this {
                               color: @linkColor;
                            }
                            &.feature-this {
-                              color: #999;
+                              color: #aaa;
                               &:hover {
                                  color: #000;
                               }
@@ -295,8 +298,8 @@ div.collection-page {
                            .followers {
                               font-size: 10px;
                            }
-                        }                  
-                     }                  
+                        }
+                     }
                   }
 
                   span.data {
@@ -308,7 +311,7 @@ div.collection-page {
                         margin: 0 5px 0 0;
                         font-size: 22px;
                         font-weight: bold;
-                        display:inline-block;
+//                        display:inline-block;
                         img {
                            height: 20px;
                            vertical-align: 0;
@@ -438,17 +441,6 @@ div.collection-page {
                }
             }
 
-            .has-tweets {
-
-            }
-            .has-no-tweets {
-               color: #ccc;
-               label {
-                  cursor: not-allowed;
-                  font-weight: 300;
-               }
-               i.fa-twitter { color: #ddd;}
-            }
 
             &.tweets-loading {
                color: #999;
