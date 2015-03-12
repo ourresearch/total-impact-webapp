@@ -272,8 +272,9 @@ def dedup_everyone(url_slug=None, min_url_slug=None):
         q = q.filter(Profile.url_slug>=min_url_slug)
 
     for profile in windowed_query(q, Profile.url_slug, 25):
-        logger.info(u"dedup: {url_slug}".format(url_slug=profile.url_slug))
-        response = profile.remove_duplicates()
+        if profile.is_live:
+            logger.info(u"dedup: {url_slug}".format(url_slug=profile.url_slug))
+            response = profile.remove_duplicates()
 
 
 
