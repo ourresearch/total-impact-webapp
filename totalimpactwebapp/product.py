@@ -951,12 +951,11 @@ def has_equivalent_biblio_in_list(product1, duplicate_products_group):
 
 def build_duplicates_list(products):
     distinct_groups = defaultdict(list)
-    duplication_list = {}
 
     for product in products:
         is_distinct_item = True
 
-        for (group_id, duplicate_products_group) in duplication_list.iteritems():
+        for (group_id, duplicate_products_group) in distinct_groups.iteritems():
             if has_equivalent_biblio_in_list(product, duplicate_products_group) or \
                 has_equivalent_alias_in_list(product, duplicate_products_group):
                 is_distinct_item = False  
@@ -968,6 +967,7 @@ def build_duplicates_list(products):
         # whether distinct or not,
         # add this to the group, and add all its aliases too
         distinct_groups[distinct_group_id] += [product]
+
 
     distinct_groups_values = [group for group in distinct_groups.values() if group]
     return distinct_groups_values
