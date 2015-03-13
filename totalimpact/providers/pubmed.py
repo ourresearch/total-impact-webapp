@@ -9,9 +9,23 @@ from lxml import etree
 import logging
 logger = logging.getLogger('ti.providers.pubmed')
 
-def clean_pmid(pmid):
-    pmid = remove_nonprinting_characters(pmid)
-    pmid = pmid.lower().replace("pmid:", "")
+def clean_pmid(input_pmid):
+    try:
+        pmid = remove_nonprinting_characters(input_pmid)
+        pmid = pmid.lower().replace("pmid:", "")
+        match = re.match("^(\d{3,15})$", pmid)
+        if match:
+            pmid = match.group(1)
+        else:
+            pmid = None
+
+    except AttributeError:
+        pmid = None
+
+    if not pmid:
+        logger.debug(u"MALFORMED PMID {input_pmid}".format(
+            input_pmid=input_pmid))
+
     return pmid
 
 

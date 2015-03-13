@@ -123,11 +123,16 @@ def merge_alias_dicts(aliases1, aliases2):
                 merged_aliases[ns] = [nid]
     return merged_aliases
     
-def matches_alias(product1, product2):
+def matches_alias(product1, product2, exclude=[]):
     alias_tuple_list1 = [alias_row.my_alias_tuple_for_comparing for alias_row in product1.alias_rows]
     alias_tuple_list2 = [alias_row.my_alias_tuple_for_comparing for alias_row in product2.alias_rows]
-    any_matches = any([alias_tuple1 in alias_tuple_list2 for alias_tuple1 in alias_tuple_list1])
-    return any_matches
+    has_matches = False
+    for alias_tuple1 in alias_tuple_list1:
+        if alias_tuple1:
+            (ns, nid) = alias_tuple1
+            if alias_tuple1 in alias_tuple_list2 and ns not in exclude:
+                has_matches = True
+    return has_matches
 
 
 
@@ -231,6 +236,14 @@ class Aliases(object):
             return self.arxiv[0]
         except AttributeError:
             return None
+
+    @cached_property
+    def has_formal_alias(self):
+        # has something other than urls and mendeley uuids etc
+        if self.display_arxiv or self.display_doi or self.display_pmid or self.display_pmc:
+            return True
+        else:
+            return False
 
     @cached_property
     def resolved_url(self):

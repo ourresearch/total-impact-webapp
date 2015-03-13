@@ -880,10 +880,10 @@ def aliases_not_in_existing_products(retrieved_aliases, tiids_to_exclude):
         found = False
         if ns=="biblio":
             temp_product = put_biblio_in_product(temp_product, nid, provider_name="bibtex")
-            found = any([matches_biblio(temp_product, product2) for product2 in products_to_exclude])
+            found = has_equivalent_biblio_in_list(temp_product, products_to_exclude)
         else:
             temp_product = put_aliases_in_product(temp_product, [alias_tuple])
-            found = any([matches_alias(temp_product, product2) for product2 in products_to_exclude])
+            found = has_equivalent_alias_in_list(temp_product, products_to_exclude)
         if not found:        
             new_aliases += [alias_tuple]
 
@@ -941,13 +941,32 @@ def import_and_create_products(profile_id, provider_name, importer_input, analyt
     return products
 
 
+def has_dedupable_genres(product1, product2):
+    if product1.genre==product2.genre:
+        if product1.is_preprint==product2.is_preprint:
+            return True
+    return False
+
+
 def has_equivalent_alias_in_list(product1, duplicate_products_group):
-    is_equivalent = any([matches_alias(product1, product2) for product2 in duplicate_products_group])
-    return is_equivalent
+    if product1.aliases.has_formal_alias:
+        exclude = ["url"]
+    else:
+        exclude = []
+        
+    has_equivalent = False
+    for product2 in duplicate_products_group:
+        if matches_alias(product1, product2, exclude=exclude) and has_dedupable_genres(product1, product2):
+           has_equivalent = True
+    return has_equivalent
+
 
 def has_equivalent_biblio_in_list(product1, duplicate_products_group):
-    is_equivalent = any([matches_biblio(product1, product2) for product2 in duplicate_products_group])
-    return is_equivalent
+    has_equivalent = False
+    for product2 in duplicate_products_group:
+        if matches_biblio(product1, product2) and has_dedupable_genres(product1, product2):
+           has_equivalent = True
+    return has_equivalent
 
 def build_duplicates_list(products):
     distinct_groups = defaultdict(list)
