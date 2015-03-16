@@ -11032,7 +11032,7 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"text\">\n" +
     "               Map\n" +
     "            </span>\n" +
-    "            <div class=\"arrow\"></div> \n" +
+    "            <div class=\"arrow\"></div>\n" +
     "         </a>\n" +
     "         <a href=\"/{{ profileAboutService.data.url_slug }}/fans\"\n" +
     "            class=\"animated fadeIn\"\n" +
@@ -11310,7 +11310,7 @@ angular.module("tweet/tweet.tpl.html", []).run(["$templateCache", function($temp
     "\n" +
     "   <div class=\"after-tweet\">\n" +
     "      <a class=\"tweet-date\"\n" +
-    "         href=\"https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}\"\n" +
+    "         href=\"https://twitter.com/{{ tweet.screen_name }}/status/{{ tweet.tweet_id }}\"\n" +
     "         tooltip-placement=\"left\"\n" +
     "         tooltip=\"{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}\">\n" +
     "         {{ moment(tweet.tweet_timestamp).fromNow() }}\n" +

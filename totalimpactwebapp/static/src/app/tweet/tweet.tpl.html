@@ -53,7 +53,7 @@
 
    <div class="after-tweet">
       <a class="tweet-date"
-         href="https://twitter.com/{{ tweet.tweeter.screen_name }}/status/{{ tweet.tweet_id }}"
+         href="https://twitter.com/{{ tweet.screen_name }}/status/{{ tweet.tweet_id }}"
          tooltip-placement="left"
          tooltip="{{ moment(tweet.tweet_timestamp).format('h:mm A [on] MMM Do, YYYY') }}">
          {{ moment(tweet.tweet_timestamp).fromNow() }}
