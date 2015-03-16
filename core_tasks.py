@@ -177,6 +177,9 @@ def sniffer(genre, host, item_aliases, provider_config=default_settings.PROVIDER
 
     all_metrics_providers = [provider.provider_name for provider in 
                     ProviderFactory.get_providers(provider_config, "metrics")]
+    if "arxiv" in item_aliases:
+        # for these purposes
+        host = "arxiv"
 
     if (genre == "article") and (host != "arxiv"):
         run = [[("aliases", provider)] for provider in ["mendeley", "crossref", "pubmed", "altmetric_com"]]
@@ -222,7 +225,7 @@ def provider_run(tiid, method_name, provider_name):
         logger.warning(u"RATE LIMIT HIT in provider_run for {provider} {method_name} {tiid}, retrying".format(
            provider=provider.provider_name, method_name=method_name, tiid=tiid))
 
-        # add up to random 2 seconds to spread it out
+        # add up to random 3 seconds to spread it out
         estimated_wait_seconds += random.random() * 3
         provider_run.retry(args=[tiid, method_name, provider_name],
                 countdown=estimated_wait_seconds, 

@@ -107,14 +107,18 @@ def column_windows(session, column, windowsize):
 
 
 
-def windowed_query(q, column, windowsize):
+def windowed_query(q, column, windowsize, desc=False):
     """"Break a Query into windows on a given column."""
 
     for whereclause in column_windows(
                                         q.session, 
                                         column, windowsize):
-        for row in q.filter(whereclause).order_by(column):
-            yield row
+        if desc:
+            for row in q.filter(whereclause).order_by(column.desc()):
+                yield row
+        else:
+            for row in q.filter(whereclause).order_by(column):
+                yield row
 
 
 
@@ -268,8 +272,9 @@ def dedup_everyone(url_slug=None, min_url_slug=None):
         q = q.filter(Profile.url_slug>=min_url_slug)
 
     for profile in windowed_query(q, Profile.url_slug, 25):
-        logger.info(u"dedup: {url_slug}".format(url_slug=profile.url_slug))
-        response = profile.remove_duplicates()
+        if profile.is_live:
+            logger.info(u"dedup: {url_slug}".format(url_slug=profile.url_slug))
+            response = profile.remove_duplicates()
 
 
 
@@ -992,7 +997,7 @@ def update_all_live_profiles(args):
         limit = 1
 
     number_profiles_updated = 0.0
-    for profile in windowed_query(q, Profile.url_slug, 25):
+    for profile in windowed_query(q, Profile.next_refresh, 25, desc=False):
         product_count = len(profile.products_not_removed)
         logger.info(u"profile {url_slug} has {product_count} products".format(
             url_slug=profile.url_slug, product_count=product_count))
