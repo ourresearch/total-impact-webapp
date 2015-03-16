@@ -133,9 +133,15 @@ class Biblio(object):
         except AttributeError:
             auths = None
 
-
         return auths
 
+    @cached_property
+    def authors_list(self):
+        try:
+            return self.authors.split(",")
+
+        except AttributeError:
+            return []
 
     @cached_property
     def display_title(self):

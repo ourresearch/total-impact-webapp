@@ -7403,7 +7403,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'collection-page/product-biblio.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -7723,7 +7723,16 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "            <i tooltip=\"{{ product.genre }}\"\n" +
     "               class=\"genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}\"></i>\n" +
     "         </div>\n" +
+    "\n" +
+    "         <!--\n" +
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "         -->\n" +
+    "\n" +
+    "         <div class=\"product-container\">\n" +
+    "            <span class=\"biblio-container\" ng-include=\"'collection-page/product-biblio.tpl.html'\"></span>\n" +
+    "         </div>\n" +
+    "\n" +
+    "\n" +
     "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && Collection.ui.showTweets\">\n" +
     "\n" +
     "            <ul>\n" +
@@ -7856,6 +7865,52 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
     "\n" +
     "</div>\n" +
     "");
+}]);
+
+angular.module("collection-page/product-biblio.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("collection-page/product-biblio.tpl.html",
+    "<div class=\"biblio\">\n" +
+    "   <h5 class=\"title\">\n" +
+    "      <a class=\"title-text target-blank\"\n" +
+    "         title=\"Click to view impact details\"\n" +
+    "         data-toggle='tooltip'\n" +
+    "\n" +
+    "         href=\"/{{ url_slug }}/product/{{ tiid }}\">\n" +
+    "\n" +
+    "         {{product.biblio.display_title}}\n" +
+    "\n" +
+    "      </a>\n" +
+    "\n" +
+    "   </h5>\n" +
+    "\n" +
+    "   <div class=\"optional-biblio\">\n" +
+    "      <span ng-if=\"product.biblio.display_year\"\n" +
+    "             class=\"year\">({{ product.biblio.display_year }})</span>\n" +
+    "\n" +
+    "      <span ng-if=\"product.biblio.display_authors\"\n" +
+    "            class=\"authors\">{{ product.biblio.display_authors }}.</span>\n" +
+    "\n" +
+    "\n" +
+    "      <span ng-if=\"product.biblio.repository && !product.biblio.journal\"\n" +
+    "             class=\"repository\">{{ product.biblio.repository }}.</span>\n" +
+    "\n" +
+    "\n" +
+    "      <span ng-if=\"product.biblio.journal\"\n" +
+    "            class=\"journal\">{{ product.biblio.journal }}</span>\n" +
+    "\n" +
+    "      <span ng-if=\"product.biblio.description\"\n" +
+    "            class=\"description\">{{ product.biblio.description }}</span>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"under-biblio\">\n" +
+    "      <a class=\"has-fulltext\"\n" +
+    "         ng-if=\"product.embed_markup\"\n" +
+    "         href=\"/{{ url_slug }}/product/{{ product.tiid }}/fulltext\">\n" +
+    "         <i class=\"icon-unlock-alt\"></i>\n" +
+    "         {{ product.fulltext_cta }}\n" +
+    "      </a>\n" +
+    "   </div>\n" +
+    "</div>");
 }]);
 
 angular.module("dead-profile/dead-profile.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -9041,7 +9096,13 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        onaftersave=\"updateBiblio('authors')\"\n" +
     "                        ng-show=\"!loading.is('updateBiblio.authors') && userOwnsThisProfile\"\n" +
     "                        editable-text=\"biblio.authors\">\n" +
-    "                  {{ biblio.display_authors || \"click to enter authors\" }}\n" +
+    "\n" +
+    "                     <span class=\"author\"\n" +
+    "                           ng-class=\"is-profile-owner-{{  }}\"\n" +
+    "                           ng-repeat=\"auth in biblio.authors_list\">\n" +
+    "                        {{ auth }}\n" +
+    "                     </span>\n" +
+    "\n" +
     "                  </span>\n" +
     "                  <span class=\"value\" ng-show=\"!userOwnsThisProfile\">\n" +
     "                  {{ biblio.display_authors }}\n" +

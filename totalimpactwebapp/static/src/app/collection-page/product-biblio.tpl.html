@@ -1,0 +1,42 @@
+<div class="biblio">
+   <h5 class="title">
+      <a class="title-text target-blank"
+         title="Click to view impact details"
+         data-toggle='tooltip'
+
+         href="/{{ url_slug }}/product/{{ tiid }}">
+
+         {{product.biblio.display_title}}
+
+      </a>
+
+   </h5>
+
+   <div class="optional-biblio">
+      <span ng-if="product.biblio.display_year"
+             class="year">({{ product.biblio.display_year }})</span>
+
+      <span ng-if="product.biblio.display_authors"
+            class="authors">{{ product.biblio.display_authors }}.</span>
+
+
+      <span ng-if="product.biblio.repository && !product.biblio.journal"
+             class="repository">{{ product.biblio.repository }}.</span>
+
+
+      <span ng-if="product.biblio.journal"
+            class="journal">{{ product.biblio.journal }}</span>
+
+      <span ng-if="product.biblio.description"
+            class="description">{{ product.biblio.description }}</span>
+   </div>
+
+   <div class="under-biblio">
+      <a class="has-fulltext"
+         ng-if="product.embed_markup"
+         href="/{{ url_slug }}/product/{{ product.tiid }}/fulltext">
+         <i class="icon-unlock-alt"></i>
+         {{ product.fulltext_cta }}
+      </a>
+   </div>
+</div>

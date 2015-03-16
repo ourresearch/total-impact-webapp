@@ -135,7 +135,16 @@
             <i tooltip="{{ product.genre }}"
                class="genre-icon {{ GenreConfigs.get(product.genre, 'icon') }}"></i>
          </div>
+
+         <!--
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
+         -->
+
+         <div class="product-container">
+            <span class="biblio-container" ng-include="'collection-page/product-biblio.tpl.html'"></span>
+         </div>
+
+
          <div class="product-tweets" ng-show="filteredTweets.length && Collection.ui.showTweets">
 
             <ul>

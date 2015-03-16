@@ -675,6 +675,9 @@ def profile_products_get(url_slug):
         product_list = profile.get_products_markup(
             markup=markup,
             show_keys=[
+                # for rendering biblio
+                "biblio",
+
                 "_tiid",
                 "tiid",
                 "markup",

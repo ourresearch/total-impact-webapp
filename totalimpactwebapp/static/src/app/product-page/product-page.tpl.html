@@ -37,7 +37,13 @@
                         onaftersave="updateBiblio('authors')"
                         ng-show="!loading.is('updateBiblio.authors') && userOwnsThisProfile"
                         editable-text="biblio.authors">
-                  {{ biblio.display_authors || "click to enter authors" }}
+
+                     <span class="author"
+                           ng-class="is-profile-owner-{{  }}"
+                           ng-repeat="auth in biblio.authors_list">
+                        {{ auth }}
+                     </span>
+
                   </span>
                   <span class="value" ng-show="!userOwnsThisProfile">
                   {{ biblio.display_authors }}
