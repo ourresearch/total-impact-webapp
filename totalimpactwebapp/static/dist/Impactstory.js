@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-09
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-15
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -11032,15 +11032,15 @@ angular.module("sidebar/sidebar.tpl.html", []).run(["$templateCache", function($
     "            <span class=\"text\">\n" +
     "               Map\n" +
     "            </span>\n" +
-    "            <div class=\"arrow\"></div>\n" +
+    "            <div class=\"arrow\"></div> \n" +
     "         </a>\n" +
     "         <a href=\"/{{ profileAboutService.data.url_slug }}/fans\"\n" +
     "            class=\"animated fadeIn\"\n" +
     "            ng-if=\"profileService.data.hasTweets\"\n" +
     "            ng-class=\"{active: page.isNamed('fans')}\">\n" +
-    "            <i class=\"fa fa-heart-o left\"></i>\n" +
+    "            <i class=\"fa fa-twitter left\"></i>\n" +
     "            <span class=\"text\">\n" +
-    "               Fans\n" +
+    "               Twitter fans\n" +
     "            </span>\n" +
     "            <div class=\"arrow\"></div>\n" +
     "         </a>\n" +
