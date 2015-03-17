@@ -8439,15 +8439,19 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 }
 .product-container .biblio div.optional-biblio {
   clear: both;
-  font-size: 13px;
+  font-size: 14px;
   color: #888;
-  line-height: 1.3;
+  line-height: 1.4;
 }
 .product-container .biblio div.optional-biblio span.repository {
   font-style: italic;
 }
 .product-container .biblio div.optional-biblio span.journal {
   font-style: italic;
+}
+.product-container .biblio div.optional-biblio span.authors-list .author.owns-profile .text {
+  font-weight: 900;
+  text-decoration: underline;
 }
 .product-container .biblio div.under-biblio a.has-fulltext {
   color: #555;

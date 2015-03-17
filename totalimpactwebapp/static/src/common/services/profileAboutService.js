@@ -103,6 +103,11 @@ angular.module('services.profileAboutService', [
       getUrlSlug: function(){
         return data.url_slug
       },
+      nameMatches: function(name){
+        var ret = name.indexOf(data.surname) > -1
+        console.log("testing name: ", name, data.surname, ret)
+        return ret
+      },
       slugIsNew: slugIsNew,
       handleSlug: handleSlug
     }

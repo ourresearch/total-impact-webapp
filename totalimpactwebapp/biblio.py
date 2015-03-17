@@ -138,10 +138,20 @@ class Biblio(object):
     @cached_property
     def authors_list(self):
         try:
-            return self.authors.split(",")
+            auth_list = self.authors.split(",")
 
         except AttributeError:
-            return []
+            auth_list = []
+
+        ret = []
+        for auth in auth_list:
+            my_auth = auth.strip()
+            if my_auth.isupper():
+                my_auth = my_auth.title()
+
+            ret.append(my_auth)
+
+        return ret
 
     @cached_property
     def display_title(self):

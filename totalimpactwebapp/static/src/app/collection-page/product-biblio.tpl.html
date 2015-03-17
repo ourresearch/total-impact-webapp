@@ -16,8 +16,12 @@
       <span ng-if="product.biblio.display_year"
              class="year">({{ product.biblio.display_year }})</span>
 
-      <span ng-if="product.biblio.display_authors"
-            class="authors">{{ product.biblio.display_authors }}.</span>
+      <span ng-if="product.biblio.display_authors" class="authors-list">
+         <span class="author"
+               ng-class="{'owns-profile': profileAboutService.nameMatches(author)}"
+               ng-repeat="author in product.biblio.authors_list">
+            <span class="text">{{ author }}</span><span ng-show="!$last">,</span></span>.
+      </span>
 
 
       <span ng-if="product.biblio.repository && !product.biblio.journal"

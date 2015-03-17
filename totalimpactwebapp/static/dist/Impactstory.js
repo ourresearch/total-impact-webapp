@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-16
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-17
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -6632,6 +6632,11 @@ angular.module('services.profileAboutService', [
       getUrlSlug: function(){
         return data.url_slug
       },
+      nameMatches: function(name){
+        var ret = name.indexOf(data.surname) > -1
+        console.log("testing name: ", name, data.surname, ret)
+        return ret
+      },
       slugIsNew: slugIsNew,
       handleSlug: handleSlug
     }
@@ -7889,8 +7894,12 @@ angular.module("collection-page/product-biblio.tpl.html", []).run(["$templateCac
     "      <span ng-if=\"product.biblio.display_year\"\n" +
     "             class=\"year\">({{ product.biblio.display_year }})</span>\n" +
     "\n" +
-    "      <span ng-if=\"product.biblio.display_authors\"\n" +
-    "            class=\"authors\">{{ product.biblio.display_authors }}.</span>\n" +
+    "      <span ng-if=\"product.biblio.display_authors\" class=\"authors-list\">\n" +
+    "         <span class=\"author\"\n" +
+    "               ng-class=\"{'owns-profile': profileAboutService.nameMatches(author)}\"\n" +
+    "               ng-repeat=\"author in product.biblio.authors_list\">\n" +
+    "            <span class=\"text\">{{ author }}</span><span ng-show=\"!$last\">,</span></span>.\n" +
+    "      </span>\n" +
     "\n" +
     "\n" +
     "      <span ng-if=\"product.biblio.repository && !product.biblio.journal\"\n" +
