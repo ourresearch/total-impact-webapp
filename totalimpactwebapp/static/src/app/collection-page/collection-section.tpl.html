@@ -141,7 +141,9 @@
          -->
 
          <div class="product-container">
-            <span class="biblio-container" ng-include="'collection-page/product-biblio.tpl.html'"></span>
+            <div class="biblio-container" ng-include="'collection-page/product-biblio.tpl.html'"></div>
+            <div class="awards-container" ng-bind-html="trustHtml(product.markup)"></div>
+
          </div>
 
 

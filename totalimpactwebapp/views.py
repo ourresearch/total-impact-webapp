@@ -677,6 +677,7 @@ def profile_products_get(url_slug):
             show_keys=[
                 # for rendering biblio
                 "biblio",
+                "embed_markup",
 
                 "_tiid",
                 "tiid",

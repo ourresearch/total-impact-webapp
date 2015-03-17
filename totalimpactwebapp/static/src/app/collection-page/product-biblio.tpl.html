@@ -4,7 +4,7 @@
          title="Click to view impact details"
          data-toggle='tooltip'
 
-         href="/{{ url_slug }}/product/{{ tiid }}">
+         href="/{{ page.getUrlSlug() }}/product/{{ product.tiid }}">
 
          {{product.biblio.display_title}}
 
@@ -34,9 +34,9 @@
    <div class="under-biblio">
       <a class="has-fulltext"
          ng-if="product.embed_markup"
-         href="/{{ url_slug }}/product/{{ product.tiid }}/fulltext">
+         href="/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/fulltext">
          <i class="icon-unlock-alt"></i>
-         {{ product.fulltext_cta }}
+         {{ GenreConfigs.get(product.genre, 'fulltext_cta') }}
       </a>
    </div>
 </div>

@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-15
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-16
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -7729,7 +7729,9 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "         -->\n" +
     "\n" +
     "         <div class=\"product-container\">\n" +
-    "            <span class=\"biblio-container\" ng-include=\"'collection-page/product-biblio.tpl.html'\"></span>\n" +
+    "            <div class=\"biblio-container\" ng-include=\"'collection-page/product-biblio.tpl.html'\"></div>\n" +
+    "            <div class=\"awards-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "\n" +
     "         </div>\n" +
     "\n" +
     "\n" +
@@ -7875,7 +7877,7 @@ angular.module("collection-page/product-biblio.tpl.html", []).run(["$templateCac
     "         title=\"Click to view impact details\"\n" +
     "         data-toggle='tooltip'\n" +
     "\n" +
-    "         href=\"/{{ url_slug }}/product/{{ tiid }}\">\n" +
+    "         href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}\">\n" +
     "\n" +
     "         {{product.biblio.display_title}}\n" +
     "\n" +
@@ -7905,9 +7907,9 @@ angular.module("collection-page/product-biblio.tpl.html", []).run(["$templateCac
     "   <div class=\"under-biblio\">\n" +
     "      <a class=\"has-fulltext\"\n" +
     "         ng-if=\"product.embed_markup\"\n" +
-    "         href=\"/{{ url_slug }}/product/{{ product.tiid }}/fulltext\">\n" +
+    "         href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/fulltext\">\n" +
     "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "         {{ product.fulltext_cta }}\n" +
+    "         {{ GenreConfigs.get(product.genre, 'fulltext_cta') }}\n" +
     "      </a>\n" +
     "   </div>\n" +
     "</div>");
