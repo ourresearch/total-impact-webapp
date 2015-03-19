@@ -519,7 +519,6 @@ angular.module('app', [
   'directives.tweetThis',
   'directives.ourSort',
   'directives.authorList',
-  'directives.productBiblio',
   'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',
@@ -3608,8 +3607,9 @@ angular.module("directives.authorList", [])
         truncatedList = authsList.slice(0, profileOwnerNameIndex + 1)
       }
 
-//      console.log("this is the auths list", authsList)
-//      console.log("this is the truncated list", truncatedList)
+      console.log("this is the auths list", authsList)
+      console.log("this is the truncated list", truncatedList)
+      console.log("this is the owner index", profileOwnerNameIndex)
 
 
       return {
@@ -3623,17 +3623,11 @@ angular.module("directives.authorList", [])
     return {
       restrict: 'E',
       templateUrl: 'directives/author-list.tpl.html',
-      scope: {
-        authors: "=authors"
-      },
       link: function(scope, elem, attr, ctrl){
         var truncateLen
 
         if (typeof attr.truncateLen === "undefined") {
           truncateLen = 3
-        }
-        else if (attr.truncateLen === false) {
-          truncateLen = 9999999
         }
         else {
           truncateLen = attr.truncateLen
@@ -3644,8 +3638,13 @@ angular.module("directives.authorList", [])
 
 //        scope.truncatedAuthsList = truncatedAuthList(attr.authors, ProfileAboutService.data.surname, truncateLen)
 
-        scope.$watch("ProfileAboutService.data.surname", function(newVal, oldVal){
-          scope.truncatedAuthsList = truncatedAuthList(scope.authors, newVal, truncateLen)
+        scope.$watch("profileAboutService.data.surname", function(newSurname, oldVal){
+          console.log("trying with this surname", newSurname)
+
+          scope.$watch(attr.authors, function(myAuthors){
+            scope.truncatedAuthsList = truncatedAuthList(myAuthors, newSurname, truncateLen)
+          })
+
         })
       }
     }
@@ -4557,60 +4556,6 @@ angular.module("directives.ourSort", [])
         };
     });
 })();
-angular.module("directives.productBiblio", [])
-
-
-
-
-  .directive("productBiblio", function(
-    ProfileAboutService
-    ){
-
-    function truncatedAuthList(authsList, ownerSurname){
-      var truncateLen = 3
-      var truncatedList = authsList.slice() // make a copy to work on
-
-      var profileOwnerNameIndex = _.findIndex(authsList, function(auth){
-        return auth.indexOf(ownerSurname) > -1
-      })
-
-
-      if (profileOwnerNameIndex < 0) {
-        // profile owner doesn't seem to be an author. doh. do nothing.
-      }
-      else if (profileOwnerNameIndex + 1 <= truncateLen) {
-        // profile owner is in the first n authors where n is the preferred
-        // truncate length. good.
-        truncatedList.length = truncateLen
-      }
-      else {
-        // profile owner is pretty deep in the author list, so we need to
-        // make it longer so that they'll still show up. truncate it right after
-        // they're shown tho.
-        truncatedList.length = profileOwnerNameIndex + 1 // zero-indexed array
-      }
-
-      return {
-        list: truncatedList,
-        numTruncated: authsList.length - truncatedList.length,
-        ownerIndex: profileOwnerNameIndex
-      }
-
-    }
-
-    return {
-     restrict: 'E',
-     templateUrl: 'directives/product-biblio.tpl.html',
-     link: function(scope, elem, attr, ctrl){
-      console.log("i done ran!", attr.biblio)
-
-      scope.$watch("ProfileAboutService.data.surname", function(newVal, oldVal){
-        scope.truncatedAuthsList = truncatedAuthList(attr.biblio.authors_list)
-
-      })
-     }
-    }
-  });
 angular.module('directives.pwMatch', [])
   // from http://blog.brunoscopelliti.com/angularjs-directive-to-check-that-passwords-match
 
@@ -7537,7 +7482,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-listing.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -7862,13 +7807,7 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "         <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "         -->\n" +
     "\n" +
-    "         <div class=\"product-container\">\n" +
-    "            <div class=\"biblio-container\" ng-include=\"'directives/product-biblio.tpl.html'\"></div>\n" +
-    "            <div class=\"awards-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
-    "\n" +
-    "         </div>\n" +
-    "\n" +
-    "\n" +
+    "         <div class=\"product-container\" ng-include=\"'product-listing.tpl.html'\"></div>\n" +
     "         <div class=\"product-tweets\" ng-show=\"filteredTweets.length && Collection.ui.showTweets\">\n" +
     "\n" +
     "            <ul>\n" +
@@ -9109,6 +9048,60 @@ angular.module("pdf/pdf-viewer.tpl.html", []).run(["$templateCache", function($t
     "");
 }]);
 
+angular.module("product-listing.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("product-listing.tpl.html",
+    "<div class=\"product-container\">\n" +
+    "   <div class=\"biblio\">\n" +
+    "      <h5 class=\"title\">\n" +
+    "         <a class=\"title-text target-blank\"\n" +
+    "            title=\"Click to view impact details\"\n" +
+    "            data-toggle='tooltip'\n" +
+    "\n" +
+    "            href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}\">\n" +
+    "\n" +
+    "            {{product.biblio.display_title}}\n" +
+    "\n" +
+    "         </a>\n" +
+    "\n" +
+    "      </h5>\n" +
+    "\n" +
+    "      <div class=\"optional-biblio\">\n" +
+    "         <span ng-if=\"product.biblio.display_year\"\n" +
+    "                class=\"year\">({{ product.biblio.display_year }})</span>\n" +
+    "\n" +
+    "         <span ng-if=\"product.biblio.display_authors\" class=\"authors-list\">\n" +
+    "            <author-list authors=\"product.biblio.author_list\"></author-list>\n" +
+    "         </span>\n" +
+    "\n" +
+    "\n" +
+    "         <span ng-if=\"product.biblio.repository && !product.biblio.journal\"\n" +
+    "                class=\"repository\">{{ product.biblio.repository }}.</span>\n" +
+    "\n" +
+    "\n" +
+    "         <span ng-if=\"product.biblio.journal\"\n" +
+    "               class=\"journal\">{{ product.biblio.journal }}</span>\n" +
+    "\n" +
+    "         <span ng-if=\"product.biblio.description\"\n" +
+    "               class=\"description\">{{ product.biblio.description }}</span>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"under-biblio\">\n" +
+    "         <a class=\"has-fulltext\"\n" +
+    "            ng-if=\"product.embed_markup\"\n" +
+    "            href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/fulltext\">\n" +
+    "            <i class=\"icon-unlock-alt\"></i>\n" +
+    "            {{ GenreConfigs.get(product.genre, 'fulltext_cta') }}\n" +
+    "         </a>\n" +
+    "      </div>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"awards-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "\n" +
+    "</div>\n" +
+    "\n" +
+    "");
+}]);
+
 angular.module("product-page/fulltext-location-modal.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("product-page/fulltext-location-modal.tpl.html",
     "<div class=\"modal-header\">\n" +
@@ -9187,11 +9180,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "                        ng-show=\"!loading.is('updateBiblio.authors') && userOwnsThisProfile\"\n" +
     "                        editable-text=\"biblio.authors\">\n" +
     "\n" +
-    "                     <span class=\"author\"\n" +
-    "                           ng-class=\"is-profile-owner-{{  }}\"\n" +
-    "                           ng-repeat=\"auth in biblio.authors_list\">\n" +
-    "                        {{ auth }}\n" +
-    "                     </span>\n" +
+    "                     <author-list authors=\"biblio.author_list\" truncate-len=\"999\"></author-list>\n" +
     "\n" +
     "                  </span>\n" +
     "                  <span class=\"value\" ng-show=\"!userOwnsThisProfile\">\n" +
@@ -10160,7 +10149,9 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  <i tooltip-placement=\"left\"\n" +
     "                     tooltip=\"{{ product.genre }}\"\n" +
     "                     class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
-    "                  <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "                  <div class=\"product-container\" ng-include=\"'product-listing.tpl.html'\"></div>\n" +
+    "\n" +
+    "\n" +
     "               </div>\n" +
     "            </li>\n" +
     "         </ul>\n" +
@@ -10176,7 +10167,7 @@ angular.module("profile/profile.tpl.html", []).run(["$templateCache", function($
     "                  <i tooltip-placement=\"left\"\n" +
     "                     tooltip=\"{{ product.genre }}\"\n" +
     "                     class=\"genre-icon {{ product.genre_icon }}\"></i>\n" +
-    "                  <div class=\"product-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
+    "                  <div class=\"product-container\" ng-include=\"'product-listing.tpl.html'\"></div>\n" +
     "               </div>\n" +
     "            </li>\n" +
     "         </ul>\n" +
@@ -11563,21 +11554,26 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
     "");
 }]);
 
-angular.module('templates.common', ['directives/author-list.tpl.html', 'directives/our-sort.tpl.html', 'directives/pagination.tpl.html', 'directives/product-biblio.tpl.html', 'forms/save-buttons.tpl.html']);
+angular.module('templates.common', ['directives/author-list.tpl.html', 'directives/our-sort.tpl.html', 'directives/pagination.tpl.html', 'forms/save-buttons.tpl.html']);
 
 angular.module("directives/author-list.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("directives/author-list.tpl.html",
+    "<!-- indenting lines introduces unwanted whitespace that is then very hard\n" +
+    "to control. the comments keep that away, see\n" +
+    "http://stackoverflow.com/a/11430717\n" +
+    "-->\n" +
+    "\n" +
     "<span class=\"author-list\">\n" +
     "   <span class=\"author\"\n" +
     "         ng-repeat=\"author in truncatedAuthsList.list\"\n" +
-    "         ng-class=\"{'owns-profile': $index==truncatedAuthsList.ownerIndex}\">\n" +
-    "      <span class=\"text\">{{ author }}</span><span ng-show=\"!$last && truncatedAuthsList.numTruncated==0\">,</span>\n" +
-    "   </span>\n" +
-    "   <span class=\"and-more\" ng-show=\"truncatedAuthsList.numTruncated\">\n" +
-    "      and {{ truncatedAuthsList.numTruncated }} others\n" +
-    "   </span>\n" +
-    "   <span class=\"period\">.</span>\n" +
-    "</span>\n" +
+    "         ng-class=\"{'owns-profile': $index==truncatedAuthsList.ownerIndex}\"><!--\n" +
+    "      --><span class=\"text\">{{ author }}</span><!--\n" +
+    "      --><span class=\"comma punctuation\" ng-hide=\"$last\">, </span><!--\n" +
+    "   --></span><!-- end of author\n" +
+    "\n" +
+    "   --><span class=\"et-all-msg text\" ng-show=\"truncatedAuthsList.numTruncated\">, et al</span><!--\n" +
+    "   --><span class=\"period punctuation\">.</span><!--\n" +
+    "--></span>\n" +
     "");
 }]);
 
@@ -11626,53 +11622,6 @@ angular.module("directives/pagination.tpl.html", []).run(["$templateCache", func
     "        <a href=\"\" ng-click=\"setCurrent(pagination.last)\"><i class=\"fa fa-chevron-right\"></i></a>\n" +
     "    </li>\n" +
     "</ul>");
-}]);
-
-angular.module("directives/product-biblio.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("directives/product-biblio.tpl.html",
-    "<div class=\"biblio\">\n" +
-    "   <h5 class=\"title\">\n" +
-    "      <a class=\"title-text target-blank\"\n" +
-    "         title=\"Click to view impact details\"\n" +
-    "         data-toggle='tooltip'\n" +
-    "\n" +
-    "         href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}\">\n" +
-    "\n" +
-    "         {{product.biblio.display_title}}\n" +
-    "\n" +
-    "      </a>\n" +
-    "\n" +
-    "   </h5>\n" +
-    "\n" +
-    "   <div class=\"optional-biblio\">\n" +
-    "      <span ng-if=\"product.biblio.display_year\"\n" +
-    "             class=\"year\">({{ product.biblio.display_year }})</span>\n" +
-    "\n" +
-    "      <span ng-if=\"product.biblio.display_authors\" class=\"authors-list\">\n" +
-    "         <author-list authors=\"product.biblio.author_list\"></author-list>\n" +
-    "      </span>\n" +
-    "\n" +
-    "\n" +
-    "      <span ng-if=\"product.biblio.repository && !product.biblio.journal\"\n" +
-    "             class=\"repository\">{{ product.biblio.repository }}.</span>\n" +
-    "\n" +
-    "\n" +
-    "      <span ng-if=\"product.biblio.journal\"\n" +
-    "            class=\"journal\">{{ product.biblio.journal }}</span>\n" +
-    "\n" +
-    "      <span ng-if=\"product.biblio.description\"\n" +
-    "            class=\"description\">{{ product.biblio.description }}</span>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"under-biblio\">\n" +
-    "      <a class=\"has-fulltext\"\n" +
-    "         ng-if=\"product.embed_markup\"\n" +
-    "         href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/fulltext\">\n" +
-    "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "         {{ GenreConfigs.get(product.genre, 'fulltext_cta') }}\n" +
-    "      </a>\n" +
-    "   </div>\n" +
-    "</div>");
 }]);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {

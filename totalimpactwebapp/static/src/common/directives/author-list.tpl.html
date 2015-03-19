@@ -1,11 +1,16 @@
+<!-- indenting lines introduces unwanted whitespace that is then very hard
+to control. the comments keep that away, see
+http://stackoverflow.com/a/11430717
+-->
+
 <span class="author-list">
    <span class="author"
          ng-repeat="author in truncatedAuthsList.list"
-         ng-class="{'owns-profile': $index==truncatedAuthsList.ownerIndex}">
-      <span class="text">{{ author }}</span><span ng-show="!$last && truncatedAuthsList.numTruncated==0">,</span>
-   </span>
-   <span class="and-more" ng-show="truncatedAuthsList.numTruncated">
-      and {{ truncatedAuthsList.numTruncated }} others
-   </span>
-   <span class="period">.</span>
-</span>
+         ng-class="{'owns-profile': $index==truncatedAuthsList.ownerIndex}"><!--
+      --><span class="text">{{ author }}</span><!--
+      --><span class="comma punctuation" ng-hide="$last">, </span><!--
+   --></span><!-- end of author
+
+   --><span class="et-all-msg text" ng-show="truncatedAuthsList.numTruncated">, et al</span><!--
+   --><span class="period punctuation">.</span><!--
+--></span>

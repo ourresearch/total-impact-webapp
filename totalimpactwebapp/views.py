@@ -606,7 +606,12 @@ def key_products(profile_id):
             board = pinboard.save_new_board(profile.id)
 
         show_keys = [
+            # for rendering biblio
+            "biblio",
+            "embed_markup",
+
             "_tiid",
+            "tiid",
             "markup",
             "genre",
             "genre_icon"

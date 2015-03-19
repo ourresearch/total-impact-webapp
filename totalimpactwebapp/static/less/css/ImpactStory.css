@@ -6999,6 +6999,13 @@ div.our-sort-controls .btn-group.sort-select-group a.dropdown-toggle:hover {
 div.our-sort-controls .btn-group.sort-select-group ul.dropdown-menu li {
   font-size: 14px;
 }
+/* controls for the author-list directive
+*****************************************************************************
+*****************************************************************************
+*****************************************************************************/
+span.author.owns-profile .text {
+  text-decoration: underline;
+}
 /* profile map
 *****************************************************************************
 *****************************************************************************
@@ -8449,9 +8456,8 @@ div.profile-subpage.profile-single-products div.profile-single-products-body .id
 .product-container .biblio div.optional-biblio span.journal {
   font-style: italic;
 }
-.product-container .biblio div.optional-biblio span.authors-list .author.owns-profile .text {
+.product-container .biblio div.optional-biblio span.author-list .author.owns-profile {
   font-weight: 900;
-  text-decoration: underline;
 }
 .product-container .biblio div.under-biblio a.has-fulltext {
   color: #555;

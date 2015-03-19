@@ -124,7 +124,9 @@
                   <i tooltip-placement="left"
                      tooltip="{{ product.genre }}"
                      class="genre-icon {{ product.genre_icon }}"></i>
-                  <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
+                  <div class="product-container" ng-include="'product-listing.tpl.html'"></div>
+
+
                </div>
             </li>
          </ul>
@@ -140,7 +142,7 @@
                   <i tooltip-placement="left"
                      tooltip="{{ product.genre }}"
                      class="genre-icon {{ product.genre_icon }}"></i>
-                  <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
+                  <div class="product-container" ng-include="'product-listing.tpl.html'"></div>
                </div>
             </li>
          </ul>

@@ -22,7 +22,6 @@ angular.module('app', [
   'directives.tweetThis',
   'directives.ourSort',
   'directives.authorList',
-  'directives.productBiblio',
   'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',

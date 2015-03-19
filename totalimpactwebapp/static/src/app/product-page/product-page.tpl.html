@@ -38,11 +38,7 @@
                         ng-show="!loading.is('updateBiblio.authors') && userOwnsThisProfile"
                         editable-text="biblio.authors">
 
-                     <span class="author"
-                           ng-class="is-profile-owner-{{  }}"
-                           ng-repeat="auth in biblio.authors_list">
-                        {{ auth }}
-                     </span>
+                     <author-list authors="biblio.author_list" truncate-len="999"></author-list>
 
                   </span>
                   <span class="value" ng-show="!userOwnsThisProfile">

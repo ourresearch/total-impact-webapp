@@ -35,8 +35,9 @@ angular.module("directives.authorList", [])
         truncatedList = authsList.slice(0, profileOwnerNameIndex + 1)
       }
 
-//      console.log("this is the auths list", authsList)
-//      console.log("this is the truncated list", truncatedList)
+      console.log("this is the auths list", authsList)
+      console.log("this is the truncated list", truncatedList)
+      console.log("this is the owner index", profileOwnerNameIndex)
 
 
       return {
@@ -50,17 +51,11 @@ angular.module("directives.authorList", [])
     return {
       restrict: 'E',
       templateUrl: 'directives/author-list.tpl.html',
-      scope: {
-        authors: "=authors"
-      },
       link: function(scope, elem, attr, ctrl){
         var truncateLen
 
         if (typeof attr.truncateLen === "undefined") {
           truncateLen = 3
-        }
-        else if (attr.truncateLen === false) {
-          truncateLen = 9999999
         }
         else {
           truncateLen = attr.truncateLen
@@ -71,8 +66,13 @@ angular.module("directives.authorList", [])
 
 //        scope.truncatedAuthsList = truncatedAuthList(attr.authors, ProfileAboutService.data.surname, truncateLen)
 
-        scope.$watch("ProfileAboutService.data.surname", function(newVal, oldVal){
-          scope.truncatedAuthsList = truncatedAuthList(scope.authors, newVal, truncateLen)
+        scope.$watch("profileAboutService.data.surname", function(newSurname, oldVal){
+          console.log("trying with this surname", newSurname)
+
+          scope.$watch(attr.authors, function(myAuthors){
+            scope.truncatedAuthsList = truncatedAuthList(myAuthors, newSurname, truncateLen)
+          })
+
         })
       }
     }

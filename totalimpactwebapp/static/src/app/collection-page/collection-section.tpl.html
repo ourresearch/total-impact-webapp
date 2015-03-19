@@ -140,13 +140,7 @@
          <div class="product-container" ng-bind-html="trustHtml(product.markup)"></div>
          -->
 
-         <div class="product-container">
-            <div class="biblio-container" ng-include="'directives/product-biblio.tpl.html'"></div>
-            <div class="awards-container" ng-bind-html="trustHtml(product.markup)"></div>
-
-         </div>
-
-
+         <div class="product-container" ng-include="'product-listing.tpl.html'"></div>
          <div class="product-tweets" ng-show="filteredTweets.length && Collection.ui.showTweets">
 
             <ul>
