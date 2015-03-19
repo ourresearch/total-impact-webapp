@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-17
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-18
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -518,6 +518,8 @@ angular.module('app', [
   'directives.jQueryTools',
   'directives.tweetThis',
   'directives.ourSort',
+  'directives.authorList',
+  'directives.productBiblio',
   'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',
@@ -3569,6 +3571,85 @@ angular.module( 'update.update', [
     $scope.status = Update
   })
 
+angular.module("directives.authorList", [])
+  .directive("authorList", function(
+    ProfileAboutService
+    ){
+
+    var truncateLen = 3
+
+    function truncatedAuthList(authsList, ownerSurname, truncateLen){
+      if (!truncateLen){
+        truncateLen = 9999999999
+      }
+      if (!authsList){
+        authsList = []
+      }
+      var truncatedList
+
+      var profileOwnerNameIndex = _.findIndex(authsList, function(auth){
+        return auth.indexOf(ownerSurname) > -1
+      })
+
+
+      if (profileOwnerNameIndex < 0) {
+        // profile owner doesn't seem to be an author. doh. do nothing.
+        truncatedList = authsList.slice()
+      }
+      else if (profileOwnerNameIndex + 1 <= truncateLen) {
+        // profile owner is in the first n authors where n is the preferred
+        // truncate length. good.
+        truncatedList = authsList.slice(0, truncateLen)
+      }
+      else {
+        // profile owner is pretty deep in the author list, so we need to
+        // make it longer so that they'll still show up. truncate it right after
+        // they're shown tho.
+        truncatedList = authsList.slice(0, profileOwnerNameIndex + 1)
+      }
+
+//      console.log("this is the auths list", authsList)
+//      console.log("this is the truncated list", truncatedList)
+
+
+      return {
+        list: truncatedList,
+        numTruncated: authsList.length - truncatedList.length,
+        ownerIndex: profileOwnerNameIndex
+      }
+
+    }
+
+    return {
+      restrict: 'E',
+      templateUrl: 'directives/author-list.tpl.html',
+      scope: {
+        authors: "=authors"
+      },
+      link: function(scope, elem, attr, ctrl){
+        var truncateLen
+
+        if (typeof attr.truncateLen === "undefined") {
+          truncateLen = 3
+        }
+        else if (attr.truncateLen === false) {
+          truncateLen = 9999999
+        }
+        else {
+          truncateLen = attr.truncateLen
+        }
+
+        console.log("the author list again!", scope.authors)
+
+
+//        scope.truncatedAuthsList = truncatedAuthList(attr.authors, ProfileAboutService.data.surname, truncateLen)
+
+        scope.$watch("ProfileAboutService.data.surname", function(newVal, oldVal){
+          scope.truncatedAuthsList = truncatedAuthList(scope.authors, newVal, truncateLen)
+        })
+      }
+    }
+  });
 angular.module('directives.crud', ['directives.crud.buttons', 'directives.crud.edit']);
 
 angular.module('directives.crud.buttons', [])
@@ -4476,6 +4557,60 @@ angular.module("directives.ourSort", [])
         };
     });
 })();
+angular.module("directives.productBiblio", [])
+
+
+
+
+  .directive("productBiblio", function(
+    ProfileAboutService
+    ){
+
+    function truncatedAuthList(authsList, ownerSurname){
+      var truncateLen = 3
+      var truncatedList = authsList.slice() // make a copy to work on
+
+      var profileOwnerNameIndex = _.findIndex(authsList, function(auth){
+        return auth.indexOf(ownerSurname) > -1
+      })
+
+
+      if (profileOwnerNameIndex < 0) {
+        // profile owner doesn't seem to be an author. doh. do nothing.
+      }
+      else if (profileOwnerNameIndex + 1 <= truncateLen) {
+        // profile owner is in the first n authors where n is the preferred
+        // truncate length. good.
+        truncatedList.length = truncateLen
+      }
+      else {
+        // profile owner is pretty deep in the author list, so we need to
+        // make it longer so that they'll still show up. truncate it right after
+        // they're shown tho.
+        truncatedList.length = profileOwnerNameIndex + 1 // zero-indexed array
+      }
+
+      return {
+        list: truncatedList,
+        numTruncated: authsList.length - truncatedList.length,
+        ownerIndex: profileOwnerNameIndex
+      }
+
+    }
+
+    return {
+     restrict: 'E',
+     templateUrl: 'directives/product-biblio.tpl.html',
+     link: function(scope, elem, attr, ctrl){
+      console.log("i done ran!", attr.biblio)
+
+      scope.$watch("ProfileAboutService.data.surname", function(newVal, oldVal){
+        scope.truncatedAuthsList = truncatedAuthList(attr.biblio.authors_list)
+
+      })
+     }
+    }
+  });
 angular.module('directives.pwMatch', [])
   // from http://blog.brunoscopelliti.com/angularjs-directive-to-check-that-passwords-match
 
@@ -6623,7 +6758,6 @@ angular.module('services.profileAboutService', [
 
     }
 
-
     return {
       get: get,
       upload: upload,
@@ -6631,11 +6765,6 @@ angular.module('services.profileAboutService', [
       clear: clear,
       getUrlSlug: function(){
         return data.url_slug
-      },
-      nameMatches: function(name){
-        var ret = name.indexOf(data.surname) > -1
-        console.log("testing name: ", name, data.surname, ret)
-        return ret
       },
       slugIsNew: slugIsNew,
       handleSlug: handleSlug
@@ -7408,7 +7537,7 @@ angular.module("services.uservoiceWidget")
 
 
 })
-angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'collection-page/product-biblio.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
+angular.module('templates.app', ['account-page/account-page.tpl.html', 'account-page/github-account-page.tpl.html', 'account-page/slideshare-account-page.tpl.html', 'account-page/twitter-account-page.tpl.html', 'accounts/account.tpl.html', 'collection-page/collection-section.tpl.html', 'collection-page/country-page.tpl.html', 'collection-page/genre-page.tpl.html', 'dead-profile/dead-profile.tpl.html', 'fans/fans-page.tpl.html', 'footer/footer.tpl.html', 'gift-subscription-page/gift-subscription-page.tpl.html', 'google-scholar/google-scholar-modal.tpl.html', 'infopages/about.tpl.html', 'infopages/advisors.tpl.html', 'infopages/collection.tpl.html', 'infopages/faq.tpl.html', 'infopages/landing.tpl.html', 'infopages/legal.tpl.html', 'infopages/metrics.tpl.html', 'infopages/spread-the-word.tpl.html', 'password-reset/password-reset.tpl.html', 'pdf/pdf-viewer.tpl.html', 'product-page/fulltext-location-modal.tpl.html', 'product-page/product-page.tpl.html', 'profile-award/profile-award.tpl.html', 'profile-linked-accounts/profile-linked-accounts.tpl.html', 'profile-map/profile-map.tpl.html', 'profile-single-products/profile-single-products.tpl.html', 'profile/profile.tpl.html', 'profile/tour-start-modal.tpl.html', 'security/days-left-modal.tpl.html', 'security/login/form.tpl.html', 'security/login/reset-password-modal.tpl.html', 'security/login/toolbar.tpl.html', 'settings/custom-url-settings.tpl.html', 'settings/email-settings.tpl.html', 'settings/embed-settings.tpl.html', 'settings/linked-accounts-settings.tpl.html', 'settings/notifications-settings.tpl.html', 'settings/password-settings.tpl.html', 'settings/profile-settings.tpl.html', 'settings/settings.tpl.html', 'settings/subscription-settings.tpl.html', 'sidebar/sidebar.tpl.html', 'signup/signup.tpl.html', 'tweet/tweet.tpl.html', 'tweet/tweeter-popover.tpl.html', 'under-construction.tpl.html', 'update/update-progress.tpl.html', 'user-message.tpl.html']);
 
 angular.module("account-page/account-page.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("account-page/account-page.tpl.html",
@@ -7734,7 +7863,7 @@ angular.module("collection-page/collection-section.tpl.html", []).run(["$templat
     "         -->\n" +
     "\n" +
     "         <div class=\"product-container\">\n" +
-    "            <div class=\"biblio-container\" ng-include=\"'collection-page/product-biblio.tpl.html'\"></div>\n" +
+    "            <div class=\"biblio-container\" ng-include=\"'directives/product-biblio.tpl.html'\"></div>\n" +
     "            <div class=\"awards-container\" ng-bind-html=\"trustHtml(product.markup)\"></div>\n" +
     "\n" +
     "         </div>\n" +
@@ -7872,56 +8001,6 @@ angular.module("collection-page/genre-page.tpl.html", []).run(["$templateCache",
     "\n" +
     "</div>\n" +
     "");
-}]);
-
-angular.module("collection-page/product-biblio.tpl.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("collection-page/product-biblio.tpl.html",
-    "<div class=\"biblio\">\n" +
-    "   <h5 class=\"title\">\n" +
-    "      <a class=\"title-text target-blank\"\n" +
-    "         title=\"Click to view impact details\"\n" +
-    "         data-toggle='tooltip'\n" +
-    "\n" +
-    "         href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}\">\n" +
-    "\n" +
-    "         {{product.biblio.display_title}}\n" +
-    "\n" +
-    "      </a>\n" +
-    "\n" +
-    "   </h5>\n" +
-    "\n" +
-    "   <div class=\"optional-biblio\">\n" +
-    "      <span ng-if=\"product.biblio.display_year\"\n" +
-    "             class=\"year\">({{ product.biblio.display_year }})</span>\n" +
-    "\n" +
-    "      <span ng-if=\"product.biblio.display_authors\" class=\"authors-list\">\n" +
-    "         <span class=\"author\"\n" +
-    "               ng-class=\"{'owns-profile': profileAboutService.nameMatches(author)}\"\n" +
-    "               ng-repeat=\"author in product.biblio.authors_list\">\n" +
-    "            <span class=\"text\">{{ author }}</span><span ng-show=\"!$last\">,</span></span>.\n" +
-    "      </span>\n" +
-    "\n" +
-    "\n" +
-    "      <span ng-if=\"product.biblio.repository && !product.biblio.journal\"\n" +
-    "             class=\"repository\">{{ product.biblio.repository }}.</span>\n" +
-    "\n" +
-    "\n" +
-    "      <span ng-if=\"product.biblio.journal\"\n" +
-    "            class=\"journal\">{{ product.biblio.journal }}</span>\n" +
-    "\n" +
-    "      <span ng-if=\"product.biblio.description\"\n" +
-    "            class=\"description\">{{ product.biblio.description }}</span>\n" +
-    "   </div>\n" +
-    "\n" +
-    "   <div class=\"under-biblio\">\n" +
-    "      <a class=\"has-fulltext\"\n" +
-    "         ng-if=\"product.embed_markup\"\n" +
-    "         href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/fulltext\">\n" +
-    "         <i class=\"icon-unlock-alt\"></i>\n" +
-    "         {{ GenreConfigs.get(product.genre, 'fulltext_cta') }}\n" +
-    "      </a>\n" +
-    "   </div>\n" +
-    "</div>");
 }]);
 
 angular.module("dead-profile/dead-profile.tpl.html", []).run(["$templateCache", function($templateCache) {
@@ -11484,7 +11563,23 @@ angular.module("user-message.tpl.html", []).run(["$templateCache", function($tem
     "");
 }]);
 
-angular.module('templates.common', ['directives/our-sort.tpl.html', 'directives/pagination.tpl.html', 'forms/save-buttons.tpl.html']);
+angular.module('templates.common', ['directives/author-list.tpl.html', 'directives/our-sort.tpl.html', 'directives/pagination.tpl.html', 'directives/product-biblio.tpl.html', 'forms/save-buttons.tpl.html']);
+
+angular.module("directives/author-list.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("directives/author-list.tpl.html",
+    "<span class=\"author-list\">\n" +
+    "   <span class=\"author\"\n" +
+    "         ng-repeat=\"author in truncatedAuthsList.list\"\n" +
+    "         ng-class=\"{'owns-profile': $index==truncatedAuthsList.ownerIndex}\">\n" +
+    "      <span class=\"text\">{{ author }}</span><span ng-show=\"!$last && truncatedAuthsList.numTruncated==0\">,</span>\n" +
+    "   </span>\n" +
+    "   <span class=\"and-more\" ng-show=\"truncatedAuthsList.numTruncated\">\n" +
+    "      and {{ truncatedAuthsList.numTruncated }} others\n" +
+    "   </span>\n" +
+    "   <span class=\"period\">.</span>\n" +
+    "</span>\n" +
+    "");
+}]);
 
 angular.module("directives/our-sort.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("directives/our-sort.tpl.html",
@@ -11531,6 +11626,53 @@ angular.module("directives/pagination.tpl.html", []).run(["$templateCache", func
     "        <a href=\"\" ng-click=\"setCurrent(pagination.last)\"><i class=\"fa fa-chevron-right\"></i></a>\n" +
     "    </li>\n" +
     "</ul>");
+}]);
+
+angular.module("directives/product-biblio.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("directives/product-biblio.tpl.html",
+    "<div class=\"biblio\">\n" +
+    "   <h5 class=\"title\">\n" +
+    "      <a class=\"title-text target-blank\"\n" +
+    "         title=\"Click to view impact details\"\n" +
+    "         data-toggle='tooltip'\n" +
+    "\n" +
+    "         href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}\">\n" +
+    "\n" +
+    "         {{product.biblio.display_title}}\n" +
+    "\n" +
+    "      </a>\n" +
+    "\n" +
+    "   </h5>\n" +
+    "\n" +
+    "   <div class=\"optional-biblio\">\n" +
+    "      <span ng-if=\"product.biblio.display_year\"\n" +
+    "             class=\"year\">({{ product.biblio.display_year }})</span>\n" +
+    "\n" +
+    "      <span ng-if=\"product.biblio.display_authors\" class=\"authors-list\">\n" +
+    "         <author-list authors=\"product.biblio.author_list\"></author-list>\n" +
+    "      </span>\n" +
+    "\n" +
+    "\n" +
+    "      <span ng-if=\"product.biblio.repository && !product.biblio.journal\"\n" +
+    "             class=\"repository\">{{ product.biblio.repository }}.</span>\n" +
+    "\n" +
+    "\n" +
+    "      <span ng-if=\"product.biblio.journal\"\n" +
+    "            class=\"journal\">{{ product.biblio.journal }}</span>\n" +
+    "\n" +
+    "      <span ng-if=\"product.biblio.description\"\n" +
+    "            class=\"description\">{{ product.biblio.description }}</span>\n" +
+    "   </div>\n" +
+    "\n" +
+    "   <div class=\"under-biblio\">\n" +
+    "      <a class=\"has-fulltext\"\n" +
+    "         ng-if=\"product.embed_markup\"\n" +
+    "         href=\"/{{ page.getUrlSlug() }}/product/{{ product.tiid }}/fulltext\">\n" +
+    "         <i class=\"icon-unlock-alt\"></i>\n" +
+    "         {{ GenreConfigs.get(product.genre, 'fulltext_cta') }}\n" +
+    "      </a>\n" +
+    "   </div>\n" +
+    "</div>");
 }]);
 
 angular.module("forms/save-buttons.tpl.html", []).run(["$templateCache", function($templateCache) {

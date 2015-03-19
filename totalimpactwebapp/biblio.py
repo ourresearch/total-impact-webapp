@@ -136,7 +136,7 @@ class Biblio(object):
         return auths
 
     @cached_property
-    def authors_list(self):
+    def author_list(self):
         try:
             auth_list = self.authors.split(",")
 

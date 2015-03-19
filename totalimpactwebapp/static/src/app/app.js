@@ -21,6 +21,8 @@ angular.module('app', [
   'directives.jQueryTools',
   'directives.tweetThis',
   'directives.ourSort',
+  'directives.authorList',
+  'directives.productBiblio',
   'angularUtils.directives.dirPagination',
   'templates.app',
   'templates.common',

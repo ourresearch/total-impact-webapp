@@ -1,0 +1,11 @@
+<span class="author-list">
+   <span class="author"
+         ng-repeat="author in truncatedAuthsList.list"
+         ng-class="{'owns-profile': $index==truncatedAuthsList.ownerIndex}">
+      <span class="text">{{ author }}</span><span ng-show="!$last && truncatedAuthsList.numTruncated==0">,</span>
+   </span>
+   <span class="and-more" ng-show="truncatedAuthsList.numTruncated">
+      and {{ truncatedAuthsList.numTruncated }} others
+   </span>
+   <span class="period">.</span>
+</span>

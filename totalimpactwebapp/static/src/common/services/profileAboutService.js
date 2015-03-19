@@ -94,7 +94,6 @@ angular.module('services.profileAboutService', [
 
     }
 
-
     return {
       get: get,
       upload: upload,
@@ -102,11 +101,6 @@ angular.module('services.profileAboutService', [
       clear: clear,
       getUrlSlug: function(){
         return data.url_slug
-      },
-      nameMatches: function(name){
-        var ret = name.indexOf(data.surname) > -1
-        console.log("testing name: ", name, data.surname, ret)
-        return ret
       },
       slugIsNew: slugIsNew,
       handleSlug: handleSlug
