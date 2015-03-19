@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-18
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-19
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -3607,9 +3607,6 @@ angular.module("directives.authorList", [])
         truncatedList = authsList.slice(0, profileOwnerNameIndex + 1)
       }
 
-      console.log("this is the auths list", authsList)
-      console.log("this is the truncated list", truncatedList)
-      console.log("this is the owner index", profileOwnerNameIndex)
 
 
       return {

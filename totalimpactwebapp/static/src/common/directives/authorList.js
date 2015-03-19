@@ -35,9 +35,6 @@ angular.module("directives.authorList", [])
         truncatedList = authsList.slice(0, profileOwnerNameIndex + 1)
       }
 
-      console.log("this is the auths list", authsList)
-      console.log("this is the truncated list", truncatedList)
-      console.log("this is the owner index", profileOwnerNameIndex)
 
 
       return {
