@@ -9181,7 +9181,7 @@ angular.module("product-page/product-page.tpl.html", []).run(["$templateCache", 
     "\n" +
     "                  </span>\n" +
     "                  <span class=\"value\" ng-show=\"!userOwnsThisProfile\">\n" +
-    "                  {{ biblio.display_authors }}\n" +
+    "                     <author-list authors=\"biblio.author_list\" truncate-len=\"999\"></author-list>\n" +
     "                  </span>\n" +
     "\n" +
     "                  <span class=\"loading\" ng-show=\"loading.is('updateBiblio.authors')\">\n" +
