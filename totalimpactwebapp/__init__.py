@@ -136,17 +136,17 @@ commit(db)
 
 from totalimpactwebapp import views
 
-try:
-    from totalimpact import extra_schema 
-    extra_schema.create_doaj_table(db)    
-    extra_schema.create_doaj_view(db) 
-except exc.ProgrammingError:
-    logger.info("SQLAlchemy database tables not found, so creating them")
-    db.session.rollback()
-    db.create_all()
-    from totalimpact import extra_schema 
-    extra_schema.create_doaj_table(db)    
-    extra_schema.create_doaj_view(db) 
+# try:
+#     from totalimpact import extra_schema 
+#     extra_schema.create_doaj_table(db)    
+#     extra_schema.create_doaj_view(db) 
+# except exc.ProgrammingError:
+#     logger.info("SQLAlchemy database tables not found, so creating them")
+#     db.session.rollback()
+#     db.create_all()
+#     from totalimpact import extra_schema 
+#     extra_schema.create_doaj_table(db)    
+#     extra_schema.create_doaj_view(db) 
 
 
 

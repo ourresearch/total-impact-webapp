@@ -73,6 +73,12 @@ canvas.chord.type = property(_type)
 #### end monkeypatch
 
 
+def say_hi(my_return, my_sleep=0):
+    import time
+    time.sleep(my_sleep)
+    return "Hi " + my_return + str(my_sleep)
+
+
 class ClearDbSessionTask(Task):
     """An abstract Celery Task that ensures that the connection the the
     database is closed on task completion"""
@@ -100,76 +106,12 @@ class ClearDbSessionTask(Task):
 
 
 
-def provider_method_wrapper(tiid, provider, method_name):
-
-    # logger.info(u"{:20}: in provider_method_wrapper with {tiid} {provider_name} {method_name} with {aliases}".format(
-    #    "wrapper", tiid=tiid, provider_name=provider.provider_name, method_name=method_name, aliases=input_aliases_dict))
-
-
-    product = Product.query.get(tiid)
-
-    if not product:
-        logger.warning(u"Empty product in provider_run for tiid {tiid}".format(
-           tiid=tiid))
-        return None
-
-    input_alias_tuples = product.aliases_for_providers
-    provider_name = provider.provider_name
-    worker_name = provider_name+"_worker"
-    method = getattr(provider, method_name)
-
-    try:
-        method_response = method(input_alias_tuples)
-    except ProviderError, e:
-        method_response = None
-
-        logger.info(u"{:20}: **ProviderError {tiid} {method_name} {provider_name}, Exception type {exception_type} {exception_arguments}".format(
-            worker_name, 
-            tiid=tiid, 
-            provider_name=provider_name.upper(), 
-            method_name=method_name.upper(), 
-            exception_type=type(e).__name__, 
-            exception_arguments=e.args))
-
-    ellipses = ""
-    if method_response and len(method_response) >= 50:
-        ellipses = "..."
-    logger.info(u"{:20}: /biblio_print, RETURNED {tiid} {method_name} {provider_name} : {method_response:.50} {ellipses}".format(
-        worker_name, tiid=tiid, method_name=method_name.upper(), 
-        provider_name=provider_name.upper(), method_response=method_response, ellipses=ellipses))
-
-    add_to_database_if_nonzero(product, method_response, method_name, provider_name)
-
-    return tiid
 
 
 
 
 
-# last variable is an artifact so it has same call signature as other callbacks
-def add_to_database_if_nonzero( 
-        product, 
-        new_content, 
-        method_name, 
-        provider_name):
 
-    if new_content and product:
-        updated_product = None
-        if method_name=="aliases":
-            updated_product = put_aliases_in_product(product, new_content)
-        elif method_name=="biblio":
-            updated_product = put_biblio_in_product(product, new_content, provider_name)
-        elif method_name=="metrics":
-            for metric_name in new_content:
-                if new_content[metric_name]:
-                    updated_product = put_snap_in_product(product, metric_name, new_content[metric_name])
-        else:
-            logger.warning(u"ack, supposed to save something i don't know about: " + str(new_content))
-
-        if updated_product:
-            db.session.merge(updated_product)
-            commit(db)
-    return
 
 
 
@@ -211,38 +153,6 @@ def chain_dummy(first_arg, **kwargs):
 
     return response
 
-
-@task(base=ClearDbSessionTask)
-def provider_run(tiid, method_name, provider_name):
-
-    provider = ProviderFactory.get_provider(provider_name)
-
-    # logger.info(u"in provider_run for {provider}".format(
-    #    provider=provider.provider_name))
-
-    (success, estimated_wait_seconds) = rate.acquire(provider_name, block=False)
-    if not success:
-        logger.warning(u"RATE LIMIT HIT in provider_run for {provider} {method_name} {tiid}, retrying".format(
-           provider=provider.provider_name, method_name=method_name, tiid=tiid))
-
-        # add up to random 3 seconds to spread it out
-        estimated_wait_seconds += random.random() * 3
-        provider_run.retry(args=[tiid, method_name, provider_name],
-                countdown=estimated_wait_seconds, 
-                max_retries=10)
-
-    timeout_seconds = 120
-    try:
-        with timeout.Timeout(timeout_seconds):
-            response = provider_method_wrapper(tiid, provider, method_name)
-
-    except timeout.Timeout:
-        msg = u"TIMEOUT in provider_run for {provider} {method_name} {tiid} after {timeout_seconds} seconds".format(
-           provider=provider.provider_name, method_name=method_name, tiid=tiid, timeout_seconds=timeout_seconds)
-        # logger.warning(msg)  # message is written elsewhere
-        raise ProviderTimeout(msg)
-
-    return tiid
 
 
 
