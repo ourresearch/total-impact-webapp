@@ -1,4 +1,4 @@
-/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-19
+/*! Impactstory - v0.0.1-SNAPSHOT - 2015-03-20
  * http://impactstory.org
  * Copyright (c) 2015 Impactstory;
  * Licensed MIT
@@ -11025,6 +11025,9 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                      class=\"form-control\"\n" +
     "                      name=\"card-holder-name\"\n" +
     "                      id=\"card-holder-name\"\n" +
+    "                      autocomplete=\"name\"\n" +
+    "                      x-autocompletetype=\"name\"\n" +
+    "                      required\n" +
     "                      placeholder=\"Card Holder's Name\">\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -11042,6 +11045,9 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                    payments-format=\"card\"\n" +
     "                    payments-type-model=\"type\"\n" +
     "                    ng-class=\"type\"\n" +
+    "                    autocomplete=\"cc-number\"\n" +
+    "                    x-autocompletetype=\"cc-number\"\n" +
+    "                    required\n" +
     "                    placeholder=\"Credit Card Number\">\n" +
     "           </div>\n" +
     "         </div>\n" +
@@ -11058,6 +11064,9 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                      ng-model=\"expiry\"\n" +
     "                      payments-validate=\"expiry\"\n" +
     "                      payments-format=\"expiry\"\n" +
+    "                      autocomplete=\"cc-exp\"\n" +
+    "                      x-autocompletetype=\"cc-exp\"\n" +
+    "                      required\n" +
     "                      placeholder=\"MM/YY\">\n" +
     "            </div>\n" +
     "         </div>\n" +
@@ -11075,6 +11084,9 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "                    payments-validate=\"cvc\"\n" +
     "                    payments-format=\"cvc\"\n" +
     "                    payments-type-model=\"type\"\n" +
+    "                    autocomplete=\"cc-csc\"\n" +
+    "                    x-autocompletetype=\"cc-csc\"\n" +
+    "                    required\n" +
     "                    placeholder=\"CVV\">\n" +
     "           </div>\n" +
     "           <div class=\"col-sm-2 cvv-graphic\">\n" +
@@ -11082,7 +11094,7 @@ angular.module("settings/subscription-settings.tpl.html", []).run(["$templateCac
     "           </div>\n" +
     "         </div>\n" +
     "\n" +
-    "         <!-- CVV -->\n" +
+    "         <!-- coupon code -->\n" +
     "         <div class=\"form-group\">\n" +
     "            <label class=\"col-sm-3 control-label\" for=\"coupon-code\">Coupon code</label>\n" +
     "           <div class=\"col-sm-9\">\n" +
@@ -11346,6 +11358,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "                         id=\"signup-email\"\n" +
     "                         type=\"email\"\n" +
     "                         class=\"form-control input-lg\"\n" +
+    "                         autocomplete=\"email\"\n" +
     "                         required />\n" +
     "                  <div class=\"help-block\" ng-show=\"emailTaken()\">Sorry, that email is taken.</div>\n" +
     "               </div>\n" +

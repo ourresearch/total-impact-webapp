@@ -105,6 +105,9 @@
                       class="form-control"
                       name="card-holder-name"
                       id="card-holder-name"
+                      autocomplete="name"
+                      x-autocompletetype="name"
+                      required
                       placeholder="Card Holder's Name">
             </div>
          </div>
@@ -122,6 +125,9 @@
                     payments-format="card"
                     payments-type-model="type"
                     ng-class="type"
+                    autocomplete="cc-number"
+                    x-autocompletetype="cc-number"
+                    required
                     placeholder="Credit Card Number">
            </div>
          </div>
@@ -138,6 +144,9 @@
                       ng-model="expiry"
                       payments-validate="expiry"
                       payments-format="expiry"
+                      autocomplete="cc-exp"
+                      x-autocompletetype="cc-exp"
+                      required
                       placeholder="MM/YY">
             </div>
          </div>
@@ -155,6 +164,9 @@
                     payments-validate="cvc"
                     payments-format="cvc"
                     payments-type-model="type"
+                    autocomplete="cc-csc"
+                    x-autocompletetype="cc-csc"
+                    required
                     placeholder="CVV">
            </div>
            <div class="col-sm-2 cvv-graphic">
@@ -162,7 +174,7 @@
            </div>
          </div>
 
-         <!-- CVV -->
+         <!-- coupon code -->
          <div class="form-group">
             <label class="col-sm-3 control-label" for="coupon-code">Coupon code</label>
            <div class="col-sm-9">
