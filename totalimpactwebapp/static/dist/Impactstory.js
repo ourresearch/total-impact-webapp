@@ -11337,6 +11337,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "                         id=\"signup-given-name\"\n" +
     "                         class=\"form-control input-lg\"\n" +
     "                         autofocus=\"autofocus\"\n" +
+    "                         autocomplete=\"given-name\"\n" +
     "                         required />\n" +
     "               </div>\n" +
     "\n" +
@@ -11347,6 +11348,7 @@ angular.module("signup/signup.tpl.html", []).run(["$templateCache", function($te
     "                         id=\"signup-surname\"\n" +
     "                         type=\"text\"\n" +
     "                         class=\"form-control input-lg\"\n" +
+    "                         autocomplete=\"family-name\"\n" +
     "                         required />\n" +
     "               </div>\n" +
     "\n" +
