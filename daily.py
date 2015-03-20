@@ -1059,7 +1059,7 @@ def debug_biblio_for_live_profiles(args):
 
 
 from rq import Queue
-from rq_workers import redis_rq_conn
+from rq_worker import redis_rq_conn
 from refresh import refresh_profile
 
 
