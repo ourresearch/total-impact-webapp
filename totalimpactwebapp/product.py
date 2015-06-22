@@ -10,6 +10,7 @@ from celery.result import AsyncResult
 from collections import Counter
 from collections import defaultdict
 import flask
+from sqlalchemy import orm
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import FlushError
 
@@ -95,6 +96,23 @@ def get_products_from_tiids(tiids, ignore_order=False):
             ret.append(my_product)
 
     return ret
+
+def get_no_snaps_orphaned_product(tiid):
+    query_base = Product.query.options( orm.noload('*'),
+                                        orm.subqueryload(Product.biblio_rows), 
+                                        orm.subqueryload(Product.alias_rows))
+    product = query_base.get(tiid)
+    return product
+
+
+def get_profile_from_id(id, id_type="url_slug", show_secrets=False, include_products=True, include_product_relationships=True):
+    if include_products:
+        if include_product_relationships:
+            query_base = Profile.query
+        else:
+            query_base = db.session.query(Profile).options(orm.noload('*'), orm.subqueryload(Profile.products))
+    else:
+        query_base = db.session.query(Profile).options(orm.noload('*'))
 
 
 def upload_file_and_commit(product, file_to_upload, db):

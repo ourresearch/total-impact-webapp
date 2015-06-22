@@ -1,6 +1,6 @@
 import os
-
 import redis
+import optparse
 from rq import Worker, Queue, Connection
 
 from totalimpact import tiredis
@@ -12,12 +12,17 @@ from totalimpact import default_settings
 from totalimpact.providers.provider import ProviderFactory, ProviderError, ProviderTimeout
 
 
-queue_names = ["product", "profile", "default"]
 redis_rq_conn = tiredis.from_url(os.getenv("REDIS_URL"), db=tiredis.REDIS_RQ_NUMBER)
-workers = {}
 
 if __name__ == '__main__':
+    parser = optparse.OptionParser("usage: %prog [options]")
+    parser.add_option('-q', '--queue', dest='queue', type="str",
+                      help='profile or product')
+    (options, args) = parser.parse_args()
+
     with Connection(redis_rq_conn):
-        worker = Worker(map(Queue, queue_names))
+        queue_name = options.queue
+        queues = [queue_name, "default"]
+        worker = Worker(map(Queue, queues))
         worker.work()
 

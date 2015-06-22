@@ -1058,24 +1058,20 @@ def debug_biblio_for_live_profiles(args):
 
 
 
-from rq import Queue
-from rq_worker import redis_rq_conn
-from refresh import refresh_profile
+from refresh import enqueue_profile
 
 
 
 def rq_refresh_profiles(args):
-    profile_queue = Queue("profile", connection=redis_rq_conn)
-
     url_slug = args.get("url_slug", None)
     min_url_slug = args.get("min_url_slug", None)
 
     q = profile_query(url_slug, min_url_slug)
     i = 0
     for profile in windowed_query(q, Profile.url_slug, 50):
+        enqueue_profile(profile)
         print "{i}. enqueuring {url_slug}".format(
             i=i, url_slug=profile.url_slug)
-        profile_queue.enqueue(refresh_profile, profile.url_slug)
         i += 1
 
 

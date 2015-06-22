@@ -144,8 +144,12 @@ class Biblio(object):
         except AttributeError:
             ret = "no title available"
 
-        if ret.isupper():
-            ret = ret.title()
+        try:
+            if ret.isupper():
+                ret = ret.title()
+        except AttributeError:  #some titles are ints, apparently
+            pass
+
 
         return ret
 

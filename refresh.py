@@ -1,6 +1,9 @@
 from totalimpactwebapp.profile import Profile
 from totalimpactwebapp.product import Product
+from totalimpactwebapp.profile import get_profile_stubs_from_url_slug
+from totalimpactwebapp.product import get_no_snaps_orphaned_product
 from rq import Queue
+from rq.job import Job
 from rq_worker import redis_rq_conn
 from totalimpact import default_settings
 from totalimpact.providers.provider import ProviderFactory, ProviderError, ProviderTimeout
@@ -11,6 +14,8 @@ from totalimpactwebapp import db
 from util import commit 
 import sqlalchemy
 import logging
+import json
+import time
 
 logger = logging.getLogger("ti.refresh")
 
@@ -138,9 +143,7 @@ def provider_run(product, method_name, provider_name):
     return product.tiid
 
 def refresh_product(tiid):
-    print "getting product"
-    product = Product.query.get(tiid)
-    print "got product"
+    product = get_no_snaps_orphaned_product(tiid)
 
     pipeline = flat_sniffer(product.genre, product.host, product.aliases_for_providers)
     for (method_name, provider_name) in pipeline:
@@ -150,28 +153,50 @@ def refresh_product(tiid):
         pass
     db.session.remove()
 
-    print "done refreshing product"
-    return 22
+    return tiid
 
 
+profile_queue = Queue("profile", connection=redis_rq_conn)
 product_queue = Queue("product", connection=redis_rq_conn)
+
+def enqueue_profile(profile):
+    description = json.dumps(["profile", profile.url_slug])
+    job_id = "profile:{url_slug}".format(url_slug=profile.url_slug)
+    job = profile_queue.enqueue_call(func=refresh_profile, args=(profile.url_slug, ), 
+            job_id=profile.url_slug,
+            description=description)
+
 
 def refresh_profile(url_slug):    
     print "getting full profile"
-    profile = Profile.query.filter(Profile.url_slug==url_slug).one()
+    profile = get_profile_stubs_from_url_slug(url_slug)
+
     job_ids = []
     for product in profile.display_products:
         print "enqueing product", product.tiid
-        job = product_queue.enqueue(refresh_product, product.tiid)
+        description = json.dumps(["product", product.tiid])
+        job_id = "product:{tiid}".format(tiid=product.tiid)
+        timeout = 60*5
+        job = product_queue.enqueue_call(func=refresh_product, 
+                args=(product.tiid, ), 
+                job_id=product.tiid,
+                description=description,
+                timeout=timeout)
         job_ids.append(job.get_id())
 
-    still_working = False
+    still_working = True
     while still_working:
-        print "still working!"
+        time.sleep(2)
+        print ".",
         still_working = False
         for job_id in job_ids:
             job = Job.fetch(job_id, connection=redis_rq_conn)
             if not job.is_finished:
                 still_working = True
 
-    return "Hi" + profile.url_slug
+    # would have to refresh profile here to do things with it
+    # profile = Profile.query.filter(Profile.url_slug==url_slug).one()
+
+    db.session.remove()
+
+    return "Finished all of the profile!" + profile.url_slug
