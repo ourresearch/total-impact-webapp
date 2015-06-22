@@ -133,7 +133,9 @@ class Biblio(object):
         except AttributeError:
             auths = None
 
+
         return auths
+
 
     @cached_property
     def author_list(self):
@@ -146,12 +148,16 @@ class Biblio(object):
         ret = []
         for auth in auth_list:
             my_auth = auth.strip()
-            if my_auth.isupper():
-                my_auth = my_auth.title()
+            try:
+                if my_auth.isupper():
+                    my_auth = my_auth.title()
+            except AttributeError:
+                pass
 
             ret.append(my_auth)
 
         return ret
+
 
     @cached_property
     def display_title(self):
@@ -160,8 +166,12 @@ class Biblio(object):
         except AttributeError:
             ret = "no title available"
 
-        if ret.isupper():
-            ret = ret.title()
+        try:
+            if ret.isupper():
+                ret = ret.title()
+        except AttributeError:  #some titles are ints, apparently
+            pass
+
 
         return ret
 
