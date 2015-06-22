@@ -943,11 +943,16 @@ def update_this_profile(profile):
 
 
 def update_profiles(limit=5, url_slug=None):
+    # shouldn't need this, but hack to get around the fact that we limit profiles
+    # before knowing how many have too many products
+    # don't want to get too few profiles, then updates stall out
+    hack_fudge_factor_for_too_big_profiles = 25
+
     if url_slug:
         q = db.session.query(Profile.id).filter(Profile.url_slug==url_slug)
     else:
         q = db.session.query(Profile.id).filter(Profile.next_refresh <= datetime.datetime.utcnow())
-        q = q.limit(limit)
+        q = q.limit(limit + hack_fudge_factor_for_too_big_profiles)
 
     number_profiles = 0.0
     for profile_id in q.all():
