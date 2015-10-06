@@ -114,9 +114,14 @@ def provider_method_wrapper(tiid, provider, method_name):
         return None
 
     input_alias_tuples = product.aliases_for_providers
+    try:
+        method = getattr(provider, method_name)
+    except AttributeError:
+        provider = ProviderFactory.get_provider(provider)
+        method = getattr(provider, method_name)
+
     provider_name = provider.provider_name
     worker_name = provider_name+"_worker"
-    method = getattr(provider, method_name)
 
     try:
         method_response = method(input_alias_tuples)

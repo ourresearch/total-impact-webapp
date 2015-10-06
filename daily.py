@@ -11,9 +11,14 @@ from totalimpactwebapp.product_deets import populate_product_deets
 from totalimpactwebapp.drip_email import log_drip_email
 from totalimpactwebapp.tweeter import Tweeter
 from totalimpactwebapp.tweeter import get_and_save_tweeter_followers
+from totalimpact.providers.provider import ProviderFactory
+from totalimpact import default_settings
+
 from util import commit
 from util import dict_from_dir
+from core_tasks import provider_method_wrapper
 from totalimpactwebapp import db
+from totalimpactwebapp import ti_queues
 from db_backup_to_s3 import upload_to_s3
 import tasks
 
@@ -1025,6 +1030,47 @@ def update_all_live_profiles(args):
             time.sleep(pause_length)
 
 
+def say_hi(one, two, three):
+    print "hi!"
+
+def rq_metrics_for_all_live_profiles(args):
+    url_slug = args.get("url_slug", None)
+    limit = args.get("limit", 5)
+    if url_slug:
+        limit = 1
+
+    queue_number = 0
+
+    q = db.session.query(Product.tiid).select_from(Profile)
+    q = q.filter(Product.removed == None)
+    q = q.join(Profile.products)
+    if url_slug:
+        q = q.filter(Profile.url_slug==url_slug)
+    else:
+        from totalimpactwebapp.profile import default_free_trial_days
+        min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=default_free_trial_days)
+        q = q.filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None, Profile.created>=min_created_date))
+        q = q.filter(Profile.next_refresh <= datetime.datetime.utcnow())
+        q = q.limit(limit)
+    print "q=", q
+
+    all_metrics_provider_names = [p.provider_name for p in ProviderFactory.get_providers(default_settings.PROVIDERS, "metrics")]
+
+    for tiid in q.all():
+        print "tiid", tiid
+
+        for provider_name in all_metrics_provider_names:
+            print "putting {} on rq queue to run metrics through {}".format(
+                tiid, provider_name)
+            job = ti_queues[queue_number].enqueue_call(
+                func=provider_method_wrapper,
+                args=(tiid, provider_name, "metrics"),
+                timeout=60 * 10,
+                result_ttl=0  # number of seconds
+                )
+            job.save()
+
+
 
 def debug_biblio_for_live_profiles(args):
     url_slug = args.get("url_slug", None)
@@ -1110,6 +1156,7 @@ def main(function, args):
         # http://stackoverflow.com/a/4605/596939
 
         globals()[function](args)
+
 
 
 

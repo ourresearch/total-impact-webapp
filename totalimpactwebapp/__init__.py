@@ -14,6 +14,9 @@ from sqlalchemy import exc
 from sqlalchemy import event
 from sqlalchemy.pool import Pool
 
+import redis
+from rq import Queue
+
 from util import HTTPMethodOverrideMiddleware
 from util import commit
 from multiprocessing.util import register_after_fork
@@ -106,6 +109,19 @@ def ping_connection(dbapi_connection, connection_record, connection_proxy):
 # log in stuff
 login_manager = LoginManager()
 login_manager.setup_app(app)
+
+
+# RQ stuff
+redis_rq_conn = redis.from_url(
+    os.getenv("REDIS_URL", "redis://127.0.0.1:6379"),
+    db=7
+)
+
+ti_queues = []
+for i in range(0, 10):
+    ti_queues.append(
+        Queue("ti-queue-{}".format(i), connection=redis_rq_conn)
+    )
 
 
 
