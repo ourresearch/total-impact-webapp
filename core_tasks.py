@@ -158,8 +158,9 @@ def add_to_database_if_nonzero(
         method_name, 
         provider_name):
 
+    updated_product = None
+
     if new_content and product:
-        updated_product = None
         if method_name=="aliases":
             updated_product = put_aliases_in_product(product, new_content)
         elif method_name=="biblio":
@@ -171,9 +172,14 @@ def add_to_database_if_nonzero(
         else:
             logger.warning(u"ack, supposed to save something i don't know about: " + str(new_content))
 
-        if updated_product:
-            db.session.merge(updated_product)
-            commit(db)
+    if updated_product:
+        updated_product.last_refresh_finished = datetime.datetime.utcnow()
+        db.session.merge(updated_product)
+        commit(db)
+    else:
+        product.last_refresh_finished = datetime.datetime.utcnow()
+        db.session.add(product)
+        commit(db)
     return
 
 

@@ -1035,6 +1035,8 @@ def say_hi(one, two, three):
 
 def rq_metrics_for_all_live_profiles(args):
     url_slug = args.get("url_slug", None)
+    tiid = args.get("tiid", None)
+    no_rq = args.get("no_rq", False)
     limit = args.get("limit", 5)
     if url_slug:
         limit = 1
@@ -1046,6 +1048,8 @@ def rq_metrics_for_all_live_profiles(args):
     q = q.join(Profile.products)
     if url_slug:
         q = q.filter(Profile.url_slug==url_slug)
+    elif tiid:
+        q = q.filter(Product.tiid==tiid)
     else:
         from totalimpactwebapp.profile import default_free_trial_days
         min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=default_free_trial_days)
@@ -1062,13 +1066,17 @@ def rq_metrics_for_all_live_profiles(args):
         for provider_name in all_metrics_provider_names:
             print "putting {} on rq queue to run metrics through {}".format(
                 tiid, provider_name)
-            job = ti_queues[queue_number].enqueue_call(
-                func=provider_method_wrapper,
-                args=(tiid, provider_name, "metrics"),
-                timeout=60 * 10,
-                result_ttl=0  # number of seconds
-                )
-            job.save()
+            if no_rq:
+                print "asked for no-rq, so calling right now"
+                provider_method_wrapper(tiid, provider_name, "metrics")
+            else:
+                job = ti_queues[queue_number].enqueue_call(
+                    func=provider_method_wrapper,
+                    args=(tiid, provider_name, "metrics"),
+                    timeout=60 * 10,
+                    result_ttl=0  # number of seconds
+                    )
+                job.save()
 
 
 
@@ -1181,6 +1189,7 @@ if __name__ == "__main__":
     parser.add_argument('--limit', type=int, default=5)
     parser.add_argument('--max_pages', type=int)
     parser.add_argument('--force_all', type=int)
+    parser.add_argument('--no-rq', action="store_true", help="do jobs in this thread")
 
     args = vars(parser.parse_args())
     function = args["function"]
