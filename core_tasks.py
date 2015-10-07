@@ -143,7 +143,9 @@ def provider_method_wrapper(tiid, provider, method_name):
         worker_name, tiid=tiid, method_name=method_name.upper(), 
         provider_name=provider_name.upper(), method_response=method_response, ellipses=ellipses))
 
+    print "before add_to_database_if_nonzero with", tiid
     add_to_database_if_nonzero(product, method_response, method_name, provider_name)
+    print "after add_to_database_if_nonzero with", tiid
 
     return tiid
 
@@ -173,13 +175,16 @@ def add_to_database_if_nonzero(
             logger.warning(u"ack, supposed to save something i don't know about: " + str(new_content))
 
     if updated_product:
+        print "in top of if, committing"
         updated_product.last_refresh_finished = datetime.datetime.utcnow()
         db.session.merge(updated_product)
         commit(db)
     else:
+        print "in bottom of if, committing"
         product.last_refresh_finished = datetime.datetime.utcnow()
         db.session.add(product)
         commit(db)
+    print "done committing"
     return
 
 
