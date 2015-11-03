@@ -1055,7 +1055,7 @@ def rq_metrics_for_all_live_profiles(args):
         min_created_date = datetime.datetime.utcnow() - datetime.timedelta(days=default_free_trial_days)
         q = q.filter(or_(Profile.is_advisor!=None, Profile.stripe_id!=None, Profile.created>=min_created_date))
         # q = q.filter(Profile.next_refresh <= datetime.datetime.utcnow())
-        q = q.order_by(Product.last_refresh_finished.desc())
+        q = q.order_by(Product.last_refresh_finished)  # oldest first
         q = q.limit(limit)
     print "q=", q
 
