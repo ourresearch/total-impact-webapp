@@ -38,7 +38,6 @@ lxml==2.3.4
 libsaas==0.2
 mandrill==1.0.37
 mendeley==0.2.5
-newrelic==1.9.0.21
 nose==1.3.0
 numpy==1.8.1
 oauthlib==0.6.3
