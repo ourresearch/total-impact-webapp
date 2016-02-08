@@ -65,9 +65,13 @@ class Scopus(Provider):
                 if citation > max_citation:
                     max_citation = citation
                     api_url = entry["prism:url"] 
-                    match = re.findall("scopus_id:([\dA-Z]+)", api_url)
-                    scopus_id = match[0]
-                    provenance_url = self._get_templated_url(self.provenance_url_template, scopus_id)
+                    provenance_url = api_url
+
+                    # broken for now, getting scopus ID this way
+                    # just send back api as provenance
+                    # match = re.findall("scopus_id:([\dA-Z]+)", api_url)
+                    # scopus_id = match[0]
+                    # provenance_url = self._get_templated_url(self.provenance_url_template, scopus_id)
         except (KeyError, TypeError, ValueError):
             return {}
 
