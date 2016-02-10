@@ -83,7 +83,6 @@ from totalimpact.providers import provider as provider_module
 
 
 
-import newrelic.agent
 from sqlalchemy import orm
 from sqlalchemy import or_
 
