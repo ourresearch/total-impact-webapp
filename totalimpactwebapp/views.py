@@ -1166,10 +1166,6 @@ def images():
 
 @app.route("/top.js")
 def get_js_top():
-    newrelic_header = views_helpers.remove_script_tags(
-        newrelic.agent.get_browser_timing_header()
-    )
-
     try:
         current_user_dict = current_user.dict_about()
     except AttributeError:
@@ -1180,7 +1176,6 @@ def get_js_top():
         segmentio_key=os.getenv("SEGMENTIO_KEY"),
         mixpanel_token=os.getenv("MIXPANEL_TOKEN"),
         stripe_publishable_key=os.getenv("STRIPE_PUBLISHABLE_KEY"),
-        newrelic_header=newrelic_header,
         current_user=current_user_dict,
         genre_configs=configs.genre_configs(),
         country_names=get_country_names_from_iso()
@@ -1189,12 +1184,8 @@ def get_js_top():
 
 @app.route("/bottom.js")
 def get_js_bottom():
-    newrelic_footer = views_helpers.remove_script_tags(
-        newrelic.agent.get_browser_timing_footer()
-    )
     return make_js_response(
-        "bottom.js",
-        newrelic_footer=newrelic_footer
+        "bottom.js"
     )
 
 
