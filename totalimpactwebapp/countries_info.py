@@ -9960,6 +9960,7 @@ countries_info_list = [
 country_iso_by_name = {}
 for country in countries_info_list:
     country_iso_by_name[country["name"]["common"]] = country["cca2"]
-    country_iso_by_name[country["name"]["official"]] = country["cca2"]
-    for country_spelling in country["altSpellings"]:
-        country_iso_by_name[country_spelling] = country["cca2"]
+    # country_iso_by_name[country["name"]["official"]] = country["cca2"]
+    # for country_spelling in country["altSpellings"]:
+    #     country_iso_by_name[country_spelling] = country["cca2"]
+

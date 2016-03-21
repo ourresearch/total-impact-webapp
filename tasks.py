@@ -11,6 +11,7 @@ from totalimpactwebapp import db
 from totalimpactwebapp.json_sqlalchemy import JSONAlchemy
 from totalimpactwebapp.cards_factory import *
 from totalimpactwebapp import notification_report
+from totalimpactwebapp import tng_report
 from totalimpactwebapp.drip_email import drip_email_context
 import emailer
 
@@ -105,13 +106,55 @@ def send_email_if_new_diffs(profile):
     return status
 
 
+def send_tng_email(profile, now=None):
+    print "at top of send_tng_email"
+    status = "started"
+    if not now:
+        now = datetime.datetime.utcnow()
+
+    if os.getenv("ENVIRONMENT", "testing") == "production":
+        email = profile.email
+    else:
+        email = "heather@impactstory.org"
+    profile.last_email_sent = now
+    db.session.merge(profile)
+
+    try:
+        db.session.commit()
+    except InvalidRequestError:
+        logger.info(u"rollback, trying again to update profile object in send_email_report for {url_slug}".format(url_slug=profile.url_slug))
+        db.session.rollback()
+        db.session.commit()
+
+    print "here now"
+
+    report = tng_report.make(profile)
+    if report["profile"]:
+
+        if profile.is_live:
+            if profile.orcid_id:
+                msg = emailer.send(email, "News about live Impactstory; you have an orcid", "tng_announcement", report)
+            else:
+                msg = emailer.send(email, "News about live Impactstory; you don't have an orcid", "tng_announcement", report)
+        else:
+            if profile.orcid_id:
+                msg = emailer.send(email, "News about trial Impactstory; you have an orcid", "tng_announcement", report)
+            else:
+                msg = emailer.send(email, "News about trial Impactstory; you don't have an orcid", "tng_announcement", report)
+
+    status = "email sent"
+    logger.info(u"SENT EMAIL to {url_slug}!!".format(url_slug=profile.url_slug))
+
+    return status
+
+
 
 def send_email_report(profile, now=None):
     status = "started"
     if not now:
         now = datetime.datetime.utcnow()
-    report = notification_report.make(profile)
     db.session.merge(profile)
+    report = notification_report.make(profile)
 
     if report["cards"]:
         if os.getenv("ENVIRONMENT", "testing") == "production":

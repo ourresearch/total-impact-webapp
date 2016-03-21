@@ -403,6 +403,31 @@ def email_report_to_live_profiles(url_slug=None, min_url_slug=None, max_emails=N
 
 
 
+def email_all_profiles_about_tng(url_slug=None, min_url_slug=None, max_emails=None):
+    number_emails_sent = 0
+
+    q = profile_query(url_slug, min_url_slug)
+
+    for profile in windowed_query(q, Profile.url_slug, 25):
+
+        logger.debug(u"in email_all_profiles_about_tng for {url_slug}".format(
+            url_slug=profile.url_slug))
+
+        try:
+            if not profile.email or (u"@" not in profile.email):
+                pass
+                logger.info(u"not sending, no email address for {url_slug}".format(url_slug=profile.url_slug))
+            else:
+                logger.info(u"emailing {url_slug} about tng".format(url_slug=profile.url_slug))
+                tasks.send_tng_email(profile)
+
+        except Exception as e:
+            logger.warning(u"EXCEPTION in email_all_profiles_about_tng for {url_slug}, skipping to next profile.  Error {e}".format(
+                url_slug=profile.url_slug, e=e))
+            pass
+
+
+    return
 
 def build_refsets(save_after_every_profile=False):
     refset_builder = RefsetBuilder()
@@ -1120,6 +1145,8 @@ def debug_biblio_for_live_profiles(args):
 def main(function, args):
     if function=="emailreports":
         email_report_to_live_profiles(args["url_slug"], args["min_url_slug"], args["max_emails"])
+    elif function=="email_tng":
+        email_all_profiles_about_tng(args["url_slug"], args["min_url_slug"], args["max_emails"])
     elif function=="dedup":
         dedup_everyone(args["url_slug"], args["min_url_slug"])
     elif function=="productdeets":
