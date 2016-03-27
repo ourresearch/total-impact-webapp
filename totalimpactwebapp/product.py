@@ -518,31 +518,35 @@ class Product(db.Model):
 
     @cached_property
     def countries_str(self):
-        countries_set = set()
-
-        try:
-            country_data = self.get_metric_raw_value("altmetric_com", "demographics")["geo"]["twitter"]
-            countries_set.update(country_data)
-        except (KeyError, TypeError):
-            pass
-
-        try:
-            country_data = self.get_metric_raw_value("mendeley", "countries")
-            countries_set.update([iso_code_from_name(country_name)
-                                  for country_name
-                                  in country_data])
-        except (KeyError, TypeError):
-            pass
-
-        try:
-            country_data = self.get_metric_raw_value("impactstory", "countries")
-            countries_set.update([country for country in country_data if country])
-        except (KeyError, TypeError):
-            pass
-
-        if countries_set:
-            return ",".join(list(countries_set))
         return ""
+
+        # is broken somehow.  fix it.  @todo
+
+        # countries_set = set()
+        #
+        # try:
+        #     country_data = self.get_metric_raw_value("altmetric_com", "demographics")["geo"]["twitter"]
+        #     countries_set.update(country_data)
+        # except (KeyError, TypeError):
+        #     pass
+        #
+        # try:
+        #     country_data = self.get_metric_raw_value("mendeley", "countries")
+        #     countries_set.update([iso_code_from_name(country_name)
+        #                           for country_name
+        #                           in country_data])
+        # except (KeyError, TypeError):
+        #     pass
+        #
+        # try:
+        #     country_data = self.get_metric_raw_value("impactstory", "countries")
+        #     countries_set.update([country for country in country_data if country])
+        # except (KeyError, TypeError):
+        #     pass
+        #
+        # if countries_set:
+        #     return ",".join(list(countries_set))
+        # return ""
 
 
     @cached_property
