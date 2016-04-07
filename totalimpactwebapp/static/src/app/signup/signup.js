@@ -43,7 +43,8 @@ angular.module( 'signup', [
 
       // don't let people sign up on this version any more; redirect to
       // the current version.
-      $location.url("https://impactstory.org")
+      console.log("redirect!")
+      window.location.href = "http://impactstory.org"
 
 
       var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"

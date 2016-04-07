@@ -3400,15 +3400,9 @@ angular.module( 'signup', [
         notOnMobile: function($q, $rootScope, $location){
           console.log("trying to resolve /signup")
           var deferred = $q.defer()
-          if ($rootScope.isOnMobile()){
-            alert("Sorry! Creating new profiles isn't yet supported on your mobile device.")
-            $location.path("/")
-            deferred.reject()
-          }
-          else {
+
             deferred.resolve()
-          }
-          return deferred.promise
+            return deferred.promise
         }
       }
     })
@@ -3425,7 +3419,15 @@ angular.module( 'signup', [
                                            Users,
                                            TiMixpanel,
                                            Loading) {
-    var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
+
+
+      // don't let people sign up on this version any more; redirect to
+      // the current version.
+      console.log("redirect!")
+      window.location.href = "http://impactstory.org"
+
+
+      var emailThatIsAlreadyTaken = "aaaaaaaaaaaa@foo.com"
 
     $scope.newUser = {}
     $scope.emailTaken = function(){
