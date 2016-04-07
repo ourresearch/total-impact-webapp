@@ -8119,20 +8119,6 @@ angular.module("footer/footer.tpl.html", []).run(["$templateCache", function($te
     "         <div id=\"footer-help\" class=\"footer-col\">\n" +
     "            <h3>Help</h3>\n" +
     "            <ul>\n" +
-    "               <li><a href=\"http://feedback.impactstory.org\" target=\"_blank\">Suggestions</a></li>\n" +
-    "               <li>\n" +
-    "                     <a class=\"help control\"\n" +
-    "                        href=\"javascript:void(0)\"\n" +
-    "                        data-uv-lightbox=\"classic_widget\"\n" +
-    "                        data-uv-trigger\n" +
-    "                        data-uv-mode=\"full\"\n" +
-    "                        data-uv-primary-color=\"#cc6d00\"\n" +
-    "                        data-uv-link-color=\"#007dbf\"\n" +
-    "                        data-uv-default-mode=\"support\"\n" +
-    "                        data-uv-forum-id=\"166950\">\n" +
-    "                           Report bug\n" +
-    "                     </a>\n" +
-    "               </li>\n" +
     "               <li><a href=\"/faq\">FAQ</a></li>\n" +
     "               <li><a href=\"/HollyBik\">Example profile</a></li>\n" +
     "            </ul>\n" +
@@ -8450,7 +8436,7 @@ angular.module("infopages/about.tpl.html", []).run(["$templateCache", function($
     "\n" +
     "      <div id=\"contact\">\n" +
     "         <h3>Contact and FAQ</h3>\n" +
-    "         <p>We'd love to hear your feedback, ideas, or just chat! Reach us at <a href=\"mailto:team@impactstory.org\">team@impactstory.org</a>, on <a href=\"http://twitter.com/#!/Impactstory\">Twitter</a>, or via our <a href=\"http://feedback.impactstory.org\">help forum.</a> Or if you've got questions, check out our <a href=\"/faq\">FAQ</a>.</p>\n" +
+    "         <p>We'd love to hear your feedback, ideas, or just chat! Reach us at <a href=\"mailto:team@impactstory.org\">team@impactstory.org</a> or on <a href=\"http://twitter.com/#!/Impactstory\">Twitter</a>.  Or if you've got questions, check out our <a href=\"/faq\">FAQ</a>.</p>\n" +
     "      </div>\n" +
     "\n" +
     "\n" +
@@ -10498,19 +10484,7 @@ angular.module("security/login/toolbar.tpl.html", []).run(["$templateCache", fun
     "      -->\n" +
     "   </div>\n" +
     "\n" +
-    "   <a class=\"help control\"\n" +
-    "      href=\"javascript:void(0)\"\n" +
-    "      data-uv-lightbox=\"classic_widget\"\n" +
-    "      data-uv-mode=\"full\"\n" +
-    "      data-uv-primary-color=\"#cc6d00\"\n" +
-    "      data-uv-link-color=\"#007dbf\"\n" +
-    "      data-uv-default-mode=\"support\"\n" +
-    "      data-uv-forum-id=\"166950\">\n" +
-    "         <span class=\"tip\">Get help</span>\n" +
-    "         <span class=\"icon-container\">\n" +
-    "            <i class=\"icon-question\"></i>\n" +
-    "         </span>\n" +
-    "   </a>\n" +
+    "\n" +
     "</div>\n" +
     "");
 }]);
