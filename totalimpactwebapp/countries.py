@@ -296,8 +296,8 @@ def iso_code_from_name(name):
     try:
         return country_iso_by_name[name]
     except KeyError:
-        logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
-            country_name=name))
+        # logger.debug(u"ISO country fail: couldn't find country code name for {country_name}".format(
+        #     country_name=name))
         return None
 
 
