@@ -146,23 +146,23 @@ from totalimpactwebapp import snap
 from totalimpactwebapp import pinboard
 from totalimpactwebapp import tweet
 # logger.info(u"calling create_all on SQLAlchemy database tables to make any new ones")
-db.create_all()
-commit(db)
+# db.create_all()
+# commit(db)
 
-from totalimpactwebapp import views
-
-try:
-    from totalimpact import extra_schema 
-    extra_schema.create_doaj_table(db)    
-    extra_schema.create_doaj_view(db) 
-except exc.ProgrammingError:
-    logger.info("SQLAlchemy database tables not found, so creating them")
-    db.session.rollback()
-    db.create_all()
-    from totalimpact import extra_schema 
-    extra_schema.create_doaj_table(db)    
-    extra_schema.create_doaj_view(db) 
-
+# from totalimpactwebapp import views
+#
+# try:
+#     from totalimpact import extra_schema
+#     extra_schema.create_doaj_table(db)
+#     extra_schema.create_doaj_view(db)
+# except exc.ProgrammingError:
+#     logger.info("SQLAlchemy database tables not found, so creating them")
+#     db.session.rollback()
+#     db.create_all()
+#     from totalimpact import extra_schema
+#     extra_schema.create_doaj_table(db)
+#     extra_schema.create_doaj_view(db)
+#
 
 
 
